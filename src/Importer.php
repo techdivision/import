@@ -44,13 +44,6 @@ class Importer
     protected $serial;
 
     /**
-     * The prefix for the import files.
-     *
-     * @var string
-     */
-    protected $prefix;
-
-    /**
      * The system logger implementation.
      *
      * @var \Psr\Log\LoggerInterface
@@ -72,18 +65,11 @@ class Importer
     protected $productProcessor;
 
     /**
-     * The source directory that has to be watched for new files.
+     * The system configuration.
      *
-     * @var string
+     * @var \TechDivision\Import\ConfigurationInterface
      */
-    protected $sourceDir;
-
-    /**
-     * The default source date format.
-     *
-     * @var string
-     */
-    protected $sourceDateFormat = 'n/d/y, g:i A';
+    protected $configuration;
 
     /**
      * Set's the unique serial for this import process.
@@ -105,28 +91,6 @@ class Importer
     public function getSerial()
     {
         return $this->serial;
-    }
-
-    /**
-     * Set's the prefix for the import files.
-     *
-     * @param string $prefix The prefix
-     *
-     * @return void
-     */
-    public function setPrefix($prefix)
-    {
-        $this->prefix = $prefix;
-    }
-
-    /**
-     * Return's the prefix for the import files.
-     *
-     * @return string The prefix
-     */
-    public function getPrefix()
-    {
-        return $this->prefix;
     }
 
     /**
@@ -196,15 +160,33 @@ class Importer
     }
 
     /**
-     * Set's the source directory that has to be watched for new files.
+     * Set's the system configuration.
      *
-     * @param string $sourceDir The source directory
-     *
-     * @return void
+     * @param \TechDivision\Import\ConfigurationInterface $configuration The system configuration
      */
-    public function setSourceDir($sourceDir)
+    public function setConfiguration(ConfigurationInterface $configuration)
     {
-        $this->sourceDir = $sourceDir;
+        $this->configuration = $configuration;
+    }
+
+    /**
+     * Return's the system configuration.
+     *
+     * @return \TechDivision\Import\ConfigurationInterface The system configuration
+     */
+    public function getConfiguration()
+    {
+        return $this->configuration;
+    }
+
+    /**
+     * Return's the prefix for the import files.
+     *
+     * @return string The prefix
+     */
+    public function getPrefix()
+    {
+        return $this->getConfiguration()->getPrefix();
     }
 
     /**
@@ -214,39 +196,15 @@ class Importer
      */
     public function getSourceDir()
     {
-        return $this->sourceDir;
-    }
-
-    /**
-     * Set's the source date format to use.
-     *
-     * @param string $sourceFormat The source date format
-     *
-     * @return void
-     */
-    public function setSourceDateFormat($sourceDateFormat)
-    {
-        $this->sourceDateFormat = $sourceDateFormat;
-    }
-
-    /**
-     * Return's the source date format to use.
-     *
-     * @return string The source date format
-     */
-    public function getSourceDateFormat()
-    {
-        return $this->sourceDateFormat;
+        return $this->getConfiguration()->getSourceDir();
     }
 
     /**
      * Parse the temporary upload directory for new files to be imported.
      *
-     * @param string $prefix The import filename prefix
-     *
      * @return void
      */
-    public function import($prefix)
+    public function import()
     {
 
         // track the start time
@@ -255,15 +213,11 @@ class Importer
         // generate the serial for the new job
         $this->setSerial(Uuid::uuid4()->__toString());
 
-        // the file prefix for the CSV files with the product bunches
-        $this->setPrefix($prefix);
-
         // prepare the global data for the import process
         $this->start();
         $this->setUp();
         $this->parseDirectory();
-        $this->processBunches();
-        $this->processVariations();
+        $this->processSubjects();
         $this->tearDown();
         $this->finish();
 
@@ -357,7 +311,7 @@ class Importer
         clearstatcache();
 
         // prepare the regex to find the files to be imported
-        $regex = sprintf('/^.*\/%s.*\\.csv$/', $this->prefix);
+        $regex = sprintf('/^.*\/%s.*\\.csv$/', $this->getPrefix());
 
         // log a debug message
         $systemLogger->debug(
@@ -416,111 +370,78 @@ class Importer
     }
 
     /**
-     * This method start's the import process for the products itself. A bunch in this case means
-     * a CSV file with a specific number of products that have to be imported. The order of the
-     * products within the bunches is not relevant, as relations or variants will be processed after
-     * all products have been imported.
-     *
-     * Starting the import process means to send a message to the message-queue with the import
-     * ID the process the products for. The real import process finally takes place in the class
-     * <code>ProductImportVariantAction</code>.
+     * Process all the subjects defined in the system configuration.
      *
      * @return void
-     * @see Import\Csv\Actions\ProductImportBunchAction::import()
      */
-    public function processBunches()
+    public function processSubjects()
     {
 
         // load system logger and registry
         $systemLogger = $this->getSystemLogger();
+
+        // load the subjects
+        $subjects = $this->getConfiguration()->getSubjects();
+
+        // process all the subjects found in the system configuration
+        foreach ($subjects as $subject) {
+            // process the subject and and log a message that the subject has been processed
+            $this->processSubject($subject);
+            $systemLogger->info(sprintf('Successfully processed subject %s!', $subject->getClassName()));
+        }
+    }
+
+    /**
+     * Process the subject with the passed name/identifier.
+     *
+     * @param \TechDivision\Import\Configuration\Subject $subject The subject configuration
+     *
+     * @return void
+     */
+    public function processSubject($subject)
+    {
+
+        // load the registry instance
         $registryProcessor = $this->getRegistryProcessor();
 
         // load the status information of the actual import
         $status = $registryProcessor->getAttribute($serial = $this->getSerial());
 
         // if no files have been found, stop processing
-        if (sizeof($uids = array_keys($status['files'])) === 0) {
+        if (sizeof($uids = array_keys($status[$subject->getIdentifier()])) === 0) {
             return;
         }
 
-        // start processing the found CSV files
+        // start processing the subject on all found UIDs
         foreach ($uids as $uid) {
-            $this->processHandler('TechDivision\Import\Handler\BunchHandler', $serial, $uid);
+            $this->subjectFactory($subject)->import($serial, $uid);
         }
-
-        // log a message that all bunches have been processed
-        $systemLogger->info(sprintf('All bunches for job %s has been processed successfully!', $serial));
-    }
-
-    /**
-     * This method start's the import process for all product variations (configurable products).
-     *
-     * Starting the import process means to send a message to the message-queue with the import
-     * ID the process the variations for. The real import process finally takes place in the class
-     * <code>ProductImportVariantAction</code>.
-     *
-     * @return void
-     * @see Import\Csv\Actions\ProductImportVariantAction::import()
-     */
-    public function processVariations()
-    {
-
-        // load system logger and registry
-        $systemLogger = $this->getSystemLogger();
-        $registryProcessor = $this->getRegistryProcessor();
-
-        // load the status information of the actual import
-        $status = $registryProcessor->getAttribute($serial = $this->getSerial());
-
-        // if no variations have been found, stop processing
-        if (sizeof($status['variations']) === 0) {
-            return;
-        }
-
-        // start processing the found CSV files
-        foreach (array_keys($status['variations']) as $uid) {
-            $this->processHandler('TechDivision\Import\Handler\VariantHandler', $serial, $uid);
-        }
-
-        // log a message that all variations have been processed
-        $systemLogger->info(sprintf('All variations for job %s has been processed successfully!', $serial));
-    }
-
-    /**
-     * Create's a new handler instance and processes it.
-     *
-     * @param string $className The handler class name to create the instance
-     * @param string $serial    The serial for the actual import process
-     * @param string $uid       The UID of the filename to process
-     *
-     * @return void
-     */
-    protected function processHandler($className, $serial, $uid)
-    {
-        $this->handlerFactory($className)->import($serial, $uid);
     }
 
     /**
      * Factory method to create new handler instances.
      *
-     * @param string $className The handler class name to create the instance
+     * @param \TechDivision\Import\Configuration\Subject $subject The subject configuration
      *
      * @return object The handler instance
      */
-    protected function handlerFactory($className)
+    protected function subjectFactory($subject)
     {
 
+        // load the subject class name
+        $className = $subject->getClassName();
+
         // initialize a new handler with the passed class name
-        $handler = new $className();
+        $instance = new $className();
 
-        // initialize the handler instance
-        $handler->setSystemLogger($this->getSystemLogger());
-        $handler->setSourceDateFormat($this->getSourceDateFormat());
-        $handler->setProductProcessor($this->getProductProcessor());
-        $handler->setRegistryProcessor($this->getRegistryProcessor());
+        // $instance the handler instance
+        $instance->setConfiguration($subject);
+        $instance->setSystemLogger($this->getSystemLogger());
+        $instance->setProductProcessor($this->getProductProcessor());
+        $instance->setRegistryProcessor($this->getRegistryProcessor());
 
-        // return the handler instance
-        return $handler;
+        // return the subject instance
+        return $instance;
     }
 
     /**

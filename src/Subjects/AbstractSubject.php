@@ -1,7 +1,7 @@
 <?php
 
 /**
- * TechDivision\Import\Handler\AbstractHandler
+ * TechDivision\Import\Subjects\AbstractHandler
  *
  * NOTICE OF LICENSE
  *
@@ -18,12 +18,13 @@
  * @link      http://www.appserver.io
  */
 
-namespace TechDivision\Import\Handler;
+namespace TechDivision\Import\Subjects;
 
 use Psr\Log\LoggerInterface;
-use TechDivision\Import\Services\RegistryAwareInterface;
-use TechDivision\Import\Services\RegistryProcessor;
 use TechDivision\Import\Services\ProductProcessor;
+use TechDivision\Import\Services\RegistryProcessor;
+use TechDivision\Import\Services\RegistryAwareInterface;
+use TechDivision\Import\Configuration\SubjectInterface;
 
 /**
  * An abstract action implementation.
@@ -34,8 +35,15 @@ use TechDivision\Import\Services\ProductProcessor;
  * @link      https://github.com/wagnert/csv-import
  * @link      http://www.appserver.io
  */
-abstract class AbstractHandler implements RegistryAwareInterface
+abstract class AbstractSubject implements RegistryAwareInterface
 {
+
+    /**
+     * The system configuration.
+     *
+     * @var \TechDivision\Import\Configuration\SubjectInterface
+     */
+    protected $configuration;
 
     /**
      * The system logger implementation.
@@ -66,11 +74,24 @@ abstract class AbstractHandler implements RegistryAwareInterface
     protected $serial;
 
     /**
-     * The default source date format.
+     * Set's the system configuration.
      *
-     * @var string
+     * @param \TechDivision\Import\Configuration\Subject $configuration The system configuration
      */
-    protected $sourceDateFormat = 'n/d/y, g:i A';
+    public function setConfiguration(SubjectInterface $configuration)
+    {
+        $this->configuration = $configuration;
+    }
+
+    /**
+     * Return's the system configuration.
+     *
+     * @return \TechDivision\Import\Configuration\SubjectInterface The system configuration
+     */
+    public function getConfiguration()
+    {
+        return $this->configuration;
+    }
 
     /**
      * Set's the system logger.
@@ -161,25 +182,13 @@ abstract class AbstractHandler implements RegistryAwareInterface
     }
 
     /**
-     * Set's the source date format to use.
-     *
-     * @param string $sourceFormat The source date format
-     *
-     * @return void
-     */
-    public function setSourceDateFormat($sourceDateFormat)
-    {
-        $this->sourceDateFormat = $sourceDateFormat;
-    }
-
-    /**
      * Return's the source date format to use.
      *
      * @return string The source date format
      */
     public function getSourceDateFormat()
     {
-        return $this->sourceDateFormat;
+        return $this->getConfiguration()->getSourceDateFormat();
     }
 
     /**

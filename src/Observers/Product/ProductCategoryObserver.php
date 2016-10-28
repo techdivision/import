@@ -43,6 +43,8 @@ class ProductCategoryObserver extends AbstractProductImportObserver
     public function handle(array $row)
     {
 
+        return $row;
+
         // load the header information
         $headers = $this->getHeaders();
 

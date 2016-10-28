@@ -1,0 +1,159 @@
+{
+  "magento-editition": "CE",
+  "magento-version": "2.1.2",
+  "source-dir": "/opt/appserver/tmp",
+  "prefix": "magento-import",
+  "database": {
+    "pdo-dsn": "mysql:host=127.0.0.1;dbname=appserver_magento2_ce212",
+    "username": "magento",
+    "password": "eraZor"
+  },
+  "subjects": [
+    {
+      "class-name": "TechDivision\\Import\\Subjects\\BunchSubject",
+      "identifier": "files",
+      "source-date-format": "n/d/y, g:i A",
+      "callbacks": [
+        {
+          "pre-import": [
+            "TechDivision\\Import\\Observers\\Product\\PreImport\\AdditionalAttributeObserver",
+            "TechDivision\\Import\\Observers\\Product\\PreImport\\QuantityAndStockStatusObserver"
+          ]
+        },
+        {
+          "import": [
+            "TechDivision\\Import\\Observers\\Product\\ProductObserver",
+            "TechDivision\\Import\\Observers\\Product\\ProductWebsiteObserver",
+            "TechDivision\\Import\\Observers\\Product\\ProductCategoryObserver",
+            "TechDivision\\Import\\Observers\\Product\\ProductInventoryObserver",
+            "TechDivision\\Import\\Observers\\Product\\ProductVariationObserver",
+            "TechDivision\\Import\\Observers\\Product\\ProductAttributeObserver"
+          ]
+        },
+        {
+          "post-import": [
+            "TechDivision\\Import\\Observers\\Product\\PostImport\\CleanUpObserver"
+          ]
+        },
+        {
+          "pre-cast": [
+            {
+              "visibility": [
+                "TechDivision\\Import\\Observers\\Attribute\\VisibilityObserver"
+              ]
+            },
+            {
+              "tax_class_name": [
+                "TechDivision\\Import\\Observers\\Attribute\\TaxClassObserver"
+              ]
+            },
+            {
+              "eco_collection": [
+                "TechDivision\\Import\\Observers\\Attribute\\BooleanObserver"
+              ]
+            },
+            {
+              "performance_fabric": [
+                "TechDivision\\Import\\Observers\\Attribute\\BooleanObserver"
+              ]
+            },
+            {
+              "erin_recommends": [
+                "TechDivision\\Import\\Observers\\Attribute\\BooleanObserver"
+              ]
+            },
+            {
+              "new": [
+                "TechDivision\\Import\\Observers\\Attribute\\BooleanObserver"
+              ]
+            },
+            {
+              "sale": [
+                "TechDivision\\Import\\Observers\\Attribute\\BooleanObserver"
+              ]
+            },
+            {
+              "activity": [
+                "TechDivision\\Import\\Observers\\Attribute\\MultiselectObserver"
+              ]
+            },
+            {
+              "style_bags": [
+                "TechDivision\\Import\\Observers\\Attribute\\MultiselectObserver"
+              ]
+            },
+            {
+              "material": [
+                "TechDivision\\Import\\Observers\\Attribute\\MultiselectObserver"
+              ]
+            },
+            {
+              "strap_bags": [
+                "TechDivision\\Import\\Observers\\Attribute\\MultiselectObserver"
+              ]
+            },
+            {
+              "features_bags": [
+                "TechDivision\\Import\\Observers\\Attribute\\MultiselectObserver"
+              ]
+            },
+            {
+              "gender": [
+                "TechDivision\\Import\\Observers\\Attribute\\MultiselectObserver"
+              ]
+            },
+            {
+              "category_gear": [
+                "TechDivision\\Import\\Observers\\Attribute\\MultiselectObserver"
+              ]
+            },
+            {
+              "style_bottom": [
+                "TechDivision\\Import\\Observers\\Attribute\\MultiselectObserver"
+              ]
+            },
+            {
+              "style_general": [
+                "TechDivision\\Import\\Observers\\Attribute\\MultiselectObserver"
+              ]
+            },
+            {
+              "sleeve": [
+                "TechDivision\\Import\\Observers\\Attribute\\MultiselectObserver"
+              ]
+            },
+            {
+              "collar": [
+                "TechDivision\\Import\\Observers\\Attribute\\MultiselectObserver"
+              ]
+            },
+            {
+              "pattern": [
+                "TechDivision\\Import\\Observers\\Attribute\\MultiselectObserver"
+              ]
+            },
+            {
+              "climate": [
+                "TechDivision\\Import\\Observers\\Attribute\\MultiselectObserver"
+              ]
+            },
+            {
+              "size": [
+                "TechDivision\\Import\\Observers\\Attribute\\SelectObserver"
+              ]
+            },
+            {
+              "color": [
+                "TechDivision\\Import\\Observers\\Attribute\\SelectObserver"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "class-name": "TechDivision\\Import\\Subjects\\VariantSubject",
+      "identifier": "variations"
+    }
+  ]
+}

@@ -1,7 +1,7 @@
 <?php
 
 /**
- * TechDivision\Import\Handler\BunchHandler
+ * TechDivision\Import\Subjects\BunchHandler
  *
  * NOTICE OF LICENSE
  *
@@ -18,7 +18,7 @@
  * @link      http://www.appserver.io
  */
 
-namespace TechDivision\Import\Handler;
+namespace TechDivision\Import\Subjects;
 
 use Goodby\CSV\Import\Standard\Lexer;
 use Goodby\CSV\Import\Standard\Interpreter;
@@ -27,20 +27,6 @@ use TechDivision\Import\Utils\MemberNames;
 use TechDivision\Import\Utils\RegistryKeys;
 use TechDivision\Import\Utils\VisibilityKeys;
 use TechDivision\Import\Services\RegistryProcessor;
-use TechDivision\Import\Observers\Attribute\BooleanObserver;
-use TechDivision\Import\Observers\Attribute\MultiselectObserver;
-use TechDivision\Import\Observers\Attribute\SelectObserver;
-use TechDivision\Import\Observers\Attribute\TaxClassObserver;
-use TechDivision\Import\Observers\Attribute\VisibilityObserver;
-use TechDivision\Import\Observers\Product\PreImport\AdditionalAttributeObserver;
-use TechDivision\Import\Observers\Product\PreImport\QuantityAndStockStatusObserver;
-use TechDivision\Import\Observers\Product\PostImport\CleanUpObserver;
-use TechDivision\Import\Observers\Product\ProductObserver;
-use TechDivision\Import\Observers\Product\ProductWebsiteObserver;
-use TechDivision\Import\Observers\Product\ProductCategoryObserver;
-use TechDivision\Import\Observers\Product\ProductInventoryObserver;
-use TechDivision\Import\Observers\Product\ProductVariationObserver;
-use TechDivision\Import\Observers\Product\ProductAttributeObserver;
 
 /**
  * A SLSB that handles the process to import product bunches.
@@ -51,7 +37,7 @@ use TechDivision\Import\Observers\Product\ProductAttributeObserver;
  * @link      https://github.com/wagnert/csv-import
  * @link      http://www.appserver.io
  */
-class BunchHandler extends AbstractHandler
+class BunchSubject extends AbstractSubject
 {
 
     /**
@@ -125,32 +111,11 @@ class BunchHandler extends AbstractHandler
     );
 
     /**
-     * Array with callbacks that have to be invoked before the product will been created.
+     * Array with the subject's callbacks.
      *
      * @var array
      */
-    protected $preImportCallbacks = array();
-
-    /**
-     * Array with callbacks that creates the product.
-     *
-     * @var array
-     */
-    protected $importCallbacks = array();
-
-    /**
-     * Array with callbacks that have to be invoked after the product has been created.
-     *
-     * @var array
-     */
-    protected $postImportCallbacks = array();
-
-    /**
-     * Array containing callbacks necessary to cast values found in CSV file.
-     *
-     * @var array
-     */
-    protected $preCastCallbacks = array();
+    protected $callbacks = array();
 
     /**
      * The array containing the configurable product configuration.
@@ -393,44 +358,60 @@ class BunchHandler extends AbstractHandler
         // load the stores we've initialized before
         $this->taxClasses = $status['globalData'][RegistryKeys::TAX_CLASSES];
 
-        // initialize the callbacks for the product pre-creation
-        $this->preImportCallbacks[]                     = new AdditionalAttributeObserver($this);
-        $this->preImportCallbacks[]                     = new QuantityAndStockStatusObserver($this);
+        // prepare the callbacks
+        foreach ($this->getConfiguration()->getCallbacks() as $callbacks) {
+            $this->prepareCallbacks($callbacks);
+        }
+    }
 
-        // initialize the callbacks for the import process itself
-        $this->importCallbacks[]                        = new ProductObserver($this);
-        $this->importCallbacks[]                        = new ProductWebsiteObserver($this);
-        // $this->importCallbacks[]                        = new ProductCategoryObserver($this);
-        $this->importCallbacks[]                        = new ProductInventoryObserver($this);
-        $this->importCallbacks[]                        = new ProductVariationObserver($this);
-        $this->importCallbacks[]                        = new ProductAttributeObserver($this);
+    /**
+     * Prepare the callbacks defined in the system configuration.
+     *
+     * @param array  $callbacks The array with the callbacks
+     * @param string $type      The actual callback type
+     *
+     * @return void
+     */
+    public function prepareCallbacks(array $callbacks, $type = null)
+    {
 
-        // initialize the callbacks for the post-import process
-        $this->postImportCallbacks[]                    = new CleanUpObserver($this);
+        // iterate over the array with callbacks and prepare them
+        foreach ($callbacks as $key => $callback) {
+            // we have to initialize the type only on the first level
+            if ($type == null) {
+                $type = $key;
+            }
 
-        // initialize the callbacks for the pre-casting conversion
-        $this->preCastCallbacks['visibility'][]         = new VisibilityObserver($this);
-        $this->preCastCallbacks['tax_class_name'][]     = new TaxClassObserver($this);
-        $this->preCastCallbacks['eco_collection'][]     = new BooleanObserver($this);
-        $this->preCastCallbacks['performance_fabric'][] = new BooleanObserver($this);
-        $this->preCastCallbacks['erin_recommends'][]    = new BooleanObserver($this);
-        $this->preCastCallbacks['new'][]                = new BooleanObserver($this);
-        $this->preCastCallbacks['sale'][]               = new BooleanObserver($this);
-        $this->preCastCallbacks['activity'][]           = new MultiselectObserver($this);
-        $this->preCastCallbacks['style_bags'][]         = new MultiselectObserver($this);
-        $this->preCastCallbacks['material'][]           = new MultiselectObserver($this);
-        $this->preCastCallbacks['strap_bags'][]         = new MultiselectObserver($this);
-        $this->preCastCallbacks['features_bags'][]      = new MultiselectObserver($this);
-        $this->preCastCallbacks['gender'][]             = new MultiselectObserver($this);
-        $this->preCastCallbacks['category_gear'][]      = new MultiselectObserver($this);
-        $this->preCastCallbacks['style_bottom'][]       = new MultiselectObserver($this);
-        $this->preCastCallbacks['style_general'][]      = new MultiselectObserver($this);
-        $this->preCastCallbacks['sleeve'][]             = new MultiselectObserver($this);
-        $this->preCastCallbacks['collar'][]             = new MultiselectObserver($this);
-        $this->preCastCallbacks['pattern'][]            = new MultiselectObserver($this);
-        $this->preCastCallbacks['climate'][]            = new MultiselectObserver($this);
-        $this->preCastCallbacks['size'][]               = new SelectObserver($this);
-        $this->preCastCallbacks['color'][]              = new SelectObserver($this);
+            // query whether or not we've an subarry or not
+            if (is_array($callback)) {
+                $this->prepareCallbacks($callback, $type);
+            } else {
+                $this->registerCallback($type, $key, $callback);
+            }
+        }
+    }
+
+    /**
+     * Register the passed class name as callback with the specific type and key.
+     *
+     * @param string $type
+     * @param mixed  $key
+     * @param string $className
+     *
+     * @return void
+     */
+    public function registerCallback($type, $key, $className)
+    {
+        echo "Now register callbacks $type/$key => $className" . PHP_EOL;
+        $this->callbacks[$type][$key] = $this->observerFactory($className);
+    }
+
+    /**
+     *
+     */
+    public function observerFactory($className)
+    {
+        return new $className($this);
     }
 
     /**
@@ -556,17 +537,17 @@ class BunchHandler extends AbstractHandler
         }
 
         // invoke the pre-create callbacks
-        foreach ($this->getPreImportCallbacks() as $listener) {
+        foreach ($this->getCallbacks('pre-import') as $listener) {
             $row = $listener->handle($row);
         }
 
         // invoke the import callbacks
-        foreach ($this->getImportCallbacks() as $listener) {
+        foreach ($this->getCallbacks('import') as $listener) {
             $row = $listener->handle($row);
         }
 
         // invoke the post-create callbacks
-        foreach ($this->getPostImportCallbacks() as $listener) {
+        foreach ($this->getCallbacks('post-import') as $listener) {
             $row = $listener->handle($row);
         }
     }
@@ -622,40 +603,29 @@ class BunchHandler extends AbstractHandler
     }
 
     /**
-     * Return's the array with callbacks that have to be invoked before the product will been created.
+     * Return's the array with callbacks for the passed type.
      *
-     * @return array The pre-import callbacks
+     * @param string $type The type of the callbacks to return
+     *
+     * @return array The callbacks
      */
-    public function getPreImportCallbacks()
+    public function getCallbacks($type)
     {
-        return $this->preImportCallbacks;
-    }
 
-    /**
-     * Return's the array with callbacks that creates the product.
-     *
-     * @return array The import callbacks
-     */
-    public function getImportCallbacks()
-    {
-        return $this->importCallbacks;
-    }
+        // query whether or not callbacks for the type are available
+        if (isset($this->callbacks[$type])) {
+            return $this->callbacks[$type];
+        }
 
-    /**
-     * Return's the array with callbacks that have to be invoked after the product has been created.
-     *
-     * @return array The post-import callbacks
-     */
-    public function getPostImportCallbacks()
-    {
-        return $this->postImportCallbacks;
+        // throw an exception, if not
+        throw new \Exception(sprintf('Found invalid callback type %s', $type));
     }
 
     /**
      * Return's the attributes for the attribute set of the product that has to be created.
      *
      * @return array The attributes
-     * @throws \Exception
+     * @throws \Exception Is thrown if the attributes for the actual attribute set are not available
      */
     public function getAttributes()
     {
@@ -805,9 +775,12 @@ class BunchHandler extends AbstractHandler
         // initialize the array for the callbacks
         $preCastCallbacks = array();
 
+        // load the precast callbacks
+        $callbacks = $this->getCallbacks('pre-cast');
+
         // query whether or not callbacks for the passed attribute code are available
-        if (isset($this->preCastCallbacks[$attributeCode])) {
-            $preCastCallbacks = $this->preCastCallbacks[$attributeCode];
+        if (isset($callbacks[$attributeCode])) {
+            $preCastCallbacks = $callbacks[$attributeCode];
         }
 
         // return the array with the callbacks

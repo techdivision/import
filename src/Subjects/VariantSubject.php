@@ -1,7 +1,7 @@
 <?php
 
 /**
- * TechDivision\Import\Handler\VariantHandler
+ * TechDivision\Import\Subjects\VariantSubject
  *
  * NOTICE OF LICENSE
  *
@@ -18,7 +18,7 @@
  * @link      http://www.appserver.io
  */
 
-namespace TechDivision\Import\Handler;
+namespace TechDivision\Import\Subjects;
 
 use TechDivision\Import\Utils\MemberNames;
 use TechDivision\Import\Utils\RegistryKeys;
@@ -32,7 +32,7 @@ use TechDivision\Import\Utils\RegistryKeys;
  * @link      https://github.com/wagnert/csv-import
  * @link      http://www.appserver.io
  */
-class VariantHandler extends AbstractHandler
+class VariantSubject extends AbstractSubject
 {
 
     /**
