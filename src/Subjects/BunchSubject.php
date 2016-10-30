@@ -386,7 +386,7 @@ class BunchSubject extends AbstractSubject
             if (is_array($callback)) {
                 $this->prepareCallbacks($callback, $type);
             } else {
-                $this->registerCallback($type, $key, $callback);
+                $this->registerCallback($type, $callback);
             }
         }
     }
@@ -394,20 +394,30 @@ class BunchSubject extends AbstractSubject
     /**
      * Register the passed class name as callback with the specific type and key.
      *
-     * @param string $type
-     * @param mixed  $key
-     * @param string $className
+     * @param string $type      The callback type to register the callback with
+     * @param string $className The callback class name
      *
      * @return void
      */
-    public function registerCallback($type, $key, $className)
+    public function registerCallback($type, $className)
     {
-        echo "Now register callbacks $type/$key => $className" . PHP_EOL;
-        $this->callbacks[$type][$key] = $this->observerFactory($className);
+
+        // query whether or not the array with the callbacks for the
+        // passed type has already been initialized, or not
+        if (!isset($this->callbacks[$type])) {
+            $this->callbacks[$type] = array();
+        }
+
+        // append the callback with the instance of the passed type
+        $this->callbacks[$type][] = $this->observerFactory($className);
     }
 
     /**
+     * Initialize and return a new observer of the passed type.
      *
+     * @param string $className The type of the observer to instanciate
+     *
+     * @return \TechDivision\Import\Observers\ObserverInterface The observer instance
      */
     public function observerFactory($className)
     {
