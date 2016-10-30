@@ -98,7 +98,9 @@ class Configuration implements ConfigurationInterface
     {
 
         // load the JSON data
-        $jsonData = file_get_contents($filename);
+        if (!$jsonData = file_get_contents($filename)) {
+            throw new \Exception('Can\'t load configuration file $filename');
+        }
 
         // initialize the JMS serializer and load the configuration
         $serializer = SerializerBuilder::create()->build();

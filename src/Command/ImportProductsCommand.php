@@ -21,16 +21,20 @@
 namespace TechDivision\Import\Command;
 
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 use Monolog\Logger;
 use Monolog\Handler\ErrorLogHandler;
+use JMS\Serializer\SerializerBuilder;
+use TechDivision\Import\Configuration;
 use TechDivision\Import\Importer;
 use TechDivision\Import\Services\ProductProcessor;
 use TechDivision\Import\Services\RegistryProcessor;
 use TechDivision\Import\Utils\PropertyKeys;
 use TechDivision\Import\Utils\PdoConnectionUtil;
+use TechDivision\Import\Utils\InputOptionKeys;
 use TechDivision\Import\Actions\ProductAction;
 use TechDivision\Import\Actions\ProductCategoryAction;
 use TechDivision\Import\Actions\StockItemAction;
@@ -66,12 +70,9 @@ use TechDivision\Import\Repositories\EavAttributeSetRepository;
 use TechDivision\Import\Repositories\StoreRepository;
 use TechDivision\Import\Repositories\StoreWebsiteRepository;
 use TechDivision\Import\Repositories\TaxClassRepository;
-use JMS\Serializer\SerializerBuilder;
-use TechDivision\Import\Configuration;
-use Symfony\Component\Console\Input\InputOption;
 
 /**
- * An abstract action implementation.
+ * The import command implementation.
  *
  * @author    Tim Wagner <tw@appserver.io>
  * @copyright 2015 TechDivision GmbH <info@appserver.io>
@@ -88,14 +89,59 @@ class ImportProductsCommand extends Command
      */
     protected function configure()
     {
+
+        // initialize the command with the required/optional options
         $this->setName('import:products')
              ->setDescription('Imports products in the configured Magento 2 instance')
              ->addOption(
-                 'configuration',
-                 'c',
+                 InputOptionKeys::CONFIGURATION,
+                 null,
                  InputOption::VALUE_REQUIRED,
                  'Specify the pathname to the configuration file to use',
-                 dirname(__DIR__) . '/../techdivision-import.json');
+                 sprintf('%s/techdivision-import.json', getcwd())
+             )
+             ->addOption(
+                 InputOptionKeys::SOURCE_DIR,
+                 null,
+                 InputOption::VALUE_REQUIRED,
+                 'The directory to query for CSV file(s) that has/have to be imported'
+             )
+             ->addOption(
+                 InputOptionKeys::MAGENTO_EDITION,
+                 null,
+                 InputOption::VALUE_REQUIRED,
+                 'The Magento edition to be used, either one of CE or EE'
+             )
+             ->addOption(
+                 InputOptionKeys::MAGENTO_VERSION,
+                 null,
+                 InputOption::VALUE_REQUIRED,
+                 'The Magento version to be used, e. g. 2.1.2'
+             )
+             ->addOption(
+                 InputOptionKeys::SOURCE_DATE_FORMAT,
+                 null,
+                 InputOption::VALUE_REQUIRED,
+                 'The date format used in the CSV file(s)'
+             )
+             ->addOption(
+                 InputOptionKeys::DB_PDO_DSN,
+                 null,
+                 InputOption::VALUE_REQUIRED,
+                 'The DSN used to connect to the Magento database where the data has to be imported, e. g. mysql:host=127.0.0.1;dbname=magento'
+             )
+             ->addOption(
+                 InputOptionKeys::DB_USERNAME,
+                 null,
+                 InputOption::VALUE_REQUIRED,
+                 'The username used to connect to the Magento database'
+             )
+             ->addOption(
+                 InputOptionKeys::DB_PASSWORD,
+                 null,
+                 InputOption::VALUE_REQUIRED,
+                 'The password used to connect to the Magento database'
+             );
     }
 
     /**
@@ -112,7 +158,7 @@ class ImportProductsCommand extends Command
         );
 
         // load the specified configuration
-        $configuration = Configuration::factory($input->getOption('configuration'));
+        $configuration = Configuration::factory($input->getOption(InputOptionKeys::CONFIGURATION));
 
         // extract magento Edition/version
         $magentoEdition = $configuration->getMagentoEdition();
