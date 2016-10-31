@@ -33,6 +33,13 @@ interface ProductProcessorInterface
 {
 
     /**
+     * Return's the connection.
+     *
+     * @return \PDO The connection instance
+     */
+    public function getConnection();
+
+    /**
      * Turns off autocommit mode. While autocommit mode is turned off, changes made to the database via the PDO
      * object instance are not committed until you end the transaction by calling ProductProcessor::commit().
      * Calling ProductProcessor::rollBack() will roll back all changes to the database and return the connection
@@ -66,6 +73,159 @@ interface ProductProcessorInterface
      * @link http://php.net/manual/en/pdo.rollback.php
      */
     public function rollBack();
+
+    /**
+     * Return's the action with the product CRUD methods.
+     *
+     * @return \TechDivision\Import\Actions\ProductAction The action instance
+     */
+    public function getProductAction();
+
+    /**
+     * Return's the action with the product varchar attribute CRUD methods.
+     *
+     * @return \TechDivision\Import\Actions\ProductVarcharAction The action instance
+     */
+    public function getProductVarcharAction();
+
+    /**
+     * Return's the action with the product text attribute CRUD methods.
+     *
+     * @return \TechDivision\Import\Actions\ProductTextAction The action instance
+     */
+    public function getProductTextAction();
+
+    /**
+     * Return's the action with the product int attribute CRUD methods.
+     *
+     * @return \TechDivision\Import\Actions\ProductIntAction The action instance
+     */
+    public function getProductIntAction();
+
+    /**
+     * Return's the action with the product decimal attribute CRUD methods.
+     *
+     * @return \TechDivision\Import\Actions\ProductDecimalAction The action instance
+     */
+    public function getProductDecimalAction();
+
+    /**
+     * Return's the action with the product datetime attribute CRUD methods.
+     *
+     * @return \TechDivision\Import\Actions\ProductDatetimeAction The action instance
+     */
+    public function getProductDatetimeAction();
+
+    /**
+     * Return's the action with the product website CRUD methods.
+     *
+     * @return \TechDivision\Import\Actions\ProductWebsiteAction The action instance
+     */
+    public function getProductWebsiteAction();
+
+    /**
+     * Return's the action with the product category CRUD methods.
+     *
+     * @return \TechDivision\Import\Actions\ProductCategoryAction The action instance
+     */
+    public function getProductCategoryAction();
+    /**
+     * Return's the action with the stock item CRUD methods.
+     *
+     * @return \TechDivision\Import\Actions\StockItemAction The action instance
+     */
+    public function getStockItemAction();
+
+    /**
+     * Return's the action with the stock status CRUD methods.
+     *
+     * @return \TechDivision\Import\Actions\StockStatusAction The action instance
+     */
+    public function getStockStatusAction();
+
+    /**
+     * Return's the action with the product relation CRUD methods.
+     *
+     * @return \TechDivision\Import\Actions\ProductRelationAction The action instance
+     */
+    public function getProductRelationAction();
+
+    /**
+     * Return's the action with the product super attribute CRUD methods.
+     *
+     * @return \TechDivision\Import\Actions\ProductSuperAttributeAction The action instance
+     */
+    public function getProductSuperAttributeAction();
+
+    /**
+     * Return's the action with the product super attribute label CRUD methods.
+     *
+     * @return \TechDivision\Import\Actions\ProductSuperAttributeLabelAction The action instance
+     */
+    public function getProductSuperAttributeLabelAction();
+
+    /**
+     * Return's the action with the product super link CRUD methods.
+     *
+     * @return \TechDivision\Import\Actions\ProductSuperLinkAction The action instance
+     */
+    public function getProductSuperLinkAction();
+
+    /**
+     * Return's the repository to access categories.
+     *
+     * @return \TechDivision\Import\Repositories\CategoryRepository The repository instance
+     */
+    public function getCategoryRepository();
+
+    /**
+     * Return's the repository to access category varchar values.
+     *
+     * @return \TechDivision\Import\Repositories\CategoryVarcharRepository The repository instance
+     */
+    public function getCategoryVarcharRepository();
+
+    /**
+     * Return's the repository to access EAV attribute option values.
+     *
+     * @return \TechDivision\Import\Repositories\EavAttributeOptionValueRepository The repository instance
+     */
+    public function getEavAttributeOptionValueRepository();
+
+    /**
+     * Return's the repository to access EAV attributes.
+     *
+     * @return \TechDivision\Import\Repositories\EavAttributeRepository The repository instance
+     */
+    public function getEavAttributeRepository();
+
+    /**
+     * Return's the repository to access EAV attribute sets.
+     *
+     * @return \TechDivision\Import\Repositories\EavAttributeSetRepository The repository instance
+     */
+    public function getEavAttributeSetRepository();
+
+    /**
+     * Return's the repository to access stores.
+     *
+     * @return \TechDivision\Import\Repositories\StoreRepository The repository instance
+     */
+    public function getStoreRepository();
+
+    /**
+     * Return's the repository to access store websites.
+     *
+     * @return \TechDivision\Import\Repositories\StoreWebsiteRepository The repository instance
+     */
+    public function getStoreWebsiteRepository();
+
+    /**
+     * Return's the repository to access tax classes.
+     *
+     * @return \TechDivision\Import\Repositories\TaxClassRepository The repository instance
+     */
+    public function getTaxClassRepository();
 
     /**
      * Persist's the passed product data and return's the ID.
@@ -237,13 +397,21 @@ interface ProductProcessorInterface
     public function getTaxClasses();
 
     /**
-     * Return's an array of the categories with the passed values.
+     * Return's an array with all available categories.
      *
-     * @param array The names of the categories to return
-     *
-     * @return array The array with all available stores
+     * @return array The available categories
      */
-    public function getCategoriesByValues($values);
+    public function getCategories();
+
+    /**
+     * Returns the category varchar values for the categories with
+     * the passed with the passed entity IDs.
+     *
+     * @param array $entityIds The array with the category IDs
+     *
+     * @return mixed The category varchar values
+     */
+    public function getCategoryVarcharsByEntityIds(array $entityIds);
 
     /**
      * Persist's the passed product relation data and return's the ID.

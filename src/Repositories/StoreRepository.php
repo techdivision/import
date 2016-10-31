@@ -38,7 +38,6 @@ class StoreRepository extends AbstractRepository
      * Initializes the repository's prepared statements.
      *
      * @return void
-     * @PostConstruct
      */
     public function init()
     {

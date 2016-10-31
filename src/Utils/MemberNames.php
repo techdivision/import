@@ -146,4 +146,18 @@ class MemberNames
      * @var string
      */
     const OPTION_ID = 'option_id';
+
+    /**
+     * Name for the member 'path'.
+     *
+     * @var string
+     */
+    const PATH = 'path';
+
+    /**
+     * Name for the member 'value'.
+     *
+     * @var string
+     */
+    const VALUE = 'value';
 }

@@ -43,8 +43,6 @@ class ProductCategoryObserver extends AbstractProductImportObserver
     public function handle(array $row)
     {
 
-        return $row;
-
         // load the header information
         $headers = $this->getHeaders();
 
@@ -57,19 +55,12 @@ class ProductCategoryObserver extends AbstractProductImportObserver
         $lastEntityId = $this->getLastEntityId();
 
         // extract the category trees and try to import the data
-        $trees = explode('|', $row[$headers[ColumnKeys::CATEGORIES]]);
-        foreach ($trees as $tree) {
-            // perpare the categories for usage in the SQL IN clause
-            $cats = explode('/', $tree);
-            array_walk($cats, function(&$cat) { $cat = "'$cat'"; });
-
-            // load the categories
-            $categories = $this->getCategoriesByValues($cats);
-
-            // iterate over the found entities and relate them with the product
-            foreach ($categories as $category) {
-                $this->persistProductCategory(array($category[MemberNames::ENTITY_ID], $lastEntityId, 0));
-            }
+        $paths = explode(',', $row[$headers[ColumnKeys::CATEGORIES]]);
+        foreach ($paths as $path) {
+            // load the category for the found path
+            $category = $this->getCategoryByPath(trim($path));
+            // relate the found category with the product
+            $this->persistProductCategory(array($category[MemberNames::ENTITY_ID], $lastEntityId, 0));
         }
 
         // returns the row
@@ -89,14 +80,14 @@ class ProductCategoryObserver extends AbstractProductImportObserver
     }
 
     /**
-     * Return's an array of the categories with the passed values.
+     * Return's the category with the passed path.
      *
-     * @param array The names of the categories to return
+     * @param string The path of the category to return
      *
-     * @return array The array with all available stores
+     * @return array The category
      */
-    public function getCategoriesByValues($values)
+    public function getCategoryByPath($path)
     {
-        return $this->getSubject()->getCategoriesByValues($values);
+        return $this->getSubject()->getCategoryByPath($path);
     }
 }

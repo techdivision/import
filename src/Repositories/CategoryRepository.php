@@ -46,36 +46,30 @@ class CategoryRepository extends AbstractRepository
      */
     public function init()
     {
+
+        // load the utility class name
+        $utilityClassName = $this->getUtilityClassName();
+
+        // initialize the prepared statements
+        $this->categoriesStmt = $this->getConnection()->prepare($utilityClassName::CATEGORIES);
     }
 
     /**
-     * Return's an array of the categories with the passed values.
+     * Return's an array with all available categories.
      *
-     * @param array The names of the categories to return
-     *
-     * @return array The array with all available stores
+     * @return array The available categories
      */
-    public function findAllByValues($values)
+    public function findAll()
     {
 
-        // prepare the cache key
-        $vals = implode(',', $values);
-
-        // query whether or not we've already loaded the values
-        if (!isset($this->cache[$vals])) {
-            // load the SQL statement for the category query
-            $utilityClassName = $this->getUtilityClassName();
-            $sql = str_replace('?', $vals, $utilityClassName::CATEGORIES);
-
-            // load the categories with the passed values and return them
-            if ($stmt = $this->getConnection()->query($sql)) {
-                $this->cache[$vals] = $stmt->fetchAll();
-            } else {
-                error_log("Can't find categories for: $sql");
-            }
+        // query whether or not we've already loaded the value
+        if (!isset($this->cache[__METHOD__])) {
+            // try to load the categories
+            $this->categoriesStmt->execute();
+            $this->cache[__METHOD__] = $this->categoriesStmt->fetchAll();
         }
 
-        // return the values from the cache
-        return $this->cache[$vals];
+        // return the categories from the cache
+        return $this->cache[__METHOD__];
     }
 }

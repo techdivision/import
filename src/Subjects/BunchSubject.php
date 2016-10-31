@@ -174,6 +174,13 @@ class BunchSubject extends AbstractSubject
     protected $taxClasses = array();
 
     /**
+     * The available categories.
+     *
+     * @var array
+     */
+    protected $categories = array();
+
+    /**
      * The attribute set of the product that has to be created.
      *
      * @var array
@@ -357,6 +364,9 @@ class BunchSubject extends AbstractSubject
 
         // load the stores we've initialized before
         $this->taxClasses = $status['globalData'][RegistryKeys::TAX_CLASSES];
+
+        // load the categories we've initialized before
+        $this->categories = $status['globalData'][RegistryKeys::CATEGORIES];
 
         // prepare the callbacks
         foreach ($this->getConfiguration()->getCallbacks() as $callbacks) {
@@ -753,6 +763,25 @@ class BunchSubject extends AbstractSubject
     }
 
     /**
+     * Return's the category with the passed path.
+     *
+     * @param string The path of the category to return
+     *
+     * @return array The category
+     */
+    public function getCategoryByPath($path)
+    {
+
+        // query whether or not the category with the passed path exists
+        if (isset($this->categories[$path])) {
+            return $this->categories[$path];
+        }
+
+        // throw an exception, if not
+        throw new \Exception(sprintf('Found invalid category path %s', $path));
+    }
+
+    /**
      * Map the passed attribute code, if a header mapping exists and return the
      * mapped mapping.
      *
@@ -942,18 +971,6 @@ class BunchSubject extends AbstractSubject
     public function persistStockStatus($stockStatus)
     {
         $this->getProductProcessor()->persistStockStatus($stockStatus);
-    }
-
-    /**
-     * Return's an array of the categories with the passed values.
-     *
-     * @param array The names of the categories to return
-     *
-     * @return array The array with all available stores
-     */
-    public function getCategoriesByValues($values)
-    {
-        return $this->getProductProcessor()->getCategoriesByValues($values);
     }
 
     /**

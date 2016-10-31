@@ -83,4 +83,11 @@ class RegistryKeys
      * @var string
      */
     const TAX_CLASSES = 'taxClasses';
+
+    /**
+     * Key for the registry entry containing the categories.
+     *
+     * @var string
+     */
+    const CATEGORIES = 'categories';
 }

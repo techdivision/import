@@ -49,161 +49,156 @@ class ProductProcessor implements ProductProcessorInterface
     /**
      * The action for product CRUD methods.
      *
-     * @var \Importer\Csv\Actions\Pdo\ProductAction
+     * @var \TechDivision\Import\Actions\ProductAction
      */
     protected $productAction;
 
     /**
      * The action for product varchar attribute CRUD methods.
      *
-     * @var \Importer\Csv\Actions\Pdo\ProductVarcharAction
+     * @var \TechDivision\Import\Actions\ProductVarcharAction
      */
     protected $productVarcharAction;
 
     /**
      * The action for product text attribute CRUD methods.
      *
-     * @var \Importer\Csv\Actions\Pdo\ProductTextAction
+     * @var \TechDivision\Import\Actions\ProductTextAction
      */
     protected $productTextAction;
 
     /**
      * The action for product int attribute CRUD methods.
      *
-     * @var \Importer\Csv\Actions\Pdo\ProductTextAction
+     * @var \TechDivision\Import\Actions\ProductTextAction
      */
     protected $productIntAction;
 
     /**
      * The action for product decimal attribute CRUD methods.
      *
-     * @var \Importer\Csv\Actions\Pdo\ProductDecimalAction
+     * @var \TechDivision\Import\Actions\ProductDecimalAction
      */
     protected $productDecimalAction;
 
     /**
      * The action for product datetime attribute CRUD methods.
      *
-     * @var \Importer\Csv\Actions\Pdo\ProductDatetiemAction
+     * @var \TechDivision\Import\Actions\ProductDatetiemAction
      */
     protected $productDatetimeAction;
 
     /**
      * The action for product website CRUD methods.
      *
-     * @var \Importer\Csv\Actions\Pdo\ProductWebsiteAction
+     * @var \TechDivision\Import\Actions\ProductWebsiteAction
      */
     protected $productWebsiteAction;
 
     /**
      * The action for product category CRUD methods.
      *
-     * @var \Importer\Csv\Actions\Pdo\ProductCategoryAction
+     * @var \TechDivision\Import\Actions\ProductCategoryAction
      */
     protected $productCategoryAction;
 
     /**
      * The action for stock item CRUD methods.
      *
-     * @var \Importer\Csv\Actions\Pdo\StockItemAction
+     * @var \TechDivision\Import\Actions\StockItemAction
      */
     protected $stockItemAction;
 
     /**
      * The action for stock status CRUD methods.
      *
-     * @var \Importer\Csv\Actions\Pdo\StockStatusAction
+     * @var \TechDivision\Import\Actions\StockStatusAction
      */
     protected $stockStatusAction;
 
     /**
      * The action for product relation CRUD methods.
      *
-     * @var \Importer\Csv\Actions\Pdo\ProductRelationAction
+     * @var \TechDivision\Import\Actions\ProductRelationAction
      */
     protected $productRelationAction;
 
     /**
      * The action for product super attribute CRUD methods.
      *
-     * @var \Importer\Csv\Actions\Pdo\ProductSuperAttributeAction
+     * @var \TechDivision\Import\Actions\ProductSuperAttributeAction
      */
     protected $productSuperAttributeAction;
 
     /**
      * The action for product super attribute label CRUD methods.
      *
-     * @var \Importer\Csv\Actions\Pdo\ProductSuperAttributeLabelAction
+     * @var \TechDivision\Import\Actions\ProductSuperAttributeLabelAction
      */
     protected $productSuperAttributeLabelAction;
 
     /**
      * The action for product super link CRUD methods.
      *
-     * @var \Importer\Csv\Actions\Pdo\ProductSuperLinkAction
+     * @var \TechDivision\Import\Actions\ProductSuperLinkAction
      */
     protected $productSuperLinkAction;
 
     /**
      * The repository to access categories.
      *
-     * @var \Importer\Csv\Repositories\Pdo\CategoriesRepository
+     * @var \TechDivision\Import\Repositories\CategoryRepository
      */
     protected $categoryRepository;
 
     /**
+     * The repository to access category varchar values.
+     *
+     * @var \TechDivision\Import\Repositories\CategoryVarcharRepository
+     */
+    protected $categoryVarcharRepository;
+
+    /**
      * The repository to access EAV attribute option values.
      *
-     * @var \Importer\Csv\Repositories\Pdo\EavAttributeOptionValueRepository
+     * @var \TechDivision\Import\Repositories\EavAttributeOptionValueRepository
      */
     protected $eavAttributeOptionValueRepository;
 
     /**
      * The repository to access EAV attributes.
      *
-     * @var \Importer\Csv\Repositories\Pdo\EavAttributeRepository
+     * @var \TechDivision\Import\Repositories\EavAttributeRepository
      */
     protected $eavAttributeRepository;
 
     /**
      * The repository to access EAV attribute set.
      *
-     * @var \Importer\Csv\Repositories\Pdo\EavAttributeSetRepository
+     * @var \TechDivision\Import\Repositories\EavAttributeSetRepository
      */
     protected $eavAttributeSetRepository;
 
     /**
      * The repository to access stores.
      *
-     * @var \Importer\Csv\Repositories\Pdo\StoreRepository
+     * @var \TechDivision\Import\Repositories\StoreRepository
      */
     protected $storeRepository;
 
     /**
      * The repository to access store websites.
      *
-     * @var \Importer\Csv\Repositories\Pdo\StoreWebsiteRepository
+     * @var \TechDivision\Import\Repositories\StoreWebsiteRepository
      */
     protected $storeWebsiteRepository;
 
     /**
      * The repository to access tax classes.
      *
-     * @var \Importer\Csv\Repositories\Pdo\TaxClassRepository
+     * @var \TechDivision\Import\Repositories\TaxClassRepository
      */
     protected $taxClassRepository;
-
-    /**
-     * Close the entity manager's connection before destroying the bean.
-     */
-    public function __destruct()
-    {
-        if ($entityManager = $this->getEntityManager()) {
-            if ($connection = $entityManager->getConnection()) {
-                $connection->close();
-            }
-        }
-    }
 
     /**
      * Set's the passed connection.
@@ -272,31 +267,9 @@ class ProductProcessor implements ProductProcessorInterface
     }
 
     /**
-     * Set's the Doctrine EntityManager instance.
-     *
-     * @param \Doctrine\ORM\EntityManagerInterface $entityManager The entity manager instance
-     *
-     * @return void
-     */
-    public function setEntityManager($entityManager)
-    {
-        $this->entityManager = $entityManager;
-    }
-
-    /**
-     * Return's the doctrine entity manager instance.
-     *
-     * @return \Doctrine\ORM\EntityManagerInterface The entity manager instance
-     */
-    public function getEntityManager()
-    {
-        return $this->entityManager;
-    }
-
-    /**
      * Set's the action with the product CRUD methods.
      *
-     * @param \Importer\Csv\Actions\Pdo\ProductAction $productAction The action with the product CRUD methods
+     * @param \TechDivision\Import\Actions\ProductAction $productAction The action with the product CRUD methods
      *
      * @return void
      */
@@ -308,7 +281,7 @@ class ProductProcessor implements ProductProcessorInterface
     /**
      * Return's the action with the product CRUD methods.
      *
-     * @return \Importer\Csv\Actions\Pdo\ProductAction The action instance
+     * @return \TechDivision\Import\Actions\ProductAction The action instance
      */
     public function getProductAction()
     {
@@ -318,7 +291,7 @@ class ProductProcessor implements ProductProcessorInterface
     /**
      * Set's the action with the product varchar attribute CRUD methods.
      *
-     * @param \Importer\Csv\Actions\Pdo\ProductVarcharAction $productVarcharAction The action with the product varchar attriute CRUD methods
+     * @param \TechDivision\Import\Actions\ProductVarcharAction $productVarcharAction The action with the product varchar attriute CRUD methods
      *
      * @return void
      */
@@ -330,7 +303,7 @@ class ProductProcessor implements ProductProcessorInterface
     /**
      * Return's the action with the product varchar attribute CRUD methods.
      *
-     * @return \Importer\Csv\Actions\Pdo\ProductVarcharAction The action instance
+     * @return \TechDivision\Import\Actions\ProductVarcharAction The action instance
      */
     public function getProductVarcharAction()
     {
@@ -340,7 +313,7 @@ class ProductProcessor implements ProductProcessorInterface
     /**
      * Set's the action with the product text attribute CRUD methods.
      *
-     * @param \Importer\Csv\Actions\Pdo\ProductTextAction $productTextAction The action with the product text attriute CRUD methods
+     * @param \TechDivision\Import\Actions\ProductTextAction $productTextAction The action with the product text attriute CRUD methods
      *
      * @return void
      */
@@ -352,7 +325,7 @@ class ProductProcessor implements ProductProcessorInterface
     /**
      * Return's the action with the product text attribute CRUD methods.
      *
-     * @return \Importer\Csv\Actions\Pdo\ProductTextAction The action instance
+     * @return \TechDivision\Import\Actions\ProductTextAction The action instance
      */
     public function getProductTextAction()
     {
@@ -362,7 +335,7 @@ class ProductProcessor implements ProductProcessorInterface
     /**
      * Set's the action with the product int attribute CRUD methods.
      *
-     * @param \Importer\Csv\Actions\Pdo\ProductIntAction $productIntAction The action with the product int attriute CRUD methods
+     * @param \TechDivision\Import\Actions\ProductIntAction $productIntAction The action with the product int attriute CRUD methods
      *
      * @return void
      */
@@ -374,7 +347,7 @@ class ProductProcessor implements ProductProcessorInterface
     /**
      * Return's the action with the product int attribute CRUD methods.
      *
-     * @return \Importer\Csv\Actions\Pdo\ProductIntAction The action instance
+     * @return \TechDivision\Import\Actions\ProductIntAction The action instance
      */
     public function getProductIntAction()
     {
@@ -384,7 +357,7 @@ class ProductProcessor implements ProductProcessorInterface
     /**
      * Set's the action with the product decimal attribute CRUD methods.
      *
-     * @param \Importer\Csv\Actions\Pdo\ProductDecimalAction $productDecimalAction The action with the product decimal attriute CRUD methods
+     * @param \TechDivision\Import\Actions\ProductDecimalAction $productDecimalAction The action with the product decimal attriute CRUD methods
      *
      * @return void
      */
@@ -396,7 +369,7 @@ class ProductProcessor implements ProductProcessorInterface
     /**
      * Return's the action with the product decimal attribute CRUD methods.
      *
-     * @return \Importer\Csv\Actions\Pdo\ProductDecimalAction The action instance
+     * @return \TechDivision\Import\Actions\ProductDecimalAction The action instance
      */
     public function getProductDecimalAction()
     {
@@ -406,7 +379,7 @@ class ProductProcessor implements ProductProcessorInterface
     /**
      * Set's the action with the product datetime attribute CRUD methods.
      *
-     * @param \Importer\Csv\Actions\Pdo\ProductDatetimeAction $productDatetimeAction The action with the product datetime attriute CRUD methods
+     * @param \TechDivision\Import\Actions\ProductDatetimeAction $productDatetimeAction The action with the product datetime attriute CRUD methods
      *
      * @return void
      */
@@ -418,7 +391,7 @@ class ProductProcessor implements ProductProcessorInterface
     /**
      * Return's the action with the product datetime attribute CRUD methods.
      *
-     * @return \Importer\Csv\Actions\Pdo\ProductDatetimeAction The action instance
+     * @return \TechDivision\Import\Actions\ProductDatetimeAction The action instance
      */
     public function getProductDatetimeAction()
     {
@@ -428,7 +401,7 @@ class ProductProcessor implements ProductProcessorInterface
     /**
      * Set's the action with the product website CRUD methods.
      *
-     * @param \Importer\Csv\Actions\Pdo\ProductWebsiteAction $productWebsiteAction The action with the product website CRUD methods
+     * @param \TechDivision\Import\Actions\ProductWebsiteAction $productWebsiteAction The action with the product website CRUD methods
      *
      * @return void
      */
@@ -440,7 +413,7 @@ class ProductProcessor implements ProductProcessorInterface
     /**
      * Return's the action with the product website CRUD methods.
      *
-     * @return \Importer\Csv\Actions\Pdo\ProductWebsiteAction The action instance
+     * @return \TechDivision\Import\Actions\ProductWebsiteAction The action instance
      */
     public function getProductWebsiteAction()
     {
@@ -450,7 +423,7 @@ class ProductProcessor implements ProductProcessorInterface
     /**
      * Set's the action with the product category CRUD methods.
      *
-     * @param \Importer\Csv\Actions\Pdo\ProductCategoryAction $productCategoryAction The action with the product category CRUD methods
+     * @param \TechDivision\Import\Actions\ProductCategoryAction $productCategoryAction The action with the product category CRUD methods
      *
      * @return void
      */
@@ -462,7 +435,7 @@ class ProductProcessor implements ProductProcessorInterface
     /**
      * Return's the action with the product category CRUD methods.
      *
-     * @return \Importer\Csv\Actions\Pdo\ProductCategoryAction The action instance
+     * @return \TechDivision\Import\Actions\ProductCategoryAction The action instance
      */
     public function getProductCategoryAction()
     {
@@ -472,7 +445,7 @@ class ProductProcessor implements ProductProcessorInterface
     /**
      * Set's the action with the stock item CRUD methods.
      *
-     * @param \Importer\Csv\Actions\Pdo\StockItemAction $stockItemAction The action with the stock item CRUD methods
+     * @param \TechDivision\Import\Actions\StockItemAction $stockItemAction The action with the stock item CRUD methods
      *
      * @return void
      */
@@ -484,7 +457,7 @@ class ProductProcessor implements ProductProcessorInterface
     /**
      * Return's the action with the stock item CRUD methods.
      *
-     * @return \Importer\Csv\Actions\Pdo\StockItemAction The action instance
+     * @return \TechDivision\Import\Actions\StockItemAction The action instance
      */
     public function getStockItemAction()
     {
@@ -494,7 +467,7 @@ class ProductProcessor implements ProductProcessorInterface
     /**
      * Set's the action with the stock status CRUD methods.
      *
-     * @param \Importer\Csv\Actions\Pdo\StockStatusAction $stockStatusAction The action with the stock status CRUD methods
+     * @param \TechDivision\Import\Actions\StockStatusAction $stockStatusAction The action with the stock status CRUD methods
      *
      * @return void
      */
@@ -506,7 +479,7 @@ class ProductProcessor implements ProductProcessorInterface
     /**
      * Return's the action with the stock status CRUD methods.
      *
-     * @return \Importer\Csv\Actions\Pdo\StockStatusAction The action instance
+     * @return \TechDivision\Import\Actions\StockStatusAction The action instance
      */
     public function getStockStatusAction()
     {
@@ -516,7 +489,7 @@ class ProductProcessor implements ProductProcessorInterface
     /**
      * Set's the action with the product relation CRUD methods.
      *
-     * @param \Importer\Csv\Actions\Pdo\ProductRelationAction $productRelationAction The action with the product relation CRUD methods
+     * @param \TechDivision\Import\Actions\ProductRelationAction $productRelationAction The action with the product relation CRUD methods
      *
      * @return void
      */
@@ -528,7 +501,7 @@ class ProductProcessor implements ProductProcessorInterface
     /**
      * Return's the action with the product relation CRUD methods.
      *
-     * @return \Importer\Csv\Actions\Pdo\ProductRelationAction The action instance
+     * @return \TechDivision\Import\Actions\ProductRelationAction The action instance
      */
     public function getProductRelationAction()
     {
@@ -538,7 +511,7 @@ class ProductProcessor implements ProductProcessorInterface
     /**
      * Set's the action with the product super attribute CRUD methods.
      *
-     * @param \Importer\Csv\Actions\Pdo\ProductSuperAttributeAction $productSuperAttributeAction The action with the product super attribute CRUD methods
+     * @param \TechDivision\Import\Actions\ProductSuperAttributeAction $productSuperAttributeAction The action with the product super attribute CRUD methods
      *
      * @return void
      */
@@ -550,7 +523,7 @@ class ProductProcessor implements ProductProcessorInterface
     /**
      * Return's the action with the product super attribute CRUD methods.
      *
-     * @return \Importer\Csv\Actions\Pdo\ProductSuperAttributeAction The action instance
+     * @return \TechDivision\Import\Actions\ProductSuperAttributeAction The action instance
      */
     public function getProductSuperAttributeAction()
     {
@@ -560,7 +533,7 @@ class ProductProcessor implements ProductProcessorInterface
     /**
      * Set's the action with the product super attribute label CRUD methods.
      *
-     * @param \Importer\Csv\Actions\Pdo\ProductSuperAttributeLabelAction $productSuperAttributeLabelAction The action with the product super attribute label CRUD methods
+     * @param \TechDivision\Import\Actions\ProductSuperAttributeLabelAction $productSuperAttributeLabelAction The action with the product super attribute label CRUD methods
      *
      * @return void
      */
@@ -572,7 +545,7 @@ class ProductProcessor implements ProductProcessorInterface
     /**
      * Return's the action with the product super attribute label CRUD methods.
      *
-     * @return \Importer\Csv\Actions\Pdo\ProductSuperAttributeLabelAction The action instance
+     * @return \TechDivision\Import\Actions\ProductSuperAttributeLabelAction The action instance
      */
     public function getProductSuperAttributeLabelAction()
     {
@@ -582,7 +555,7 @@ class ProductProcessor implements ProductProcessorInterface
     /**
      * Set's the action with the product super link CRUD methods.
      *
-     * @param \Importer\Csv\Actions\Pdo\ProductSuperLinkAction $productSuperLinkAction The action with the product super link CRUD methods
+     * @param \TechDivision\Import\Actions\ProductSuperLinkAction $productSuperLinkAction The action with the product super link CRUD methods
      *
      * @return void
      */
@@ -594,7 +567,7 @@ class ProductProcessor implements ProductProcessorInterface
     /**
      * Return's the action with the product super link CRUD methods.
      *
-     * @return \Importer\Csv\Actions\Pdo\ProductSuperLinkAction The action instance
+     * @return \TechDivision\Import\Actions\ProductSuperLinkAction The action instance
      */
     public function getProductSuperLinkAction()
     {
@@ -604,7 +577,7 @@ class ProductProcessor implements ProductProcessorInterface
     /**
      * Set's the repository to access categories.
      *
-     * @param \Importer\Csv\Repositories\Pdo\CategoryRepository categoryRepository The repository to access categories
+     * @param \TechDivision\Import\Repositories\CategoryRepository $categoryRepository The repository to access categories
      *
      * @return void
      */
@@ -616,7 +589,7 @@ class ProductProcessor implements ProductProcessorInterface
     /**
      * Return's the repository to access categories.
      *
-     * @return \Importer\Csv\Repositories\Pdo\CategoryRepository The repository instance
+     * @return \TechDivision\Import\Repositories\CategoryRepository The repository instance
      */
     public function getCategoryRepository()
     {
@@ -624,9 +597,31 @@ class ProductProcessor implements ProductProcessorInterface
     }
 
     /**
+     * Return's the repository to access category varchar values.
+     *
+     * @param \TechDivision\Import\Repositories\CategoryVarcharRepository $categoryVarcharRepository The repository instance
+     *
+     * @return void
+     */
+    public function setCategoryVarcharRepository($categoryVarcharRepository)
+    {
+        $this->categoryVarcharRepository = $categoryVarcharRepository;
+    }
+
+    /**
+     * Return's the repository to access category varchar values.
+     *
+     * @return \TechDivision\Import\Repositories\CategoryVarcharRepository The repository instance
+     */
+    public function getCategoryVarcharRepository()
+    {
+        return $this->categoryVarcharRepository;
+    }
+
+    /**
      * Set's the repository to access EAV attribute option values.
      *
-     * @param \Importer\Csv\Repositories\Pdo\EavAttributeOptionValueRepository $eavAttributeOptionValueRepository The repository to access EAV attribute option values
+     * @param \TechDivision\Import\Repositories\EavAttributeOptionValueRepository $eavAttributeOptionValueRepository The repository to access EAV attribute option values
      *
      * @return void
      */
@@ -638,7 +633,7 @@ class ProductProcessor implements ProductProcessorInterface
     /**
      * Return's the repository to access EAV attribute option values.
      *
-     * @return \Importer\Csv\Repositories\Pdo\EavAttributeOptionValueRepository The repository instance
+     * @return \TechDivision\Import\Repositories\EavAttributeOptionValueRepository The repository instance
      */
     public function getEavAttributeOptionValueRepository()
     {
@@ -648,7 +643,7 @@ class ProductProcessor implements ProductProcessorInterface
     /**
      * Set's the repository to access EAV attributes.
      *
-     * @param \Importer\Csv\Repositories\Pdo\EavAttributeRepository $eavAttributeRepository The repository to access EAV attributes
+     * @param \TechDivision\Import\Repositories\EavAttributeRepository $eavAttributeRepository The repository to access EAV attributes
      *
      * @return void
      */
@@ -660,7 +655,7 @@ class ProductProcessor implements ProductProcessorInterface
     /**
      * Return's the repository to access EAV attributes.
      *
-     * @return \Importer\Csv\Repositories\Pdo\EavAttributeRepository The repository instance
+     * @return \TechDivision\Import\Repositories\EavAttributeRepository The repository instance
      */
     public function getEavAttributeRepository()
     {
@@ -670,7 +665,7 @@ class ProductProcessor implements ProductProcessorInterface
     /**
      * Set's the repository to access EAV attribute sets.
      *
-     * @param \Importer\Csv\Repositories\Pdo\EavAttributeSetRepository $eavAttributeSetRepository The repository the access EAV attribute sets
+     * @param \TechDivision\Import\Repositories\EavAttributeSetRepository $eavAttributeSetRepository The repository the access EAV attribute sets
      *
      * @return void
      */
@@ -682,7 +677,7 @@ class ProductProcessor implements ProductProcessorInterface
     /**
      * Return's the repository to access EAV attribute sets.
      *
-     * @return \Importer\Csv\Repositories\Pdo\EavAttributeSetRepository The repository instance
+     * @return \TechDivision\Import\Repositories\EavAttributeSetRepository The repository instance
      */
     public function getEavAttributeSetRepository()
     {
@@ -692,7 +687,7 @@ class ProductProcessor implements ProductProcessorInterface
     /**
      * Set's the repository to access stores.
      *
-     * @param \Importer\Csv\Repositories\Pdo\StoreRepository $storeRepository The repository the access stores
+     * @param \TechDivision\Import\Repositories\StoreRepository $storeRepository The repository the access stores
      *
      * @return void
      */
@@ -704,7 +699,7 @@ class ProductProcessor implements ProductProcessorInterface
     /**
      * Return's the repository to access stores.
      *
-     * @return \Importer\Csv\Repositories\Pdo\StoreRepository The repository instance
+     * @return \TechDivision\Import\Repositories\StoreRepository The repository instance
      */
     public function getStoreRepository()
     {
@@ -714,7 +709,7 @@ class ProductProcessor implements ProductProcessorInterface
     /**
      * Set's the repository to access store websites.
      *
-     * @param \Importer\Csv\Repositories\Pdo\StoreWebsiteRepository $storeWebsiteRepository The repository the access store websites
+     * @param \TechDivision\Import\Repositories\StoreWebsiteRepository $storeWebsiteRepository The repository the access store websites
      *
      * @return void
      */
@@ -726,7 +721,7 @@ class ProductProcessor implements ProductProcessorInterface
     /**
      * Return's the repository to access store websites.
      *
-     * @return \Importer\Csv\Repositories\Pdo\StoreWebsiteRepository The repository instance
+     * @return \TechDivision\Import\Repositories\StoreWebsiteRepository The repository instance
      */
     public function getStoreWebsiteRepository()
     {
@@ -736,7 +731,7 @@ class ProductProcessor implements ProductProcessorInterface
     /**
      * Set's the repository to access tax classes.
      *
-     * @param \Importer\Csv\Repositories\Pdo\TaxClassRepository $taxClassRepository The repository the access stores
+     * @param \TechDivision\Import\Repositories\TaxClassRepository $taxClassRepository The repository the access stores
      *
      * @return void
      */
@@ -748,7 +743,7 @@ class ProductProcessor implements ProductProcessorInterface
     /**
      * Return's the repository to access tax classes.
      *
-     * @return \Importer\Csv\Repositories\Pdo\TaxClassRepository The repository instance
+     * @return \TechDivision\Import\Repositories\TaxClassRepository The repository instance
      */
     public function getTaxClassRepository()
     {
@@ -982,15 +977,26 @@ class ProductProcessor implements ProductProcessorInterface
     }
 
     /**
-     * Return's an array of the categories with the passed values.
+     * Return's an array with all available categories.
      *
-     * @param array The names of the categories to return
-     *
-     * @return array The array with all available stores
+     * @return array The available categories
      */
-    public function getCategoriesByValues($values)
+    public function getCategories()
     {
-        return $this->getCategoryRepository()->findAllByValues($values);
+        return $this->getCategoryRepository()->findAll();
+    }
+
+    /**
+     * Returns the category varchar values for the categories with
+     * the passed with the passed entity IDs.
+     *
+     * @param array $entityIds The array with the category IDs
+     *
+     * @return mixed The category varchar values
+     */
+    public function getCategoryVarcharsByEntityIds(array $entityIds)
+    {
+        return $this->getCategoryVarcharRepository()->findAllByEntityIds($entityIds);
     }
 
     /**

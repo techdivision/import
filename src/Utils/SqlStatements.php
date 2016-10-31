@@ -295,15 +295,25 @@ class SqlStatements
                                                   VALUES (?, ?, ?, ?)';
 
     /**
-     * The SQL statement to load the categories of a product.
+     * The SQL statement to load all available categories.
      *
      * @var string
      */
-    const CATEGORIES = 'SELECT t1.*
-                          FROM catalog_category_entity AS t1
-                    INNER JOIN catalog_category_entity_varchar AS t2
-                            ON t2.value IN(?)
-                           AND t2.entity_id = t1.entity_id';
+    const CATEGORIES = 'SELECT t1.* FROM catalog_category_entity AS t1';
+
+    /**
+     * The SQL statement to load the category varchars for a list of entity IDs.
+     *
+     * @var string
+     */
+    const CATEGORY_VARCHARS_BY_ENTITY_IDS = 'SELECT t1.*
+                                               FROM catalog_category_entity_varchar AS t1
+                                         INNER JOIN eav_attribute AS t2
+                                                 ON t2.entity_type_id = 3
+                                                AND t2.attribute_code = \'name\'
+                                                AND t1.attribute_id = t2.attribute_id
+                                                AND t1.store_id = 0
+                                                AND t1.entity_id IN (?)';
 
     /**
      * The SQL statement to load the stores.

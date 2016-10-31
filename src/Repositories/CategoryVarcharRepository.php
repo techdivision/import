@@ -1,7 +1,7 @@
 <?php
 
 /**
- * TechDivision\Import\Repositories\TaxClassRepository
+ * TechDivision\Import\Repositories\CategoryVarcharRepository
  *
  * NOTICE OF LICENSE
  *
@@ -20,8 +20,6 @@
 
 namespace TechDivision\Import\Repositories;
 
-use TechDivision\Import\Utils\MemberNames;
-
 /**
  * A SLSB that handles the product import process.
  *
@@ -31,7 +29,7 @@ use TechDivision\Import\Utils\MemberNames;
  * @link      https://github.com/wagnert/csv-import
  * @link      http://www.appserver.io
  */
-class TaxClassRepository extends AbstractRepository
+class CategoryVarcharRepository extends AbstractRepository
 {
 
     /**
@@ -41,35 +39,29 @@ class TaxClassRepository extends AbstractRepository
      */
     public function init()
     {
+    }
+
+    /**
+     * Returns the category varchar values for the categories with
+     * the passed with the passed entity IDs.
+     *
+     * @param array $entityIds The array with the category IDs
+     *
+     * @return mixed The category varchar values
+     */
+    public function findAllByEntityIds(array $entityIds)
+    {
 
         // load the utility class name
         $utilityClassName = $this->getUtilityClassName();
 
-        // initialize the prepared statements
-        $this->taxClassesStmt = $this->getConnection()->prepare($utilityClassName::TAX_CLASSES);
-    }
+        // prepare the cache key
+        $vals = implode(',', $entityIds);
+        $sql = str_replace('?', $vals, $utilityClassName::CATEGORY_VARCHARS_BY_ENTITY_IDS);
 
-    /**
-     * Return's an array with the available tax classes and their
-     * class names as keys.
-     *
-     * @return array The array with all available tax classes
-     */
-    public function findAll()
-    {
-
-        // initialize the array with the available tax classes
-        $taxClasses = array();
-
-        // execute the prepared statement
-        $this->taxClassesStmt->execute();
-
-        // fetch the tax classes and assemble them as array with the class name as key
-        foreach ($this->taxClassesStmt->fetchAll() as $taxClass) {
-            $taxClasses[$taxClass[MemberNames::CLASS_NAME]] = $taxClass;
+        // load the categories with the passed values and return them
+        if ($stmt = $this->getConnection()->query($sql)) {
+            return $stmt->fetchAll();
         }
-
-        // return the array with the tax classes
-        return $taxClasses;
     }
 }
