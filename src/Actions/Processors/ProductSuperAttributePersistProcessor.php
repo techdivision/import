@@ -41,4 +41,17 @@ class ProductSuperAttributePersistProcessor extends AbstractPersistProcessor
         $utilityClassName = $this->getUtilityClassName();
         return $utilityClassName::CREATE_PRODUCT_SUPER_ATTRIBUTE;
     }
+
+    /**
+     * Persist's the passed row.
+     *
+     * @param array $row The row to persist
+     *
+     * @return string The last inserted ID
+     */
+    public function execute($row)
+    {
+        $this->getPreparedStatement()->execute($row);
+        return $this->getConnection()->lastInsertId();
+    }
 }

@@ -111,13 +111,6 @@ class BunchSubject extends AbstractSubject
     );
 
     /**
-     * Array with the subject's callbacks.
-     *
-     * @var array
-     */
-    protected $callbacks = array();
-
-    /**
      * The array containing the configurable product configuration.
      *
      * @var array
@@ -369,69 +362,7 @@ class BunchSubject extends AbstractSubject
         $this->categories = $status['globalData'][RegistryKeys::CATEGORIES];
 
         // prepare the callbacks
-        foreach ($this->getConfiguration()->getCallbacks() as $callbacks) {
-            $this->prepareCallbacks($callbacks);
-        }
-    }
-
-    /**
-     * Prepare the callbacks defined in the system configuration.
-     *
-     * @param array  $callbacks The array with the callbacks
-     * @param string $type      The actual callback type
-     *
-     * @return void
-     */
-    public function prepareCallbacks(array $callbacks, $type = null)
-    {
-
-        // iterate over the array with callbacks and prepare them
-        foreach ($callbacks as $key => $callback) {
-            // we have to initialize the type only on the first level
-            if ($type == null) {
-                $type = $key;
-            }
-
-            // query whether or not we've an subarry or not
-            if (is_array($callback)) {
-                $this->prepareCallbacks($callback, $type);
-            } else {
-                $this->registerCallback($type, $callback);
-            }
-        }
-    }
-
-    /**
-     * Register the passed class name as callback with the specific type and key.
-     *
-     * @param string $type      The callback type to register the callback with
-     * @param string $className The callback class name
-     *
-     * @return void
-     */
-    public function registerCallback($type, $className)
-    {
-
-        // query whether or not the array with the callbacks for the
-        // passed type has already been initialized, or not
-        if (!isset($this->callbacks[$type])) {
-            $this->callbacks[$type] = array();
-        }
-
-        // append the callback with the instance of the passed type
-        $this->callbacks[$type][] = $this->observerFactory($className);
-    }
-
-    /**
-     * Initialize and return a new observer of the passed type.
-     *
-     * @param string $className The type of the observer to instanciate
-     *
-     * @return \TechDivision\Import\Observers\ObserverInterface The observer instance
-     */
-    public function observerFactory($className)
-    {
-        return new $className($this);
+        parent::setUp();
     }
 
     /**
@@ -556,20 +487,8 @@ class BunchSubject extends AbstractSubject
             return;
         }
 
-        // invoke the pre-create callbacks
-        foreach ($this->getCallbacks('pre-import') as $listener) {
-            $row = $listener->handle($row);
-        }
-
-        // invoke the import callbacks
-        foreach ($this->getCallbacks('import') as $listener) {
-            $row = $listener->handle($row);
-        }
-
-        // invoke the post-create callbacks
-        foreach ($this->getCallbacks('post-import') as $listener) {
-            $row = $listener->handle($row);
-        }
+        // invoke the parent method => invoke the callbacks
+        parent::importRow($row);
     }
 
     /**
@@ -620,25 +539,6 @@ class BunchSubject extends AbstractSubject
     public function getBackendTypes()
     {
         return $this->backendTypes;
-    }
-
-    /**
-     * Return's the array with callbacks for the passed type.
-     *
-     * @param string $type The type of the callbacks to return
-     *
-     * @return array The callbacks
-     */
-    public function getCallbacks($type)
-    {
-
-        // query whether or not callbacks for the type are available
-        if (isset($this->callbacks[$type])) {
-            return $this->callbacks[$type];
-        }
-
-        // throw an exception, if not
-        throw new \Exception(sprintf('Found invalid callback type %s', $type));
     }
 
     /**
@@ -768,6 +668,7 @@ class BunchSubject extends AbstractSubject
      * @param string The path of the category to return
      *
      * @return array The category
+     * @throws \Exception Is thrown, if the requested category is not available
      */
     public function getCategoryByPath($path)
     {
@@ -815,7 +716,7 @@ class BunchSubject extends AbstractSubject
         $preCastCallbacks = array();
 
         // load the precast callbacks
-        $callbacks = $this->getCallbacks('pre-cast');
+        $callbacks = $this->getCallbacksByType('pre-cast');
 
         // query whether or not callbacks for the passed attribute code are available
         if (isset($callbacks[$attributeCode])) {

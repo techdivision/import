@@ -20,7 +20,6 @@
 
 namespace TechDivision\Import\Subjects;
 
-use TechDivision\Import\Utils\MemberNames;
 use TechDivision\Import\Utils\RegistryKeys;
 
 /**
@@ -41,6 +40,13 @@ class VariantSubject extends AbstractSubject
      * @var integer
      */
     protected $parentId;
+
+    /**
+     * The available stores.
+     *
+     * @var array
+     */
+    protected $stores = array();
 
     /**
      * Intializes the previously loaded global data for exactly one variants.
@@ -65,6 +71,9 @@ class VariantSubject extends AbstractSubject
 
         // load the attribute set we've prepared intially
         $this->skuEntityIdMapping = $status['skuEntityIdMapping'];
+
+        // prepare the callbacks
+        parent::setUp();
     }
 
     /**
@@ -80,7 +89,7 @@ class VariantSubject extends AbstractSubject
         $registryProcessor = $this->getRegistryProcessor();
 
         // update the status of the actual import process
-        $registryProcessor->mergeAttributesRecursive($this->serial, array('variations' => array($this->uid => array('status' => 1))));
+        $registryProcessor->mergeAttributesRecursive($this->serial, array('variations' => array($this->getUid() => array('status' => 1))));
     }
 
     /**
@@ -99,8 +108,8 @@ class VariantSubject extends AbstractSubject
             $startTime = microtime(true);
 
             // set the serial (import ID) and the UID
-            $this->serial = $serial;
-            $this->uid = $uid;
+            $this->setSerial($serial);
+            $this->setUid($uid);
 
             // load the connection, the system logger and the registry processor
             $connection = $this->getConnection();
@@ -190,70 +199,55 @@ class VariantSubject extends AbstractSubject
     }
 
     /**
-     * Imports the passed row into the database.
+     * Set's the ID of the parent product to relate the variant with.
      *
-     * If the import failed, the exception will be catched and logged,
-     * but the import process will be continued.
-     *
-     * @param array $row The row with the data to be imported
+     * @param integer $parentId The ID of the parent product
      *
      * @return void
      */
-    public function importRow(array $row)
+    public function setParentId($parentId)
+    {
+        $this->parentId = $parentId;
+    }
+
+    /**
+     * Return's the ID of the parent product to relate the variant with.
+     *
+     * @return integer The ID of the parent product
+     */
+    public function getParentId()
+    {
+        return $this->parentId;
+    }
+
+    /**
+     * Return's an array with the available stores.
+     *
+     * @return array The available stores
+     */
+    public function getStores()
+    {
+        return $this->stores;
+    }
+
+    /**
+     * Return's the store for the passed store code.
+     *
+     * @param string $storeCode The store code to return the store for
+     *
+     * @return array The requested store
+     * @throws \Exception Is thrown, if the requested store is not available
+     */
+    public function getStoreByStoreCode($storeCode)
     {
 
-        // load the DB connection
-        $connection = $this->getConnection();
-
-        // extract the parent/child ID as well as option value and variation label from the row
-        list ($childId, $parentId, $optionValue, $variationLabel) = $row;
-
-        // create the product relation
-        $this->persistProductRelation(array($parentId, $childId));
-        $this->persistProductSuperLink(array($childId, $parentId));
-
-        // load the EAV attribute
-        $eavAttribute = $this->getEavAttributeByOptionValueAndStoreId(
-            $optionValue,
-            $this->stores['admin'][MemberNames::STORE_ID]
-        );
-
-        // query whether or not, the parent ID have changed
-        if ($this->parentId !== $parentId) {
-            // preserve the parent ID
-            $this->parentId = $parentId;
-
-            // if yes, create the super attribute
-            $this->persistProductSuperAttribute(
-                array(
-                    $parentId,
-                    $eavAttribute[MemberNames::ATTRIBUTE_ID],
-                    0
-                )
-            );
-
-            // load the ID of the new super attribute
-            $productSuperAttributeId = $connection->lastInsertId();
-
-            // query whether or not we've to create super attribute labels
-            if (empty($variationLabel)) {
-                $variationLabel = $eavAttribute['frontend_label'];
-            }
-
-            // create the super attribute labels for the available stores
-            foreach ($this->stores as $store) {
-                // prepare the super attribute label
-                $params = array(
-                    $productSuperAttributeId,
-                    $store[MemberNames::STORE_ID],
-                    0,
-                    $variationLabel
-                );
-
-                // save the super attribute label
-                $this->persistProductSuperAttributeLabel($params);
-            }
+        // query whether or not the store with the passed store code exists
+        if (isset($this->stores[$storeCode])) {
+            return $this->stores[$storeCode];
         }
+
+        // throw an exception, if not
+        throw new \Exception(sprintf('Found invalid store code %s', $storeCode));
     }
 
     /**
@@ -298,7 +292,7 @@ class VariantSubject extends AbstractSubject
      *
      * @param array $productSuperAttribute The product super attribute data to persist
      *
-     * @return void
+     * @return string The ID of the persisted product super attribute entity
      */
     public function persistProductSuperAttribute($productSuperAttribute)
     {

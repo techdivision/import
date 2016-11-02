@@ -160,4 +160,11 @@ class MemberNames
      * @var string
      */
     const VALUE = 'value';
+
+    /**
+     * Name for the member 'frontend_label'.
+     *
+     * @var string
+     */
+    const FRONTENT_LABEL = 'frontend_label';
 }

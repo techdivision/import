@@ -436,7 +436,7 @@ interface ProductProcessorInterface
      *
      * @param array $productSuperAttribute The product super attribute data to persist
      *
-     * @return void
+     * @return string The ID of the persisted product super attribute entity
      */
     public function persistProductSuperAttribute($productSuperAttribute);
 

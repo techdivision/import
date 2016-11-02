@@ -1,7 +1,7 @@
 <?php
 
 /**
- * TechDivision\Import\Repositories\ProductSuperAttributeAction
+ * TechDivision\Import\Subjects\CrosssellSubject
  *
  * NOTICE OF LICENSE
  *
@@ -18,10 +18,10 @@
  * @link      http://www.appserver.io
  */
 
-namespace TechDivision\Import\Actions;
+namespace TechDivision\Import\Subjects;
 
 /**
- * A SLSB providing repository functionality for product super attribute CRUD actions.
+ * A SLSB that handles the process to import product variants.
  *
  * @author    Tim Wagner <tw@appserver.io>
  * @copyright 2015 TechDivision GmbH <info@appserver.io>
@@ -29,18 +29,18 @@ namespace TechDivision\Import\Actions;
  * @link      https://github.com/wagnert/csv-import
  * @link      http://www.appserver.io
  */
-class ProductSuperAttributeAction extends AbstractAction
+class CrosssellSubject extends AbstractSubject
 {
 
     /**
-     * Persist's the passed row.
+     * Imports the content of the file with the passed filename.
      *
-     * @param array $row The row to persist
+     * @param string  $serial The unique process serial
+     * @param integer $uid    The UUID of the file to process
      *
-     * @return string The last inserted ID
+     * @return void
      */
-    public function persist($row)
+    public function import($serial, $uid)
     {
-        return $this->getPersistProcessor()->execute($row);
     }
 }

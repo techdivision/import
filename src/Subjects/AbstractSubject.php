@@ -1,7 +1,7 @@
 <?php
 
 /**
- * TechDivision\Import\Subjects\AbstractHandler
+ * TechDivision\Import\Subjects\AbstractSubject
  *
  * NOTICE OF LICENSE
  *
@@ -24,7 +24,8 @@ use Psr\Log\LoggerInterface;
 use TechDivision\Import\Services\ProductProcessor;
 use TechDivision\Import\Services\RegistryProcessor;
 use TechDivision\Import\Services\RegistryAwareInterface;
-use TechDivision\Import\Configuration\SubjectInterface;
+use TechDivision\Import\Configuration\SubjectInterface As SubjectConfigurationInterface;
+use TechDivision\Import\Observers\Product\ProductImportObserverInterface;
 
 /**
  * An abstract action implementation.
@@ -35,7 +36,7 @@ use TechDivision\Import\Configuration\SubjectInterface;
  * @link      https://github.com/wagnert/csv-import
  * @link      http://www.appserver.io
  */
-abstract class AbstractSubject implements RegistryAwareInterface
+abstract class AbstractSubject implements RegistryAwareInterface, SubjectInterface
 {
 
     /**
@@ -74,11 +75,25 @@ abstract class AbstractSubject implements RegistryAwareInterface
     protected $serial;
 
     /**
+     * The UUID of the file to process.
+     *
+     * @var string
+     */
+    protected $uid;
+
+    /**
+     * Array with the subject's callbacks.
+     *
+     * @var array
+     */
+    protected $callbacks = array();
+
+    /**
      * Set's the system configuration.
      *
      * @param \TechDivision\Import\Configuration\Subject $configuration The system configuration
      */
-    public function setConfiguration(SubjectInterface $configuration)
+    public function setConfiguration(SubjectConfigurationInterface $configuration)
     {
         $this->configuration = $configuration;
     }
@@ -182,6 +197,28 @@ abstract class AbstractSubject implements RegistryAwareInterface
     }
 
     /**
+     * Set's the UUID of the file to process.
+     *
+     * @param string $uid The UUID
+     *
+     * @return void
+     */
+    public function setUid($uid)
+    {
+        $this->uid = $uid;
+    }
+
+    /**
+     * Return's the UUID of the file to process.
+     *
+     * @return $uid The UUID
+     */
+    public function getUid()
+    {
+        return $this->uid;
+    }
+
+    /**
      * Return's the source date format to use.
      *
      * @return string The source date format
@@ -199,5 +236,136 @@ abstract class AbstractSubject implements RegistryAwareInterface
     public function getConnection()
     {
         return $this->getProductProcessor()->getConnection();
+    }
+
+    /**
+     * Intializes the previously loaded global data for exactly one bunch.
+     *
+     * @return void
+     * @see \Importer\Csv\Actions\ProductImportAction::prepare()
+     */
+    public function setUp()
+    {
+
+        // prepare the callbacks
+        foreach ($this->getConfiguration()->getCallbacks() as $callbacks) {
+            $this->prepareCallbacks($callbacks);
+        }
+    }
+
+    /**
+     * Prepare the callbacks defined in the system configuration.
+     *
+     * @param array  $callbacks The array with the callbacks
+     * @param string $type      The actual callback type
+     *
+     * @return void
+     */
+    public function prepareCallbacks(array $callbacks, $type = null)
+    {
+
+        // iterate over the array with callbacks and prepare them
+        foreach ($callbacks as $key => $callback) {
+            // we have to initialize the type only on the first level
+            if ($type == null) {
+                $type = $key;
+            }
+
+            // query whether or not we've an subarry or not
+            if (is_array($callback)) {
+                $this->prepareCallbacks($callback, $type);
+            } else {
+                $this->registerCallback($type, $callback);
+            }
+        }
+    }
+
+    /**
+     * Register the passed class name as callback with the specific type and key.
+     *
+     * @param string $type      The callback type to register the callback with
+     * @param string $className The callback class name
+     *
+     * @return void
+     */
+    public function registerCallback($type, $className)
+    {
+
+        // query whether or not the array with the callbacks for the
+        // passed type has already been initialized, or not
+        if (!isset($this->callbacks[$type])) {
+            $this->callbacks[$type] = array();
+        }
+
+        // append the callback with the instance of the passed type
+        $this->callbacks[$type][] = $this->observerFactory($className);
+    }
+
+    /**
+     * Initialize and return a new observer of the passed type.
+     *
+     * @param string $className The type of the observer to instanciate
+     *
+     * @return \TechDivision\Import\Observers\ObserverInterface The observer instance
+     */
+    public function observerFactory($className)
+    {
+        return new $className($this);
+    }
+
+    /**
+     * Return's the array with callbacks for the passed type.
+     *
+     * @param string $type The type of the callbacks to return
+     *
+     * @return array The callbacks
+     */
+    public function getCallbacksByType($type)
+    {
+
+        // initialize the array for the callbacks
+        $callbacks = array();
+
+        // query whether or not callbacks for the type are available
+        if (isset($this->callbacks[$type])) {
+            $callbacks = $this->callbacks[$type];
+        }
+
+        // return the array with the type's callbacks
+        return $callbacks;
+    }
+
+    /**
+     * Return's the array with the available callbacks.
+     *
+     * @return array The callbacks
+     */
+    public function getCallbacks()
+    {
+        return $this->callbacks;
+    }
+
+    /**
+     * Imports the passed row into the database.
+     *
+     * If the import failed, the exception will be catched and logged,
+     * but the import process will be continued.
+     *
+     * @param array $row The row with the data to be imported
+     *
+     * @return void
+     */
+    public function importRow(array $row)
+    {
+
+        // process the callbacks
+        foreach (array_keys($this->getCallbacks()) as $type) {
+            // invoke the pre-create callbacks
+            foreach ($this->getCallbacksByType($type) as $observer) {
+                if ($observer instanceof ProductImportObserverInterface) {
+                    $row = $observer->handle($row);
+                }
+            }
+        }
     }
 }
