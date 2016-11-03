@@ -138,44 +138,31 @@ class VariantSubject extends AbstractSubject
             // log a message that the file has to be imported
             $systemLogger->info(sprintf('Now start importing variations %s', $uid));
 
-            try {
-                // start the transaction
-                $connection->beginTransaction();
-                // iterate over all variations and import them
-                foreach ($variations as $variation) {
+            // iterate over all variations and import them
+            foreach ($variations as $variation) {
 
-                    // sku=Configurable Product 48-option 2,configurable_variation=option 2
-                    list ($sku, $option) = explode(',', $variation);
+                // sku=Configurable Product 48-option 2,configurable_variation=option 2
+                list ($sku, $option) = explode(',', $variation);
 
-                    // explode the variations child ID as well as option code and value
-                    list (, $childId) = explode('=', $sku);
-                    list ($optionCode, $optionValue) = explode('=', $option);
+                // explode the variations child ID as well as option code and value
+                list (, $childId) = explode('=', $sku);
+                list ($optionCode, $optionValue) = explode('=', $option);
 
-                    // load the apropriate variation label
-                    $varLabel = '';
-                    if (isset($varLabels[$optionCode])) {
-                        $varLabel = $varLabels[$optionCode];
-                    }
-
-                    // import the varition itself
-                    $this->importRow(
-                        array(
-                            $this->skuEntityIdMapping[$childId],
-                            $uid,
-                            $optionValue,
-                            $varLabel
-                        )
-                    );
+                // load the apropriate variation label
+                $varLabel = '';
+                if (isset($varLabels[$optionCode])) {
+                    $varLabel = $varLabels[$optionCode];
                 }
 
-                // commit the transaction
-                $connection->commit();
-
-            } catch (\Exception $e) {
-                // log a message with the stack trace
-                $systemLogger->error($e->__toString());
-                // rollback the transaction
-                $connection->rollBack();
+                // import the varition itself
+                $this->importRow(
+                    array(
+                        $this->skuEntityIdMapping[$childId],
+                        $uid,
+                        $optionValue,
+                        $varLabel
+                    )
+                );
             }
 
             // track the time needed for the import in seconds
@@ -191,7 +178,8 @@ class VariantSubject extends AbstractSubject
             // update the status with the error message
             $registryProcessor->mergeAttributesRecursive($serial, array('variations' => array($uid => array('error' => $e->__toString()))));
 
-            // TODO fine graned error handling, e. g. with a log file
+            // re-throw the exception
+            throw $e;
         }
 
         // clean up the data after importing the variations

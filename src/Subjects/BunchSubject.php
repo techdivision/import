@@ -402,8 +402,7 @@ class BunchSubject extends AbstractSubject
             $this->setSerial($serial);
             $this->setUid($uid);
 
-            // load the connection, the system logger and the registry processor
-            $connection = $this->getConnection();
+            // load the system logger and the registry processor
             $systemLogger = $this->getSystemLogger();
             $registryProcessor = $this->getRegistryProcessor();
 
@@ -431,22 +430,8 @@ class BunchSubject extends AbstractSubject
             // log a message that the file has to be imported
             $systemLogger->info(sprintf('Now start importing file %s', $filename));
 
-            try {
-                // start the transaction
-                $connection->beginTransaction();
-
-                // parse the CSV file to be imported
-                $lexer->parse($filename, $interpreter);
-
-                // commit the transaction
-                $connection->commit();
-
-            } catch (\Exception $e) {
-                // log a message with the stack trace
-                $systemLogger->error($e->__toString());
-                // rollback the transaction
-                $connection->rollBack();
-            }
+            // parse the CSV file to be imported
+            $lexer->parse($filename, $interpreter);
 
             // track the time needed for the import in seconds
             $endTime = microtime(true) - $startTime;
@@ -461,7 +446,8 @@ class BunchSubject extends AbstractSubject
             // update the import status with the error message
             $registryProcessor->mergeAttributesRecursive($serial, array('files' => array($uid => array('error' => $e->__toString()))));
 
-            // TODO fine graned error handling, e. g. with a log file
+            // re-throw the exception
+            throw $e;
         }
 
         // clean up the data after importing the bunch
