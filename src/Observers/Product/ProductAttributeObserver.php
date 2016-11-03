@@ -156,11 +156,11 @@ class ProductAttributeObserver extends AbstractProductImportObserver
     {
 
         // laod the callbacks for the actual attribute code
-        $preCastCallbacks = $this->getPreCastCallbacksByAttributeCode($this->getAttributeCode());
+        $callbacks = $this->getCallbacksByType($this->getAttributeCode());
 
         // invoke the pre-cast callbacks
-        foreach ($preCastCallbacks as $listener) {
-            $value = $listener->handle($value);
+        foreach ($callbacks as $callback) {
+            $value = $callback->handle($value);
         }
 
         // load the ID of the product that has been created recently
@@ -300,15 +300,15 @@ class ProductAttributeObserver extends AbstractProductImportObserver
     }
 
     /**
-     * Return's the array containing callbacks necessary to cast values found in CSV file.
+     * Return's the array with callbacks for the passed type.
      *
-     * @param string $attributeCode The attribute code to return the callbacks for
+     * @param string $type The type of the callbacks to return
      *
-     * @return array The array with the callbacks
+     * @return array The callbacks
      */
-    public function getPreCastCallbacksByAttributeCode($attributeCode)
+    public function getCallbacksByType($type)
     {
-        return $this->getSubject()->getPreCastCallbacksByAttributeCode($attributeCode);
+        return $this->getSubject()->getCallbacksByType($type);
     }
 
     /**

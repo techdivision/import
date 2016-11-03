@@ -1,7 +1,7 @@
 <?php
 
 /**
- * TechDivision\Import\Observers\Attribute\TaxClassObserver
+ * TechDivision\Import\Callbacks\Product\BooleanCallback
  *
  * NOTICE OF LICENSE
  *
@@ -18,7 +18,7 @@
  * @link      http://www.appserver.io
  */
 
-namespace TechDivision\Import\Observers\Attribute;
+namespace TechDivision\Import\Callbacks\Product;
 
 /**
  * A SLSB that handles the process to import product bunches.
@@ -28,18 +28,30 @@ namespace TechDivision\Import\Observers\Attribute;
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link      https://github.com/wagnert/csv-import
  * @link      http://www.appserver.io
- *
- * @Stateless
  */
-class TaxClassObserver extends AbstractAttributeImportObserver
+class BooleanCallback extends AbstractProductImportCallback
 {
 
     /**
+     * Array with the string => boolean mapping.
+     *
+     * @var array
+     */
+    protected $booleanValues = array(
+        'true'  => 1,
+        'yes'   => 1,
+        '1'     => 1,
+        'false' => 0,
+        'no'    => 0,
+        '0'     => 0
+    );
+
+    /**
      * {@inheritDoc}
-     * @see \TechDivision\Import\Observers\Attribute\AttributeImportObserverInterface::handle()
+     * @see \TechDivision\Import\Callbacks\Product\ImportCallbackInterface::handle()
      */
     public function handle($value)
     {
-        return $this->getSubject()->getTaxClassIdByTaxClassName($value);
+        return (boolean) $this->booleanValues[strtolower($value)];
     }
 }

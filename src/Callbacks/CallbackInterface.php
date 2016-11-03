@@ -1,7 +1,7 @@
 <?php
 
 /**
- * TechDivision\Import\Observers\Attribute\BooleanObserver
+ * TechDivision\Import\Callbacks\CallbackInterface
  *
  * NOTICE OF LICENSE
  *
@@ -18,7 +18,7 @@
  * @link      http://www.appserver.io
  */
 
-namespace TechDivision\Import\Observers\Attribute;
+namespace TechDivision\Import\Callbacks;
 
 /**
  * A SLSB that handles the process to import product bunches.
@@ -29,29 +29,20 @@ namespace TechDivision\Import\Observers\Attribute;
  * @link      https://github.com/wagnert/csv-import
  * @link      http://www.appserver.io
  */
-class BooleanObserver extends AbstractAttributeImportObserver
+interface CallbackInterface
 {
 
     /**
-     * Array with the string => boolean mapping.
+     * Return's the observer's subject instance.
      *
-     * @var array
+     * @return object The observer's subject instance
      */
-    protected $booleanValues = array(
-        'true'  => 1,
-        'yes'   => 1,
-        '1'     => 1,
-        'false' => 0,
-        'no'    => 0,
-        '0'     => 0
-    );
+    public function getSubject();
 
     /**
-     * {@inheritDoc}
-     * @see \TechDivision\Import\Observers\Attribute\AttributeImportObserverInterface::handle()
+     * Return's the system logger.
+     *
+     * @return \Psr\Log\LoggerInterface The system logger instance
      */
-    public function handle($value)
-    {
-        return (boolean) $this->booleanValues[strtolower($value)];
-    }
+    public function getSystemLogger();
 }

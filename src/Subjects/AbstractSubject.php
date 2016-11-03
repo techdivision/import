@@ -23,9 +23,10 @@ namespace TechDivision\Import\Subjects;
 use Psr\Log\LoggerInterface;
 use TechDivision\Import\Services\ProductProcessor;
 use TechDivision\Import\Services\RegistryProcessor;
-use TechDivision\Import\Services\RegistryAwareInterface;
+use TechDivision\Import\Observers\ObserverInterface;
+use TechDivision\Import\Services\ProductProcessorInterface;
+use TechDivision\Import\Services\RegistryProcessorInterface;
 use TechDivision\Import\Configuration\SubjectInterface As SubjectConfigurationInterface;
-use TechDivision\Import\Observers\Product\ProductImportObserverInterface;
 
 /**
  * An abstract action implementation.
@@ -36,7 +37,7 @@ use TechDivision\Import\Observers\Product\ProductImportObserverInterface;
  * @link      https://github.com/wagnert/csv-import
  * @link      http://www.appserver.io
  */
-abstract class AbstractSubject implements RegistryAwareInterface, SubjectInterface
+abstract class AbstractSubject implements SubjectInterface
 {
 
     /**
@@ -56,14 +57,14 @@ abstract class AbstractSubject implements RegistryAwareInterface, SubjectInterfa
     /**
      * The RegistryProcessor instance to handle running threads.
      *
-     * @var \TechDivision\Importer\Services\RegistryProcessor
+     * @var \TechDivision\Import\Services\RegistryProcessorInterface
      */
     protected $registryProcessor;
 
     /**
      * The processor to read/write the necessary product data.
      *
-     * @var \TechDivision\Importer\Services\ProductProcessor
+     * @var \TechDivision\Import\Services\ProductProcessorInterface
      */
     protected $productProcessor;
 
@@ -80,6 +81,13 @@ abstract class AbstractSubject implements RegistryAwareInterface, SubjectInterfa
      * @var string
      */
     protected $uid;
+
+    /**
+     * Array with the subject's observers.
+     *
+     * @var array
+     */
+    protected $observers = array();
 
     /**
      * Array with the subject's callbacks.
@@ -133,11 +141,11 @@ abstract class AbstractSubject implements RegistryAwareInterface, SubjectInterfa
     /**
      * Sets's the RegistryProcessor instance to handle the running threads.
      *
-     * @param \AppserverIo\RemoteMethodInvocation\RemoteObjectInterface $registryProcessor
+     * @param \TechDivision\Import\Services\RegistryProcessorInterface $registryProcessor The registry processor instance
      *
      * @return void
      */
-    public function setRegistryProcessor($registryProcessor)
+    public function setRegistryProcessor(RegistryProcessorInterface $registryProcessor)
     {
         $this->registryProcessor = $registryProcessor;
     }
@@ -145,7 +153,7 @@ abstract class AbstractSubject implements RegistryAwareInterface, SubjectInterfa
     /**
      * Return's the RegistryProcessor instance to handle the running threads.
      *
-     * @return \AppserverIo\RemoteMethodInvocation\RemoteObjectInterface The instance
+     * @return \TechDivision\Import\Services\RegistryProcessorInterface The registry processor instance
      */
     public function getRegistryProcessor()
     {
@@ -155,11 +163,11 @@ abstract class AbstractSubject implements RegistryAwareInterface, SubjectInterfa
     /**
      * Set's the product processor instance.
      *
-     * @param Importer\Csv\Services\Pdo\ProductProcessor $productProcessor The product processor instance
+     * @param \TechDivision\Import\Services\ProductProcessorInterface $productProcessor The product processor instance
      *
      * @return void
      */
-    public function setProductProcessor($productProcessor)
+    public function setProductProcessor(ProductProcessorInterface $productProcessor)
     {
         $this->productProcessor = $productProcessor;
     }
@@ -167,7 +175,7 @@ abstract class AbstractSubject implements RegistryAwareInterface, SubjectInterfa
     /**
      * Return's the product processor instance.
      *
-     * @return \Importer\Csv\Services\Pdo\ProductProcessor The product processor instance
+     * @return \TechDivision\Import\Services\ProductProcessorInterface The product processor instance
      */
     public function getProductProcessor()
     {
@@ -247,10 +255,75 @@ abstract class AbstractSubject implements RegistryAwareInterface, SubjectInterfa
     public function setUp()
     {
 
+        // prepare the observers
+        foreach ($this->getConfiguration()->getObservers() as $observers) {
+            $this->prepareObservers($observers);
+        }
+
         // prepare the callbacks
         foreach ($this->getConfiguration()->getCallbacks() as $callbacks) {
             $this->prepareCallbacks($callbacks);
         }
+    }
+
+    /**
+     * Prepare the observers defined in the system configuration.
+     *
+     * @param array  $observers The array with the observers
+     * @param string $type      The actual observer type
+     *
+     * @return void
+     */
+    public function prepareObservers(array $observers, $type = null)
+    {
+
+        // iterate over the array with observers and prepare them
+        foreach ($observers as $key => $observer) {
+            // we have to initialize the type only on the first level
+            if ($type == null) {
+                $type = $key;
+            }
+
+            // query whether or not we've an subarry or not
+            if (is_array($observer)) {
+                $this->prepareObservers($observer, $type);
+            } else {
+                $this->registerObservers($type, $observer);
+            }
+        }
+    }
+
+    /**
+     * Register the passed class name as observer with the specific type and key.
+     *
+     * @param string $type      The observer type to register the observer with
+     * @param string $className The observer class name
+     *
+     * @return void
+     */
+    public function registerObservers($type, $className)
+    {
+
+        // query whether or not the array with the callbacks for the
+        // passed type has already been initialized, or not
+        if (!isset($this->observers[$type])) {
+            $this->observers[$type] = array();
+        }
+
+        // append the callback with the instance of the passed type
+        $this->observers[$type][] = $this->observerFactory($className);
+    }
+
+    /**
+     * Initialize and return a new observer of the passed type.
+     *
+     * @param string $className The type of the observer to instanciate
+     *
+     * @return \TechDivision\Import\Observers\ObserverInterface The observer instance
+     */
+    public function observerFactory($className)
+    {
+        return new $className($this);
     }
 
     /**
@@ -298,17 +371,17 @@ abstract class AbstractSubject implements RegistryAwareInterface, SubjectInterfa
         }
 
         // append the callback with the instance of the passed type
-        $this->callbacks[$type][] = $this->observerFactory($className);
+        $this->callbacks[$type][] = $this->callbackFactory($className);
     }
 
     /**
-     * Initialize and return a new observer of the passed type.
+     * Initialize and return a new callback of the passed type.
      *
-     * @param string $className The type of the observer to instanciate
+     * @param string $className The type of the callback to instanciate
      *
-     * @return \TechDivision\Import\Observers\ObserverInterface The observer instance
+     * @return \TechDivision\Import\Callbacks\CallbackInterface The callback instance
      */
-    public function observerFactory($className)
+    public function callbackFactory($className)
     {
         return new $className($this);
     }
@@ -336,6 +409,16 @@ abstract class AbstractSubject implements RegistryAwareInterface, SubjectInterfa
     }
 
     /**
+     * Return's the array with the available observers.
+     *
+     * @return array The observers
+     */
+    public function getObservers()
+    {
+        return $this->observers;
+    }
+
+    /**
      * Return's the array with the available callbacks.
      *
      * @return array The callbacks
@@ -358,11 +441,11 @@ abstract class AbstractSubject implements RegistryAwareInterface, SubjectInterfa
     public function importRow(array $row)
     {
 
-        // process the callbacks
-        foreach (array_keys($this->getCallbacks()) as $type) {
-            // invoke the pre-create callbacks
-            foreach ($this->getCallbacksByType($type) as $observer) {
-                if ($observer instanceof ProductImportObserverInterface) {
+        // process the observers
+        foreach ($this->getObservers() as $type => $observers) {
+            // invoke the pre-import/import and post-import observers
+            foreach ($observers as $observer) {
+                if ($observer instanceof ObserverInterface) {
                     $row = $observer->handle($row);
                 }
             }

@@ -1,7 +1,7 @@
 <?php
 
 /**
- * TechDivision\Import\Services\RegistryAwareInterface
+ * TechDivision\Import\Callbacks\Product\TaxClassCallback
  *
  * NOTICE OF LICENSE
  *
@@ -18,24 +18,28 @@
  * @link      http://www.appserver.io
  */
 
-namespace TechDivision\Import\Services;
+namespace TechDivision\Import\Callbacks\Product;
 
 /**
- * Interface for all registry aware actions.
+ * A SLSB that handles the process to import product bunches.
  *
  * @author    Tim Wagner <tw@appserver.io>
  * @copyright 2015 TechDivision GmbH <info@appserver.io>
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link      https://github.com/wagnert/csv-import
  * @link      http://www.appserver.io
+ *
+ * @Stateless
  */
-interface RegistryAwareInterface
+class TaxClassCallback extends AbstractProductImportCallback
 {
 
     /**
-     * Return's the unique serial for this action.
-     *
-     * @return string The action's unique serial
+     * {@inheritDoc}
+     * @see \TechDivision\Import\BooleanCallback\ProductImportCallbackInterface::handle()
      */
-    public function getSerial();
+    public function handle($value)
+    {
+        return $this->getSubject()->getTaxClassIdByTaxClassName($value);
+    }
 }

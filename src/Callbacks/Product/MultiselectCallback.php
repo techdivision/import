@@ -1,7 +1,7 @@
 <?php
 
 /**
- * TechDivision\Import\Observers\Attribute\SelectObserver
+ * TechDivision\Import\Callbacks\Product\MultiselectCallback
  *
  * NOTICE OF LICENSE
  *
@@ -18,7 +18,7 @@
  * @link      http://www.appserver.io
  */
 
-namespace TechDivision\Import\Observers\Attribute;
+namespace TechDivision\Import\Callbacks\Product;
 
 use TechDivision\Import\Utils\MemberNames;
 
@@ -31,21 +31,30 @@ use TechDivision\Import\Utils\MemberNames;
  * @link      https://github.com/wagnert/csv-import
  * @link      http://www.appserver.io
  */
-class SelectObserver extends AbstractAttributeImportObserver
+class MultiselectCallback extends AbstractProductImportCallback
 {
 
     /**
      * {@inheritDoc}
-     * @see \TechDivision\Import\Observers\Attribute\AttributeImportObserverInterface::handle()
+     * @see \TechDivision\Import\Callbacks\Product\ProductImportCallbackInterface::handle()
      */
     public function handle($value)
     {
 
-        // try to load the attribute option value
-        $eavAttributeOptionValue = $this->getEavAttributeOptionValueByOptionValueAndStoreId($value, $this->getRowStoreId());
+        // explode the multiselect values
+        $vals = explode('|', $value);
 
-        // return the option ID
-        return $eavAttributeOptionValue[MemberNames::OPTION_ID];
+        // initialize the array for the mapped values
+        $mappedValues = array();
+
+        // convert the option values into option value ID's
+        foreach ($vals as $val) {
+            $eavAttributeOptionValue = $this->getEavAttributeOptionValueByOptionValueAndStoreId($val, $this->getRowStoreId());
+            $mappedValues[] = $eavAttributeOptionValue[MemberNames::OPTION_ID];
+        }
+
+        // re-concatenate and return the values
+        return implode(',', $mappedValues);
     }
 
     /**

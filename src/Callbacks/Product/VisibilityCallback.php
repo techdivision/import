@@ -1,7 +1,7 @@
 <?php
 
 /**
- * TechDivision\Import\Observers\Attribute\AbstractAttributeImportObserver
+ * TechDivision\Import\Callbacks\Product\VisibilityCallback
  *
  * NOTICE OF LICENSE
  *
@@ -18,9 +18,7 @@
  * @link      http://www.appserver.io
  */
 
-namespace TechDivision\Import\Observers\Attribute;
-
-use TechDivision\Import\Observers\AbstractObserver;
+namespace TechDivision\Import\Callbacks\Product;
 
 /**
  * A SLSB that handles the process to import product bunches.
@@ -31,6 +29,15 @@ use TechDivision\Import\Observers\AbstractObserver;
  * @link      https://github.com/wagnert/csv-import
  * @link      http://www.appserver.io
  */
-abstract class AbstractAttributeImportObserver extends AbstractObserver implements AttributeImportObserverInterface
+class VisibilityCallback extends AbstractProductImportCallback
 {
+
+    /**
+     * {@inheritDoc}
+     * @see \TechDivision\Import\BooleanCallback\ProductImportCallbackInterface::handle()
+     */
+    public function handle($value)
+    {
+        return $this->getSubject()->getVisibilityIdByValue($value);
+    }
 }

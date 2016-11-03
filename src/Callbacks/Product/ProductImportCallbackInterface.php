@@ -1,7 +1,7 @@
 <?php
 
 /**
- * TechDivision\Import\Observers\Attribute\AttributeImportOberserverInterface
+ * TechDivision\Import\Observers\Attribute\ProductImportCallbackInterface
  *
  * NOTICE OF LICENSE
  *
@@ -18,7 +18,7 @@
  * @link      http://www.appserver.io
  */
 
-namespace TechDivision\Import\Observers\Attribute;
+namespace TechDivision\Import\Callbacks\Product;
 
 /**
  * A SLSB that handles the process to import product bunches.
@@ -29,7 +29,7 @@ namespace TechDivision\Import\Observers\Attribute;
  * @link      https://github.com/wagnert/csv-import
  * @link      http://www.appserver.io
  */
-interface AttributeImportObserverInterface
+interface ProductImportCallbackInterface
 {
 
     /**

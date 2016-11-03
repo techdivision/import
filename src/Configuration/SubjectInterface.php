@@ -54,6 +54,13 @@ interface SubjectInterface
     public function getSourceDateFormat();
 
     /**
+     * Return's the array with the subject's observers.
+     *
+     * @return array The subject's observers
+     */
+    public function getObservers();
+
+    /**
      * Return's the array with the subject's callbacks.
      *
      * @return array The subject's callbacks

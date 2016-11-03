@@ -703,31 +703,6 @@ class BunchSubject extends AbstractSubject
     }
 
     /**
-     * Return's the array containing callbacks necessary to cast values found in CSV file.
-     *
-     * @param string $attributeCode The attribute code to return the callbacks for
-     *
-     * @return array The array with the callbacks
-     */
-    public function getPreCastCallbacksByAttributeCode($attributeCode)
-    {
-
-        // initialize the array for the callbacks
-        $preCastCallbacks = array();
-
-        // load the precast callbacks
-        $callbacks = $this->getCallbacksByType('pre-cast');
-
-        // query whether or not callbacks for the passed attribute code are available
-        if (isset($callbacks[$attributeCode])) {
-            $preCastCallbacks = $callbacks[$attributeCode];
-        }
-
-        // return the array with the callbacks
-        return $preCastCallbacks;
-    }
-
-    /**
      * Add the passed varation to the product with the
      * last entity ID.
      *
