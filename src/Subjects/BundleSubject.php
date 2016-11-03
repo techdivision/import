@@ -20,6 +20,8 @@
 
 namespace TechDivision\Import\Subjects;
 
+use TechDivision\Import\Utils\ColumnKeys;
+
 /**
  * A SLSB that handles the process to import product variants.
  *
@@ -33,6 +35,35 @@ class BundleSubject extends AbstractSubject
 {
 
     /**
+     * The mapping for the SKUs to the created entity IDs.
+     *
+     * @var array
+     */
+    protected $skuEntityIdMapping = array();
+
+    /**
+     * Intializes the previously loaded global data for exactly one variants.
+     *
+     * @return void
+     * @see \Importer\Csv\Actions\ProductImportAction::prepare()
+     */
+    public function setUp()
+    {
+
+        // load the entity manager and the registry processor
+        $registryProcessor = $this->getRegistryProcessor();
+
+        // load the status of the actual import process
+        $status = $registryProcessor->getAttribute($this->serial);
+
+        // load the attribute set we've prepared intially
+        $this->skuEntityIdMapping = $status['skuEntityIdMapping'];
+
+        // prepare the callbacks
+        parent::setUp();
+    }
+
+    /**
      * Imports the content of the file with the passed filename.
      *
      * @param string  $serial The unique process serial
@@ -42,5 +73,65 @@ class BundleSubject extends AbstractSubject
      */
     public function import($serial, $uid)
     {
+
+        try {
+            // track the start time
+            $startTime = microtime(true);
+
+            // set the serial (import ID) and the UID
+            $this->setSerial($serial);
+            $this->setUid($uid);
+
+            // load the connection, the system logger and the registry processor
+            $connection = $this->getConnection();
+            $systemLogger = $this->getSystemLogger();
+            $registryProcessor = $this->getRegistryProcessor();
+
+            // load the status of the actual import process
+            $status = $registryProcessor->getAttribute($serial);
+
+            // explode the data
+            $bundles = $status['bundles'][$uid][ColumnKeys::BUNDLE_VALUES];
+
+            // initialize the global global data to import a bunch
+            $this->setUp();
+
+            // log a message that the file has to be imported
+            $systemLogger->info(sprintf('Now start importing bundles %s', $uid));
+
+            // track the time needed for the import in seconds
+            $endTime = microtime(true) - $startTime;
+
+            // log a message that the variations has successfully been imported
+            $systemLogger->info(sprintf('Succesfully imported bundles %s in %f s', $uid, $endTime));
+
+        } catch (\Exception $e) {
+            // log a message with the stack trace
+            $systemLogger->error($e->__toString());
+
+            // update the status with the error message
+            $registryProcessor->mergeAttributesRecursive($serial, array('bundles' => array($uid => array('error' => $e->__toString()))));
+
+            // re-throw the exception
+            throw $e;
+        }
+
+        // clean up the data after importing the variations
+        $this->tearDown();
+    }
+
+    /**
+     * Clean up the global data after importing the bundles.
+     *
+     * @return void
+     */
+    public function tearDown()
+    {
+
+        // load the registry processor
+        $registryProcessor = $this->getRegistryProcessor();
+
+        // update the status of the actual import process
+        $registryProcessor->mergeAttributesRecursive($this->serial, array('bundles' => array($this->getUid() => array('status' => 1))));
     }
 }

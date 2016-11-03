@@ -369,7 +369,6 @@ class BunchSubject extends AbstractSubject
      * Clean up the global data after importing the bunch.
      *
      * @return void
-     * @see \Importer\Csv\Actions\ProductImportAction::prepare()
      */
     public function tearDown()
     {
@@ -377,8 +376,9 @@ class BunchSubject extends AbstractSubject
         // load the registry processor
         $registryProcessor = $this->getRegistryProcessor();
 
-        // update the status up the actual import with the found variations, SKU => entity ID mapping and the imported files
+        // update the status up the actual import with the found variations, bundles, SKU => entity ID mapping and the imported files
         $registryProcessor->mergeAttributesRecursive($this->serial, array('variations'         => $this->variations));
+        $registryProcessor->mergeAttributesRecursive($this->serial, array('bundles'            => $this->bundles));
         $registryProcessor->mergeAttributesRecursive($this->serial, array('skuEntityIdMapping' => $this->skuEntityIdMapping));
         $registryProcessor->mergeAttributesRecursive($this->serial, array('files'              => array($this->uid => array('status' => 1))));
     }
@@ -695,11 +695,25 @@ class BunchSubject extends AbstractSubject
      * @param array $variation The product variations
      *
      * @return void
-     * @uses \Import\Csv\Actions\ProductImportBunchAction::getLastEntityId()
+     * @uses \TechDivision\Import\Subjects\BunchSubject::getLastEntityId()
      */
     public function addVariation(array $variation)
     {
         $this->variations[$this->getLastEntityId()] = $variation;
+    }
+
+    /**
+     * Add the passed bundle to the product with the
+     * last entity ID.
+     *
+     * @param array $bundle The product bundles
+     *
+     * @return void
+     * @uses \TechDivision\Import\Subjects\BunchSubject::getLastEntityId()
+     */
+    public function addBundle(array $bundle)
+    {
+        $this->bundles[$this->getLastEntityId()] = $bundle;
     }
 
     /**

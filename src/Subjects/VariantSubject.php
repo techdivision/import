@@ -35,6 +35,13 @@ class VariantSubject extends AbstractSubject
 {
 
     /**
+     * The mapping for the SKUs to the created entity IDs.
+     *
+     * @var array
+     */
+    protected $skuEntityIdMapping = array();
+
+    /**
      * The ID of the parent product to relate the variant with.
      *
      * @var integer
@@ -80,7 +87,6 @@ class VariantSubject extends AbstractSubject
      * Clean up the global data after importing the variants.
      *
      * @return void
-     * @see \Importer\Csv\Actions\ProductImportAction::prepare()
      */
     public function tearDown()
     {

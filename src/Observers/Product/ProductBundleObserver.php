@@ -1,7 +1,7 @@
 <?php
 
 /**
- * TechDivision\Import\Observers\Product\ProductVariationObserver
+ * TechDivision\Import\Observers\Product\ProductBundleObserver
  *
  * NOTICE OF LICENSE
  *
@@ -21,6 +21,7 @@
 namespace TechDivision\Import\Observers\Product;
 
 use TechDivision\Import\Utils\ColumnKeys;
+use TechDivision\Import\Utils\ProductTypes;
 use TechDivision\Import\Observers\Product\AbstractProductImportObserver;
 
 /**
@@ -32,7 +33,7 @@ use TechDivision\Import\Observers\Product\AbstractProductImportObserver;
  * @link      https://github.com/wagnert/csv-import
  * @link      http://www.appserver.io
  */
-class ProductVariationObserver extends AbstractProductImportObserver
+class ProductBundleObserver extends AbstractProductImportObserver
 {
 
     /**
@@ -50,25 +51,34 @@ class ProductVariationObserver extends AbstractProductImportObserver
             return $row;
         }
 
-        // query whether or not, we've configurables
-        if (!isset($headers[ColumnKeys::CONFIGURABLE_VARIATIONS]) ||
-            !isset($row[$headers[ColumnKeys::CONFIGURABLE_VARIATIONS]]))
-        {
+        // query whether or not the product type is set
+        if (!isset($headers[ColumnKeys::PRODUCT_TYPE])) {
+            return $row;
+        }
+
+        // query whether or not we've found a bundle product
+        if ($row[$headers[ColumnKeys::PRODUCT_TYPE]] !== ProductTypes::BUNDLE) {
+            return $row;
+        }
+
+        // query whether or not, we've a bundle configuration
+        if (!isset($row[$headers[ColumnKeys::BUNDLE_VALUES]])) {
             return;
         }
 
-        // query whether or not, we've configurables
-        if ($configurableVariations = $row[$headers[ColumnKeys::CONFIGURABLE_VARIATIONS]]) {
-            // load the variation labels, if available
-            $configurableVariationLabels = $row[$headers[ColumnKeys::CONFIGURABLE_VARIATION_LABELS]];
-
-            // append the variation
-            $this->addVariation(
+        // query whether or not, we've a bundle
+        if ($bundleValues = $row[$headers[ColumnKeys::BUNDLE_VALUES]]) {
+            // prepare and append the bundle data
+            $this->addBundle(
                 array(
-                    'status'          => 0,                                         // status
-                    'uid'             => $this->getUid(),                           // UID
-                    'variations'      => explode('|', $configurableVariations),     // variations
-                    'variationLabels' => explode('|', $configurableVariationLabels) // variation labels
+                    'status'  => 0,                                                  // status
+                    'uid'     => $this->getUid(),                                    // UID
+                    ColumnKeys::BUNDLE_VALUES        => explode('|', $bundleValues), // bundles,
+                    ColumnKeys::BUNDLE_SKU_TYPE      => $row[$headers[ColumnKeys::BUNDLE_SKU_TYPE]],
+                    ColumnKeys::BUNDLE_PRICE_TYPE    => $row[$headers[ColumnKeys::BUNDLE_PRICE_TYPE]],
+                    ColumnKeys::BUNDLE_PRICE_VIEW    => $row[$headers[ColumnKeys::BUNDLE_PRICE_VIEW]],
+                    ColumnKeys::BUNDLE_WEIGHT_TYPE   => $row[$headers[ColumnKeys::BUNDLE_WEIGHT_TYPE]],
+                    ColumnKeys::BUNDLE_SHIPMENT_TYPE => $row[$headers[ColumnKeys::BUNDLE_SHIPMENT_TYPE]]
                 )
             );
         }
@@ -88,16 +98,16 @@ class ProductVariationObserver extends AbstractProductImportObserver
     }
 
     /**
-     * Add the passed varation to the product with the
+     * Add the passed bundle to the product with the
      * last entity ID.
      *
-     * @param array $variation The product variations
+     * @param array $bundle The product bundle
      *
      * @return void
      * @uses \TechDivision\Import\Subjects\BunchSubject::getLastEntityId()
      */
-    public function addVariation(array $variation)
+    public function addBundle(array $bundle)
     {
-        $this->getSubject()->addVariation($variation);
+        $this->getSubject()->addBundle($bundle);
     }
 }

@@ -153,4 +153,46 @@ class ColumnKeys
      * @var string
      */
     const ATTRIBUTE_SET_CODE = 'attribute_set_code';
+
+    /**
+     * Name for the column 'bundle_values'.
+     *
+     * @var string
+     */
+    const BUNDLE_VALUES = 'bundle_values';
+
+    /**
+     * Name for the column 'bundle_price_type'.
+     *
+     * @var string
+     */
+    const BUNDLE_PRICE_TYPE = 'bundle_price_type';
+
+    /**
+     * Name for the column 'bundle_sku_type'.
+     *
+     * @var string
+     */
+    const BUNDLE_SKU_TYPE = 'bundle_sku_type';
+
+    /**
+     * Name for the column 'bundle_price_view'.
+     *
+     * @var string
+     */
+    const BUNDLE_PRICE_VIEW = 'bundle_price_view';
+
+    /**
+     * Name for the column 'bundle_weight_type'.
+     *
+     * @var string
+     */
+    const BUNDLE_WEIGHT_TYPE = 'bundle_weight_type';
+
+    /**
+     * Name for the column 'bundle_shipment_type'.
+     *
+     * @var string
+     */
+    const BUNDLE_SHIPMENT_TYPE = 'bundle_shipment_type';
 }
