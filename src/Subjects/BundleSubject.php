@@ -91,13 +91,30 @@ class BundleSubject extends AbstractSubject
             $status = $registryProcessor->getAttribute($serial);
 
             // explode the data
-            $bundles = $status['bundles'][$uid][ColumnKeys::BUNDLE_VALUES];
+            $row = $status['bundles'][$uid];
+
+            // name=Option 1,type=select,required=1,sku=Bundle Product 1,price=0.0000,default=0,default_qty=1.0000,price_type=fixed
 
             // initialize the global global data to import a bunch
             $this->setUp();
 
             // log a message that the file has to be imported
             $systemLogger->info(sprintf('Now start importing bundles %s', $uid));
+
+            // iterate over all variations and import them
+            foreach ($row[ColumnKeys::BUNDLE_VALUES] as $bundleValues) {
+                // prepare the bundle values
+                foreach (explode(',', $bundleValues) as $values) {
+                    list ($key, $value) = explode('=', $values);
+                    $row[$key] = $value;
+                }
+
+                $row['parendId'] = $uid;
+                $row['childId'] = $this->skuEntityIdMapping[$row[ColumnKeys::SKU]];
+
+                // import the bundle itself
+                $this->importRow($row);
+            }
 
             // track the time needed for the import in seconds
             $endTime = microtime(true) - $startTime;
