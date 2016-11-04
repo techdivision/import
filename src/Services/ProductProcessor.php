@@ -145,6 +145,13 @@ class ProductProcessor implements ProductProcessorInterface
     protected $productSuperLinkAction;
 
     /**
+     * The action for product bundle option CRUD methods.
+     *
+     * @var \TechDivision\Import\Actions\ProductBundleOptionAction
+     */
+    protected $productBundleOptionAction;
+
+    /**
      * The repository to access categories.
      *
      * @var \TechDivision\Import\Repositories\CategoryRepository
@@ -575,6 +582,28 @@ class ProductProcessor implements ProductProcessorInterface
     }
 
     /**
+     * Set's the action with the product bundle option CRUD methods.
+     *
+     * @param \TechDivision\Import\Actions\ProductBundleOptionAction $productBundleOptionAction The action with the product bundle option CRUD methods
+     *
+     * @return void
+     */
+    public function setProductBundleOptionAction($productBundleOptionAction)
+    {
+        $this->productBundleOptionAction = $productBundleOptionAction;
+    }
+
+    /**
+     * Return's the action with the product bundle option CRUD methods.
+     *
+     * @return \TechDivision\Import\Actions\ProductBundleOptionAction The action instance
+     */
+    public function getProductBundleOptionAction()
+    {
+        return $this->productBundleOptionAction;
+    }
+
+    /**
      * Set's the repository to access categories.
      *
      * @param \TechDivision\Import\Repositories\CategoryRepository $categoryRepository The repository to access categories
@@ -868,6 +897,18 @@ class ProductProcessor implements ProductProcessorInterface
     public function persistStockStatus($stockStatus)
     {
         $this->getStockStatusAction()->persist($stockStatus);
+    }
+
+    /**
+     * Persist's the passed product bundle option data and return's the ID.
+     *
+     * @param array $productBundleOption The product bundle option data to persist
+     *
+     * @return string The ID of the persisted entity
+     */
+    public function persistProductBundleOption($productBundleOption)
+    {
+        return $this->getProductBundleOptionAction()->persist($productBundleOption);
     }
 
     /**

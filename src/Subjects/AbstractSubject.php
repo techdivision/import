@@ -27,6 +27,9 @@ use TechDivision\Import\Observers\ObserverInterface;
 use TechDivision\Import\Services\ProductProcessorInterface;
 use TechDivision\Import\Services\RegistryProcessorInterface;
 use TechDivision\Import\Configuration\SubjectInterface As SubjectConfigurationInterface;
+use Goodby\CSV\Import\Standard\LexerConfig;
+use Goodby\CSV\Import\Standard\Interpreter;
+use Goodby\CSV\Import\Standard\Lexer;
 
 /**
  * An abstract action implementation.
@@ -76,13 +79,6 @@ abstract class AbstractSubject implements SubjectInterface
     protected $serial;
 
     /**
-     * The UUID of the file to process.
-     *
-     * @var string
-     */
-    protected $uid;
-
-    /**
      * Array with the subject's observers.
      *
      * @var array
@@ -95,6 +91,33 @@ abstract class AbstractSubject implements SubjectInterface
      * @var array
      */
     protected $callbacks = array();
+
+    /**
+     * Contain's the column names from the header line.
+     *
+     * @var array
+     */
+    protected $headers = array();
+
+    /**
+     * Set's the array containing header row.
+     *
+     * @param array $headers The array with the header row
+     */
+    public function setHeaders(array $headers)
+    {
+        $this->headers = $headers;
+    }
+
+    /**
+     * Return's the array containing header row.
+     *
+     * @return array The array with the header row
+     */
+    public function getHeaders()
+    {
+        return $this->headers;
+    }
 
     /**
      * Set's the system configuration.
@@ -202,28 +225,6 @@ abstract class AbstractSubject implements SubjectInterface
     public function getSerial()
     {
         return $this->serial;
-    }
-
-    /**
-     * Set's the UUID of the file to process.
-     *
-     * @param string $uid The UUID
-     *
-     * @return void
-     */
-    public function setUid($uid)
-    {
-        $this->uid = $uid;
-    }
-
-    /**
-     * Return's the UUID of the file to process.
-     *
-     * @return $uid The UUID
-     */
-    public function getUid()
-    {
-        return $this->uid;
     }
 
     /**
@@ -429,6 +430,73 @@ abstract class AbstractSubject implements SubjectInterface
     }
 
     /**
+     * Imports the content of the file with the passed filename.
+     *
+     * @param string $serial   The unique process serial
+     * @param string $filename The filename to process
+     *
+     * @return void
+     */
+    public function import($serial, $filename)
+    {
+
+        try {
+            // track the start time
+            $startTime = microtime(true);
+
+            // initialize serial and file UID
+            $this->setSerial($serial);
+
+            // load the system logger and the registry processor
+            $systemLogger = $this->getSystemLogger();
+            $registryProcessor = $this->getRegistryProcessor();
+
+            // load the status of the actual import
+            $status = $registryProcessor->getAttribute($serial);
+
+            // initialize the global global data to import a bunch
+            $this->setUp();
+
+            // initialize the lexer configuration
+            $config = new LexerConfig();
+            $config->setToCharset('UTF-8');
+            $config->setFromCharset('UTF-8');
+
+            // initialize the lexer itself
+            $lexer = new Lexer($config);
+
+            // initialize the interpreter
+            $interpreter = new Interpreter();
+            $interpreter->addObserver(array($this, 'importRow'));
+
+            // log a message that the file has to be imported
+            $systemLogger->info(sprintf('Now start importing file %s', $filename));
+
+            // parse the CSV file to be imported
+            $lexer->parse($filename, $interpreter);
+
+            // track the time needed for the import in seconds
+            $endTime = microtime(true) - $startTime;
+
+            // log a message that the file has successfully been imported
+            $systemLogger->info(sprintf('Succesfully imported file %s in %f s', $filename, $endTime));
+
+        } catch (\Exception $e) {
+            // log a message with the stack trace
+            $systemLogger->error($e->__toString());
+
+            // update the import status with the error message
+            $registryProcessor->mergeAttributesRecursive($serial, array('files' => array($uid => array('error' => $e->__toString()))));
+
+            // re-throw the exception
+            throw $e;
+        }
+
+        // clean up the data after importing the bunch
+        $this->tearDown();
+    }
+
+    /**
      * Imports the passed row into the database.
      *
      * If the import failed, the exception will be catched and logged,
@@ -440,6 +508,12 @@ abstract class AbstractSubject implements SubjectInterface
      */
     public function importRow(array $row)
     {
+
+        // initialize the headers with the columns from the first line
+        if (sizeof($this->getHeaders()) === 0) {
+            $this->setHeaders(array_flip($row));
+            return;
+        }
 
         // process the observers
         foreach ($this->getObservers() as $type => $observers) {

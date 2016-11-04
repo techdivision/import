@@ -37,6 +37,28 @@ class ProductBundleObserver extends AbstractProductImportObserver
 {
 
     /**
+     * The artefact type.
+     *
+     * @var string
+     */
+    const ARTEFACT_TYPE = 'bundles';
+
+    /**
+     *
+     * @var array
+     */
+    protected $columns = array(
+        'name'        => ColumnKeys::BUNDLE_VALUE_NAME,
+        'type'        => ColumnKeys::BUNDLE_VALUE_TYPE,
+        'required'    => ColumnKeys::BUNDLE_VALUE_REQUIRED,
+        'sku'         => ColumnKeys::BUNDLE_VALUE_SKU,
+        'price'       => ColumnKeys::BUNDLE_VALUE_PRICE,
+        'default'     => ColumnKeys::BUNDLE_VALUE_DEFAULT,
+        'default_qty' => ColumnKeys::BUNDLE_VALUE_DEFAULT_QTY,
+        'price_type'  => ColumnKeys::BUNDLE_VALUE_PRICE_TYPE
+    );
+
+    /**
      * {@inheritDoc}
      * @see \Importer\Csv\Actions\Listeners\Row\ListenerInterface::handle()
      */
@@ -47,7 +69,7 @@ class ProductBundleObserver extends AbstractProductImportObserver
         $headers = $this->getHeaders();
 
         // query whether or not, we've found a new SKU => means we've found a new product
-        if ($this->isLastSku($row[$headers[ColumnKeys::SKU]])) {
+        if ($this->isLastSku($parentSku = $row[$headers[ColumnKeys::SKU]])) {
             return $row;
         }
 
@@ -68,19 +90,40 @@ class ProductBundleObserver extends AbstractProductImportObserver
 
         // query whether or not, we've a bundle
         if ($bundleValues = $row[$headers[ColumnKeys::BUNDLE_VALUES]]) {
-            // prepare and append the bundle data
-            $this->addBundle(
-                array(
-                    'status'  => 0,                                                  // status
-                    'uid'     => $this->getUid(),                                    // UID
-                    ColumnKeys::BUNDLE_VALUES        => explode('|', $bundleValues), // bundles,
+
+            // initialize the array for the product bundles
+            $artefacts = array();
+
+            // initialize the bundle with the found values
+            foreach (explode('|', $bundleValues) as $bundleValue) {
+                // initialize the product bundle itself
+                $bundle = array(
+                    ColumnKeys::BUNDLE_PARENT_SKU    => $parentSku,
                     ColumnKeys::BUNDLE_SKU_TYPE      => $row[$headers[ColumnKeys::BUNDLE_SKU_TYPE]],
                     ColumnKeys::BUNDLE_PRICE_TYPE    => $row[$headers[ColumnKeys::BUNDLE_PRICE_TYPE]],
                     ColumnKeys::BUNDLE_PRICE_VIEW    => $row[$headers[ColumnKeys::BUNDLE_PRICE_VIEW]],
                     ColumnKeys::BUNDLE_WEIGHT_TYPE   => $row[$headers[ColumnKeys::BUNDLE_WEIGHT_TYPE]],
                     ColumnKeys::BUNDLE_SHIPMENT_TYPE => $row[$headers[ColumnKeys::BUNDLE_SHIPMENT_TYPE]]
-                )
-            );
+                );
+
+                // initialize the columns
+                foreach ($this->columns as $columnKey) {
+                    $bundle[$columnKey] = null;
+                }
+
+                // set the values
+                $values = array();
+                foreach (explode(',', $bundleValue) as $values) {
+                    list ($key, $value) = explode('=', $values);
+                    $bundle[$this->columns[$key]] = $value;
+                }
+
+                // prepare and append the bundle data
+                $artefacts[] = $bundle;
+            }
+
+            // append the bundles to the subject
+            $this->addArtefacts($artefacts);
         }
 
         // returns the row
@@ -88,26 +131,16 @@ class ProductBundleObserver extends AbstractProductImportObserver
     }
 
     /**
-     * Return's the UID of the file to be imported.
-     *
-     * @return string The UID of the file to be importded
-     */
-    public function getUid()
-    {
-        return $this->getSubject()->getUid();
-    }
-
-    /**
-     * Add the passed bundle to the product with the
+     * Add the passed product type artefacts to the product with the
      * last entity ID.
      *
-     * @param array $bundle The product bundle
+     * @param array $artefacts The product type artefacts
      *
      * @return void
      * @uses \TechDivision\Import\Subjects\BunchSubject::getLastEntityId()
      */
-    public function addBundle(array $bundle)
+    public function addArtefacts(array $artefacts)
     {
-        $this->getSubject()->addBundle($bundle);
+        $this->getSubject()->addArtefacts(ProductBundleObserver::ARTEFACT_TYPE, $artefacts);
     }
 }

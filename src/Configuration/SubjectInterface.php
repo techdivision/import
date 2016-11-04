@@ -40,11 +40,11 @@ interface SubjectInterface
     public function getClassName();
 
     /**
-     * Return's the subject's identifier.
+     * Return's the prefix for the import files.
      *
-     * @return string The subject's identifier
+     * @return string The prefix
      */
-    public function getIdentifier();
+    public function getPrefix();
 
     /**
      * Return's the subject's source date format to use.
@@ -52,6 +52,13 @@ interface SubjectInterface
      * @return string The source date format
      */
     public function getSourceDateFormat();
+
+    /**
+     * Return's the subject's target dir to use.
+     *
+     * @return string The target dir
+     */
+    public function getTargetDir();
 
     /**
      * Return's the array with the subject's observers.

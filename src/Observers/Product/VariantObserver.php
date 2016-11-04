@@ -22,6 +22,7 @@ namespace TechDivision\Import\Observers\Product;
 
 use TechDivision\Import\Utils\MemberNames;
 use TechDivision\Import\Observers\Product\AbstractProductImportObserver;
+use TechDivision\Import\Utils\ColumnKeys;
 
 /**
  * A SLSB that handles the process to import product bunches.
@@ -42,8 +43,18 @@ class VariantObserver extends AbstractProductImportObserver
     public function handle(array $row)
     {
 
+        // load the header information
+        $headers = $this->getHeaders();
+
         // extract the parent/child ID as well as option value and variation label from the row
-        list ($childId, $parentId, $optionValue, $variationLabel) = $row;
+        $parentSku = $row[$headers[ColumnKeys::VARIANT_PARENT_SKU]];
+        $childSku = $row[$headers[ColumnKeys::VARIANT_CHILD_SKU]];
+        $optionValue = $row[$headers[ColumnKeys::VARIANT_OPTION_VALUE]];
+        $variationLabel = $row[$headers[ColumnKeys::VARIANT_VARIATION_LABEL]];
+
+        // load parent/child IDs
+        $parentId = $this->mapSkuToEntityId($parentSku);
+        $childId = $this->mapSkuToEntityId($childSku);
 
         // create the product relation
         $this->persistProductRelation(array($parentId, $childId));
@@ -84,6 +95,19 @@ class VariantObserver extends AbstractProductImportObserver
 
         // returns the row
         return $row;
+    }
+
+    /**
+     * Return the entity ID for the passed SKU.
+     *
+     * @param string $sku The SKU to return the entity ID for
+     *
+     * @return integer The mapped entity ID
+     * @throws \Exception Is thrown if the SKU is not mapped yet
+     */
+    public function mapSkuToEntityId($sku)
+    {
+        return $this->getSubject()->mapSkuToEntityId($sku);
     }
 
     /**

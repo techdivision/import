@@ -20,13 +20,17 @@
 
 namespace TechDivision\Import\Subjects;
 
+
 use Goodby\CSV\Import\Standard\Lexer;
 use Goodby\CSV\Import\Standard\Interpreter;
 use Goodby\CSV\Import\Standard\LexerConfig;
+use Goodby\CSV\Export\Standard\Exporter;
+use Goodby\CSV\Export\Standard\ExporterConfig;
 use TechDivision\Import\Utils\MemberNames;
 use TechDivision\Import\Utils\RegistryKeys;
 use TechDivision\Import\Utils\VisibilityKeys;
 use TechDivision\Import\Services\RegistryProcessor;
+use TechDivision\Import\Utils\ColumnKeys;
 
 /**
  * A SLSB that handles the process to import product bunches.
@@ -39,13 +43,6 @@ use TechDivision\Import\Services\RegistryProcessor;
  */
 class BunchSubject extends AbstractSubject
 {
-
-    /**
-     * Contain's the column names from the header line.
-     *
-     * @var array
-     */
-    protected $headers = array();
 
     /**
      * The mapping for the supported backend types (for the product entity) => persist methods.
@@ -111,11 +108,11 @@ class BunchSubject extends AbstractSubject
     );
 
     /**
-     * The array containing the configurable product configuration.
+     * The array containing the data for product type configuration (configurables, bundles, etc).
      *
      * @var array
      */
-    protected $variations = array();
+    protected $artefacs = array();
 
     /**
      * The mapping for the SKUs to the created entity IDs.
@@ -200,48 +197,6 @@ class BunchSubject extends AbstractSubject
      * @var string
      */
     protected $storeViewCode;
-
-    /**
-     * Set's the UID of the file to be imported.
-     *
-     * @param string $serial The UID of the file to be importded
-     *
-     * @return void
-     */
-    public function setUid($uid)
-    {
-        $this->uid = $uid;
-    }
-
-    /**
-     * Return's the UID of the file to be imported.
-     *
-     * @return string The UID of the file to be importded
-     */
-    public function getUid()
-    {
-        return $this->uid;
-    }
-
-    /**
-     * Set's the array containing header row.
-     *
-     * @param array $headers The array with the header row
-     */
-    public function setHeaders(array $headers)
-    {
-        $this->headers = $headers;
-    }
-
-    /**
-     * Return's the array containing header row.
-     *
-     * @return array The array with the header row
-     */
-    public function getHeaders()
-    {
-        return $this->headers;
-    }
 
     /**
      * Set's the SKU of the last imported product.
@@ -373,108 +328,48 @@ class BunchSubject extends AbstractSubject
     public function tearDown()
     {
 
+        // export the artefacts
+        $this->exportArtefacts();
+
         // load the registry processor
         $registryProcessor = $this->getRegistryProcessor();
 
         // update the status up the actual import with the found variations, bundles, SKU => entity ID mapping and the imported files
+        /*
         $registryProcessor->mergeAttributesRecursive($this->serial, array('variations'         => $this->variations));
         $registryProcessor->mergeAttributesRecursive($this->serial, array('bundles'            => $this->bundles));
+        */
         $registryProcessor->mergeAttributesRecursive($this->serial, array('skuEntityIdMapping' => $this->skuEntityIdMapping));
         $registryProcessor->mergeAttributesRecursive($this->serial, array('files'              => array($this->uid => array('status' => 1))));
     }
 
     /**
-     * Imports the content of the file with the passed filename.
-     *
-     * @param string $serial The unique process serial
-     * @param string $uid    The UUID of the file to process
-     *
-     * @return void
+     * Export's the artefacts
      */
-    public function import($serial, $uid)
+    public function exportArtefacts()
     {
 
-        try {
-            // track the start time
-            $startTime = microtime(true);
+        // load the target directory and the actual timestamp
+        $targetDir = $this->getConfiguration()->getTargetDir();
+        $timestamp = date('Ymd-His');
 
-            // initialize serial and file UID
-            $this->setSerial($serial);
-            $this->setUid($uid);
-
-            // load the system logger and the registry processor
-            $systemLogger = $this->getSystemLogger();
-            $registryProcessor = $this->getRegistryProcessor();
-
-            // load the status of the actual import
-            $status = $registryProcessor->getAttribute($serial);
-
-            // load the filename with the bunch to import
-            $filename = $status['files'][$uid]['filename'];
-
-            // initialize the global global data to import a bunch
-            $this->setUp();
-
-            // initialize the lexer configuration
-            $config = new LexerConfig();
-            $config->setToCharset('UTF-8');
-            $config->setFromCharset('UTF-8');
-
-            // initialize the lexer itself
-            $lexer = new Lexer($config);
-
-            // initialize the interpreter
-            $interpreter = new Interpreter();
-            $interpreter->addObserver(array($this, 'importRow'));
-
-            // log a message that the file has to be imported
-            $systemLogger->info(sprintf('Now start importing file %s', $filename));
-
-            // parse the CSV file to be imported
-            $lexer->parse($filename, $interpreter);
-
-            // track the time needed for the import in seconds
-            $endTime = microtime(true) - $startTime;
-
-            // log a message that the file has successfully been imported
-            $systemLogger->info(sprintf('Succesfully imported file %s in %f s', $filename, $endTime));
-
-        } catch (\Exception $e) {
-            // log a message with the stack trace
-            $systemLogger->error($e->__toString());
-
-            // update the import status with the error message
-            $registryProcessor->mergeAttributesRecursive($serial, array('files' => array($uid => array('error' => $e->__toString()))));
-
-            // re-throw the exception
-            throw $e;
+        // iterate over the artefacts and export them
+        foreach ($this->artefacs as $artefactType => $artefacts) {
+            // initialize the the exporter
+            $exporter = new Exporter(new ExporterConfig());
+            // initialize the counter
+            $counter = 0;
+            // export the arte
+            foreach ($artefacts as $artefact) {
+                // initialize the bunch
+                $bunch = array();
+                // set the bunch header and append the artefact data
+                $bunch[] = array_keys(reset($artefact));
+                $bunch = array_merge($bunch, $artefact);
+                // export the artefact (bunch)
+                $exporter->export(sprintf('%s/%s-%s_%d.csv', $targetDir, $artefactType, $timestamp, $counter++), $bunch);
+            }
         }
-
-        // clean up the data after importing the bunch
-        $this->tearDown();
-    }
-
-    /**
-     * Imports the passed row into the database.
-     *
-     * If the import failed, the exception will be catched and logged,
-     * but the import process will be continued.
-     *
-     * @param array $row The row with the data to be imported
-     *
-     * @return void
-     */
-    public function importRow(array $row)
-    {
-
-        // initialize the headers with the columns from the first line
-        if (sizeof($this->getHeaders()) === 0) {
-            $this->setHeaders(array_flip($row));
-            return;
-        }
-
-        // invoke the parent method => invoke the callbacks
-        parent::importRow($row);
     }
 
     /**
@@ -689,31 +584,17 @@ class BunchSubject extends AbstractSubject
     }
 
     /**
-     * Add the passed varation to the product with the
+     * Add the passed product type artefacts to the product with the
      * last entity ID.
      *
-     * @param array $variation The product variations
+     * @param array $artefacts The product type artefacts
      *
      * @return void
      * @uses \TechDivision\Import\Subjects\BunchSubject::getLastEntityId()
      */
-    public function addVariation(array $variation)
+    public function addArtefacts($type, array $artefacts)
     {
-        $this->variations[$this->getLastEntityId()] = $variation;
-    }
-
-    /**
-     * Add the passed bundle to the product with the
-     * last entity ID.
-     *
-     * @param array $bundle The product bundles
-     *
-     * @return void
-     * @uses \TechDivision\Import\Subjects\BunchSubject::getLastEntityId()
-     */
-    public function addBundle(array $bundle)
-    {
-        $this->bundles[$this->getLastEntityId()] = $bundle;
+        $this->artefacs[$type][$this->getLastEntityId()] = $artefacts;
     }
 
     /**

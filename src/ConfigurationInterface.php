@@ -47,13 +47,6 @@ interface ConfigurationInterface
     public function getSubjects();
 
     /**
-     * Return's the prefix for the import files.
-     *
-     * @return string The prefix
-     */
-    public function getPrefix();
-
-    /**
      * Return's the source directory that has to be watched for new files.
      *
      * @return string The source directory

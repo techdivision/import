@@ -195,4 +195,95 @@ class ColumnKeys
      * @var string
      */
     const BUNDLE_SHIPMENT_TYPE = 'bundle_shipment_type';
+
+    /**
+     * Name for the column 'bundle_parent_sku'.
+     *
+     * @var string
+     */
+    const BUNDLE_PARENT_SKU = 'bundle_parent_sku';
+
+    /**
+     * Name for the column 'bundle_value_name'.
+     *
+     * @var string
+     */
+    const BUNDLE_VALUE_NAME = 'bundle_value_name';
+
+    /**
+     * Name for the column 'bundle_value_type'.
+     *
+     * @var string
+     */
+    const BUNDLE_VALUE_TYPE = 'bundle_value_type';
+
+    /**
+     * Name for the column 'bundle_value_required'.
+     *
+     * @var string
+     */
+    const BUNDLE_VALUE_REQUIRED = 'bundle_value_required';
+
+    /**
+     * Name for the column 'bundle_value_sku'.
+     *
+     * @var string
+     */
+    const BUNDLE_VALUE_SKU = 'bundle_value_sku';
+
+    /**
+     * Name for the column 'bundle_value_price'.
+     *
+     * @var string
+     */
+    const BUNDLE_VALUE_PRICE = 'bundle_value_price';
+
+    /**
+     * Name for the column 'bundle_value_default'.
+     *
+     * @var string
+     */
+    const BUNDLE_VALUE_DEFAULT = 'bundle_value_default';
+
+    /**
+     * Name for the column 'bundle_value_default_qty'.
+     *
+     * @var string
+     */
+    const BUNDLE_VALUE_DEFAULT_QTY = 'bundle_value_default_qty';
+
+    /**
+     * Name for the column 'bundle_price_type'.
+     *
+     * @var string
+     */
+    const BUNDLE_VALUE_PRICE_TYPE = 'bundle_value_price_type';
+
+    /**
+     * Name for the column 'variant_parent_sku'.
+     *
+     * @var string
+     */
+    const VARIANT_PARENT_SKU = 'variant_parent_sku';
+
+    /**
+     * Name for the column 'variant_child_sku'.
+     *
+     * @var string
+     */
+    const VARIANT_CHILD_SKU = 'variant_child_sku';
+
+    /**
+     * Name for the column 'variant_option_value'.
+     *
+     * @var string
+     */
+    const VARIANT_OPTION_VALUE = 'variant_option_value';
+
+    /**
+     * Name for the column 'variant_variation_label'.
+     *
+     * @var string
+     */
+    const VARIANT_VARIATION_LABEL = 'variant_variation_label';
 }

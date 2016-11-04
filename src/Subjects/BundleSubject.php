@@ -64,80 +64,6 @@ class BundleSubject extends AbstractSubject
     }
 
     /**
-     * Imports the content of the file with the passed filename.
-     *
-     * @param string  $serial The unique process serial
-     * @param integer $uid    The UUID of the file to process
-     *
-     * @return void
-     */
-    public function import($serial, $uid)
-    {
-
-        try {
-            // track the start time
-            $startTime = microtime(true);
-
-            // set the serial (import ID) and the UID
-            $this->setSerial($serial);
-            $this->setUid($uid);
-
-            // load the connection, the system logger and the registry processor
-            $connection = $this->getConnection();
-            $systemLogger = $this->getSystemLogger();
-            $registryProcessor = $this->getRegistryProcessor();
-
-            // load the status of the actual import process
-            $status = $registryProcessor->getAttribute($serial);
-
-            // explode the data
-            $row = $status['bundles'][$uid];
-
-            // name=Option 1,type=select,required=1,sku=Bundle Product 1,price=0.0000,default=0,default_qty=1.0000,price_type=fixed
-
-            // initialize the global global data to import a bunch
-            $this->setUp();
-
-            // log a message that the file has to be imported
-            $systemLogger->info(sprintf('Now start importing bundles %s', $uid));
-
-            // iterate over all variations and import them
-            foreach ($row[ColumnKeys::BUNDLE_VALUES] as $bundleValues) {
-                // prepare the bundle values
-                foreach (explode(',', $bundleValues) as $values) {
-                    list ($key, $value) = explode('=', $values);
-                    $row[$key] = $value;
-                }
-
-                $row['parendId'] = $uid;
-                $row['childId'] = $this->skuEntityIdMapping[$row[ColumnKeys::SKU]];
-
-                // import the bundle itself
-                $this->importRow($row);
-            }
-
-            // track the time needed for the import in seconds
-            $endTime = microtime(true) - $startTime;
-
-            // log a message that the variations has successfully been imported
-            $systemLogger->info(sprintf('Succesfully imported bundles %s in %f s', $uid, $endTime));
-
-        } catch (\Exception $e) {
-            // log a message with the stack trace
-            $systemLogger->error($e->__toString());
-
-            // update the status with the error message
-            $registryProcessor->mergeAttributesRecursive($serial, array('bundles' => array($uid => array('error' => $e->__toString()))));
-
-            // re-throw the exception
-            throw $e;
-        }
-
-        // clean up the data after importing the variations
-        $this->tearDown();
-    }
-
-    /**
      * Clean up the global data after importing the bundles.
      *
      * @return void
@@ -149,6 +75,38 @@ class BundleSubject extends AbstractSubject
         $registryProcessor = $this->getRegistryProcessor();
 
         // update the status of the actual import process
-        $registryProcessor->mergeAttributesRecursive($this->serial, array('bundles' => array($this->getUid() => array('status' => 1))));
+        // $registryProcessor->mergeAttributesRecursive($this->serial, array('bundles' => array($this->getUid() => array('status' => 1))));
+    }
+
+    /**
+     * Return the entity ID for the passed SKU.
+     *
+     * @param string $sku The SKU to return the entity ID for
+     *
+     * @return integer The mapped entity ID
+     * @throws \Exception Is thrown if the SKU is not mapped yet
+     */
+    public function mapSkuToEntityId($sku)
+    {
+
+        // query weather or not the SKU has been mapped
+        if (isset($this->skuEntityIdMapping[$sku])) {
+            return $this->skuEntityIdMapping[$sku];
+        }
+
+        // throw an exception if the SKU has not been mapped yet
+        throw new \Exception(sprintf('Found not mapped SKU %s', $sku));
+    }
+
+    /**
+     * Persist's the passed product bundle option data and return's the ID.
+     *
+     * @param array $productBundleOption The product bundle option data to persist
+     *
+     * @return string The ID of the persisted entity
+     */
+    public function persistProductBundleOption($productBundleOption)
+    {
+        return $this->getProductProcessor()->persistProductBundleOption($productBundleOption);
     }
 }

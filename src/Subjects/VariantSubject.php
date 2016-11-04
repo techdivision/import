@@ -95,101 +95,7 @@ class VariantSubject extends AbstractSubject
         $registryProcessor = $this->getRegistryProcessor();
 
         // update the status of the actual import process
-        $registryProcessor->mergeAttributesRecursive($this->serial, array('variations' => array($this->getUid() => array('status' => 1))));
-    }
-
-    /**
-     * Imports the content of the file with the passed filename.
-     *
-     * @param string  $serial The unique process serial
-     * @param integer $uid    The UUID of the file to process
-     *
-     * @return void
-     */
-    public function import($serial, $uid)
-    {
-
-        try {
-            // track the start time
-            $startTime = microtime(true);
-
-            // set the serial (import ID) and the UID
-            $this->setSerial($serial);
-            $this->setUid($uid);
-
-            // load the connection, the system logger and the registry processor
-            $connection = $this->getConnection();
-            $systemLogger = $this->getSystemLogger();
-            $registryProcessor = $this->getRegistryProcessor();
-
-            // load the status of the actual import process
-            $status = $registryProcessor->getAttribute($serial);
-
-            // explode the data
-            $variations = $status['variations'][$uid]['variations'];
-            $variationLabels = $status['variations'][$uid]['variationLabels'];
-
-            // create an array with the variation labels (attribute code as key)
-            $varLabels = array();
-            foreach ($variationLabels as $variationLabel) {
-                if (strstr($variationLabel, '=')) {
-                    list ($key, $value) = explode('=', $variationLabel);
-                    $varLabels[$key] = $value;
-                }
-            }
-
-            // initialize the global global data to import a bunch
-            $this->setUp();
-
-            // log a message that the file has to be imported
-            $systemLogger->info(sprintf('Now start importing variations %s', $uid));
-
-            // iterate over all variations and import them
-            foreach ($variations as $variation) {
-
-                // sku=Configurable Product 48-option 2,configurable_variation=option 2
-                list ($sku, $option) = explode(',', $variation);
-
-                // explode the variations child ID as well as option code and value
-                list (, $childId) = explode('=', $sku);
-                list ($optionCode, $optionValue) = explode('=', $option);
-
-                // load the apropriate variation label
-                $varLabel = '';
-                if (isset($varLabels[$optionCode])) {
-                    $varLabel = $varLabels[$optionCode];
-                }
-
-                // import the varition itself
-                $this->importRow(
-                    array(
-                        $this->skuEntityIdMapping[$childId],
-                        $uid,
-                        $optionValue,
-                        $varLabel
-                    )
-                );
-            }
-
-            // track the time needed for the import in seconds
-            $endTime = microtime(true) - $startTime;
-
-            // log a message that the variations has successfully been imported
-            $systemLogger->info(sprintf('Succesfully imported variations %s in %f s', $uid, $endTime));
-
-        } catch (\Exception $e) {
-            // log a message with the stack trace
-            $systemLogger->error($e->__toString());
-
-            // update the status with the error message
-            $registryProcessor->mergeAttributesRecursive($serial, array('variations' => array($uid => array('error' => $e->__toString()))));
-
-            // re-throw the exception
-            throw $e;
-        }
-
-        // clean up the data after importing the variations
-        $this->tearDown();
+        // $registryProcessor->mergeAttributesRecursive($this->serial, array('variations' => array($this->getUid() => array('status' => 1))));
     }
 
     /**
@@ -222,6 +128,26 @@ class VariantSubject extends AbstractSubject
     public function getStores()
     {
         return $this->stores;
+    }
+
+    /**
+     * Return the entity ID for the passed SKU.
+     *
+     * @param string $sku The SKU to return the entity ID for
+     *
+     * @return integer The mapped entity ID
+     * @throws \Exception Is thrown if the SKU is not mapped yet
+     */
+    public function mapSkuToEntityId($sku)
+    {
+
+        // query weather or not the SKU has been mapped
+        if (isset($this->skuEntityIdMapping[$sku])) {
+            return $this->skuEntityIdMapping[$sku];
+        }
+
+        // throw an exception if the SKU has not been mapped yet
+        throw new \Exception(sprintf('Found not mapped SKU %s', $sku));
     }
 
     /**

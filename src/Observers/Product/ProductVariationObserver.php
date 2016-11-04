@@ -21,6 +21,7 @@
 namespace TechDivision\Import\Observers\Product;
 
 use TechDivision\Import\Utils\ColumnKeys;
+use TechDivision\Import\Observers\AbstractObserver;
 use TechDivision\Import\Observers\Product\AbstractProductImportObserver;
 
 /**
@@ -36,6 +37,13 @@ class ProductVariationObserver extends AbstractProductImportObserver
 {
 
     /**
+     * The artefact type.
+     *
+     * @var string
+     */
+    const ARTEFACT_TYPE = 'variants';
+
+    /**
      * {@inheritDoc}
      * @see \Importer\Csv\Actions\Listeners\Row\ListenerInterface::handle()
      */
@@ -46,7 +54,7 @@ class ProductVariationObserver extends AbstractProductImportObserver
         $headers = $this->getHeaders();
 
         // query whether or not, we've found a new SKU => means we've found a new product
-        if ($this->isLastSku($row[$headers[ColumnKeys::SKU]])) {
+        if ($this->isLastSku($parentSku = $row[$headers[ColumnKeys::SKU]])) {
             return $row;
         }
 
@@ -62,15 +70,45 @@ class ProductVariationObserver extends AbstractProductImportObserver
             // load the variation labels, if available
             $configurableVariationLabels = $row[$headers[ColumnKeys::CONFIGURABLE_VARIATION_LABELS]];
 
-            // append the variation
-            $this->addVariation(
-                array(
-                    'status'          => 0,                                         // status
-                    'uid'             => $this->getUid(),                           // UID
-                    'variations'      => explode('|', $configurableVariations),     // variations
-                    'variationLabels' => explode('|', $configurableVariationLabels) // variation labels
-                )
-            );
+            // create an array with the variation labels (attribute code as key)
+            $varLabels = array();
+            foreach (explode('|', $configurableVariationLabels) as $variationLabel) {
+                if (strstr($variationLabel, '=')) {
+                    list ($key, $value) = explode('=', $variationLabel);
+                    $varLabels[$key] = $value;
+                }
+            }
+
+            // intialize the array for the variations
+            $artefacts = array();
+
+            // iterate over all variations and import them
+            foreach (explode('|', $configurableVariations) as $variation) {
+
+                // sku=Configurable Product 48-option 2,configurable_variation=option 2
+                list ($sku, $option) = explode(',', $variation);
+
+                // explode the variations child ID as well as option code and value
+                list (, $childSku) = explode('=', $sku);
+                list ($optionCode, $optionValue) = explode('=', $option);
+
+                // load the apropriate variation label
+                $varLabel = '';
+                if (isset($varLabels[$optionCode])) {
+                    $varLabel = $varLabels[$optionCode];
+                }
+
+                // append the product variation
+                $artefacts[] = array(
+                    ColumnKeys::VARIANT_PARENT_SKU      => $parentSku,
+                    ColumnKeys::VARIANT_CHILD_SKU       => $childSku,
+                    ColumnKeys::VARIANT_OPTION_VALUE    => $optionValue,
+                    ColumnKeys::VARIANT_VARIATION_LABEL => $varLabel
+                );
+            }
+
+            // append the variations to the subject
+            $this->addArtefacts($artefacts);
         }
 
         // returns the row
@@ -78,26 +116,16 @@ class ProductVariationObserver extends AbstractProductImportObserver
     }
 
     /**
-     * Return's the UID of the file to be imported.
-     *
-     * @return string The UID of the file to be importded
-     */
-    public function getUid()
-    {
-        return $this->getSubject()->getUid();
-    }
-
-    /**
-     * Add the passed varation to the product with the
+     * Add the passed product type artefacts to the product with the
      * last entity ID.
      *
-     * @param array $variation The product variations
+     * @param array $artefacts The product type artefacts
      *
      * @return void
      * @uses \TechDivision\Import\Subjects\BunchSubject::getLastEntityId()
      */
-    public function addVariation(array $variation)
+    public function addArtefacts(array $artefacts)
     {
-        $this->getSubject()->addVariation($variation);
+        $this->getSubject()->addArtefacts(ProductVariationObserver::ARTEFACT_TYPE, $artefacts);
     }
 }
