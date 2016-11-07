@@ -23,7 +23,7 @@ namespace TechDivision\Import\Actions\Processors\Batch;
 use TechDivision\Import\Utils\SqlStatements;
 
 /**
- * The product persist batch processor implementation.
+ * The product bundle option persist batch processor implementation.
  *
  * @author    Tim Wagner <tw@appserver.io>
  * @copyright 2015 TechDivision GmbH <info@appserver.io>

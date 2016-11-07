@@ -23,6 +23,7 @@ namespace TechDivision\Import\Observers\Product;
 use TechDivision\Import\Utils\MemberNames;
 use TechDivision\Import\Observers\Product\AbstractProductImportObserver;
 use TechDivision\Import\Utils\ColumnKeys;
+use TechDivision\Import\Utils\StoreViewCodes;
 
 /**
  * A SLSB that handles the process to import product bunches.
@@ -60,8 +61,8 @@ class VariantObserver extends AbstractProductImportObserver
         $this->persistProductRelation(array($parentId, $childId));
         $this->persistProductSuperLink(array($childId, $parentId));
 
-        // load the admin store/ID
-        $store = $this->getStoreByStoreCode('admin');
+        // load the store ID
+        $store = $this->getStoreByStoreCode($row[$headers[ColumnKeys::STORE_VIEW_CODE]] ?: StoreViewCodes::ADMIN);
         $storeId = $store[MemberNames::STORE_ID];
 
         // load the EAV attribute
@@ -82,15 +83,10 @@ class VariantObserver extends AbstractProductImportObserver
                 $variationLabel = $eavAttribute[MemberNames::FRONTENT_LABEL];
             }
 
-            // create the super attribute labels for the available stores
-            foreach ($this->getStores() as $store) {
-                // load the store ID
-                $storeId = $store[MemberNames::STORE_ID];
-                // prepare the super attribute label
-                $params = array($productSuperAttributeId, $storeId, 0, $variationLabel);
-                // save the super attribute label
-                $this->persistProductSuperAttributeLabel($params);
-            }
+            // prepare the super attribute label
+            $params = array($productSuperAttributeId, $storeId, 0, $variationLabel);
+            // save the super attribute label
+            $this->persistProductSuperAttributeLabel($params);
         }
 
         // returns the row

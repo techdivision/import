@@ -286,4 +286,11 @@ class ColumnKeys
      * @var string
      */
     const VARIANT_VARIATION_LABEL = 'variant_variation_label';
+
+    /**
+     * Name for the column 'name'.
+     *
+     * @var string
+     */
+    const NAME = 'name';
 }

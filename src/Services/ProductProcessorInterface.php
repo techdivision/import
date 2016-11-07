@@ -172,6 +172,27 @@ interface ProductProcessorInterface
     public function getProductSuperLinkAction();
 
     /**
+     * Return's the action with the product bundle option CRUD methods.
+     *
+     * @return \TechDivision\Import\Actions\ProductBundleOptionAction The action instance
+     */
+    public function getProductBundleOptionAction();
+
+    /**
+     * Return's the action with the product bundle option value CRUD methods.
+     *
+     * @return \TechDivision\Import\Actions\ProductBundleOptionValueAction The action instance
+     */
+    public function getProductBundleOptionValueAction();
+
+    /**
+     * Return's the action with the product bundle selection CRUD methods.
+     *
+     * @return \TechDivision\Import\Actions\ProductBundleSelectionAction The action instance
+     */
+    public function getProductBundleSelectionAction();
+
+    /**
      * Return's the repository to access categories.
      *
      * @return \TechDivision\Import\Repositories\CategoryRepository The repository instance
@@ -316,6 +337,33 @@ interface ProductProcessorInterface
      * @return void
      */
     public function persistStockStatus($stockStatus);
+
+    /**
+     * Persist's the passed product bundle option data and return's the ID.
+     *
+     * @param array $productBundleOption The product bundle option data to persist
+     *
+     * @return string The ID of the persisted entity
+     */
+    public function persistProductBundleOption($productBundleOption);
+
+    /**
+     * Persist's the passed product bundle option value data.
+     *
+     * @param array $productBundleOptionValue The product bundle option value data to persist
+     *
+     * @return void
+     */
+    public function persistProductBundleOptionValue($productBundleOptionValue);
+
+    /**
+     * Persist's the passed product bundle selection data and return's the ID.
+     *
+     * @param array $productBundleOption The product bundle selection data to persist
+     *
+     * @return string The ID of the persisted entity
+     */
+    public function persistProductBundleSelection($productBundleSelection);
 
     /**
      * Return's the EAV attribute set with the passed ID.

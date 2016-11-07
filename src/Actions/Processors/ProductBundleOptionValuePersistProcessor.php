@@ -1,7 +1,7 @@
 <?php
 
 /**
- * TechDivision\Import\Actions\Processors\ProductBundleOptionPersistProcessor
+ * TechDivision\Import\Actions\Processors\ProductBundleOptionValuePersistProcessor
  *
  * NOTICE OF LICENSE
  *
@@ -21,7 +21,7 @@
 namespace TechDivision\Import\Actions\Processors;
 
 /**
- * The product bundle option persist processor implementation.
+ * The product bundle option value persist processor implementation.
  *
  * @author    Tim Wagner <tw@appserver.io>
  * @copyright 2015 TechDivision GmbH <info@appserver.io>
@@ -29,7 +29,7 @@ namespace TechDivision\Import\Actions\Processors;
  * @link      https://github.com/wagnert/csv-import
  * @link      http://www.appserver.io
  */
-class ProductBundleOptionPersistProcessor extends AbstractPersistProcessor
+class ProductBundleOptionValuePersistProcessor extends AbstractPersistProcessor
 {
 
     /**
@@ -39,19 +39,6 @@ class ProductBundleOptionPersistProcessor extends AbstractPersistProcessor
     protected function getStatement()
     {
         $utilityClassName = $this->getUtilityClassName();
-        return $utilityClassName::CREATE_PRODUCT_BUNDLE_OPTION;
-    }
-
-    /**
-     * Persist's the passed row.
-     *
-     * @param array $row The row to persist
-     *
-     * @return string The last inserted ID
-     */
-    public function execute($row)
-    {
-        $this->getPreparedStatement()->execute($row);
-        return $this->getConnection()->lastInsertId();
+        return $utilityClassName::CREATE_PRODUCT_BUNDLE_OPTION_VALUE;
     }
 }

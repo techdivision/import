@@ -152,6 +152,27 @@ class ProductProcessor implements ProductProcessorInterface
     protected $productBundleOptionAction;
 
     /**
+     * The action for product bundle option value CRUD methods.
+     *
+     * @var \TechDivision\Import\Actions\ProductBundleOptionValueAction
+     */
+    protected $productBundleOptionValueAction;
+
+    /**
+     * The action for product bundle selection CRUD methods.
+     *
+     * @var \TechDivision\Import\Actions\ProductBundleSelectionAction
+     */
+    protected $productBundleSelectionAction;
+
+    /**
+     * The action for product bundle selection price CRUD methods.
+     *
+     * @var \TechDivision\Import\Actions\ProductBundleSelectionPriceAction
+     */
+    protected $productBundleSelectionPriceAction;
+
+    /**
      * The repository to access categories.
      *
      * @var \TechDivision\Import\Repositories\CategoryRepository
@@ -604,6 +625,72 @@ class ProductProcessor implements ProductProcessorInterface
     }
 
     /**
+     * Set's the action with the product bundle option value CRUD methods.
+     *
+     * @param \TechDivision\Import\Actions\ProductBundleOptionValueAction $productBundleOptionValueAction The action with the product bundle option value CRUD methods
+     *
+     * @return void
+     */
+    public function setProductBundleOptionValueAction($productBundleOptionValueAction)
+    {
+        $this->productBundleOptionValueAction = $productBundleOptionValueAction;
+    }
+
+    /**
+     * Return's the action with the product bundle option value CRUD methods.
+     *
+     * @return \TechDivision\Import\Actions\ProductBundleOptionValueAction The action instance
+     */
+    public function getProductBundleOptionValueAction()
+    {
+        return $this->productBundleOptionValueAction;
+    }
+
+    /**
+     * Set's the action with the product bundle selection CRUD methods.
+     *
+     * @param \TechDivision\Import\Actions\ProductBundleSelectionAction $productBundleSelectionAction The action with the product bundle selection CRUD methods
+     *
+     * @return void
+     */
+    public function setProductBundleSelectionAction($productBundleSelectionAction)
+    {
+        $this->productBundleSelectionAction = $productBundleSelectionAction;
+    }
+
+    /**
+     * Return's the action with the product bundle selection CRUD methods.
+     *
+     * @return \TechDivision\Import\Actions\ProductBundleSelectionAction The action instance
+     */
+    public function getProductBundleSelectionAction()
+    {
+        return $this->productBundleSelectionAction;
+    }
+
+    /**
+     * Set's the action with the product bundle selection price CRUD methods.
+     *
+     * @param \TechDivision\Import\Actions\ProductBundleSelectionPriceAction $productBundleSelectionPriceAction The action with the product bundle selection price CRUD methods
+     *
+     * @return void
+     */
+    public function setProductBundleSelectionPriceAction($productBundleSelectionPriceAction)
+    {
+        $this->productBundleSelectionPriceAction = $productBundleSelectionPriceAction;
+    }
+
+    /**
+     * Return's the action with the product bundle selection price CRUD methods.
+     *
+     * @return \TechDivision\Import\Actions\ProductBundleSelectionPriceAction The action instance
+     */
+    public function getProductBundleSelectionPriceAction()
+    {
+        return $this->productBundleSelectionPriceAction;
+    }
+
+    /**
      * Set's the repository to access categories.
      *
      * @param \TechDivision\Import\Repositories\CategoryRepository $categoryRepository The repository to access categories
@@ -909,6 +996,42 @@ class ProductProcessor implements ProductProcessorInterface
     public function persistProductBundleOption($productBundleOption)
     {
         return $this->getProductBundleOptionAction()->persist($productBundleOption);
+    }
+
+    /**
+     * Persist's the passed product bundle option value data.
+     *
+     * @param array $productBundleOptionValue The product bundle option value data to persist
+     *
+     * @return void
+     */
+    public function persistProductBundleOptionValue($productBundleOptionValue)
+    {
+        $this->getProductBundleOptionValueAction()->persist($productBundleOptionValue);
+    }
+
+    /**
+     * Persist's the passed product bundle selection data and return's the ID.
+     *
+     * @param array $productBundleOption The product bundle selection data to persist
+     *
+     * @return string The ID of the persisted entity
+     */
+    public function persistProductBundleSelection($productBundleSelection)
+    {
+        return $this->getProductBundleSelectionAction()->persist($productBundleSelection);
+    }
+
+    /**
+     * Persist's the passed product bundle selection price data and return's the ID.
+     *
+     * @param array $productBundleSelectionPrice The product bundle selection price data to persist
+     *
+     * @return void
+     */
+    public function persistProductBundleSelectionPrice($productBundleSelectionPrice)
+    {
+        return $this->getProductBundleSelectionPriceAction()->persist($productBundleSelectionPrice);
     }
 
     /**

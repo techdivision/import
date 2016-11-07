@@ -1,7 +1,7 @@
 <?php
 
 /**
- * TechDivision\Import\Actions\Processors\ProductBundleOptionPersistProcessor
+ * TechDivision\Import\Utils\StoreViewCodes
  *
  * NOTICE OF LICENSE
  *
@@ -18,10 +18,10 @@
  * @link      http://www.appserver.io
  */
 
-namespace TechDivision\Import\Actions\Processors;
+namespace TechDivision\Import\Utils;
 
 /**
- * The product bundle option persist processor implementation.
+ * Utility class containing the available stock status.
  *
  * @author    Tim Wagner <tw@appserver.io>
  * @copyright 2015 TechDivision GmbH <info@appserver.io>
@@ -29,29 +29,30 @@ namespace TechDivision\Import\Actions\Processors;
  * @link      https://github.com/wagnert/csv-import
  * @link      http://www.appserver.io
  */
-class ProductBundleOptionPersistProcessor extends AbstractPersistProcessor
+class StoreViewCodes
 {
 
     /**
-     * {@inheritDoc}
-     * @see \TechDivision\Import\Actions\Processors\AbstractPersistProcessor::getStatement()
+     * The store view code for the default store view.
+     *
+     * @var string
      */
-    protected function getStatement()
+    const ADMIN = 'admin';
+
+    /**
+     * This is a utility class, so protect it against direct
+     * instantiation.
+     */
+    private function __construct()
     {
-        $utilityClassName = $this->getUtilityClassName();
-        return $utilityClassName::CREATE_PRODUCT_BUNDLE_OPTION;
     }
 
     /**
-     * Persist's the passed row.
+     * This is a utility class, so protect it against cloning.
      *
-     * @param array $row The row to persist
-     *
-     * @return string The last inserted ID
+     * @return void
      */
-    public function execute($row)
+    private function __clone()
     {
-        $this->getPreparedStatement()->execute($row);
-        return $this->getConnection()->lastInsertId();
     }
 }

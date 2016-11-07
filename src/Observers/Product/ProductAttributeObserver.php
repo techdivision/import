@@ -23,6 +23,7 @@ namespace TechDivision\Import\Observers\Product;
 use TechDivision\Import\Utils\ColumnKeys;
 use TechDivision\Import\Utils\MemberNames;
 use TechDivision\Import\Observers\Product\AbstractProductImportObserver;
+use TechDivision\Import\Utils\StoreViewCodes;
 
 /**
  * A SLSB that handles the process to import product bunches.
@@ -74,13 +75,8 @@ class ProductAttributeObserver extends AbstractProductImportObserver
         // load the header information
         $headers = $this->getHeaders();
 
-        // query whether or not, we've found a new SKU => means we've found a new product
-        if ($this->isLastSku($row[$headers[ColumnKeys::SKU]])) {
-            return $row;
-        }
-
         // initialize the store view code
-        $this->setStoreViewCode($row[$headers[ColumnKeys::STORE_VIEW_CODE]] ?: 'admin');
+        $this->setStoreViewCode($row[$headers[ColumnKeys::STORE_VIEW_CODE]] ?: StoreViewCodes::ADMIN);
 
         // load the attributes by the found attribute set
         $attributes = $this->getAttributes();

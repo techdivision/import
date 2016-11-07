@@ -1,7 +1,7 @@
 <?php
 
 /**
- * TechDivision\Import\Actions\Processors\ProductBundleOptionPersistProcessor
+ * TechDivision\Import\Repositories\ProductBundleSelectionAction
  *
  * NOTICE OF LICENSE
  *
@@ -18,10 +18,10 @@
  * @link      http://www.appserver.io
  */
 
-namespace TechDivision\Import\Actions\Processors;
+namespace TechDivision\Import\Actions;
 
 /**
- * The product bundle option persist processor implementation.
+ * A SLSB providing repository functionality for product bundle selection CRUD actions.
  *
  * @author    Tim Wagner <tw@appserver.io>
  * @copyright 2015 TechDivision GmbH <info@appserver.io>
@@ -29,18 +29,8 @@ namespace TechDivision\Import\Actions\Processors;
  * @link      https://github.com/wagnert/csv-import
  * @link      http://www.appserver.io
  */
-class ProductBundleOptionPersistProcessor extends AbstractPersistProcessor
+class ProductBundleSelectionAction extends AbstractAction
 {
-
-    /**
-     * {@inheritDoc}
-     * @see \TechDivision\Import\Actions\Processors\AbstractPersistProcessor::getStatement()
-     */
-    protected function getStatement()
-    {
-        $utilityClassName = $this->getUtilityClassName();
-        return $utilityClassName::CREATE_PRODUCT_BUNDLE_OPTION;
-    }
 
     /**
      * Persist's the passed row.
@@ -49,9 +39,8 @@ class ProductBundleOptionPersistProcessor extends AbstractPersistProcessor
      *
      * @return string The last inserted ID
      */
-    public function execute($row)
+    public function persist($row)
     {
-        $this->getPreparedStatement()->execute($row);
-        return $this->getConnection()->lastInsertId();
+        return $this->getPersistProcessor()->execute($row);
     }
 }

@@ -1,7 +1,7 @@
 <?php
 
 /**
- * TechDivision\Import\Actions\Processors\ProductBundleOptionPersistProcessor
+ * TechDivision\Import\Actions\Processors\Batch\ProductBundleSelectionPersistBatchProcessor
  *
  * NOTICE OF LICENSE
  *
@@ -18,10 +18,12 @@
  * @link      http://www.appserver.io
  */
 
-namespace TechDivision\Import\Actions\Processors;
+namespace TechDivision\Import\Actions\Processors\Batch;
+
+use TechDivision\Import\Utils\SqlStatements;
 
 /**
- * The product bundle option persist processor implementation.
+ * The product bundle selection persist batch processor implementation.
  *
  * @author    Tim Wagner <tw@appserver.io>
  * @copyright 2015 TechDivision GmbH <info@appserver.io>
@@ -29,17 +31,25 @@ namespace TechDivision\Import\Actions\Processors;
  * @link      https://github.com/wagnert/csv-import
  * @link      http://www.appserver.io
  */
-class ProductBundleOptionPersistProcessor extends AbstractPersistProcessor
+class ProductBundleSelectionPersistBatchProcessor extends AbstractPersistBatchProcessor
 {
 
     /**
      * {@inheritDoc}
-     * @see \TechDivision\Import\Actions\Processors\AbstractPersistProcessor::getStatement()
+     * @see \TechDivision\Import\Actions\Processors\Batch\AbstractPersistBatchProcessor::getNumberOfPlaceholders()
+     */
+    protected function getNumberOfPlaceholders()
+    {
+        return 9;
+    }
+
+    /**
+     * {@inheritDoc}
+     * @see \TechDivision\Import\Actions\Processors\Batch\AbstractPersistBatchProcessor::getStatement()
      */
     protected function getStatement()
     {
-        $utilityClassName = $this->getUtilityClassName();
-        return $utilityClassName::CREATE_PRODUCT_BUNDLE_OPTION;
+        return SqlStatements::CREATE_PRODUCT_BUNDLE_SELECTION;
     }
 
     /**
@@ -51,7 +61,7 @@ class ProductBundleOptionPersistProcessor extends AbstractPersistProcessor
      */
     public function execute($row)
     {
-        $this->getPreparedStatement()->execute($row);
-        return $this->getConnection()->lastInsertId();
+        $this->addToStack($row);
+        return (string) $this->getStackSize();
     }
 }

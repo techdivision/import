@@ -23,6 +23,7 @@ namespace TechDivision\Import\Observers\Product;
 use TechDivision\Import\Utils\ColumnKeys;
 use TechDivision\Import\Observers\AbstractObserver;
 use TechDivision\Import\Observers\Product\AbstractProductImportObserver;
+use TechDivision\Import\Utils\ProductTypes;
 
 /**
  * A SLSB that handles the process to import product bunches.
@@ -53,16 +54,21 @@ class ProductVariationObserver extends AbstractProductImportObserver
         // load the header information
         $headers = $this->getHeaders();
 
-        // query whether or not, we've found a new SKU => means we've found a new product
-        if ($this->isLastSku($parentSku = $row[$headers[ColumnKeys::SKU]])) {
-            return $row;
-        }
-
         // query whether or not, we've configurables
         if (!isset($headers[ColumnKeys::CONFIGURABLE_VARIATIONS]) ||
             !isset($row[$headers[ColumnKeys::CONFIGURABLE_VARIATIONS]]))
         {
-            return;
+            return $row;
+        }
+
+        // query whether or not we've found a configurable product
+        if ($row[$headers[ColumnKeys::PRODUCT_TYPE]] !== ProductTypes::CONFIGURABLE) {
+            return $row;
+        }
+
+        // query whether or not, we've a configurable configuration
+        if (!isset($row[$headers[ColumnKeys::CONFIGURABLE_VARIATIONS]])) {
+            return $row;
         }
 
         // query whether or not, we've configurables
@@ -82,6 +88,9 @@ class ProductVariationObserver extends AbstractProductImportObserver
             // intialize the array for the variations
             $artefacts = array();
 
+            // load the parent SKU from the row
+            $parentSku = $row[$headers[ColumnKeys::SKU]];
+
             // iterate over all variations and import them
             foreach (explode('|', $configurableVariations) as $variation) {
 
@@ -100,6 +109,7 @@ class ProductVariationObserver extends AbstractProductImportObserver
 
                 // append the product variation
                 $artefacts[] = array(
+                    ColumnKeys::STORE_VIEW_CODE         => $row[$headers[ColumnKeys::STORE_VIEW_CODE]],
                     ColumnKeys::VARIANT_PARENT_SKU      => $parentSku,
                     ColumnKeys::VARIANT_CHILD_SKU       => $childSku,
                     ColumnKeys::VARIANT_OPTION_VALUE    => $optionValue,

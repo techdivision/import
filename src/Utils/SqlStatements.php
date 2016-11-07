@@ -295,6 +295,52 @@ class SqlStatements
                                             VALUES (?, ?, ?, ?)';
 
     /**
+     * The SQL statement to create a new product bundle option value.
+     *
+     * @var string
+     */
+    const CREATE_PRODUCT_BUNDLE_OPTION_VALUE = 'INSERT
+                                                  INTO catalog_product_bundle_option_value (
+                                                           option_id,
+                                                           store_id,
+                                                           title
+                                                       )
+                                                VALUES (?, ?, ?)';
+
+    /**
+     * The SQL statement to create a new product bundle selection.
+     *
+     * @var string
+     */
+    const CREATE_PRODUCT_BUNDLE_SELECTION = 'INSERT
+                                               INTO catalog_product_bundle_selection (
+                                                        option_id,
+                                                        parent_product_id,
+                                                        product_id,
+                                                        position,
+                                                        is_default,
+                                                        selection_price_type,
+                                                        selection_price_value,
+                                                        selection_qty,
+                                                        selection_can_change_qty
+                                                    )
+                                             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)';
+
+    /**
+     * The SQL statement to create a new product bundle selection price.
+     *
+     * @var string
+     */
+    const CREATE_PRODUCT_BUNDLE_SELECTION_PRICE = 'INSERT
+                                                     INTO catalog_product_bundle_selection_price (
+                                                              selection_id,
+                                                              website_id,
+                                                              selection_price_type,
+                                                              selection_price_value
+                                                          )
+                                                   VALUES (?, ?, ?, ?)';
+
+    /**
      * The SQL statement to create a new product super attribute label.
      *
      * @var string

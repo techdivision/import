@@ -1,7 +1,7 @@
 <?php
 
 /**
- * TechDivision\Import\Repositories\ProductBundleOptionAction
+ * TechDivision\Import\Repositories\ProductBundleOptionValueAction
  *
  * NOTICE OF LICENSE
  *
@@ -21,7 +21,7 @@
 namespace TechDivision\Import\Actions;
 
 /**
- * A SLSB providing repository functionality for product bundle option CRUD actions.
+ * A SLSB providing repository functionality for product bundle option value CRUD actions.
  *
  * @author    Tim Wagner <tw@appserver.io>
  * @copyright 2015 TechDivision GmbH <info@appserver.io>
@@ -29,18 +29,6 @@ namespace TechDivision\Import\Actions;
  * @link      https://github.com/wagnert/csv-import
  * @link      http://www.appserver.io
  */
-class ProductBundleOptionAction extends AbstractAction
+class ProductBundleOptionValueAction extends AbstractAction
 {
-
-    /**
-     * Persist's the passed row.
-     *
-     * @param array $row The row to persist
-     *
-     * @return string The last inserted ID
-     */
-    public function persist($row)
-    {
-        return $this->getPersistProcessor()->execute($row);
-    }
 }

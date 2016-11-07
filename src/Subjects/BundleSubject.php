@@ -21,6 +21,7 @@
 namespace TechDivision\Import\Subjects;
 
 use TechDivision\Import\Utils\ColumnKeys;
+use TechDivision\Import\Utils\RegistryKeys;
 
 /**
  * A SLSB that handles the process to import product variants.
@@ -33,6 +34,13 @@ use TechDivision\Import\Utils\ColumnKeys;
  */
 class BundleSubject extends AbstractSubject
 {
+
+    /**
+     * The available stores.
+     *
+     * @var array
+     */
+    protected $stores = array();
 
     /**
      * The mapping for the SKUs to the created entity IDs.
@@ -55,6 +63,9 @@ class BundleSubject extends AbstractSubject
 
         // load the status of the actual import process
         $status = $registryProcessor->getAttribute($this->serial);
+
+        // load the stores we've initialized before
+        $this->stores = $status['globalData'][RegistryKeys::STORES];
 
         // load the attribute set we've prepared intially
         $this->skuEntityIdMapping = $status['skuEntityIdMapping'];
@@ -99,6 +110,26 @@ class BundleSubject extends AbstractSubject
     }
 
     /**
+     * Return's the store for the passed store code.
+     *
+     * @param string $storeCode The store code to return the store for
+     *
+     * @return array The requested store
+     * @throws \Exception Is thrown, if the requested store is not available
+     */
+    public function getStoreByStoreCode($storeCode)
+    {
+
+        // query whether or not the store with the passed store code exists
+        if (isset($this->stores[$storeCode])) {
+            return $this->stores[$storeCode];
+        }
+
+        // throw an exception, if not
+        throw new \Exception(sprintf('Found invalid store code %s', $storeCode));
+    }
+
+    /**
      * Persist's the passed product bundle option data and return's the ID.
      *
      * @param array $productBundleOption The product bundle option data to persist
@@ -108,5 +139,41 @@ class BundleSubject extends AbstractSubject
     public function persistProductBundleOption($productBundleOption)
     {
         return $this->getProductProcessor()->persistProductBundleOption($productBundleOption);
+    }
+
+    /**
+     * Persist's the passed product bundle option value data.
+     *
+     * @param array $productBundleOptionValue The product bundle option value data to persist
+     *
+     * @return void
+     */
+    public function persistProductBundleOptionValue($productBundleOptionValue)
+    {
+        return $this->getProductProcessor()->persistProductBundleOptionValue($productBundleOptionValue);
+    }
+
+    /**
+     * Persist's the passed product bundle selection data and return's the ID.
+     *
+     * @param array $productBundleOption The product bundle selection data to persist
+     *
+     * @return string The ID of the persisted entity
+     */
+    public function persistProductBundleSelection($productBundleSelection)
+    {
+        return $this->getProductProcessor()->persistProductBundleSelection($productBundleSelection);
+    }
+
+    /**
+     * Persist's the passed product bundle selection price data and return's the ID.
+     *
+     * @param array $productBundleSelectionPrice The product bundle selection price data to persist
+     *
+     * @return void
+     */
+    public function persistProductBundleSelectionPrice($productBundleSelectionPrice)
+    {
+        $this->getProductProcessor()->persistProductBundleSelectionPrice($productBundleSelectionPrice);
     }
 }

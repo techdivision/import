@@ -35,13 +35,6 @@ class VariantSubject extends AbstractSubject
 {
 
     /**
-     * The mapping for the SKUs to the created entity IDs.
-     *
-     * @var array
-     */
-    protected $skuEntityIdMapping = array();
-
-    /**
      * The ID of the parent product to relate the variant with.
      *
      * @var integer
@@ -54,6 +47,13 @@ class VariantSubject extends AbstractSubject
      * @var array
      */
     protected $stores = array();
+
+    /**
+     * The mapping for the SKUs to the created entity IDs.
+     *
+     * @var array
+     */
+    protected $skuEntityIdMapping = array();
 
     /**
      * Intializes the previously loaded global data for exactly one variants.

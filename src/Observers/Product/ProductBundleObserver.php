@@ -68,11 +68,6 @@ class ProductBundleObserver extends AbstractProductImportObserver
         // load the header information
         $headers = $this->getHeaders();
 
-        // query whether or not, we've found a new SKU => means we've found a new product
-        if ($this->isLastSku($parentSku = $row[$headers[ColumnKeys::SKU]])) {
-            return $row;
-        }
-
         // query whether or not the product type is set
         if (!isset($headers[ColumnKeys::PRODUCT_TYPE])) {
             return $row;
@@ -85,7 +80,7 @@ class ProductBundleObserver extends AbstractProductImportObserver
 
         // query whether or not, we've a bundle configuration
         if (!isset($row[$headers[ColumnKeys::BUNDLE_VALUES]])) {
-            return;
+            return $row;
         }
 
         // query whether or not, we've a bundle
@@ -94,16 +89,20 @@ class ProductBundleObserver extends AbstractProductImportObserver
             // initialize the array for the product bundles
             $artefacts = array();
 
+            // load the parent SKU from the row
+            $parentSku = $row[$headers[ColumnKeys::SKU]];
+
             // initialize the bundle with the found values
             foreach (explode('|', $bundleValues) as $bundleValue) {
                 // initialize the product bundle itself
                 $bundle = array(
                     ColumnKeys::BUNDLE_PARENT_SKU    => $parentSku,
+                    ColumnKeys::STORE_VIEW_CODE      => $row[$headers[ColumnKeys::STORE_VIEW_CODE]],
                     ColumnKeys::BUNDLE_SKU_TYPE      => $row[$headers[ColumnKeys::BUNDLE_SKU_TYPE]],
                     ColumnKeys::BUNDLE_PRICE_TYPE    => $row[$headers[ColumnKeys::BUNDLE_PRICE_TYPE]],
                     ColumnKeys::BUNDLE_PRICE_VIEW    => $row[$headers[ColumnKeys::BUNDLE_PRICE_VIEW]],
                     ColumnKeys::BUNDLE_WEIGHT_TYPE   => $row[$headers[ColumnKeys::BUNDLE_WEIGHT_TYPE]],
-                    ColumnKeys::BUNDLE_SHIPMENT_TYPE => $row[$headers[ColumnKeys::BUNDLE_SHIPMENT_TYPE]]
+                    ColumnKeys::BUNDLE_SHIPMENT_TYPE => $row[$headers[ColumnKeys::BUNDLE_SHIPMENT_TYPE]],
                 );
 
                 // initialize the columns
