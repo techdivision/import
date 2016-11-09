@@ -3,12 +3,8 @@
 	"description" : "A library supporting generic Magento 2 import functionality",
 	"version" : "0.1.0",
 	"require" : {
-		"goodby/csv" : "~1.0",
-		"rhumsaa/uuid" : "~2.4",
-        "doctrine/dbal" : "~2.0",
-        "jms/serializer" : "~1.0",
-		"monolog/monolog" : "~1.0",
-		"symfony/console" : "~3.0"
+        "psr/log" : "~1.0",
+		"goodby/csv" : "~1.0"
 	},
 	"authors" : [{
 			"name" : "Tim Wagner",
