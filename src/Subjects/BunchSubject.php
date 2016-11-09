@@ -64,7 +64,11 @@ class BunchSubject extends AbstractSubject
      */
     protected $headerMappings = array(
         'status' => 'product_online',
-        'tax_class_id' => 'tax_class_name'
+        'tax_class_id' => 'tax_class_name',
+        'price_type'  => 'bundle_price_type',
+        'sku_type' => 'bundle_sku_type',
+        'price_view' => 'bundle_price_view',
+        'weight_type' => 'bundle_weight_type'
     );
 
     /**
@@ -355,17 +359,26 @@ class BunchSubject extends AbstractSubject
 
         // iterate over the artefacts and export them
         foreach ($this->artefacs as $artefactType => $artefacts) {
-            // initialize the the exporter
-            $exporter = new Exporter(new ExporterConfig());
-            // initialize the counter
-            $counter = 0;
-            // export the arte
-            foreach ($artefacts as $artefact) {
+
+            foreach ($artefacts as $entityId => $entityArtefacts) {
+
+                // initialize the the exporter
+                $exporter = new Exporter(new ExporterConfig());
+
+                // initialize the counter
+                $counter = 0;
+
                 // initialize the bunch
                 $bunch = array();
+
                 // set the bunch header and append the artefact data
-                $bunch[] = array_keys(reset($artefact));
-                $bunch = array_merge($bunch, $artefact);
+                $bunch[] = array_keys(reset(reset($entityArtefacts)));
+
+                // export the arte
+                foreach ($entityArtefacts as $entityArtefact) {
+                    $bunch = array_merge($bunch, $entityArtefact);
+                }
+
                 // export the artefact (bunch)
                 $exporter->export(sprintf('%s/%s-%s_%d.csv', $targetDir, $artefactType, $timestamp, $counter++), $bunch);
             }
@@ -594,7 +607,7 @@ class BunchSubject extends AbstractSubject
      */
     public function addArtefacts($type, array $artefacts)
     {
-        $this->artefacs[$type][$this->getLastEntityId()] = $artefacts;
+        $this->artefacs[$type][$this->getLastEntityId()][] = $artefacts;
     }
 
     /**

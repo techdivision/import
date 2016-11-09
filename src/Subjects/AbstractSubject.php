@@ -485,9 +485,6 @@ abstract class AbstractSubject implements SubjectInterface
             // log a message with the stack trace
             $systemLogger->error($e->__toString());
 
-            // update the import status with the error message
-            $registryProcessor->mergeAttributesRecursive($serial, array('files' => array($uid => array('error' => $e->__toString()))));
-
             // re-throw the exception
             throw $e;
         }
