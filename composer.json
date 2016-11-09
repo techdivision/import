@@ -3,8 +3,7 @@
 	"description" : "A library supporting generic Magento 2 import functionality",
 	"version" : "0.1.0",
 	"require" : {
-        "psr/log" : "~1.0",
-		"goodby/csv" : "~1.0"
+        "psr/log" : "~1.0"
 	},
 	"authors" : [{
 			"name" : "Tim Wagner",
