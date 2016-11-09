@@ -1,7 +1,7 @@
 <?php
 
 /**
- * TechDivision\Import\Services\ProductProcessorInterface
+ * TechDivision\Import\Services\ImportProcessorInterface
  *
  * NOTICE OF LICENSE
  *
@@ -29,7 +29,7 @@ namespace TechDivision\Import\Services;
  * @link      https://github.com/wagnert/csv-import
  * @link      http://www.appserver.io
  */
-interface ProductProcessorInterface
+interface ImportProcessorInterface
 {
 
     /**
@@ -87,13 +87,6 @@ interface ProductProcessorInterface
      * @return \TechDivision\Import\Repositories\CategoryVarcharRepository The repository instance
      */
     public function getCategoryVarcharRepository();
-
-    /**
-     * Return's the repository to access EAV attribute option values.
-     *
-     * @return \TechDivision\Import\Repositories\EavAttributeOptionValueRepository The repository instance
-     */
-    public function getEavAttributeOptionValueRepository();
 
     /**
      * Return's the repository to access EAV attributes.
@@ -177,16 +170,6 @@ interface ProductProcessorInterface
      * @return array The array with the EAV attribute
      */
     public function getEavAttributeByOptionValueAndStoreId($optionValue, $storeId);
-
-    /**
-     * Return's the attribute option value with the passed value and store ID.
-     *
-     * @param mixed   $value   The option value
-     * @param integer $storeId The ID of the store
-     *
-     * @return array|boolean The attribute option value instance
-     */
-    public function getEavAttributeOptionValueByOptionValueAndStoreId($value, $storeId);
 
     /**
      * Return's an array with the available stores.

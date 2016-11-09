@@ -21,15 +21,14 @@
 namespace TechDivision\Import\Subjects;
 
 use Psr\Log\LoggerInterface;
-use TechDivision\Import\Services\ProductProcessor;
+use Goodby\CSV\Import\Standard\Lexer;
+use Goodby\CSV\Import\Standard\LexerConfig;
+use Goodby\CSV\Import\Standard\Interpreter;
 use TechDivision\Import\Services\RegistryProcessor;
 use TechDivision\Import\Observers\ObserverInterface;
 use TechDivision\Import\Services\ProductProcessorInterface;
 use TechDivision\Import\Services\RegistryProcessorInterface;
 use TechDivision\Import\Configuration\SubjectInterface As SubjectConfigurationInterface;
-use Goodby\CSV\Import\Standard\LexerConfig;
-use Goodby\CSV\Import\Standard\Interpreter;
-use Goodby\CSV\Import\Standard\Lexer;
 
 /**
  * An abstract action implementation.
@@ -63,13 +62,6 @@ abstract class AbstractSubject implements SubjectInterface
      * @var \TechDivision\Import\Services\RegistryProcessorInterface
      */
     protected $registryProcessor;
-
-    /**
-     * The processor to read/write the necessary product data.
-     *
-     * @var \TechDivision\Import\Services\ProductProcessorInterface
-     */
-    protected $productProcessor;
 
     /**
      * The actions unique serial.
@@ -181,28 +173,6 @@ abstract class AbstractSubject implements SubjectInterface
     public function getRegistryProcessor()
     {
         return $this->registryProcessor;
-    }
-
-    /**
-     * Set's the product processor instance.
-     *
-     * @param \TechDivision\Import\Services\ProductProcessorInterface $productProcessor The product processor instance
-     *
-     * @return void
-     */
-    public function setProductProcessor(ProductProcessorInterface $productProcessor)
-    {
-        $this->productProcessor = $productProcessor;
-    }
-
-    /**
-     * Return's the product processor instance.
-     *
-     * @return \TechDivision\Import\Services\ProductProcessorInterface The product processor instance
-     */
-    public function getProductProcessor()
-    {
-        return $this->productProcessor;
     }
 
     /**

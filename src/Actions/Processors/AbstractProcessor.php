@@ -20,8 +20,6 @@
 
 namespace TechDivision\Import\Actions\Processors;
 
-use TechDivision\Import\Utils\SqlStatements;
-
 /**
  * An abstract respository implementation.
  *
@@ -61,10 +59,7 @@ abstract class AbstractProcessor implements ProcessorInterface
      *
      * @return string The utility class name
      */
-    protected function getUtilityClassName()
-    {
-        return SqlStatements::getUtilityClassName($this->getMagentoEdition(), $this->getMagentoVersion());
-    }
+    protected abstract function getUtilityClassName();
 
     /**
      * Set's the Magento edition, EE or CE.

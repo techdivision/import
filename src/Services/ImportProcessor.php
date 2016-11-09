@@ -1,7 +1,7 @@
 <?php
 
 /**
- * TechDivision\Import\Services\ProductProcessor
+ * TechDivision\Import\Services\ImportProcessor
  *
  * NOTICE OF LICENSE
  *
@@ -29,7 +29,7 @@ namespace TechDivision\Import\Services;
  * @link      https://github.com/wagnert/csv-import
  * @link      http://www.appserver.io
  */
-class ProductProcessor implements ProductProcessorInterface
+class ImportProcessor implements ImportProcessorInterface
 {
 
     /**
@@ -52,13 +52,6 @@ class ProductProcessor implements ProductProcessorInterface
      * @var \TechDivision\Import\Repositories\CategoryVarcharRepository
      */
     protected $categoryVarcharRepository;
-
-    /**
-     * The repository to access EAV attribute option values.
-     *
-     * @var \TechDivision\Import\Repositories\EavAttributeOptionValueRepository
-     */
-    protected $eavAttributeOptionValueRepository;
 
     /**
      * The repository to access EAV attributes.
@@ -203,28 +196,6 @@ class ProductProcessor implements ProductProcessorInterface
     public function getCategoryVarcharRepository()
     {
         return $this->categoryVarcharRepository;
-    }
-
-    /**
-     * Set's the repository to access EAV attribute option values.
-     *
-     * @param \TechDivision\Import\Repositories\EavAttributeOptionValueRepository $eavAttributeOptionValueRepository The repository to access EAV attribute option values
-     *
-     * @return void
-     */
-    public function setEavAttributeOptionValueRepository($eavAttributeOptionValueRepository)
-    {
-        $this->eavAttributeOptionValueRepository = $eavAttributeOptionValueRepository;
-    }
-
-    /**
-     * Return's the repository to access EAV attribute option values.
-     *
-     * @return \TechDivision\Import\Repositories\EavAttributeOptionValueRepository The repository instance
-     */
-    public function getEavAttributeOptionValueRepository()
-    {
-        return $this->eavAttributeOptionValueRepository;
     }
 
     /**
@@ -398,19 +369,6 @@ class ProductProcessor implements ProductProcessorInterface
     public function getEavAttributeByOptionValueAndStoreId($optionValue, $storeId)
     {
         return $this->getEavAttributeRepository()->findOneByOptionValueAndStoreId($optionValue, $storeId);
-    }
-
-    /**
-     * Return's the attribute option value with the passed value and store ID.
-     *
-     * @param mixed   $value   The option value
-     * @param integer $storeId The ID of the store
-     *
-     * @return array|boolean The attribute option value instance
-     */
-    public function getEavAttributeOptionValueByOptionValueAndStoreId($value, $storeId)
-    {
-        return $this->getEavAttributeOptionValueRepository()->findEavAttributeOptionValueByOptionValueAndStoreId($value, $storeId);
     }
 
     /**

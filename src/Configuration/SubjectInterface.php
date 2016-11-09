@@ -40,6 +40,13 @@ interface SubjectInterface
     public function getClassName();
 
     /**
+     * Return's the subject's processor factory type to use.
+     *
+     * @return string The subject's processor factory type
+     */
+    public function getProcessorFactory();
+
+    /**
      * Return's the prefix for the import files.
      *
      * @return string The prefix
