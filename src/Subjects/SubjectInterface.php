@@ -33,12 +33,26 @@ interface SubjectInterface
 {
 
     /**
-     * Imports the content of the file with the passed filename.
-     *
-     * @param string  $serial The unique process serial
-     * @param integer $uid    The UUID of the file to process
+     * Intializes the previously loaded global data for exactly one bunch.
      *
      * @return void
      */
-    public function import($serial, $uid);
+    public function setUp();
+
+    /**
+     * Clean up the global data after importing the variants.
+     *
+     * @return void
+     */
+    public function tearDown();
+
+    /**
+     * Imports the content of the file with the passed filename.
+     *
+     * @param string $serial   The unique process serial
+     * @param string $filename The filename to process
+     *
+     * @return void
+     */
+    public function import($serial, $filename);
 }

@@ -238,6 +238,15 @@ abstract class AbstractSubject implements SubjectInterface
     }
 
     /**
+     * Clean up the global data after importing the variants.
+     *
+     * @return void
+     */
+    public function tearDown()
+    {
+    }
+
+    /**
      * Prepare the observers defined in the system configuration.
      *
      * @param array  $observers The array with the observers
