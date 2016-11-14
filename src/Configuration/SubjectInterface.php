@@ -47,6 +47,13 @@ interface SubjectInterface
     public function getProcessorFactory();
 
     /**
+     * Return's the reference to the configuration instance.
+     *
+     * @return \TechDivision\Import\ConfigurationInterface The configuration instance
+     */
+    public function getConfiguration();
+
+    /**
      * Return's the prefix for the import files.
      *
      * @return string The prefix
@@ -80,4 +87,21 @@ interface SubjectInterface
      * @return array The subject's callbacks
      */
     public function getCallbacks();
+
+    /**
+     * Return's the array with the params.
+     *
+     * @return array The params
+     */
+    public function getParams();
+
+    /**
+     * Return's the param with the passed name.
+     *
+     * @param string $name The name of the param to return
+     *
+     * @return string The requested param
+     * @throws \Exception Is thrown, if the requested param is not available
+     */
+    public function getParam($name);
 }

@@ -54,6 +54,13 @@ interface ConfigurationInterface
     public function getSourceDir();
 
     /**
+     * Return's the Magento installation directory.
+     *
+     * @return string The Magento installation directory
+     */
+    public function getInstallationDir();
+
+    /**
      * Return's the Magento edition, EE or CE.
      *
      * @return string The Magento edition
