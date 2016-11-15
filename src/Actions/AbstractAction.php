@@ -42,6 +42,13 @@ abstract class AbstractAction implements ActionInterface
     protected $persistProcessor;
 
     /**
+     * The remove processor instance.
+     *
+     * @var \TechDivision\Import\Actions\Processors\ProcessorInterface
+     */
+    protected $removeProcessor;
+
+    /**
      * Set's the persist processor instance.
      *
      * @param \TechDivision\Import\Actions\Processors\ProcessorInterface $persistProcessor The persist processor instance to use
@@ -64,6 +71,28 @@ abstract class AbstractAction implements ActionInterface
     }
 
     /**
+     * Set's the remove processor instance.
+     *
+     * @param \TechDivision\Import\Actions\Processors\ProcessorInterface $removeProcessor The remove processor instance to use
+     *
+     * @return void
+     */
+    public function setRemoveProcessor(ProcessorInterface $removeProcessor)
+    {
+        $this->removeProcessor = $removeProcessor;
+    }
+
+    /**
+     * Return's the processor instance.
+     *
+     * @return \TechDivision\Import\Actions\Processors\ProcessorInterface The processor instance
+     */
+    public function getRemoveProcessor()
+    {
+        return $this->removeProcessor;
+    }
+
+    /**
      * Persist's the passed row.
      *
      * @param array $row The row to persist
@@ -73,5 +102,17 @@ abstract class AbstractAction implements ActionInterface
     public function persist($row)
     {
         $this->getPersistProcessor()->execute($row);
+    }
+
+    /**
+     * Remove's the entity with the passed ID.
+     *
+     * @param string $id The ID of the entity to remove
+     *
+     * @return void
+     */
+    public function remove($id)
+    {
+        $this->getRemoveProcessor()->execute($id);
     }
 }
