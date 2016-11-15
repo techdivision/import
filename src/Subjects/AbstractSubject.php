@@ -26,7 +26,6 @@ use Goodby\CSV\Import\Standard\LexerConfig;
 use Goodby\CSV\Import\Standard\Interpreter;
 use TechDivision\Import\Services\RegistryProcessor;
 use TechDivision\Import\Observers\ObserverInterface;
-use TechDivision\Import\Services\ProductProcessorInterface;
 use TechDivision\Import\Services\RegistryProcessorInterface;
 use TechDivision\Import\Configuration\SubjectInterface As SubjectConfigurationInterface;
 
@@ -426,12 +425,8 @@ abstract class AbstractSubject implements SubjectInterface
             // initialize serial and file UID
             $this->setSerial($serial);
 
-            // load the system logger and the registry processor
+            // load the system logger
             $systemLogger = $this->getSystemLogger();
-            $registryProcessor = $this->getRegistryProcessor();
-
-            // load the status of the actual import
-            $status = $registryProcessor->getAttribute($serial);
 
             // initialize the global global data to import a bunch
             $this->setUp();
@@ -492,7 +487,7 @@ abstract class AbstractSubject implements SubjectInterface
         }
 
         // process the observers
-        foreach ($this->getObservers() as $type => $observers) {
+        foreach ($this->getObservers() as $observers) {
             // invoke the pre-import/import and post-import observers
             foreach ($observers as $observer) {
                 if ($observer instanceof ObserverInterface) {
