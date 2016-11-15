@@ -89,6 +89,13 @@ class ImportProcessor implements ImportProcessorInterface
     protected $taxClassRepository;
 
     /**
+     * The repository to access link types.
+     *
+     * @var \TechDivision\Import\Repositories\LinkTypeRepository
+     */
+    protected $linkTypeRepository;
+
+    /**
      * Set's the passed connection.
      *
      * @param \PDO $connection The connection to set
@@ -309,6 +316,28 @@ class ImportProcessor implements ImportProcessorInterface
     }
 
     /**
+     * Set's the repository to access link types.
+     *
+     * @param \TechDivision\Import\Repositories\LinkTypeRepository $linkTypeRepository The repository to access link types
+     *
+     * @return void
+     */
+    public function setLinkTypeRepository($linkTypeRepository)
+    {
+        $this->linkTypeRepository = $linkTypeRepository;
+    }
+
+    /**
+     * Return's the repository to access categories.
+     *
+     * @return \TechDivision\Import\Repositories\CategoryRepository The repository instance
+     */
+    public function getLinkTypeRepository()
+    {
+        return $this->linkTypeRepository;
+    }
+
+    /**
      * Return's the EAV attribute set with the passed ID.
      *
      * @param integer $id The ID of the EAV attribute set to load
@@ -422,5 +451,15 @@ class ImportProcessor implements ImportProcessorInterface
     public function getCategoryVarcharsByEntityIds(array $entityIds)
     {
         return $this->getCategoryVarcharRepository()->findAllByEntityIds($entityIds);
+    }
+
+    /**
+     * Return's an array with all available link types.
+     *
+     * @return array The available link types
+     */
+    public function getLinkTypes()
+    {
+        return $this->getLinkTypeRepository()->findAll();
     }
 }

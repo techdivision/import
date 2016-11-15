@@ -208,4 +208,11 @@ interface ImportProcessorInterface
      * @return mixed The category varchar values
      */
     public function getCategoryVarcharsByEntityIds(array $entityIds);
+
+    /**
+     * Return's an array with all available link types.
+     *
+     * @return array The available link types
+     */
+    public function getLinkTypes();
 }

@@ -119,6 +119,13 @@ class SqlStatements
     const TAX_CLASSES = 'SELECT t1.* FROM tax_class AS t1';
 
     /**
+     * The SQL statement to load all available link types.
+     *
+     * @var string
+     */
+    const LINK_TYPES = 'SELECT t1.* FROM catalog_product_link_type AS t1';
+
+    /**
      * The SQL statement to load the attribute set.
      *
      * @var string

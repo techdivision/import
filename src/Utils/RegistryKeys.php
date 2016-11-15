@@ -90,4 +90,11 @@ class RegistryKeys
      * @var string
      */
     const CATEGORIES = 'categories';
+
+    /**
+     * Key for the registry entry containing the link types.
+     *
+     * @var string
+     */
+    const LINK_TYPES = 'linkTypes';
 }
