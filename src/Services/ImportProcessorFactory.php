@@ -39,18 +39,8 @@ use TechDivision\Import\Repositories\EavAttributeSetRepository;
  * @link      https://github.com/wagnert/csv-import
  * @link      http://www.appserver.io
  */
-class ImportProcessorFactory extends AbstractProcessorFactory
+class ImportProcessorFactory
 {
-
-    /**
-     * Return's the processor class name.
-     *
-     * @return string The processor class name
-     */
-    protected static function getProcessorType()
-    {
-        return 'TechDivision\Import\Services\ImportProcessor';
-    }
 
     /**
      * Factory method to create a new import processor instance.
@@ -60,72 +50,62 @@ class ImportProcessorFactory extends AbstractProcessorFactory
      *
      * @return object The processor instance
      */
-    public function factory(\PDO $connection, ConfigurationInterface $configuration)
+    public static function factory(\PDO $connection, ConfigurationInterface $configuration)
     {
 
         // extract Magento edition/version
-        $magentoEdition = $configuration->getMagentoEdition();
-        $magentoVersion = $configuration->getMagentoVersion();
+        $utilityClassName = $configuration->getUtilityClassName();
 
         // initialize the repository that provides category query functionality
         $categoryRepository = new CategoryRepository();
-        $categoryRepository->setMagentoEdition($magentoEdition);
-        $categoryRepository->setMagentoVersion($magentoVersion);
+        $categoryRepository->setUtilityClassName($utilityClassName);
         $categoryRepository->setConnection($connection);
         $categoryRepository->init();
 
         // initialize the repository that provides category varchar value query functionality
         $categoryVarcharRepository = new CategoryVarcharRepository();
-        $categoryVarcharRepository->setMagentoEdition($magentoEdition);
-        $categoryVarcharRepository->setMagentoVersion($magentoVersion);
+        $categoryVarcharRepository->setUtilityClassName($utilityClassName);
         $categoryVarcharRepository->setConnection($connection);
         $categoryVarcharRepository->init();
 
         // initialize the repository that provides EAV attribute query functionality
         $eavAttributeRepository = new EavAttributeRepository();
-        $eavAttributeRepository->setMagentoEdition($magentoEdition);
-        $eavAttributeRepository->setMagentoVersion($magentoVersion);
+        $eavAttributeRepository->setUtilityClassName($utilityClassName);
         $eavAttributeRepository->setConnection($connection);
         $eavAttributeRepository->init();
 
         // initialize the repository that provides EAV attribute set query functionality
         $eavAttributeSetRepository = new EavAttributeSetRepository();
-        $eavAttributeSetRepository->setMagentoEdition($magentoEdition);
-        $eavAttributeSetRepository->setMagentoVersion($magentoVersion);
+        $eavAttributeSetRepository->setUtilityClassName($utilityClassName);
         $eavAttributeSetRepository->setConnection($connection);
         $eavAttributeSetRepository->init();
 
         // initialize the repository that provides store query functionality
         $storeRepository = new StoreRepository();
-        $storeRepository->setMagentoEdition($magentoEdition);
-        $storeRepository->setMagentoVersion($magentoVersion);
+        $storeRepository->setUtilityClassName($utilityClassName);
         $storeRepository->setConnection($connection);
         $storeRepository->init();
 
         // initialize the repository that provides store website query functionality
         $storeWebsiteRepository = new StoreWebsiteRepository();
-        $storeWebsiteRepository->setMagentoEdition($magentoEdition);
-        $storeWebsiteRepository->setMagentoVersion($magentoVersion);
+        $storeWebsiteRepository->setUtilityClassName($utilityClassName);
         $storeWebsiteRepository->setConnection($connection);
         $storeWebsiteRepository->init();
 
         // initialize the repository that provides tax class query functionality
         $taxClassRepository = new TaxClassRepository();
-        $taxClassRepository->setMagentoEdition($magentoEdition);
-        $taxClassRepository->setMagentoVersion($magentoVersion);
+        $taxClassRepository->setUtilityClassName($utilityClassName);
         $taxClassRepository->setConnection($connection);
         $taxClassRepository->init();
 
         // initialize the repository that provides link type query functionality
         $linkTypeRepository = new LinkTypeRepository();
-        $linkTypeRepository->setMagentoEdition($magentoEdition);
-        $linkTypeRepository->setMagentoVersion($magentoVersion);
+        $linkTypeRepository->setUtilityClassName($utilityClassName);
         $linkTypeRepository->setConnection($connection);
         $linkTypeRepository->init();
 
         // initialize the import processor
-        $processorType = ImportProcessorFactory::getProcessorType();
-        $importProcessor = new $processorType();
+        $importProcessor = new ImportProcessor();
         $importProcessor->setConnection($connection);
         $importProcessor->setCategoryRepository($categoryRepository);
         $importProcessor->setCategoryVarcharRepository($categoryVarcharRepository);

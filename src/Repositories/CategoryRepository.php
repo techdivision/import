@@ -51,7 +51,7 @@ class CategoryRepository extends AbstractRepository
         $utilityClassName = $this->getUtilityClassName();
 
         // initialize the prepared statements
-        $this->categoriesStmt = $this->getConnection()->prepare($utilityClassName::CATEGORIES);
+        $this->categoriesStmt = $this->getConnection()->prepare($this->myStmt = $utilityClassName::CATEGORIES);
     }
 
     /**

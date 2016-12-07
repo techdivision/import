@@ -47,6 +47,13 @@ interface SubjectInterface
     public function getProcessorFactory();
 
     /**
+     * Return's the utility class with the SQL statements to use.
+     *
+     * @return string The utility class name
+     */
+    public function getUtilityClassName();
+
+    /**
      * Return's the reference to the configuration instance.
      *
      * @return \TechDivision\Import\ConfigurationInterface The configuration instance

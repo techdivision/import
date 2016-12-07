@@ -33,18 +33,11 @@ interface ProcessorInterface
 {
 
     /**
-     * Return's the Magento edition, EE or CE.
+     * Return's the utility class with the SQL statements to use.
      *
-     * @return string The Magento edition
+     * @return string The utility class name
      */
-    public function getMagentoEdition();
-
-    /**
-     * Return's the Magento version, e. g. 2.1.0.
-     *
-     * @return string The Magento version
-     */
-    public function getMagentoVersion();
+    public function getUtilityClassName();
 
     /**
      * Return's the initialized PDO connection.

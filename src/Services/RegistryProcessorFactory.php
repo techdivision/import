@@ -31,18 +31,8 @@ use TechDivision\Import\ConfigurationInterface;
  * @link      https://github.com/wagnert/csv-import
  * @link      http://www.appserver.io
  */
-class RegistryProcessorFactory extends AbstractProcessorFactory
+class RegistryProcessorFactory
 {
-
-    /**
-     * Return's the processor class name.
-     *
-     * @return string The processor class name
-     */
-    protected static function getProcessorType()
-    {
-        return 'TechDivision\Import\Services\RegistryProcessor';
-    }
 
     /**
      * Factory method to create a new import processor instance.
@@ -52,9 +42,8 @@ class RegistryProcessorFactory extends AbstractProcessorFactory
      *
      * @return object The processor instance
      */
-    public function factory(\PDO $connection, ConfigurationInterface $configuration)
+    public static function factory(\PDO $connection, ConfigurationInterface $configuration)
     {
-        $processorType =  RegistryProcessorFactory::getProcessorType();
-        return new $processorType();
+        return new RegistryProcessor();
     }
 }

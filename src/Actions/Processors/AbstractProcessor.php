@@ -33,18 +33,11 @@ abstract class AbstractProcessor implements ProcessorInterface
 {
 
     /**
-     * The Magento Edition to use, EE or CE.
+     * The utility class name with the SQL statements to use.
      *
      * @var string
      */
-    protected $magentoEdition;
-
-    /**
-     * The Magento Version to use, e. g. 2.1.0
-     *
-     * @var string
-     */
-    protected $magentoVersion;
+    protected $utilityClassName;
 
     /**
      * The PDO connection instance.
@@ -54,55 +47,25 @@ abstract class AbstractProcessor implements ProcessorInterface
     protected $connection;
 
     /**
-     * Return's the passed statement from the Magento specific
-     * utility class.
+     * Set's the passed utility class with the SQL statements to use.
+     *
+     * @param string $utilityClassName The utility class name
+     *
+     * @return void
+     */
+    public function setUtilityClassName($utilityClassName)
+    {
+        $this->utilityClassName = $utilityClassName;
+    }
+
+    /**
+     * Return's the utility class with the SQL statements to use.
      *
      * @return string The utility class name
      */
-    protected abstract function getUtilityClassName();
-
-    /**
-     * Set's the Magento edition, EE or CE.
-     *
-     * @param string $magentoEdition The Magento edition
-     *
-     * @return void
-     */
-    public function setMagentoEdition($magentoEdition)
+    public function getUtilityClassName()
     {
-        $this->magentoEdition = $magentoEdition;
-    }
-
-    /**
-     * Return's the Magento edition, EE or CE.
-     *
-     * @return string The Magento edition
-     */
-    public function getMagentoEdition()
-    {
-        return $this->magentoEdition;
-    }
-
-    /**
-     * Set's the Magento edition, EE or CE.
-     *
-     * @param string $magentoVersion The Magento edition
-     *
-     * @return void
-     */
-    public function setMagentoVersion($magentoVersion)
-    {
-        $this->magentoVersion = $magentoVersion;
-    }
-
-    /**
-     * Return's the Magento version, e. g. 2.1.0.
-     *
-     * @return string The Magento version
-     */
-    public function getMagentoVersion()
-    {
-        return $this->magentoVersion;
+        return $this->utilityClassName;
     }
 
     /**
