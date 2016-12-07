@@ -1,7 +1,7 @@
 <?php
 
 /**
- * TechDivision\Import\Utils\InputOptionKeys
+ * TechDivision\Import\Services\AbstractProcessorFactory
  *
  * NOTICE OF LICENSE
  *
@@ -18,10 +18,10 @@
  * @link      http://www.appserver.io
  */
 
-namespace TechDivision\Import\Utils;
+namespace TechDivision\Import\Services;
 
 /**
- * Utility class containing the available visibility keys.
+ * Abstract processor factory implementation.
  *
  * @author    Tim Wagner <tw@appserver.io>
  * @copyright 2015 TechDivision GmbH <info@appserver.io>
@@ -29,37 +29,13 @@ namespace TechDivision\Import\Utils;
  * @link      https://github.com/wagnert/csv-import
  * @link      http://www.appserver.io
  */
-class InputOptionKeys
+abstract class AbstractProcessorFactory implements ProcessorFactoryInterface
 {
 
-    const CONFIGURATION = 'configuration';
-
-    const MAGENTO_EDITION = 'magento-edition';
-
-    const MAGENTO_VERSION = 'magento-version';
-
-    const SOURCE_DATE_FORMAT = 'source-date-format';
-
-    const DB_PDO_DSN = 'db-pdo-dsn';
-
-    const DB_USERNAME = 'db-username';
-
-    const DB_PASSWORD = 'db-password';
-
     /**
-     * This is a utility class, so protect it against direct
-     * instantiation.
-     */
-    private function __construct()
-    {
-    }
-
-    /**
-     * This is a utility class, so protect it against cloning.
+     * Return's the processor class name.
      *
-     * @return void
+     * @return string The processor class name
      */
-    private function __clone()
-    {
-    }
+    protected abstract static function getProcessorType();
 }

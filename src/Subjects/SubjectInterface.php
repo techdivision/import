@@ -47,6 +47,20 @@ interface SubjectInterface
     public function tearDown();
 
     /**
+     * Return's the root directory for the virtual filesystem.
+     *
+     * @return string The root directory for the virtual filesystem
+     */
+    public function getRootDir();
+
+    /**
+     * Return's the virtual filesystem instance.
+     *
+     * @return \League\Flysystem\FilesystemInterface The filesystem instance
+     */
+    public function getFilesystem();
+
+    /**
      * Imports the content of the file with the passed filename.
      *
      * @param string $serial   The unique process serial

@@ -21,9 +21,13 @@
 namespace TechDivision\Import\Subjects;
 
 use Psr\Log\LoggerInterface;
+use League\Flysystem\Filesystem;
+use League\Flysystem\Adapter\Local;
+use League\Flysystem\FilesystemInterface;
 use Goodby\CSV\Import\Standard\Lexer;
 use Goodby\CSV\Import\Standard\LexerConfig;
 use Goodby\CSV\Import\Standard\Interpreter;
+use TechDivision\Import\Utils\ConfigurationKeys;
 use TechDivision\Import\Services\RegistryProcessor;
 use TechDivision\Import\Observers\ObserverInterface;
 use TechDivision\Import\Services\RegistryProcessorInterface;
@@ -40,6 +44,13 @@ use TechDivision\Import\Configuration\SubjectInterface As SubjectConfigurationIn
  */
 abstract class AbstractSubject implements SubjectInterface
 {
+
+    /**
+     * The root directory for the virtual filesystem.
+     *
+     * @var string
+     */
+    protected $rootDir;
 
     /**
      * The system configuration.
@@ -89,6 +100,13 @@ abstract class AbstractSubject implements SubjectInterface
      * @var array
      */
     protected $headers = array();
+
+    /**
+     * The virtual filesystem instance.
+     *
+     * @var \League\Flysystem\FilesystemInterface
+     */
+    protected $filesystem;
 
     /**
      * Set's the array containing header row.
@@ -150,6 +168,50 @@ abstract class AbstractSubject implements SubjectInterface
     public function getSystemLogger()
     {
         return $this->systemLogger;
+    }
+
+    /**
+     * Set's root directory for the virtual filesystem.
+     *
+     * @param string $rootDir The root directory for the virtual filesystem
+     *
+     * @return void
+     */
+    public function setRootDir($rootDir)
+    {
+        $this->rootDir = $rootDir;
+    }
+
+    /**
+     * Return's the root directory for the virtual filesystem.
+     *
+     * @return string The root directory for the virtual filesystem
+     */
+    public function getRootDir()
+    {
+        return $this->rootDir;
+    }
+
+    /**
+     * Set's the virtual filesystem instance.
+     *
+     * @param \League\Flysystem\FilesystemInterface $filesystem The filesystem instance
+     *
+     * @return void
+     */
+    public function setFilesystem(FilesystemInterface $filesystem)
+    {
+        $this->filesystem = $filesystem;
+    }
+
+    /**
+     * Return's the virtual filesystem instance.
+     *
+     * @return \League\Flysystem\FilesystemInterface The filesystem instance
+     */
+    public function getFilesystem()
+    {
+        return $this->filesystem;
     }
 
     /**
@@ -225,6 +287,14 @@ abstract class AbstractSubject implements SubjectInterface
     public function setUp()
     {
 
+        // initialize the filesystems root directory
+        $this->setRootDir(
+            $this->getConfiguration()->getParam(ConfigurationKeys::ROOT_DIRECTORY, getcwd())
+        );
+
+        // initialize the filesystem
+        $this->setFilesystem(new Filesystem(new Local($this->getRootDir())));
+
         // prepare the observers
         foreach ($this->getConfiguration()->getObservers() as $observers) {
             $this->prepareObservers($observers);
@@ -234,6 +304,33 @@ abstract class AbstractSubject implements SubjectInterface
         foreach ($this->getConfiguration()->getCallbacks() as $callbacks) {
             $this->prepareCallbacks($callbacks);
         }
+    }
+
+    /**
+     * This method tries to resolve the passed path and returns it. If the path
+     * is relative, the actual working directory will be prepended.
+     *
+     * @param string $path The path to be resolved
+     *
+     * @return string The resolved path
+     * @throws \InvalidArgumentException Is thrown, if the path can not be resolved
+     */
+    public function resolvePath($path)
+    {
+        // if we've an absolute path, return it immediately
+        if ($this->getFilesystem()->has($path)) {
+            return $path;
+        }
+
+        // try to prepend the actual working directory, assuming we've a relative path
+        if ($this->getFilesystem()->has($path = getcwd() . DIRECTORY_SEPARATOR . $path)) {
+            return $path;
+        }
+
+        // throw an exception if the passed directory doesn't exists
+        throw new \InvalidArgumentException(
+            sprintf('Directory %s doesn\'t exist', $path)
+        );
     }
 
     /**

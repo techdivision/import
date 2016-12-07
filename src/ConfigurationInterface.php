@@ -47,13 +47,6 @@ interface ConfigurationInterface
     public function getSubjects();
 
     /**
-     * Return's the source directory that has to be watched for new files.
-     *
-     * @return string The source directory
-     */
-    public function getSourceDir();
-
-    /**
      * Return's the Magento installation directory.
      *
      * @return string The Magento installation directory

@@ -1,7 +1,7 @@
 <?php
 
 /**
- * TechDivision\Import\Utils\InputOptionKeys
+ * TechDivision\Import\Utils\ConfigurationKeys
  *
  * NOTICE OF LICENSE
  *
@@ -21,7 +21,7 @@
 namespace TechDivision\Import\Utils;
 
 /**
- * Utility class containing the available visibility keys.
+ * Utility class containing the configuration keys.
  *
  * @author    Tim Wagner <tw@appserver.io>
  * @copyright 2015 TechDivision GmbH <info@appserver.io>
@@ -29,22 +29,8 @@ namespace TechDivision\Import\Utils;
  * @link      https://github.com/wagnert/csv-import
  * @link      http://www.appserver.io
  */
-class InputOptionKeys
+class ConfigurationKeys
 {
-
-    const CONFIGURATION = 'configuration';
-
-    const MAGENTO_EDITION = 'magento-edition';
-
-    const MAGENTO_VERSION = 'magento-version';
-
-    const SOURCE_DATE_FORMAT = 'source-date-format';
-
-    const DB_PDO_DSN = 'db-pdo-dsn';
-
-    const DB_USERNAME = 'db-username';
-
-    const DB_PASSWORD = 'db-password';
 
     /**
      * This is a utility class, so protect it against direct
@@ -62,4 +48,11 @@ class InputOptionKeys
     private function __clone()
     {
     }
+
+    /**
+     * Name for the column 'root-directory'.
+     *
+     * @var string
+     */
+    const ROOT_DIRECTORY = 'root-directory';
 }

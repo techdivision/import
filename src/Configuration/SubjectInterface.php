@@ -68,6 +68,13 @@ interface SubjectInterface
     public function getSourceDateFormat();
 
     /**
+     * Return's the source directory that has to be watched for new files.
+     *
+     * @return string The source directory
+     */
+    public function getSourceDir();
+
+    /**
      * Return's the subject's target dir to use.
      *
      * @return string The target dir
@@ -96,12 +103,22 @@ interface SubjectInterface
     public function getParams();
 
     /**
+     * Query whether or not the param with the passed name exists.
+     *
+     * @param string $name The name of the param to be queried
+     *
+     * @return boolean TRUE if the requested param exists, else FALSE
+     */
+    public function hasParam($name);
+
+    /**
      * Return's the param with the passed name.
      *
-     * @param string $name The name of the param to return
+     * @param string $name         The name of the param to return
+     * @param mixed  $defaultValue The default value if the param doesn't exists
      *
      * @return string The requested param
      * @throws \Exception Is thrown, if the requested param is not available
      */
-    public function getParam($name);
+    public function getParam($name, $defaultValue = null);
 }
