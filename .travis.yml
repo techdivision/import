@@ -11,9 +11,9 @@ before_install:
 
 before_script:
   - composer selfupdate
-  - composer install
 
 script:
+  - composer install
   - vendor/bin/phpunit -c phpunit.xml
   - vendor/bin/phpcs -n --report-full --extensions=php --standard=phpcs.xml src
   - vendor/bin/phpcpd src
