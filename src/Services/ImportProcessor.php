@@ -21,7 +21,7 @@
 namespace TechDivision\Import\Services;
 
 /**
- * A SLSB providing methods to load product data using a PDO connection.
+ * Processor implementation to load global data.
  *
  * @author    Tim Wagner <t.wagner@techdivision.com>
  * @copyright 2016 TechDivision GmbH <info@techdivision.com>

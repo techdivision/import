@@ -21,7 +21,7 @@
 namespace TechDivision\Import\Actions\Processors;
 
 /**
- * An abstract respository implementation.
+ * An abstract CRUD processor implementation.
  *
  * @author    Tim Wagner <t.wagner@techdivision.com>
  * @copyright 2016 TechDivision GmbH <info@techdivision.com>

@@ -29,13 +29,13 @@ use Goodby\CSV\Import\Standard\LexerConfig;
 use Goodby\CSV\Import\Standard\Interpreter;
 use TechDivision\Import\Utils\ConfigurationKeys;
 use TechDivision\Import\Services\RegistryProcessor;
+use TechDivision\Import\Callbacks\CallbackInterface;
 use TechDivision\Import\Observers\ObserverInterface;
 use TechDivision\Import\Services\RegistryProcessorInterface;
-use TechDivision\Import\Configuration\SubjectInterface As SubjectConfigurationInterface;
-use TechDivision\Import\Callbacks\CallbackInterface;
+use TechDivision\Import\Configuration\SubjectInterface as SubjectConfigurationInterface;
 
 /**
- * An abstract action implementation.
+ * An abstract subject implementation.
  *
  * @author    Tim Wagner <t.wagner@techdivision.com>
  * @copyright 2016 TechDivision GmbH <info@techdivision.com>
@@ -113,6 +113,8 @@ abstract class AbstractSubject implements SubjectInterface
      * Set's the array containing header row.
      *
      * @param array $headers The array with the header row
+     *
+     * @return void
      */
     public function setHeaders(array $headers)
     {
@@ -133,6 +135,8 @@ abstract class AbstractSubject implements SubjectInterface
      * Set's the system configuration.
      *
      * @param \TechDivision\Import\Configuration\Subject $configuration The system configuration
+     *
+     * @return void
      */
     public function setConfiguration(SubjectConfigurationInterface $configuration)
     {
@@ -336,8 +340,8 @@ abstract class AbstractSubject implements SubjectInterface
     /**
      * Register the passed observer with the specific type.
      *
-     * @param \TechDivision\Import\Observers\ObserverInterface $observer  The observer to register
-     * @param string                                           $type      The type to register the observer with
+     * @param \TechDivision\Import\Observers\ObserverInterface $observer The observer to register
+     * @param string                                           $type     The type to register the observer with
      *
      * @return void
      */

@@ -21,7 +21,7 @@
 namespace TechDivision\Import\Observers;
 
 /**
- * A SLSB that handles the process to import product bunches.
+ * interface for all observer implementations.
  *
  * @author    Tim Wagner <t.wagner@techdivision.com>
  * @copyright 2016 TechDivision GmbH <info@techdivision.com>

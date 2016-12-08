@@ -21,7 +21,7 @@
 namespace TechDivision\Import\Callbacks;
 
 /**
- * A SLSB that handles the process to import product bunches.
+ * interface for all callback implementations.
  *
  * @author    Tim Wagner <t.wagner@techdivision.com>
  * @copyright 2016 TechDivision GmbH <info@techdivision.com>

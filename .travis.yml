@@ -1,0 +1,23 @@
+language: php
+
+php:
+  - 7.0
+  - 5.6
+  
+before_install:
+  - pecl install xdebug
+  - phpenv rehash
+  - wget https://scrutinizer-ci.com/ocular.phar
+
+before_script:
+  - composer selfupdate
+
+script:
+  - vendor/bin/phpunit -c phpunit.xml
+  - vendor/bin/phpcs -n --report-full --extensions=php --standard=phpcs.xml src
+  - vendor/bin/phpcpd src
+  - vendor/bin/phpmd src text phpmd.xml
+  - php ocular.phar code-coverage:upload --format=php-clover $TRAVIS_BUILD_DIR/target/reports/unit/clover.xml
+
+notifications:
+  email: t.wagner@techdivision.com

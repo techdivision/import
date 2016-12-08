@@ -23,7 +23,7 @@ namespace TechDivision\Import\Utils\Ee\V212;
 use TechDivision\Import\Utils\SqlStatements as FallbackStatements;
 
 /**
- * A SSB providing process registry functionality.
+ * Utility class with the SQL statements to use.
  *
  * @author    Tim Wagner <t.wagner@techdivision.com>
  * @copyright 2016 TechDivision GmbH <info@techdivision.com>

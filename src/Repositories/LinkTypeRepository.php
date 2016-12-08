@@ -23,7 +23,7 @@ namespace TechDivision\Import\Repositories;
 use TechDivision\Import\Utils\MemberNames;
 
 /**
- * A SLSB that handles the product import process.
+ * Repository implementation to load link type data.
  *
  * @author    Tim Wagner <t.wagner@techdivision.com>
  * @copyright 2016 TechDivision GmbH <info@techdivision.com>

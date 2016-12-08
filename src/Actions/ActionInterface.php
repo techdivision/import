@@ -21,7 +21,7 @@
 namespace TechDivision\Import\Actions;
 
 /**
- * An abstract respository implementation.
+ * The interface for all action implementations.
  *
  * @author    Tim Wagner <t.wagner@techdivision.com>
  * @copyright 2016 TechDivision GmbH <info@techdivision.com>
@@ -47,4 +47,13 @@ interface ActionInterface
      * @return void
      */
     public function persist($row);
+
+    /**
+     * Remove's the entity with the passed attributes.
+     *
+     * @param array $row The attributes of the entity to remove
+     *
+     * @return void
+     */
+    public function remove($row);
 }
