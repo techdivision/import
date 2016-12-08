@@ -46,10 +46,89 @@ class AbstractActionTest extends \PHPUnit_Framework_TestCase
                                      ->getMock();
 
         // create a mock for the abstract action
-        $action = $this->getMockForAbstractClass('TechDivision\Import\Actions\AbstractAction');
+        $mockAction = $this->getMockForAbstractClass('TechDivision\Import\Actions\AbstractAction');
 
         // test the setter/getter for the persist processor
-        $action->setPersistProcessor($mockPersistProcessor);
-        $this->assertSame($mockPersistProcessor, $action->getPersistProcessor());
+        $mockAction->setPersistProcessor($mockPersistProcessor);
+        $this->assertSame($mockPersistProcessor, $mockAction->getPersistProcessor());
+    }
+
+    /**
+     * Test's the getter/setter for the remove processor.
+     *
+     * @return void
+     */
+    public function testSetGetRemoveProcessor()
+    {
+
+        // create a remove processor mock instance
+        $mockRemoveProcessor = $this->getMockBuilder($processorInterface = 'TechDivision\Import\Actions\Processors\ProcessorInterface')
+                                    ->setMethods(get_class_methods($processorInterface))
+                                    ->getMock();
+
+        // create a mock for the abstract action
+        $mockAction = $this->getMockForAbstractClass('TechDivision\Import\Actions\AbstractAction');
+
+        // test the setter/getter for the remove processor
+        $mockAction->setRemoveProcessor($mockRemoveProcessor);
+        $this->assertSame($mockRemoveProcessor, $mockAction->getRemoveProcessor());
+    }
+
+    /**
+     * Test's the persist() method successfull.
+     *
+     * @return void
+     */
+    public function testPersistWithSuccess()
+    {
+
+        // create a persist processor mock instance
+        $mockPersistProcessor = $this->getMockBuilder($processorInterface = 'TechDivision\Import\Actions\Processors\ProcessorInterface')
+                                     ->setMethods(get_class_methods($processorInterface))
+                                     ->getMock();
+        $mockPersistProcessor->expects($this->once())
+                             ->method('execute')
+                             ->with($row = array())
+                             ->willReturn(null);
+
+        // create a mock for the abstract action
+        $mockAction = $this->getMockBuilder('TechDivision\Import\Actions\AbstractAction')
+                           ->setMethods(array('getPersistProcessor'))
+                           ->getMock();
+        $mockAction->expects($this->once())
+                   ->method('getPersistProcessor')
+                   ->willReturn($mockPersistProcessor);
+
+        // test the persist() method
+        $this->assertNull($mockAction->persist($row));
+    }
+
+    /**
+     * Test's the remove() method successfull.
+     *
+     * @return void
+     */
+    public function testRemoveWithSuccess()
+    {
+
+        // create a persist processor mock instance
+        $mockRemoveProcessor = $this->getMockBuilder($processorInterface = 'TechDivision\Import\Actions\Processors\ProcessorInterface')
+                                    ->setMethods(get_class_methods($processorInterface))
+                                    ->getMock();
+        $mockRemoveProcessor->expects($this->once())
+                            ->method('execute')
+                            ->with($row = array())
+                            ->willReturn(null);
+
+        // create a mock for the abstract action
+        $mockAction = $this->getMockBuilder('TechDivision\Import\Actions\AbstractAction')
+                           ->setMethods(array('getRemoveProcessor'))
+                           ->getMock();
+        $mockAction->expects($this->once())
+                   ->method('getRemoveProcessor')
+                   ->willReturn($mockRemoveProcessor);
+
+        // test the remove() method
+        $this->assertNull($mockAction->remove($row));
     }
 }

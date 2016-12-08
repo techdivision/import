@@ -23,6 +23,7 @@ Actually we've a pre-alpha status, so we **STRONGLY** recommend not to use M2IF 
 
 The following functionality is already available, for CE and EE
 
+- [x] Replace Import Mode
 - [x] Simple Products
 - [x] Configurable Products
 - [x] Bundle Products
@@ -32,8 +33,11 @@ The following functionality is already available, for CE and EE
 - [x] Relation with existing Categories
 - [x] Relation with existing Websites
 
-This is, what we're working on actually
+This and many more is, what we're actually working on
 
+- [ ] Add/Update Import Mode
+- [ ] Delete Import Mode
+- [ ] Valididation
 - [ ] Archiving (equivalent to Magento Standard Functionality)
 - [ ] History (Append to Standard Magento Import History)
 - [ ] Tier Prices

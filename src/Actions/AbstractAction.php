@@ -105,14 +105,14 @@ abstract class AbstractAction implements ActionInterface
     }
 
     /**
-     * Remove's the entity with the passed ID.
+     * Remove's the entity with the passed attributes.
      *
-     * @param string $id The ID of the entity to remove
+     * @param array $row The attributes of the entity to remove
      *
      * @return void
      */
-    public function remove($id)
+    public function remove($row)
     {
-        $this->getRemoveProcessor()->execute($id);
+        $this->getRemoveProcessor()->execute($row);
     }
 }
