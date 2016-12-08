@@ -23,22 +23,22 @@ Actually we've a pre-alpha status, so we **STRONGLY** recommend not to use M2IF 
 
 The following functionality is already available, for CE and EE
 
-[x] Simple Products
-[x] Configurable Products
-[x] Bundle Products
-[x] Product Relations
-[x] Media Gallery
-[x] Inventory
-[x] Relation with existing Categories
-[x] Relation with existing Websites
+- [x] Simple Products
+- [x] Configurable Products
+- [x] Bundle Products
+- [x] Product Relations
+- [x] Media Gallery
+- [x] Inventory
+- [x] Relation with existing Categories
+- [x] Relation with existing Websites
 
 This is, what we're working on
 
-[ ] Archiving (equivalent to Magento Standard Functionality)
-[ ] History (Append to Standard Magento Import History)
-[ ] Tier Prices
-[ ] Categories
-[ ] Product Attributes
+- [ ] Archiving (equivalent to Magento Standard Functionality)
+- [ ] History (Append to Standard Magento Import History)
+- [ ] Tier Prices
+- [ ] Categories
+- [ ] Product Attributes
 
 ## Basic Workflow
 
