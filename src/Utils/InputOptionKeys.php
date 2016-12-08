@@ -11,11 +11,11 @@
  *
  * PHP version 5
  *
- * @author    Tim Wagner <tw@appserver.io>
- * @copyright 2015 TechDivision GmbH <info@appserver.io>
+ * @author    Tim Wagner <t.wagner@techdivision.com>
+ * @copyright 2016 TechDivision GmbH <info@techdivision.com>
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
- * @link      https://github.com/wagnert/csv-import
- * @link      http://www.appserver.io
+ * @link      https://github.com/techdivision/import
+ * @link      http://www.techdivision.com
  */
 
 namespace TechDivision\Import\Utils;
@@ -23,27 +23,62 @@ namespace TechDivision\Import\Utils;
 /**
  * Utility class containing the available visibility keys.
  *
- * @author    Tim Wagner <tw@appserver.io>
- * @copyright 2015 TechDivision GmbH <info@appserver.io>
+ * @author    Tim Wagner <t.wagner@techdivision.com>
+ * @copyright 2016 TechDivision GmbH <info@techdivision.com>
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
- * @link      https://github.com/wagnert/csv-import
- * @link      http://www.appserver.io
+ * @link      https://github.com/techdivision/import
+ * @link      http://www.techdivision.com
  */
 class InputOptionKeys
 {
 
+    /**
+     * Input key for the --configuration option.
+     *
+     * @var string
+     */
     const CONFIGURATION = 'configuration';
 
+    /**
+     * Input key for the --magento-edition option.
+     *
+     * @var string
+     */
     const MAGENTO_EDITION = 'magento-edition';
 
+    /**
+     * Input key for the --magento-version option.
+     *
+     * @var string
+     */
     const MAGENTO_VERSION = 'magento-version';
 
+    /**
+     * Input key for the --source-date-format option.
+     *
+     * @var string
+     */
     const SOURCE_DATE_FORMAT = 'source-date-format';
 
+    /**
+     * Input key for the --db-pdo-dsn option.
+     *
+     * @var string
+     */
     const DB_PDO_DSN = 'db-pdo-dsn';
 
+    /**
+     * Input key for the --db-username option.
+     *
+     * @var string
+     */
     const DB_USERNAME = 'db-username';
 
+    /**
+     * Input key for the --db-password option.
+     *
+     * @var string
+     */
     const DB_PASSWORD = 'db-password';
 
     /**

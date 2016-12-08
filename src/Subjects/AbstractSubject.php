@@ -11,11 +11,11 @@
  *
  * PHP version 5
  *
- * @author    Tim Wagner <tw@appserver.io>
- * @copyright 2015 TechDivision GmbH <info@appserver.io>
+ * @author    Tim Wagner <t.wagner@techdivision.com>
+ * @copyright 2016 TechDivision GmbH <info@techdivision.com>
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
- * @link      https://github.com/wagnert/csv-import
- * @link      http://www.appserver.io
+ * @link      https://github.com/techdivision/import
+ * @link      http://www.techdivision.com
  */
 
 namespace TechDivision\Import\Subjects;
@@ -36,11 +36,11 @@ use TechDivision\Import\Configuration\SubjectInterface As SubjectConfigurationIn
 /**
  * An abstract action implementation.
  *
- * @author    Tim Wagner <tw@appserver.io>
- * @copyright 2015 TechDivision GmbH <info@appserver.io>
+ * @author    Tim Wagner <t.wagner@techdivision.com>
+ * @copyright 2016 TechDivision GmbH <info@techdivision.com>
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
- * @link      https://github.com/wagnert/csv-import
- * @link      http://www.appserver.io
+ * @link      https://github.com/techdivision/import
+ * @link      http://www.techdivision.com
  */
 abstract class AbstractSubject implements SubjectInterface
 {
@@ -541,7 +541,7 @@ abstract class AbstractSubject implements SubjectInterface
             $interpreter->addObserver(array($this, 'importRow'));
 
             // log a message that the file has to be imported
-            $systemLogger->info(sprintf('Now start importing file %s', $filename));
+            $systemLogger->debug(sprintf('Now start importing file %s', $filename));
 
             // parse the CSV file to be imported
             $lexer->parse($filename, $interpreter);
@@ -550,7 +550,7 @@ abstract class AbstractSubject implements SubjectInterface
             $endTime = microtime(true) - $startTime;
 
             // log a message that the file has successfully been imported
-            $systemLogger->info(sprintf('Succesfully imported file %s in %f s', $filename, $endTime));
+            $systemLogger->debug(sprintf('Succesfully imported file %s in %f s', $filename, $endTime));
 
         } catch (\Exception $e) {
             // log a message with the stack trace

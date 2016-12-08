@@ -2,17 +2,20 @@
 	"name" : "techdivision/import",
 	"description" : "A library supporting generic Magento 2 import functionality",
 	"require" : {
-        "psr/log" : "~1.0",
-        "goodby/csv" : "~1.0"
+		"psr/log" : "~1.0",
+		"goodby/csv" : "~1.0"
 	},
 	"authors" : [{
 			"name" : "Tim Wagner",
-			"email" : "tw@appserver.io"
+			"email" : "t.wagner@techdivision.com"
 		}
 	],
 	"autoload" : {
 		"psr-4" : {
-			"TechDivision\\Import\\" : [ "src/", "tests/" ]
+			"TechDivision\\Import\\" : [
+				"src/",
+				"tests/"
+			]
 		}
 	}
 }
