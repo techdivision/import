@@ -32,6 +32,7 @@ use TechDivision\Import\Services\RegistryProcessor;
 use TechDivision\Import\Observers\ObserverInterface;
 use TechDivision\Import\Services\RegistryProcessorInterface;
 use TechDivision\Import\Configuration\SubjectInterface As SubjectConfigurationInterface;
+use TechDivision\Import\Callbacks\CallbackInterface;
 
 /**
  * An abstract action implementation.
@@ -294,16 +295,6 @@ abstract class AbstractSubject implements SubjectInterface
 
         // initialize the filesystem
         $this->setFilesystem(new Filesystem(new Local($this->getRootDir())));
-
-        // prepare the observers
-        foreach ($this->getConfiguration()->getObservers() as $observers) {
-            $this->prepareObservers($observers);
-        }
-
-        // prepare the callbacks
-        foreach ($this->getConfiguration()->getCallbacks() as $callbacks) {
-            $this->prepareCallbacks($callbacks);
-        }
     }
 
     /**
@@ -343,41 +334,14 @@ abstract class AbstractSubject implements SubjectInterface
     }
 
     /**
-     * Prepare the observers defined in the system configuration.
+     * Register the passed observer with the specific type.
      *
-     * @param array  $observers The array with the observers
-     * @param string $type      The actual observer type
-     *
-     * @return void
-     */
-    public function prepareObservers(array $observers, $type = null)
-    {
-
-        // iterate over the array with observers and prepare them
-        foreach ($observers as $key => $observer) {
-            // we have to initialize the type only on the first level
-            if ($type == null) {
-                $type = $key;
-            }
-
-            // query whether or not we've an subarry or not
-            if (is_array($observer)) {
-                $this->prepareObservers($observer, $type);
-            } else {
-                $this->registerObservers($type, $observer);
-            }
-        }
-    }
-
-    /**
-     * Register the passed class name as observer with the specific type and key.
-     *
-     * @param string $type      The observer type to register the observer with
-     * @param string $className The observer class name
+     * @param \TechDivision\Import\Observers\ObserverInterface $observer  The observer to register
+     * @param string                                           $type      The type to register the observer with
      *
      * @return void
      */
-    public function registerObservers($type, $className)
+    public function registerObserver(ObserverInterface $observer, $type)
     {
 
         // query whether or not the array with the callbacks for the
@@ -387,57 +351,18 @@ abstract class AbstractSubject implements SubjectInterface
         }
 
         // append the callback with the instance of the passed type
-        $this->observers[$type][] = $this->observerFactory($className);
+        $this->observers[$type][] = $observer;
     }
 
     /**
-     * Initialize and return a new observer of the passed type.
+     * Register the passed callback with the specific type.
      *
-     * @param string $className The type of the observer to instanciate
-     *
-     * @return \TechDivision\Import\Observers\ObserverInterface The observer instance
-     */
-    public function observerFactory($className)
-    {
-        return new $className($this);
-    }
-
-    /**
-     * Prepare the callbacks defined in the system configuration.
-     *
-     * @param array  $callbacks The array with the callbacks
-     * @param string $type      The actual callback type
+     * @param \TechDivision\Import\Callbacks\CallbackInterface $callback The subject to register the callbacks for
+     * @param string                                           $type     The type to register the callback with
      *
      * @return void
      */
-    public function prepareCallbacks(array $callbacks, $type = null)
-    {
-
-        // iterate over the array with callbacks and prepare them
-        foreach ($callbacks as $key => $callback) {
-            // we have to initialize the type only on the first level
-            if ($type == null) {
-                $type = $key;
-            }
-
-            // query whether or not we've an subarry or not
-            if (is_array($callback)) {
-                $this->prepareCallbacks($callback, $type);
-            } else {
-                $this->registerCallback($type, $callback);
-            }
-        }
-    }
-
-    /**
-     * Register the passed class name as callback with the specific type and key.
-     *
-     * @param string $type      The callback type to register the callback with
-     * @param string $className The callback class name
-     *
-     * @return void
-     */
-    public function registerCallback($type, $className)
+    public function registerCallback(CallbackInterface $callback, $type)
     {
 
         // query whether or not the array with the callbacks for the
@@ -447,19 +372,7 @@ abstract class AbstractSubject implements SubjectInterface
         }
 
         // append the callback with the instance of the passed type
-        $this->callbacks[$type][] = $this->callbackFactory($className);
-    }
-
-    /**
-     * Initialize and return a new callback of the passed type.
-     *
-     * @param string $className The type of the callback to instanciate
-     *
-     * @return \TechDivision\Import\Callbacks\CallbackInterface The callback instance
-     */
-    public function callbackFactory($className)
-    {
-        return new $className($this);
+        $this->callbacks[$type][] = $callback;
     }
 
     /**

@@ -20,8 +20,6 @@
 
 namespace TechDivision\Import\Repositories;
 
-use TechDivision\Import\Utils\SqlStatements;
-
 /**
  * An abstract respository implementation.
  *

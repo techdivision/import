@@ -61,6 +61,13 @@ interface SubjectInterface
     public function getFilesystem();
 
     /**
+     * Return's the system configuration.
+     *
+     * @return \TechDivision\Import\Configuration\SubjectInterface The system configuration
+     */
+    public function getConfiguration();
+
+    /**
      * Imports the content of the file with the passed filename.
      *
      * @param string $serial   The unique process serial
