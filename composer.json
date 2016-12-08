@@ -1,6 +1,7 @@
 {
 	"name" : "techdivision/import",
 	"description" : "A library supporting generic Magento 2 import functionality",
+	"licence" : "OSL-3.0",
 	"require" : {
 		"psr/log" : "~1.0",
 		"goodby/csv" : "~1.0"
