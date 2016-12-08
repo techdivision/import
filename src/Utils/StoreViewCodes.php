@@ -21,7 +21,7 @@
 namespace TechDivision\Import\Utils;
 
 /**
- * Utility class containing the available stock status.
+ * Utility class containing the available store view codes.
  *
  * @author    Tim Wagner <t.wagner@techdivision.com>
  * @copyright 2016 TechDivision GmbH <info@techdivision.com>

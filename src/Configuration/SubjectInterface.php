@@ -21,7 +21,7 @@
 namespace TechDivision\Import\Configuration;
 
 /**
- * A SLSB that handles the product import process.
+ * Interface for the subject configuration implementation.
  *
  * @author    Tim Wagner <t.wagner@techdivision.com>
  * @copyright 2016 TechDivision GmbH <info@techdivision.com>

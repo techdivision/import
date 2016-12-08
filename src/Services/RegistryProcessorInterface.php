@@ -77,7 +77,7 @@ interface RegistryProcessorInterface
      * If no value will be found under the passed key, the attributes
      * will simply be registered.
      *
-     * @param mixed $key The key of the attributes that has to be merged with the passed ones
+     * @param mixed $key        The key of the attributes that has to be merged with the passed ones
      * @param array $attributes The attributes that has to be merged with the exising ones
      *
      * @return void

@@ -21,7 +21,7 @@
 namespace TechDivision\Import\Utils;
 
 /**
- * Utility class containing the available visibility keys.
+ * Utility class containing the available input option keys.
  *
  * @author    Tim Wagner <t.wagner@techdivision.com>
  * @copyright 2016 TechDivision GmbH <info@techdivision.com>

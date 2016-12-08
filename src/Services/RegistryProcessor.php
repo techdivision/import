@@ -21,7 +21,7 @@
 namespace TechDivision\Import\Services;
 
 /**
- * A SSB providing process registry functionality.
+ * Array based implementation of a registry.
  *
  * @author    Tim Wagner <t.wagner@techdivision.com>
  * @copyright 2016 TechDivision GmbH <info@techdivision.com>
@@ -107,7 +107,7 @@ class RegistryProcessor implements RegistryProcessorInterface
      * If no value will be found under the passed key, the attributes
      * will simply be registered.
      *
-     * @param mixed $key The key of the attributes that has to be merged with the passed ones
+     * @param mixed $key        The key of the attributes that has to be merged with the passed ones
      * @param array $attributes The attributes that has to be merged with the exising ones
      *
      * @return void

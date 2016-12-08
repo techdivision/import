@@ -21,7 +21,7 @@
 namespace TechDivision\Import\Actions\Processors;
 
 /**
- * An abstract processor implementation.
+ * A processor implementation providing DELETE functionality.
  *
  * @author    Tim Wagner <t.wagner@techdivision.com>
  * @copyright 2016 TechDivision GmbH <info@techdivision.com>
@@ -29,64 +29,6 @@ namespace TechDivision\Import\Actions\Processors;
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
  */
-abstract class AbstractRemoveProcessor extends AbstractProcessor
+abstract class AbstractRemoveProcessor extends AbstractBaseProcessor
 {
-
-    /**
-     * The prepared statement.
-     *
-     * @var \PDOStatement
-     */
-    protected $preparedStatement;
-
-    /**
-     * Return's the SQL statement that has to be prepared.
-     *
-     * @return string The SQL statement
-     */
-    protected abstract function getStatement();
-
-    /**
-     * Set's the prepared statement.
-     *
-     * @param \PDOStatement $preparedStatement The prepared statement
-     *
-     * @return void
-     */
-    protected function setPreparedStatement(\PDOStatement $preparedStatement)
-    {
-        $this->preparedStatement = $preparedStatement;
-    }
-
-    /**
-     * Return's the prepared statement.
-     *
-     * @return \PDOStatement The prepared statement
-     */
-    protected function getPreparedStatement()
-    {
-        return $this->preparedStatement;
-    }
-
-    /**
-     * Remove's the entity with the passed attributes.
-     *
-     * @param array $row The attributes of the entity to remove
-     *
-     * @return void
-     */
-    public function execute($row)
-    {
-        $this->getPreparedStatement()->execute($row);
-    }
-
-    /**
-     * Initializes the proceessor with the prepared statements.
-     *
-     * @return void
-     */
-    public function init()
-    {
-        $this->setPreparedStatement($this->getConnection()->prepare($this->getStatement()));
-    }
 }

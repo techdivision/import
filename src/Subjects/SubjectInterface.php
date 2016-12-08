@@ -68,6 +68,13 @@ interface SubjectInterface
     public function getConfiguration();
 
     /**
+     * Return's the system logger.
+     *
+     * @return \Psr\Log\LoggerInterface The system logger instance
+     */
+    public function getSystemLogger();
+
+    /**
      * Imports the content of the file with the passed filename.
      *
      * @param string $serial   The unique process serial

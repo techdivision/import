@@ -21,7 +21,7 @@
 namespace TechDivision\Import\Configuration;
 
 /**
- * The interface for the database configuration.
+ * Interface for the database configuration implementation.
  *
  * @author    Tim Wagner <t.wagner@techdivision.com>
  * @copyright 2016 TechDivision GmbH <info@techdivision.com>

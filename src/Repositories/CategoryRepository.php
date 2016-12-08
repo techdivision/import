@@ -21,7 +21,7 @@
 namespace TechDivision\Import\Repositories;
 
 /**
- * A SLSB that handles the product import process.
+ * Repository implementation to load category data.
  *
  * @author    Tim Wagner <t.wagner@techdivision.com>
  * @copyright 2016 TechDivision GmbH <info@techdivision.com>
