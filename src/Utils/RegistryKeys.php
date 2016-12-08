@@ -50,6 +50,41 @@ class RegistryKeys
     }
 
     /**
+     * Key for the registry entry containing the import status.
+     *
+     * @var string
+     */
+    const STATUS = 'status';
+
+    /**
+     * Key for the registry entry containing the import files.
+     *
+     * @var string
+     */
+    const FILES = 'files';
+
+    /**
+     * Key for the registry entry containing the global data.
+     *
+     * @var string
+     */
+    const GLOBAL_DATA = 'globalData';
+
+    /**
+     * Key for the registry entry containing the SKU => entity ID mapping.
+     *
+     * @var string
+     */
+    const SKU_ENTITY_ID_MAPPING = 'skuEntityIdMapping';
+
+    /**
+     * Key for the registry entry containing the SKU => row ID mapping.
+     *
+     * @var string
+     */
+    const SKU_ROW_ID_MAPPING = 'skuRowIdMapping';
+
+    /**
      * Key for the registry entry containing the attribute sets.
      *
      * @var string
