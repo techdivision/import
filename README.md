@@ -32,7 +32,7 @@ The following functionality is already available, for CE and EE
 - [x] Relation with existing Categories
 - [x] Relation with existing Websites
 
-This is, what we're working on
+This is, what we're working on actually
 
 - [ ] Archiving (equivalent to Magento Standard Functionality)
 - [ ] History (Append to Standard Magento Import History)
