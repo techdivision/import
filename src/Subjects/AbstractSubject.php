@@ -200,8 +200,6 @@ abstract class AbstractSubject implements SubjectInterface
     /**
      * Set's the virtual filesystem instance.
      *
-     * @param \League\Flysystem\FilesystemInterface $filesystem The filesystem instance
-     *
      * @return void
      */
     public function setFilesystem(FilesystemInterface $filesystem)
