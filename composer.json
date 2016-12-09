@@ -8,7 +8,7 @@
 	},
 	"require-dev" : {
 		"php" : ">=5.4.0",
-		"phpmd/phpmd" : "2.1.*",
+		"phpmd/phpmd" : "2.5.*",
 		"phploc/phploc" : "2.0.*",
 		"pdepend/pdepend" : "2.0.*",
 		"phpunit/phpunit" : "4.4.*",
