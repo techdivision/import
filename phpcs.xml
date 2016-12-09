@@ -2,7 +2,7 @@
 <ruleset name="techdivision/import">
 
     <!--
-        The appserver.io coding standard is using a mix of PSR-2
+        The TechDivision GmbH coding standard is using a mix of PSR-2
         coding conventions and PEAR doc-block commenting rules.
     -->
     <description>TechDivision GmbH coding standard</description>
