@@ -38,8 +38,12 @@ This and many more is, what we're actually working on
 - [ ] Add/Update Import Mode
 - [ ] Delete Import Mode
 - [ ] Valididation
+- [ ] Fine Grained Error Handling
+- [ ] Extended Logging
+- [ ] RESTful Webservice
 - [ ] Archiving (equivalent to Magento Standard Functionality)
 - [ ] History (Append to Standard Magento Import History)
+- [ ] Seamless Magento 2 Backend Integration
 - [ ] Tier Prices
 - [ ] Categories
 - [ ] Product Attributes
