@@ -1,7 +1,7 @@
 <?php
 
 /**
- * TechDivision\Import\Actions\Processors\ProductPersistProcessor
+ * TechDivision\Import\Actions\Processors\AbstractBaseProcessor
  *
  * NOTICE OF LICENSE
  *
