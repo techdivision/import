@@ -131,4 +131,9 @@ class AbstractActionTest extends \PHPUnit_Framework_TestCase
         // test the remove() method
         $this->assertNull($mockAction->remove($row));
     }
+
+    public function testThatFails()
+    {
+        $this->fail('Should fail for testing purposes');
+    }
 }
