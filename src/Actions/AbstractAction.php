@@ -108,8 +108,8 @@ abstract class AbstractAction implements ActionInterface
     /**
      * Remove's the entity with the passed attributes.
      *
-     * @param array  $row       The attributes of the entity to remove
-     * @param string $name|null The name of the prepared statement that has to be executed
+     * @param array       $row  The attributes of the entity to remove
+     * @param string|null $name The name of the prepared statement that has to be executed
      *
      * @return void
      */
