@@ -33,18 +33,28 @@ abstract class AbstractBaseProcessor extends AbstractProcessor
 {
 
     /**
-     * The prepared statement.
+     * The array with the statements to be prepared.
      *
-     * @var \PDOStatement
+     * @var array
      */
-    protected $preparedStatement;
+    protected $statements = array();
 
     /**
-     * Return's the SQL statement that has to be prepared.
+     * The array with the prepared statements.
      *
-     * @return string The SQL statement
+     * @var array
      */
-    abstract protected function getStatement();
+    protected $preparedStatements = array();
+
+    /**
+     * Return's the array with the SQL statements that has to be prepared.
+     *
+     * @return array The SQL statements to be prepared
+     */
+    protected function getStatements()
+    {
+        return $this->statements;
+    }
 
     /**
      * Set's the prepared statement.
@@ -52,33 +62,67 @@ abstract class AbstractBaseProcessor extends AbstractProcessor
      * @param \PDOStatement $preparedStatement The prepared statement
      *
      * @return void
+     * @deprecated Use TechDivision\Import\Actions\Processors\AbstractBaseProcessor::addPreparedStatement() instead
      */
     protected function setPreparedStatement(\PDOStatement $preparedStatement)
     {
-        $this->preparedStatement = $preparedStatement;
+        $this->preparedStatements[$preparedStatement->queryString] = $preparedStatement;
+    }
+
+    /**
+     * Add's the prepared statement.
+     *
+     * @param string        $name              The unique name of the prepared statement
+     * @param \PDOStatement $preparedStatement The prepared statement
+     *
+     * @return void
+     */
+    protected function addPreparedStatement($name, \PDOStatement $preparedStatement)
+    {
+        $this->preparedStatements[$name] = $preparedStatement;
     }
 
     /**
      * Return's the prepared statement.
      *
+     * @param string $name The name of the prepared statement to return
+     *
      * @return \PDOStatement The prepared statement
      */
-    protected function getPreparedStatement()
+    protected function getPreparedStatement($name = null)
     {
-        return $this->preparedStatement;
+
+        // try to load the prepared statement, or use the default one
+        if (isset($this->preparedStatements[$name])) {
+            return $this->preparedStatements[$name];
+        }
+
+        // return the first (default) prepared statement
+        return reset($this->preparedStatements);
+    }
+
+    /**
+     * The array with the prepared statements.
+     *
+     * @return array The prepared statments
+     */
+    protected function getPreparedStatements()
+    {
+        return $this->preparedStatements;
     }
 
     /**
      * Implements the CRUD functionality the processor is responsible for,
      * can be one of CREATE, READ, UPDATE or DELETE a entity.
      *
-     * @param array $row The data to handle
+     * @param array       $row  The data to handle
+     * @param string|null $name The name of the prepared statement to execute
      *
      * @return void
      */
-    public function execute($row)
+    public function execute($row, $name = null)
     {
-        $this->getPreparedStatement()->execute($row);
+        $this->getPreparedStatement($name)->execute($row);
     }
 
     /**
@@ -88,6 +132,8 @@ abstract class AbstractBaseProcessor extends AbstractProcessor
      */
     public function init()
     {
-        $this->setPreparedStatement($this->getConnection()->prepare($this->getStatement()));
+        foreach ($this->getStatements() as $name => $statement) {
+            $this->addPreparedStatement($name, $this->getConnection()->prepare($statement));
+        }
     }
 }

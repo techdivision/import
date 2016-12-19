@@ -167,4 +167,18 @@ class MemberNames
      * @var string
      */
     const FRONTENT_LABEL = 'frontend_label';
+
+    /**
+     * Name for the member 'name'.
+     *
+     * @var string
+     */
+    const NAME = 'name';
+
+    /**
+     * Name for the member 'url_path'.
+     *
+     * @var string
+     */
+    const URL_PATH = 'url_path';
 }

@@ -95,24 +95,26 @@ abstract class AbstractAction implements ActionInterface
     /**
      * Persist's the passed row.
      *
-     * @param array $row The row to persist
+     * @param array       $row  The row to persist
+     * @param string|null $name The name of the prepared statement that has to be executed
      *
      * @return void
      */
-    public function persist($row)
+    public function persist($row, $name = null)
     {
-        $this->getPersistProcessor()->execute($row);
+        $this->getPersistProcessor()->execute($row, $name);
     }
 
     /**
      * Remove's the entity with the passed attributes.
      *
-     * @param array $row The attributes of the entity to remove
+     * @param array  $row       The attributes of the entity to remove
+     * @param string $name|null The name of the prepared statement that has to be executed
      *
      * @return void
      */
-    public function remove($row)
+    public function remove($row, $name = null)
     {
-        $this->getRemoveProcessor()->execute($row);
+        $this->getRemoveProcessor()->execute($row, $name);
     }
 }
