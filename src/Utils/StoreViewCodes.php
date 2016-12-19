@@ -33,11 +33,18 @@ class StoreViewCodes
 {
 
     /**
-     * The store view code for the default store view.
+     * The store view code for the admin store view.
      *
      * @var string
      */
     const ADMIN = 'admin';
+
+    /**
+     * The store view code for the default store view.
+     *
+     * @var string
+     */
+    const DEF = 'default';
 
     /**
      * This is a utility class, so protect it against direct

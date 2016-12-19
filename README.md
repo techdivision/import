@@ -8,10 +8,10 @@
 
 This is the core library for the Magento 2 Import Framework M2IF.
 
-The objective M2IF is to provide a fully functional replacement for the Magento 2 standard import functionality
+The objective of M2IF is to provide a fully functional replacement for the Magento 2 standard import functionality
 with a 100 % CSV file compatibility. In contrast to other approaches, the framework is not build as a Magento 2
 extension, although it has no dependencies to other frameworks like Symfony, Laravel or others. Instead, it 
-provides independent components, that can be tied together as needed by adding them as composer dependency.
+provides independent components, that can be tied together as needed, by adding them as composer dependency.
 
 A simple command line implementation should give a brief overiew of how a simple import application could look
 like. For more information, have a look at the [techdivision/import-cli-simple](https://github.com/techdivision/import-cli-simple) 
@@ -35,11 +35,16 @@ The following functionality is already available, for CE and EE
 
 This and many more is, what we're actually working on
 
+- [ ] Url Rewrites
 - [ ] Add/Update Import Mode
 - [ ] Delete Import Mode
 - [ ] Valididation
+- [ ] Fine Grained Error Handling
+- [ ] Extended Logging
+- [ ] RESTful Webservice
 - [ ] Archiving (equivalent to Magento Standard Functionality)
 - [ ] History (Append to Standard Magento Import History)
+- [ ] Seamless Magento 2 Backend Integration
 - [ ] Tier Prices
 - [ ] Categories
 - [ ] Product Attributes
@@ -47,7 +52,7 @@ This and many more is, what we're actually working on
 ## Basic Workflow
 
 The importer has a component based architecture and provides a plug-in mechanism to add new functionality.
-Each component is provided by it's own composer library whereas the libraries will have dependencies to each
+Each component is provided by it's own composer library, whereas the libraries will have dependencies to each
 other, at least to this library.
 
 Each component **COULD** provide a subject that'll be executed synchronously by the command. When a 

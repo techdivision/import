@@ -1,3 +1,14 @@
+# Version 1.0.0-alpha2
+
+## Bugfixes
+
+* None
+
+## Features
+
+* Refactoring to allow multiple prepared statements per CRUD processor instance
+* Load root categories on start-up
+
 # Version 1.0.0-alpha1
 
 ## Bugfixes

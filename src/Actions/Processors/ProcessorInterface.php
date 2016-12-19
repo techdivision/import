@@ -56,9 +56,10 @@ interface ProcessorInterface
     /**
      * Persist's the passed row.
      *
-     * @param array $row The row to persist
+     * @param array       $row  The row to persist
+     * @param string|null $name The name of the prepared statement that has to be executed
      *
      * @return void
      */
-    public function execute($row);
+    public function execute($row, $name = null);
 }

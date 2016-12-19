@@ -54,7 +54,34 @@ class SqlStatements
      *
      * @var string
      */
-    const CATEGORIES = 'SELECT t1.* FROM catalog_category_entity AS t1';
+    const CATEGORIES = 'SELECT t0.*,
+                               (SELECT `value`
+                                  FROM eav_attribute t1, catalog_category_entity_varchar t2
+                                 WHERE t1.attribute_code = \'name\'
+                                   AND t1.entity_type_id = 3
+                                   AND t2.attribute_id = t1.attribute_id
+                                   AND t2.store_id = 0
+                                   AND t2.entity_id = t0.entity_id) AS name,
+                               (SELECT `value`
+                                  FROM eav_attribute t1, catalog_category_entity_varchar t2
+                                 WHERE t1.attribute_code = \'url_path\'
+                                   AND t1.entity_type_id = 3
+                                   AND t2.attribute_id = t1.attribute_id
+                                   AND t2.store_id = 0
+                                   AND t2.entity_id = t0.entity_id) AS url_path
+        FROM catalog_category_entity AS t0';
+
+    /**
+     * The SQL statement to load the root categories.
+     *
+     * @var string
+     */
+    const ROOT_CATEGORIES = 'SELECT t2.code, t0.*
+                               FROM catalog_category_entity t0
+                         INNER JOIN store_group t1
+                                 ON t1.root_category_id = t0.entity_id
+                         INNER JOIN store t2
+                                 ON t2.group_id = t1.group_id';
 
     /**
      * The SQL statement to load the category varchars for a list of entity IDs.

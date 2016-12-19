@@ -127,6 +127,13 @@ class RegistryKeys
     const CATEGORIES = 'categories';
 
     /**
+     * Key for the registry entry containing the root categories.
+     *
+     * @var string
+     */
+    const ROOT_CATEGORIES = 'rootCategories';
+
+    /**
      * Key for the registry entry containing the link types.
      *
      * @var string

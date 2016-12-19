@@ -441,6 +441,16 @@ class ImportProcessor implements ImportProcessorInterface
     }
 
     /**
+     * Return's an array with the root categories with the store code as key.
+     *
+     * @return array The root categories
+     */
+    public function getRootCategories()
+    {
+        return $this->getCategoryRepository()->findAllRootCategories();
+    }
+
+    /**
      * Returns the category varchar values for the categories with
      * the passed with the passed entity IDs.
      *

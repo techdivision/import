@@ -40,6 +40,20 @@ class CategoryRepository extends AbstractRepository
     protected $cache = array();
 
     /**
+     * The statement to load the categories.
+     *
+     * @var \PDOStatement
+     */
+    protected $categoriesStmt;
+
+    /**
+     * The statement to load the root categories.
+     *
+     * @var \PDOStatement
+     */
+    protected $rootCategoriesStmt;
+
+    /**
      * Initializes the repository's prepared statements.
      *
      * @return void
@@ -52,6 +66,7 @@ class CategoryRepository extends AbstractRepository
 
         // initialize the prepared statements
         $this->categoriesStmt = $this->getConnection()->prepare($this->myStmt = $utilityClassName::CATEGORIES);
+        $this->rootCategoriesStmt = $this->getConnection()->prepare($this->myStmt = $utilityClassName::ROOT_CATEGORIES);
     }
 
     /**
@@ -67,6 +82,33 @@ class CategoryRepository extends AbstractRepository
             // try to load the categories
             $this->categoriesStmt->execute();
             $this->cache[__METHOD__] = $this->categoriesStmt->fetchAll();
+        }
+
+        // return the categories from the cache
+        return $this->cache[__METHOD__];
+    }
+
+    /**
+     * Return's an array with the root categories with the store code as key.
+     *
+     * @return array The root categories
+     */
+    public function findAllRootCategories()
+    {
+
+        // query whether or not we've already loaded the value
+        if (!isset($this->cache[__METHOD__])) {
+            // try to load the categories
+            $this->rootCategoriesStmt->execute();
+
+            // initialize the array with the store code as key
+            $rootCategories = array();
+            foreach ($this->rootCategoriesStmt->fetchAll() as $category) {
+                $rootCategories[$category['code']] = $category;
+            }
+
+            // append the root categories to the cache
+            $this->cache[__METHOD__] = $rootCategories;
         }
 
         // return the categories from the cache
