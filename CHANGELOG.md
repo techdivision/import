@@ -1,3 +1,13 @@
+# Version 1.0.0-alpha3
+
+## Bugfixes
+
+* None
+
+## Features
+
+* Extend configuration interfaces to handle new operation functionality
+
 # Version 1.0.0-alpha2
 
 ## Bugfixes

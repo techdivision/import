@@ -23,7 +23,7 @@ Actually we've a pre-alpha status, so we **STRONGLY** recommend not to use M2IF 
 
 The following functionality is already available, for CE and EE
 
-- [x] Replace Import Mode
+- [x] Delete/Replace Import Mode
 - [x] Simple Products
 - [x] Configurable Products
 - [x] Bundle Products
@@ -32,12 +32,12 @@ The following functionality is already available, for CE and EE
 - [x] Inventory
 - [x] Relation with existing Categories
 - [x] Relation with existing Websites
+- [x] Url Rewrites
 
 This and many more is, what we're actually working on
 
-- [ ] Url Rewrites
+- [ ] Product Reviews
 - [ ] Add/Update Import Mode
-- [ ] Delete Import Mode
 - [ ] Valididation
 - [ ] Fine Grained Error Handling
 - [ ] Extended Logging
@@ -46,8 +46,15 @@ This and many more is, what we're actually working on
 - [ ] History (Append to Standard Magento Import History)
 - [ ] Seamless Magento 2 Backend Integration
 - [ ] Tier Prices
+
+Planned with future versions, are importer types for
+
 - [ ] Categories
 - [ ] Product Attributes
+- [ ] Customers
+- [ ] Advanced Pricing
+
+And finally the project will provide exporting functionality, but that has to be discussed.
 
 ## Basic Workflow
 

@@ -445,17 +445,17 @@ abstract class AbstractSubject implements SubjectInterface
             // initialize the global global data to import a bunch
             $this->setUp();
 
-            // initialize the lexer configuration
-            $config = new LexerConfig();
-            $config->setToCharset('UTF-8');
-            $config->setFromCharset('UTF-8');
-
-            // initialize the lexer itself
-            $lexer = new Lexer($config);
+            // initialize the lexer instance itself
+            $lexer = new Lexer($this->getLexerConfig());
 
             // initialize the interpreter
             $interpreter = new Interpreter();
             $interpreter->addObserver(array($this, 'importRow'));
+
+            // query whether or not we want to use the strict mode
+            if (!$this->getConfiguration()->isStrictMode()) {
+                $interpreter->unstrict();
+            }
 
             // log a message that the file has to be imported
             $systemLogger->debug(sprintf('Now start importing file %s', $filename));
@@ -479,6 +479,46 @@ abstract class AbstractSubject implements SubjectInterface
 
         // clean up the data after importing the bunch
         $this->tearDown();
+    }
+
+    /**
+     * Initialize and return the lexer configuration.
+     *
+     * @return \Goodby\CSV\Import\Standard\LexerConfig The lexer configuration
+     */
+    protected function getLexerConfig()
+    {
+
+        // initialize the lexer configuration
+        $config = new LexerConfig();
+
+        // query whether or not a delimiter character has been configured
+        if ($delimiter = $this->getConfiguration()->getDelimiter()) {
+            $config->setDelimiter($delimiter);
+        }
+
+        // query whether or not a custom escape character has been configured
+        if ($escape = $this->getConfiguration()->getEscape()) {
+            $config->setEscape($escape);
+        }
+
+        // query whether or not a custom enclosure character has been configured
+        if ($enclosure = $this->getConfiguration()->getEnclosure()) {
+            $config->setEnclosure($enclosure);
+        }
+
+        // query whether or not a custom source charset has been configured
+        if ($fromCharset = $this->getConfiguration()->getFromCharset()) {
+            $config->setFromCharset($fromCharset);
+        }
+
+        // query whether or not a custom target charset has been configured
+        if ($toCharset = $this->getConfiguration()->getToCharset()) {
+            $config->setToCharset($toCharset);
+        }
+
+        // return the lexer configuratio
+        return $config;
     }
 
     /**

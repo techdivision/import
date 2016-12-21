@@ -33,6 +33,13 @@ interface ConfigurationInterface
 {
 
     /**
+     * Return's the operation name that has to be used.
+     *
+     * @return string The operation name that has to be used
+     */
+    public function getOperationName();
+
+    /**
      * Return's the database configuration
      *
      * @return TechDivision\Import\Configuration\Database The database configuration
@@ -40,9 +47,17 @@ interface ConfigurationInterface
     public function getDatabase();
 
     /**
-     * Return's the array with the subjects.
+     * Return's the ArrayCollection with the configured operations.
      *
-     * @return array The array with the subjects
+     * @return \Doctrine\Common\Collections\ArrayCollection The ArrayCollection with the operations
+     */
+    public function getOperations();
+
+    /**
+     * Return's the array with the subjects of the operation to use.
+     *
+     * @return \Doctrine\Common\Collections\ArrayCollection The ArrayCollection with the subjects
+     * @throws \Exception Is thrown, if no subjects are available for the actual operation
      */
     public function getSubjects();
 
