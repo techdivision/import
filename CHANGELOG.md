@@ -1,3 +1,13 @@
+# Version 1.0.0-alpha4
+
+## Bugfixes
+
+* Fixed some PHP 7 warnings/notices
+
+## Features
+
+* Add functionality to load default store on subject start-up
+
 # Version 1.0.0-alpha3
 
 ## Bugfixes

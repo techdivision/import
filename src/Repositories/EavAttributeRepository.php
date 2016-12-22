@@ -93,6 +93,7 @@ class EavAttributeRepository extends AbstractRepository
     {
 
         // execute the prepared statement and return the array with the fail EAV attributes
-        return reset($this->findAllByOptionValueAndStoreId($optionValue, $storeId));
+        $eavAttributes = $this->findAllByOptionValueAndStoreId($optionValue, $storeId);
+        return reset($eavAttributes);
     }
 }

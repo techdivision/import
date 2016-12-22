@@ -69,7 +69,7 @@ class EavAttributeOptionValueRepository extends AbstractRepository
         if (!isset($this->cache[$value][$storeId])) {
             // try to load the attribute option value
             $this->eavAttributeOptionValueStmt->execute(array($value, $storeId));
-            $this->cache[$value][$storeId] = reset($this->eavAttributeOptionValueStmt->fetchAll());
+            $this->cache[$value][$storeId] = $this->eavAttributeOptionValueStmt->fetch();
 
         }
 

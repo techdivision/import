@@ -105,6 +105,19 @@ class SqlStatements
     const STORES = 'SELECT t1.* FROM store AS t1';
 
     /**
+     * The SQL statement to load the default store.
+     *
+     * @var string
+     */
+    const STORE_DEFAULT = 'SELECT t0.*
+                             FROM store t0
+                       INNER JOIN store_group t1
+                               ON t1.default_store_id = t0.store_id
+                       INNER JOIN store_website t2
+                               ON t1.website_id = t2.website_id
+                              AND t2.is_default = 1;';
+
+    /**
      * The SQL statement to load the stores.
      *
      * @var string
