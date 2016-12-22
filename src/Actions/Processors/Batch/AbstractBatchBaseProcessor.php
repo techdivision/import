@@ -37,7 +37,7 @@ abstract class AbstractBatchBaseProcessor extends AbstractProcessor
     /**
      * The stack with the data to import.
      *
-     * @var integer
+     * @var array
      */
     protected $stack = array();
 
