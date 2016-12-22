@@ -20,6 +20,8 @@
 
 namespace TechDivision\Import\Repositories;
 
+use TechDivision\Import\Utils\MemberNames;
+
 /**
  * Repository implementation to load category data.
  *
@@ -65,8 +67,8 @@ class CategoryRepository extends AbstractRepository
         $utilityClassName = $this->getUtilityClassName();
 
         // initialize the prepared statements
-        $this->categoriesStmt = $this->getConnection()->prepare($this->myStmt = $utilityClassName::CATEGORIES);
-        $this->rootCategoriesStmt = $this->getConnection()->prepare($this->myStmt = $utilityClassName::ROOT_CATEGORIES);
+        $this->categoriesStmt = $this->getConnection()->prepare($utilityClassName::CATEGORIES);
+        $this->rootCategoriesStmt = $this->getConnection()->prepare($utilityClassName::ROOT_CATEGORIES);
     }
 
     /**
@@ -104,7 +106,7 @@ class CategoryRepository extends AbstractRepository
             // initialize the array with the store code as key
             $rootCategories = array();
             foreach ($this->rootCategoriesStmt->fetchAll() as $category) {
-                $rootCategories[$category['code']] = $category;
+                $rootCategories[$category[MemberNames::CODE]] = $category;
             }
 
             // append the root categories to the cache

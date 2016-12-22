@@ -47,6 +47,7 @@ class StoreRepository extends AbstractRepository
 
         // initialize the prepared statements
         $this->storesStmt = $this->getConnection()->prepare($utilityClassName::STORES);
+        $this->storeDefaultStmt = $this->getConnection()->prepare($utilityClassName::STORE_DEFAULT);
     }
 
     /**
@@ -71,5 +72,18 @@ class StoreRepository extends AbstractRepository
 
         // return the array with the stores
         return $stores;
+    }
+
+    /**
+     * Return's the default store.
+     *
+     * @return array The default store
+     */
+    public function findOneByDefault()
+    {
+
+        // execute the prepared statement and return the default store
+        $this->storeDefaultStmt->execute();
+        return $this->storeDefaultStmt->fetch();
     }
 }

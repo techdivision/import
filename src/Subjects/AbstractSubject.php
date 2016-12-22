@@ -82,6 +82,13 @@ abstract class AbstractSubject implements SubjectInterface
     protected $serial;
 
     /**
+     * The name of the file to be imported.
+     *
+     * @var string
+     */
+    protected $filename;
+
+    /**
      * Array with the subject's observers.
      *
      * @var array
@@ -264,6 +271,28 @@ abstract class AbstractSubject implements SubjectInterface
     }
 
     /**
+     * Set's the name of the file to import
+     *
+     * @param string $filename The filename
+     *
+     * @return void
+     */
+    public function setFilename($filename)
+    {
+        $this->filename = $filename;
+    }
+
+    /**
+     * Return's the name of the file to import.
+     *
+     * @return string The filename
+     */
+    public function getFilename()
+    {
+        return $this->filename;
+    }
+
+    /**
      * Return's the source date format to use.
      *
      * @return string The source date format
@@ -436,8 +465,9 @@ abstract class AbstractSubject implements SubjectInterface
             // track the start time
             $startTime = microtime(true);
 
-            // initialize serial and file UID
+            // initialize serial and filename
             $this->setSerial($serial);
+            $this->setFilename($filename);
 
             // load the system logger
             $systemLogger = $this->getSystemLogger();

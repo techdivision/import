@@ -180,6 +180,13 @@ interface ImportProcessorInterface
     public function getStores();
 
     /**
+     * Return's the default store.
+     *
+     * @return array The default store
+     */
+    public function getDefaultStore();
+
+    /**
      * Return's an array with the available store websites.
      *
      * @return array The array with the available store websites

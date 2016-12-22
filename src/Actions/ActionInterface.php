@@ -35,9 +35,16 @@ interface ActionInterface
     /**
      * Return's the processor instance.
      *
-     * @return \ITechDivision\Import\Actions\Processors\ProcessorInterface The processor instance
+     * @return \TechDivision\Import\Actions\Processors\ProcessorInterface The processor instance
      */
     public function getPersistProcessor();
+
+    /**
+     * Return's the processor instance.
+     *
+     * @return \TechDivision\Import\Actions\Processors\ProcessorInterface The processor instance
+     */
+    public function getRemoveProcessor();
 
     /**
      * Persist's the passed row.

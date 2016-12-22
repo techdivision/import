@@ -411,6 +411,16 @@ class ImportProcessor implements ImportProcessorInterface
     }
 
     /**
+     * Return's the default store.
+     *
+     * @return array The default store
+     */
+    public function getDefaultStore()
+    {
+        return $this->getStoreRepository()->findOneByDefault();
+    }
+
+    /**
      * Return's an array with the available store websites.
      *
      * @return array The array with the available store websites

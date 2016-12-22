@@ -106,6 +106,13 @@ class RegistryKeys
     const STORES = 'stores';
 
     /**
+     * Key for the registry entry containing the default store.
+     *
+     * @var string
+     */
+    const DEFAULT_STORE = 'defaultStore';
+
+    /**
      * Key for the registry entry containing the store websites.
      *
      * @var string
