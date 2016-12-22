@@ -33,6 +33,20 @@ class EavAttributeRepository extends AbstractRepository
 {
 
     /**
+     * The prepared statement to load the attributes for a specifc option value and store ID.
+     *
+     * @var \PDOStatement
+     */
+    protected $eavAttributesByOptionValueAndStoreIdStmt;
+
+    /**
+     * The prepared statement to load the attributes for a specific entity type ID and name.
+     *
+     * @var \PDOStatement
+     */
+    protected $eavAttributesByEntityTypeIdAndAttributeSetNameStmt;
+
+    /**
      * Initializes the repository's prepared statements.
      *
      * @return void

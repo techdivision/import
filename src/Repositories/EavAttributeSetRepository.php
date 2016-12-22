@@ -35,6 +35,20 @@ class EavAttributeSetRepository extends AbstractRepository
 {
 
     /**
+     * The prepared statement to load a specific attribute set.
+     *
+     * @var \PDOStatement
+     */
+    protected $eavAttributeSetStmt;
+
+    /**
+     * The prepared statement to load an attribute set for a specific entity type ID.
+     *
+     * @var \PDOStatement
+     */
+    protected $eavAttributeSetsByEntityTypeIdStmt;
+
+    /**
      * Initializes the repository's prepared statements.
      *
      * @return void
@@ -62,7 +76,7 @@ class EavAttributeSetRepository extends AbstractRepository
 
         // execute the prepared statement and return the EAV attribute set with the passed ID
         $this->eavAttributeSetStmt->execute(array($id));
-        return reset($this->eavAttributeSetStmt->fetchAll());
+        return $this->eavAttributeSetStmt->fetch();
     }
 
     /**

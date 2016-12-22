@@ -1,3 +1,13 @@
+# Version 1.0.0-alpha5
+
+## Bugfixes
+
+* Fixed some Scrutinizer CI mess detector bugs
+
+## Features
+
+* None
+
 # Version 1.0.0-alpha4
 
 ## Bugfixes
