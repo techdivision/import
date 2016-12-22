@@ -35,6 +35,13 @@ class StoreWebsiteRepository extends AbstractRepository
 {
 
     /**
+     * The prepared statement to load the store websites.
+     *
+     * @var \PDOStatement
+     */
+    protected $storeWebsitesStmt;
+
+    /**
      * Initializes the repository's prepared statements.
      *
      * @return void

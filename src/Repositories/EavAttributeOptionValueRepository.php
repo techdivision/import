@@ -40,6 +40,13 @@ class EavAttributeOptionValueRepository extends AbstractRepository
     protected $cache = array();
 
     /**
+     * The prepared statement to load the attribute option value by its value and store ID.
+     *
+     * @var \PDOStatement
+     */
+    protected $eavAttributeOptionValueStmt;
+
+    /**
      * Initializes the repository's prepared statements.
      *
      * @return void
@@ -70,7 +77,6 @@ class EavAttributeOptionValueRepository extends AbstractRepository
             // try to load the attribute option value
             $this->eavAttributeOptionValueStmt->execute(array($value, $storeId));
             $this->cache[$value][$storeId] = $this->eavAttributeOptionValueStmt->fetch();
-
         }
 
         // return the value from the cache

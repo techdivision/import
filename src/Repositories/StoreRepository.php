@@ -35,6 +35,20 @@ class StoreRepository extends AbstractRepository
 {
 
     /**
+     * The prepared statement to load the available stores.
+     *
+     * @var \PDOStatement
+     */
+    protected $storesStmt;
+
+    /**
+     * The prepared statement to load the default store.
+     *
+     * @var \PDOStatement
+     */
+    protected $storeDefaultStmt;
+
+    /**
      * Initializes the repository's prepared statements.
      *
      * @return void
