@@ -33,36 +33,53 @@ interface ActionInterface
 {
 
     /**
-     * Return's the processor instance.
+     * Return's the create processor instance.
      *
-     * @return \TechDivision\Import\Actions\Processors\ProcessorInterface The processor instance
+     * @return \TechDivision\Import\Actions\Processors\ProcessorInterface The create processor instance
      */
-    public function getPersistProcessor();
+    public function getCreateProcessor();
 
     /**
-     * Return's the processor instance.
+     * Return's the delete processor instance.
      *
-     * @return \TechDivision\Import\Actions\Processors\ProcessorInterface The processor instance
+     * @return \TechDivision\Import\Actions\Processors\ProcessorInterface The delete processor instance
      */
-    public function getRemoveProcessor();
+    public function getDeleteProcessor();
 
     /**
-     * Persist's the passed row.
+     * Return's the update processor instance.
      *
-     * @param array       $row  The row to persist
+     * @return \TechDivision\Import\Actions\Processors\ProcessorInterface The update processor instance
+     */
+    public function getUpdateProcessor();
+
+    /**
+     * Creates's the entity with the passed attributes.
+     *
+     * @param array       $row  The attributes of the entity to create
      * @param string|null $name The name of the prepared statement that has to be executed
      *
      * @return void
      */
-    public function persist($row, $name = null);
+    public function create($row, $name = null);
 
     /**
-     * Remove's the entity with the passed attributes.
+     * Delete's the entity with the passed attributes.
      *
-     * @param array       $row  The attributes of the entity to remove
+     * @param array       $row  The attributes of the entity to delete
      * @param string|null $name The name of the prepared statement that has to be executed
      *
      * @return void
      */
-    public function remove($row, $name = null);
+    public function delete($row, $name = null);
+
+    /**
+     * Update's the entity with the passed attributes.
+     *
+     * @param array       $row  The attributes of the entity to update
+     * @param string|null $name The name of the prepared statement that has to be executed
+     *
+     * @return void
+     */
+    public function update($row, $name = null);
 }
