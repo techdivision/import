@@ -1,3 +1,16 @@
+# Version 1.0.0-alpha6
+
+## Bugfixes
+
+* None
+
+## Features
+
+* Delete not implemented batch processor functionality
+* Add AbstractUpdateProcessor to support update functionality
+* Rename PersistProcessor and RemoveProcessor => CreateProcessor and DeleteProcessor
+* Rename AbstractAction and ActionInterface persist() and remove() methods => create() and delete()
+
 # Version 1.0.0-alpha5
 
 ## Bugfixes

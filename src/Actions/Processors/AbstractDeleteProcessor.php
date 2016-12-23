@@ -1,7 +1,7 @@
 <?php
 
 /**
- * TechDivision\Import\Actions\Processors\Batch\AbstractPersistBatchProcessor
+ * TechDivision\Import\Actions\Processors\AbstractDeleteProcessor
  *
  * NOTICE OF LICENSE
  *
@@ -18,10 +18,10 @@
  * @link      http://www.techdivision.com
  */
 
-namespace TechDivision\Import\Actions\Processors\Batch;
+namespace TechDivision\Import\Actions\Processors;
 
 /**
- * A batch processor implementation providing CREATE functionality.
+ * A processor implementation providing DELETE functionality.
  *
  * @author    Tim Wagner <t.wagner@techdivision.com>
  * @copyright 2016 TechDivision GmbH <info@techdivision.com>
@@ -29,6 +29,6 @@ namespace TechDivision\Import\Actions\Processors\Batch;
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
  */
-abstract class AbstractPersistBatchProcessor extends AbstractBatchBaseProcessor
+abstract class AbstractDeleteProcessor extends AbstractBaseProcessor
 {
 }

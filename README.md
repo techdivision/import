@@ -36,12 +36,13 @@ The following functionality is already available, for CE and EE
 
 This and many more is, what we're actually working on
 
-- [ ] Product Reviews
 - [ ] Add/Update Import Mode
+- [ ] Customizable Options
+- [ ] Product Reviews
 - [ ] Valididation
 - [ ] Fine Grained Error Handling
 - [ ] Extended Logging
-- [ ] RESTful Webservice
+- [ ] RESTFul Webservice
 - [ ] Archiving (equivalent to Magento Standard Functionality)
 - [ ] History (Append to Standard Magento Import History)
 - [ ] Seamless Magento 2 Backend Integration

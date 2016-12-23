@@ -35,86 +35,128 @@ abstract class AbstractAction implements ActionInterface
 {
 
     /**
-     * The persist processor instance.
+     * The create processor instance.
      *
      * @var \TechDivision\Import\Actions\Processors\ProcessorInterface
      */
-    protected $persistProcessor;
+    protected $createProcessor;
 
     /**
-     * The remove processor instance.
+     * The delete processor instance.
      *
      * @var \TechDivision\Import\Actions\Processors\ProcessorInterface
      */
-    protected $removeProcessor;
+    protected $deleteProcessor;
 
     /**
-     * Set's the persist processor instance.
+     * The update processor instance.
      *
-     * @param \TechDivision\Import\Actions\Processors\ProcessorInterface $persistProcessor The persist processor instance to use
+     * @var \TechDivision\Import\Actions\Processors\ProcessorInterface
+     */
+    protected $updateProcessor;
+
+    /**
+     * Set's the create processor instance.
+     *
+     * @param \TechDivision\Import\Actions\Processors\ProcessorInterface $createProcessor The create processor instance to use
      *
      * @return void
      */
-    public function setPersistProcessor(ProcessorInterface $persistProcessor)
+    public function setCreateProcessor(ProcessorInterface $createProcessor)
     {
-        $this->persistProcessor = $persistProcessor;
+        $this->createProcessor = $createProcessor;
     }
 
     /**
-     * Return's the processor instance.
+     * Return's the create processor instance.
      *
-     * @return \TechDivision\Import\Actions\Processors\ProcessorInterface The processor instance
+     * @return \TechDivision\Import\Actions\Processors\ProcessorInterface The create processor instance
      */
-    public function getPersistProcessor()
+    public function getCreateProcessor()
     {
-        return $this->persistProcessor;
+        return $this->createProcessor;
     }
 
     /**
-     * Set's the remove processor instance.
+     * Set's the delete processor instance.
      *
-     * @param \TechDivision\Import\Actions\Processors\ProcessorInterface $removeProcessor The remove processor instance to use
+     * @param \TechDivision\Import\Actions\Processors\ProcessorInterface $deleteProcessor The delete processor instance to use
      *
      * @return void
      */
-    public function setRemoveProcessor(ProcessorInterface $removeProcessor)
+    public function setDeleteProcessor(ProcessorInterface $deleteProcessor)
     {
-        $this->removeProcessor = $removeProcessor;
+        $this->deleteProcessor = $deleteProcessor;
     }
 
     /**
-     * Return's the processor instance.
+     * Return's the delete processor instance.
      *
-     * @return \TechDivision\Import\Actions\Processors\ProcessorInterface The processor instance
+     * @return \TechDivision\Import\Actions\Processors\ProcessorInterface The delete processor instance
      */
-    public function getRemoveProcessor()
+    public function getDeleteProcessor()
     {
-        return $this->removeProcessor;
+        return $this->deleteProcessor;
     }
 
     /**
-     * Persist's the passed row.
+     * Set's the update processor instance.
      *
-     * @param array       $row  The row to persist
+     * @param \TechDivision\Import\Actions\Processors\ProcessorInterface $updateProcessor The update processor instance to use
+     *
+     * @return void
+     */
+    public function setUpdateProcessor(ProcessorInterface $updateProcessor)
+    {
+        $this->updateProcessor = $updateProcessor;
+    }
+
+    /**
+     * Return's the update processor instance.
+     *
+     * @return \TechDivision\Import\Actions\Processors\ProcessorInterface The update processor instance
+     */
+    public function getUpdateProcessor()
+    {
+        return $this->updateProcessor;
+    }
+
+    /**
+     * Creates's the entity with the passed attributes.
+     *
+     * @param array       $row  The attributes of the entity to create
      * @param string|null $name The name of the prepared statement that has to be executed
      *
      * @return void
      */
-    public function persist($row, $name = null)
+    public function create($row, $name = null)
     {
-        $this->getPersistProcessor()->execute($row, $name);
+        $this->getCreateProcessor()->execute($row, $name);
     }
 
     /**
-     * Remove's the entity with the passed attributes.
+     * Delete's the entity with the passed attributes.
      *
-     * @param array       $row  The attributes of the entity to remove
+     * @param array       $row  The attributes of the entity to delete
      * @param string|null $name The name of the prepared statement that has to be executed
      *
      * @return void
      */
-    public function remove($row, $name = null)
+    public function delete($row, $name = null)
     {
-        $this->getRemoveProcessor()->execute($row, $name);
+        $this->getDeleteProcessor()->execute($row, $name);
+    }
+
+    /**
+     * Update's the entity with the passed attributes.
+     *
+     * @param array       $row  The attributes of the entity to update
+     * @param string|null $name The name of the prepared statement that has to be executed
+     *
+     * @return void
+     */
+    public function update($row, $name = null)
+    {
+        $this->getUpdateProcessor()->execute($row, $name);
     }
 }

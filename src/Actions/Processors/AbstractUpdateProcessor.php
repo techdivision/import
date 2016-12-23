@@ -1,7 +1,7 @@
 <?php
 
 /**
- * TechDivision\Import\Actions\Processors\ProductPersistProcessor
+ * TechDivision\Import\Actions\Processors\ProductUpdateProcessor
  *
  * NOTICE OF LICENSE
  *
@@ -21,7 +21,7 @@
 namespace TechDivision\Import\Actions\Processors;
 
 /**
- * A processor implementation providing CREATE functionality.
+ * A processor implementation providing UPDATE functionality.
  *
  * @author    Tim Wagner <t.wagner@techdivision.com>
  * @copyright 2016 TechDivision GmbH <info@techdivision.com>
@@ -29,6 +29,6 @@ namespace TechDivision\Import\Actions\Processors;
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
  */
-abstract class AbstractPersistProcessor extends AbstractBaseProcessor
+abstract class AbstractUpdateProcessor extends AbstractBaseProcessor
 {
 }
