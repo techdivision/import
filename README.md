@@ -37,6 +37,7 @@ The following functionality is already available, for CE and EE
 This and many more is, what we're actually working on
 
 - [ ] Add/Update Import Mode
+- [ ] Import Scheduled Product Updates
 - [ ] Customizable Options
 - [ ] Product Reviews
 - [ ] Valididation
