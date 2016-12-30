@@ -20,6 +20,8 @@
 
 namespace TechDivision\Import\Actions\Processors;
 
+use TechDivision\Import\Utils\EntityStatus;
+
 /**
  * An abstract processor implementation provide basic CRUD functionality.
  *
@@ -112,6 +114,24 @@ abstract class AbstractBaseProcessor extends AbstractProcessor
     }
 
     /**
+     * Prepare's and return's the passed row by removing the
+     * entity status.
+     *
+     * @param array $row The row to prepare
+     *
+     * @return array The prepared row
+     */
+    protected function prepareRow(array $row)
+    {
+
+        // remove the entity status
+        unset($row[EntityStatus::MEMBER_NAME]);
+
+        // return the prepared row
+        return $row;
+    }
+
+    /**
      * Implements the CRUD functionality the processor is responsible for,
      * can be one of CREATE, READ, UPDATE or DELETE a entity.
      *
@@ -122,7 +142,7 @@ abstract class AbstractBaseProcessor extends AbstractProcessor
      */
     public function execute($row, $name = null)
     {
-        $this->getPreparedStatement($name)->execute($row);
+        $this->getPreparedStatement($name)->execute($this->prepareRow($row));
     }
 
     /**

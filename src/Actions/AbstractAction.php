@@ -20,6 +20,7 @@
 
 namespace TechDivision\Import\Actions;
 
+use TechDivision\Import\Utils\EntityStatus;
 use TechDivision\Import\Actions\Processors\ProcessorInterface;
 
 /**
@@ -119,6 +120,24 @@ abstract class AbstractAction implements ActionInterface
     public function getUpdateProcessor()
     {
         return $this->updateProcessor;
+    }
+
+    /**
+     * Helper method that create/update the passed entity, depending on
+     * the entity's status.
+     *
+     * @param array $row The entity data to create/update
+     *
+     * @return void
+     */
+    public function persist(array $row)
+    {
+
+        // load the method name
+        $methodName = $row[EntityStatus::MEMBER_NAME];
+
+        // invoke the method
+        $this->$methodName($row);
     }
 
     /**
