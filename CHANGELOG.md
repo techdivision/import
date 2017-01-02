@@ -1,3 +1,15 @@
+# Version 1.0.0-alpha7
+
+## Bugfixes
+
+* None
+
+## Features
+
+* Add prepareRow() method to AbstractBaseProcessor
+* Add functionality to load Magento 2 configuration data
+* Add persist() method to ActionInterface + AbstractAction
+
 # Version 1.0.0-alpha6
 
 ## Bugfixes

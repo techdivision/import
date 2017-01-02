@@ -54,6 +54,16 @@ interface ActionInterface
     public function getUpdateProcessor();
 
     /**
+     * Helper method that create/update the passed entity, depending on
+     * the entity's status.
+     *
+     * @param array $row The entity data to create/update
+     *
+     * @return void
+     */
+    public function persist(array $row);
+
+    /**
      * Creates's the entity with the passed attributes.
      *
      * @param array       $row  The attributes of the entity to create

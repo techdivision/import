@@ -96,6 +96,13 @@ class ImportProcessor implements ImportProcessorInterface
     protected $linkTypeRepository;
 
     /**
+     * The repository to access the configuration.
+     *
+     * @var \TechDivision\Import\Repositories\CoreConfigDataRepository
+     */
+    protected $coreConfigDataRepository;
+
+    /**
      * Set's the passed connection.
      *
      * @param \PDO $connection The connection to set
@@ -328,13 +335,35 @@ class ImportProcessor implements ImportProcessorInterface
     }
 
     /**
-     * Return's the repository to access categories.
+     * Return's the repository to access link types.
      *
-     * @return \TechDivision\Import\Repositories\CategoryRepository The repository instance
+     * @return \TechDivision\Import\Repositories\LinkTypeRepository The repository instance
      */
     public function getLinkTypeRepository()
     {
         return $this->linkTypeRepository;
+    }
+
+    /**
+     * Set's the repository to access the Magento 2 configuration.
+     *
+     * @param \TechDivision\Import\Repositories\CoreConfigDataRepository $coreConfigDataRepository The repository to access the Magento 2 configuration
+     *
+     * @return void
+     */
+    public function setCoreConfigDataRepository($coreConfigDataRepository)
+    {
+        $this->coreConfigDataRepository = $coreConfigDataRepository;
+    }
+
+    /**
+     * Return's the repository to access the Magento 2 configuration.
+     *
+     * @return \TechDivision\Import\Repositories\CoreConfigDataRepository The repository instance
+     */
+    public function getCoreConfigDataRepository()
+    {
+        return $this->coreConfigDataRepository;
     }
 
     /**
@@ -481,5 +510,15 @@ class ImportProcessor implements ImportProcessorInterface
     public function getLinkTypes()
     {
         return $this->getLinkTypeRepository()->findAll();
+    }
+
+    /**
+     * Return's an array with the Magento 2 configuration.
+     *
+     * @return array The Magento 2 configuration
+     */
+    public function getCoreConfigData()
+    {
+        return $this->getCoreConfigDataRepository()->findAll();
     }
 }
