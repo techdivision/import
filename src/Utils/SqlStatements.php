@@ -195,4 +195,11 @@ class SqlStatements
                                           FROM eav_attribute_option_value AS t1
                                          WHERE t1.value = ?
                                            AND t1.store_id = ?';
+
+    /**
+     * The SQL statement to load the Magento 2 configuration.
+     *
+     * @var string
+     */
+    const CORE_CONFIG_DATA = 'SELECT * FROM core_config_data';
 }

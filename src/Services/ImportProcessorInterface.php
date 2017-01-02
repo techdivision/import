@@ -125,6 +125,20 @@ interface ImportProcessorInterface
     public function getTaxClassRepository();
 
     /**
+     * Return's the repository to access link types.
+     *
+     * @return \TechDivision\Import\Repositories\LinkTypeRepository The repository instance
+     */
+    public function getLinkTypeRepository();
+
+    /**
+     * Return's the repository to access the Magento 2 configuration.
+     *
+     * @return \TechDivision\Import\Repositories\CoreConfigDataRepository The repository instance
+     */
+    public function getCoreConfigDataRepository();
+
+    /**
      * Return's the EAV attribute set with the passed ID.
      *
      * @param integer $id The ID of the EAV attribute set to load
@@ -230,4 +244,11 @@ interface ImportProcessorInterface
      * @return array The available link types
      */
     public function getLinkTypes();
+
+    /**
+     * Return's an array with the Magento 2 configuration.
+     *
+     * @return array The Magento 2 configuration
+     */
+    public function getCoreConfigData();
 }

@@ -146,4 +146,11 @@ class RegistryKeys
      * @var string
      */
     const LINK_TYPES = 'linkTypes';
+
+    /**
+     * Key for the registry entry containing the Magento 2 configuration.
+     *
+     * @var string
+     */
+    const CORE_CONFIG_DATA = 'coreConfigData';
 }
