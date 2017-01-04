@@ -96,6 +96,13 @@ class ImportProcessor implements ImportProcessorInterface
     protected $linkTypeRepository;
 
     /**
+     * The repository to access link attributes.
+     *
+     * @var \TechDivision\Import\Repositories\LinkAttributeRepository
+     */
+    protected $linkAttributeRepository;
+
+    /**
      * The repository to access the configuration.
      *
      * @var \TechDivision\Import\Repositories\CoreConfigDataRepository
@@ -345,6 +352,28 @@ class ImportProcessor implements ImportProcessorInterface
     }
 
     /**
+     * Set's the repository to access link attributes.
+     *
+     * @param \TechDivision\Import\Repositories\LinkTypeRepository $linkAttributeRepository The repository to access link attributes
+     *
+     * @return void
+     */
+    public function setLinkAttributeRepository($linkAttributeRepository)
+    {
+        $this->linkAttributeRepository = $linkAttributeRepository;
+    }
+
+    /**
+     * Return's the repository to access link attributes.
+     *
+     * @return \TechDivision\Import\Repositories\LinkTypeRepository The repository instance
+     */
+    public function getLinkAttributeRepository()
+    {
+        return $this->linkAttributeRepository;
+    }
+
+    /**
      * Set's the repository to access the Magento 2 configuration.
      *
      * @param \TechDivision\Import\Repositories\CoreConfigDataRepository $coreConfigDataRepository The repository to access the Magento 2 configuration
@@ -510,6 +539,16 @@ class ImportProcessor implements ImportProcessorInterface
     public function getLinkTypes()
     {
         return $this->getLinkTypeRepository()->findAll();
+    }
+
+    /**
+     * Return's an array with all available link attributes.
+     *
+     * @return array The available link attributes
+     */
+    public function getLinkAttributes()
+    {
+        return $this->getLinkAttributeRepository()->findAll();
     }
 
     /**
