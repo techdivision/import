@@ -1,3 +1,13 @@
+# Version 1.0.0-alpha8
+
+## Bugfixes
+
+* None
+
+## Features
+
+* Add functionality to load product link attributes and add them to the global status
+
 # Version 1.0.0-alpha7
 
 ## Bugfixes

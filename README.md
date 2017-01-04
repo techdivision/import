@@ -14,7 +14,7 @@ extension, although it has no dependencies to other frameworks like Symfony, Lar
 provides independent components, that can be tied together as needed, by adding them as composer dependency.
 
 A simple command line implementation should give a brief overiew of how a simple import application could look
-like. For more information, have a look at the [techdivision/import-cli-simple](https://github.com/techdivision/import-cli-simple) 
+like. For more information, have a look at the [M2IF - Simple Console Tool](https://github.com/techdivision/import-cli-simple) 
 repository
 
 ## Status
