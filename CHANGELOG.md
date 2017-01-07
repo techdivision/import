@@ -1,3 +1,13 @@
+# Version 1.0.0-alpha9
+
+## Bugfixes
+
+* None
+
+## Features
+
+* Extend functionality to handle file headers
+
 # Version 1.0.0-alpha8
 
 ## Bugfixes

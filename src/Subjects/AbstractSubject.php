@@ -139,6 +139,55 @@ abstract class AbstractSubject implements SubjectInterface
     }
 
     /**
+     * Queries whether or not the header with the passed name is available.
+     *
+     * @param string $name The header name to query
+     *
+     * @return boolean TRUE if the header is available, else FALSE
+     */
+    public function hasHeader($name)
+    {
+        return isset($this->headers[$name]);
+    }
+
+    /**
+     * Return's the header value for the passed name.
+     *
+     * @param string $name The name of the header to return the value for
+     *
+     * @return mixed The header value
+     * \InvalidArgumentException Is thrown, if the header with the passed name is NOT available
+     */
+    public function getHeader($name)
+    {
+
+        // query whether or not, the header is available
+        if (isset($this->headers[$name])) {
+            return $this->headers[$name];
+        }
+
+        // throw an exception, if not
+        throw new \InvalidArgumentException(sprintf('Header %s is not available', $name));
+    }
+
+    /**
+     * Add's the header with the passed name and position, if not NULL.
+     *
+     * @param string $name The header name to add
+     *
+     * @return integer The new headers position
+     */
+    public function addHeader($name)
+    {
+
+        // add the header
+        $this->headers[$name] = $position = sizeof($this->headers);
+
+        // return the new header's position
+        return $position;
+    }
+
+    /**
      * Set's the system configuration.
      *
      * @param \TechDivision\Import\Configuration\Subject $configuration The system configuration
