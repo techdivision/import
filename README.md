@@ -36,9 +36,9 @@ Downloadable und Grouped Products, we removed these from the CSV file(s). This f
 * 147 configurable products
 * 1.891 simple products
 
- that we exported with the standard CSV export and created 4 bunches with ~500 products. To start the import process
- itself we used the [M2IF - Simple Console Tool](https://github.com/techdivision/import-cli-simple). 
- 
+that we exported with the standard CSV export and created 4 bunches with ~500 products. To start the import process
+itself we used the [M2IF - Simple Console Tool](https://github.com/techdivision/import-cli-simple). 
+
 To execute the Magento 2 standard import we used a simple M2 extension that extends the Magento 2 command line tool. 
 The extension is provided by CedricBlondeau and can be found on [Github](https://github.com/cedricblondeau/magento2-module-catalog-import-command).
 
