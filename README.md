@@ -31,9 +31,9 @@ features, it would give you a nice impression about what will be possible.
 For the comparison, we used a standard Magento 2 CE v2.1.2 with sample data. As M2IF actually doesn't support
 Downloadable und Grouped Products, we removed these from the CSV file(s). This finally results in
 
-*    23 custom attributes
-*     1 bundle product
-*   147 configurable products
+* 23 custom attributes
+* 1 bundle product
+* 147 configurable products
 * 1.891 simple products
 
  that we exported with the standard CSV export and created 4 bunches with ~500 products. To start the import process
