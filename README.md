@@ -42,6 +42,9 @@ itself we used the [M2IF - Simple Console Tool](https://github.com/techdivision/
 To execute the Magento 2 standard import we used a simple M2 extension that extends the Magento 2 command line tool. 
 The extension is provided by CedricBlondeau and can be found on [Github](https://github.com/cedricblondeau/magento2-module-catalog-import-command).
 
+Before we start the import (both the Magento 2 + M2IF), we removed the already imported image files, as importing
+the same images again and again will lower performance.
+
 ### Results
 
 On a MacBook Pro (Retina, Mid 2012) with the following configuration
