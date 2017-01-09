@@ -55,7 +55,7 @@ using PHP 5.6 + MySQL 5.6.34 we actually receive can see these results
 | Operation            | M2 Standard  |       M2IF |    Improvement |
 |:---------------------|:-------------|:-----------|:---------------|
 | replace              |        113 s |       32 s |       ~ x 3.50 |
-| add_update           |        114 s |       49 s |       ~ x 2.30 |
+| add-update           |        114 s |       49 s |       ~ x 2.30 |
 | delete               |         10 s |       10 s |       ~ x 0.00 |
 
 Beside Performance, the Memory Usage will also be a topic in some cases. As well as the Performance
