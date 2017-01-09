@@ -50,7 +50,7 @@ On a MacBook Pro (Retina, Mid 2012) with the following configuration
 * 8 GB RAM
 * 256 GB HDD
 
-using PHP 5.6 + MySQL 5.6.34 we actually receive can see these results
+using PHP 5.6 + MySQL 5.6.34 we actually achive these results
 
 | Operation            | M2 Standard  |       M2IF |    Improvement |
 |:---------------------|:-------------|:-----------|:---------------|
