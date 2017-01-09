@@ -42,6 +42,9 @@ itself we used the [M2IF - Simple Console Tool](https://github.com/techdivision/
 To execute the Magento 2 standard import we used a simple M2 extension that extends the Magento 2 command line tool. 
 The extension is provided by CedricBlondeau and can be found on [Github](https://github.com/cedricblondeau/magento2-module-catalog-import-command).
 
+Before we start the import (both the Magento 2 + M2IF), we removed the already imported image files, as importing
+the same images again and again will lower performance.
+
 ### Results
 
 On a MacBook Pro (Retina, Mid 2012) with the following configuration
@@ -74,7 +77,7 @@ Actually we've a pre-alpha status, so we **STRONGLY** recommend not to use M2IF 
 
 The following functionality is already available, for CE and EE
 
-- [x] Delete/Replace Import Mode
+- [x] Delete, Add/Update + Replace Import Mode
 - [x] Simple Products
 - [x] Configurable Products
 - [x] Bundle Products
@@ -87,7 +90,6 @@ The following functionality is already available, for CE and EE
 
 This and many more is, what we're actually working on
 
-- [ ] Add/Update Import Mode
 - [ ] Fine Grained Error Handling
 - [ ] Extended Logging
 - [ ] Downloadable Products
