@@ -61,7 +61,7 @@ using PHP 5.6 + MySQL 5.6.34 we actually receive can see these results
 Beside Performance, the Memory Usage will also be a topic in some cases. As well as the Performance
 topic, Memory Usage will be relevant in projects with more than 100.000 products.
 
-When importing the sample data, as described under [Performance](#performance), M2IF has a memory peak of 38.1 MB
+When importing the sample data, as described under [Performance](#performance--memory-comparison), M2IF has a memory peak of 38.1 MB
 in contrast to Magento 2 standard import with 149.4 MB. For M2IF, it doesn't matter how big the CSV will be.
 
 > As already mentioned, please keep in mind, this comparison lacks of some functionality the Magento 2 standard 
