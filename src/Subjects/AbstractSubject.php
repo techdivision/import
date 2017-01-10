@@ -506,6 +506,7 @@ abstract class AbstractSubject implements SubjectInterface
      * @param string $filename The filename to process
      *
      * @return void
+     * @throws \Exception Is thrown, if the import can't be processed
      */
     public function import($serial, $filename)
     {
@@ -545,19 +546,19 @@ abstract class AbstractSubject implements SubjectInterface
             // track the time needed for the import in seconds
             $endTime = microtime(true) - $startTime;
 
+            // clean up the data after importing the bunch
+            $this->tearDown();
+
             // log a message that the file has successfully been imported
             $systemLogger->debug(sprintf('Succesfully imported file %s in %f s', $filename, $endTime));
 
         } catch (\Exception $e) {
-            // log a message with the stack trace
-            $systemLogger->error($e->__toString());
+            // clean up the data after importing the bunch
+            $this->tearDown();
 
             // re-throw the exception
             throw $e;
         }
-
-        // clean up the data after importing the bunch
-        $this->tearDown();
     }
 
     /**

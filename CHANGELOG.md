@@ -1,3 +1,13 @@
+# Version 1.0.0-alpha10
+
+## Bugfixes
+
+* None
+
+## Features
+
+* Execute tearDown() method when AbstractSubject::import() method fails
+
 # Version 1.0.0-alpha9
 
 ## Bugfixes
