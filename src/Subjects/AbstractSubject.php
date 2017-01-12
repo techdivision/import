@@ -352,6 +352,16 @@ abstract class AbstractSubject implements SubjectInterface
     }
 
     /**
+     * Return's the multiple field delimiter character to use, default value is comma (,).
+     *
+     * @return string The multiple field delimiter character
+     */
+    public function getMultipleFieldDelimiter()
+    {
+        return $this->getConfiguration()->getMultipleFieldDelimiter();
+    }
+
+    /**
      * Return's the initialized PDO connection.
      *
      * @return \PDO The initialized PDO connection

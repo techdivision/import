@@ -75,6 +75,20 @@ interface SubjectInterface
     public function getSystemLogger();
 
     /**
+     * Return's the source date format to use.
+     *
+     * @return string The source date format
+     */
+    public function getSourceDateFormat();
+
+    /**
+     * Return's the multiple field delimiter character to use, default value is comma (,).
+     *
+     * @return string The multiple field delimiter character
+     */
+    public function getMultipleFieldDelimiter();
+
+    /**
      * Imports the content of the file with the passed filename.
      *
      * @param string $serial   The unique process serial

@@ -131,7 +131,7 @@ interface SubjectInterface
     public function getSourceDir();
 
     /**
-     * Return's the subject's target dir to use.
+     * Return's the target directory with the files that has been imported.
      *
      * @return string The target dir
      */

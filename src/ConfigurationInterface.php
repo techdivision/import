@@ -62,11 +62,32 @@ interface ConfigurationInterface
     public function getSubjects();
 
     /**
+     * Return's the subject's source date format to use.
+     *
+     * @return string The source date format
+     */
+    public function getSourceDateFormat();
+
+    /**
      * Return's the Magento installation directory.
      *
      * @return string The Magento installation directory
      */
     public function getInstallationDir();
+
+    /**
+     * Return's the source directory that has to be watched for new files.
+     *
+     * @return string The source directory
+     */
+    public function getSourceDir();
+
+    /**
+     * Return's the target directory with the files that has been imported.
+     *
+     * @return string The target dir
+     */
+    public function getTargetDir();
 
     /**
      * Return's the utility class with the SQL statements to use.
@@ -88,4 +109,60 @@ interface ConfigurationInterface
      * @return string The Magento version
      */
     public function getMagentoVersion();
+
+    /**
+     * Return's the multiple field delimiter character to use, default value is comma (,).
+     *
+     * @return string The multiple field delimiter character
+     */
+    public function getMultipleFieldDelimiter();
+
+    /**
+     * Return's the delimiter character to use, default value is comma (,).
+     *
+     * @return string The delimiter character
+     */
+    public function getDelimiter();
+
+    /**
+     * The enclosure character to use, default value is double quotation (").
+     *
+     * @return string The enclosure character
+     */
+    public function getEnclosure();
+
+    /**
+     * The escape character to use, default value is backslash (\).
+     *
+     * @return string The escape character
+     */
+    public function getEscape();
+
+    /**
+     * The file encoding of the CSV source file, default value is UTF-8.
+     *
+     * @return string The charset used by the CSV source file
+     */
+    public function getFromCharset();
+
+    /**
+     * The file encoding of the CSV targetfile, default value is UTF-8.
+     *
+     * @return string The charset used by the CSV target file
+     */
+    public function getToCharset();
+
+    /**
+     * The file mode of the CSV target file, either one of write or append, default is write.
+     *
+     * @return string The file mode of the CSV target file
+     */
+    public function getFileMode();
+
+    /**
+     * Queries whether or not strict mode is enabled or not, default is TRUE.
+     *
+     * @return boolean TRUE if strict mode is enabled, else FALSE
+     */
+    public function isStrictMode();
 }
