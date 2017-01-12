@@ -1,3 +1,13 @@
+# Version 1.0.0-alpha11
+
+## Bugfixes
+
+* None
+
+## Features
+
+* Moving source/target-dir, as well as other configuration options from subject to global configuration
+
 # Version 1.0.0-alpha10
 
 ## Bugfixes
