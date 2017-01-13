@@ -553,6 +553,9 @@ abstract class AbstractSubject implements SubjectInterface
                 return;
             }
 
+            // load the system logger instance
+            $systemLogger = $this->getSystemLogger();
+
             // prepare the flag filenames
             $inProgressFilename = sprintf('%s.inProgress', $filename);
             $importedFilename = sprintf('%s.imported', $filename);
@@ -563,12 +566,8 @@ abstract class AbstractSubject implements SubjectInterface
                 is_file($importedFilename) ||
                 is_file($inProgressFilename)
             ) {
-                // log a debug message
-                $systemLogger->debug(
-                    sprintf('Import running, found inProgress file %s', $inProgressFilename)
-                );
-
-                // ignore the file
+                // log a debug message and exit
+                $systemLogger->debug(sprintf('Import running, found inProgress file %s', $inProgressFilename));
                 return;
             }
 
