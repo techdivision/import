@@ -631,6 +631,14 @@ abstract class AbstractSubject implements SubjectInterface
         }
     }
 
+    /**
+     * This method queries whether or not the passed filename matches
+     * the pattern, based on the subjects configured prefix.
+     *
+     * @param string $filename The filename to match
+     *
+     * @return boolean TRUE if the filename matches, else FALSE
+     */
     protected function match($filename)
     {
 
