@@ -44,6 +44,11 @@ class MoveFilesSubject extends AbstractSubject
     public function import($serial, $filename)
     {
 
+        // stop processing, if the filename doesn't match
+        if (!$this->match($filename)) {
+            return;
+        }
+
         // initialize the global global data to import a bunch
         $this->setUp();
 

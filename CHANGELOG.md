@@ -1,3 +1,13 @@
+# Version 1.0.0-alpha14
+
+## Bugfixes
+
+* Add prefix check for MoveFilesSubject to avoid moving not matching files
+
+## Features
+
+* None
+
 # Version 1.0.0-alpha13
 
 ## Bugfixes

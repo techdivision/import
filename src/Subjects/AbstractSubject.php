@@ -548,11 +548,8 @@ abstract class AbstractSubject implements SubjectInterface
     {
 
         try {
-            // prepare the pattern to query whether the file has to be processed or not
-            $pattern = sprintf('/^.*\/%s.*\\.csv$/', $this->getConfiguration()->getPrefix());
-
             // stop processing, if the filename doesn't match
-            if (!preg_match($pattern, $filename)) {
+            if (!$this->match($filename)) {
                 return;
             }
 
@@ -632,6 +629,24 @@ abstract class AbstractSubject implements SubjectInterface
             // re-throw the exception
             throw $e;
         }
+    }
+
+    /**
+     * This method queries whether or not the passed filename matches
+     * the pattern, based on the subjects configured prefix.
+     *
+     * @param string $filename The filename to match
+     *
+     * @return boolean TRUE if the filename matches, else FALSE
+     */
+    protected function match($filename)
+    {
+
+        // prepare the pattern to query whether the file has to be processed or not
+        $pattern = sprintf('/^.*\/%s.*\\.csv$/', $this->getConfiguration()->getPrefix());
+
+        // stop processing, if the filename doesn't match
+        return (boolean) preg_match($pattern, $filename);
     }
 
     /**
