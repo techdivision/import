@@ -1,3 +1,13 @@
+# Version 1.0.0-alpha13
+
+## Bugfixes
+
+* Fixed invalid usage of `continue` in AbstractSubject::import() method
+
+## Features
+
+* None
+
 # Version 1.0.0-alpha12
 
 ## Bugfixes

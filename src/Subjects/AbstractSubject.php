@@ -572,7 +572,7 @@ abstract class AbstractSubject implements SubjectInterface
                 );
 
                 // ignore the file
-                continue;
+                return;
             }
 
             // flag file as in progress
