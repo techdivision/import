@@ -1,3 +1,14 @@
+# Version 1.0.0-alpha12
+
+## Bugfixes
+
+* None
+
+## Features
+
+* Move flag-file handling from techdivision/import-cli-simple to AbstractSubject::import() method
+* Add MoveFilesSubject to move files from source-dir to target-dir before importing them
+
 # Version 1.0.0-alpha11
 
 ## Bugfixes

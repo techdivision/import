@@ -40,6 +40,20 @@ interface ConfigurationInterface
     public function getOperationName();
 
     /**
+     * Return's the TRUE if the import artefacts have to be archived.
+     *
+     * @return boolean TRUE if the import artefacts have to be archived
+     */
+    public function haveArchiveArtefacts();
+
+    /**
+     * The directory where the archives will be stored.
+     *
+     * @return string The archive directory
+     */
+    public function getArchiveDir();
+
+    /**
      * Return's the database configuration
      *
      * @return TechDivision\Import\Configuration\Database The database configuration

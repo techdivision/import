@@ -64,6 +64,13 @@ class RegistryKeys
     const FILES = 'files';
 
     /**
+     * Key for the source directory of the next subject.
+     *
+     * @var string
+     */
+    const SOURCE_DIRECTORY = 'sourceDirectory';
+
+    /**
      * Key for the registry entry containing the global data.
      *
      * @var string
