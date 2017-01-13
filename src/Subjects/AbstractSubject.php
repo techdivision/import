@@ -33,6 +33,7 @@ use TechDivision\Import\Callbacks\CallbackInterface;
 use TechDivision\Import\Observers\ObserverInterface;
 use TechDivision\Import\Services\RegistryProcessorInterface;
 use TechDivision\Import\Configuration\SubjectInterface as SubjectConfigurationInterface;
+use TechDivision\Import\Utils\RegistryKeys;
 
 /**
  * An abstract subject implementation.
@@ -423,6 +424,31 @@ abstract class AbstractSubject implements SubjectInterface
      */
     public function tearDown()
     {
+
+        // load the registry processor
+        $registryProcessor = $this->getRegistryProcessor();
+
+        // update the source directory for the next subject
+        $registryProcessor->mergeAttributesRecursive(
+            $this->getSerial(),
+            array(RegistryKeys::SOURCE_DIRECTORY => $this->getNewSourceDir())
+        );
+
+        // log a debug message with the new source directory
+        $this->getSystemLogger()->debug(
+            sprintf('Subject %s successfully updated source directory to %s', __CLASS__, $this->getNewSourceDir())
+        );
+    }
+
+    /**
+     * Return's the next source directory, which will be the target directory
+     * of this subject, in most cases.
+     *
+     * @return string The new source directory
+     */
+    protected function getNewSourceDir()
+    {
+        return sprintf('%s/%s', $this->getConfiguration()->getTargetDir(), $this->getSerial());
     }
 
     /**
@@ -522,6 +548,36 @@ abstract class AbstractSubject implements SubjectInterface
     {
 
         try {
+            // prepare the pattern to query whether the file has to be processed or not
+            $pattern = sprintf('/^.*\/%s.*\\.csv$/', $this->getConfiguration()->getPrefix());
+
+            // stop processing, if the filename doesn't match
+            if (!preg_match($pattern, $filename)) {
+                return;
+            }
+
+            // prepare the flag filenames
+            $inProgressFilename = sprintf('%s.inProgress', $filename);
+            $importedFilename = sprintf('%s.imported', $filename);
+            $failedFilename = sprintf('%s.failed', $filename);
+
+            // query whether or not the file has already been imported
+            if (is_file($failedFilename) ||
+                is_file($importedFilename) ||
+                is_file($inProgressFilename)
+            ) {
+                // log a debug message
+                $systemLogger->debug(
+                    sprintf('Import running, found inProgress file %s', $inProgressFilename)
+                );
+
+                // ignore the file
+                continue;
+            }
+
+            // flag file as in progress
+            touch($inProgressFilename);
+
             // track the start time
             $startTime = microtime(true);
 
@@ -562,7 +618,14 @@ abstract class AbstractSubject implements SubjectInterface
             // log a message that the file has successfully been imported
             $systemLogger->debug(sprintf('Succesfully imported file %s in %f s', $filename, $endTime));
 
+            // rename flag file, because import has been successfull
+            rename($inProgressFilename, $importedFilename);
+
         } catch (\Exception $e) {
+            // rename the flag file, because import failed and write the stack trace
+            rename($inProgressFilename, $failedFilename);
+            file_put_contents($failedFilename, $e->__toString());
+
             // clean up the data after importing the bunch
             $this->tearDown();
 
