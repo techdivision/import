@@ -118,6 +118,23 @@ abstract class AbstractSubject implements SubjectInterface
     protected $filesystem;
 
     /**
+     * The actual line number.
+     *
+     * @var integer
+     */
+    protected $lineNumber = 0;
+
+    /**
+     * Return's the actual line number.
+     *
+     * @return integer The line number
+     */
+    public function getLineNumber()
+    {
+        return $this->lineNumber;
+    }
+
+    /**
      * Set's the array containing header row.
      *
      * @param array $headers The array with the header row
@@ -625,8 +642,8 @@ abstract class AbstractSubject implements SubjectInterface
             // clean up the data after importing the bunch
             $this->tearDown();
 
-            // re-throw the exception
-            throw $e;
+            // throw a new exception
+            throw new \Exception(sprintf('%s in line number %d', $e->getMessage(), $this->lineNumber), null, $e);
         }
     }
 
@@ -700,6 +717,9 @@ abstract class AbstractSubject implements SubjectInterface
      */
     public function importRow(array $row)
     {
+
+        // raise the line number
+        $this->lineNumber++;
 
         // initialize the headers with the columns from the first line
         if (sizeof($this->getHeaders()) === 0) {
