@@ -1,3 +1,13 @@
+# Version 1.0.0-alpha15
+
+## Bugfixes
+
+* Add line number to exception message for better debugging possibilities
+
+## Features
+
+* None
+
 # Version 1.0.0-alpha14
 
 ## Bugfixes
