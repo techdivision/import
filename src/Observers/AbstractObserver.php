@@ -61,9 +61,29 @@ abstract class AbstractObserver implements ObserverInterface
      *
      * @return object The observer's subject instance
      */
-    public function getSubject()
+    protected function getSubject()
     {
         return $this->subject;
+    }
+
+    /**
+     * Return's the name of the file to import.
+     *
+     * @return string The filename
+     */
+    protected function getFilename()
+    {
+        return $this->getSubject()->getFilename();
+    }
+
+    /**
+     * Return's the actual line number.
+     *
+     * @return integer The line number
+     */
+    protected function getLineNumber()
+    {
+        return $this->getSubject()->getLineNumber();
     }
 
     /**
@@ -71,7 +91,7 @@ abstract class AbstractObserver implements ObserverInterface
      *
      * @return \Psr\Log\LoggerInterface The system logger instance
      */
-    public function getSystemLogger()
+    protected function getSystemLogger()
     {
         return $this->getSubject()->getSystemLogger();
     }

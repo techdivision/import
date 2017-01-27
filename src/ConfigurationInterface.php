@@ -179,4 +179,18 @@ interface ConfigurationInterface
      * @return boolean TRUE if strict mode is enabled, else FALSE
      */
     public function isStrictMode();
+
+    /**
+     * Queries whether or not debug mode is enabled or not, default is TRUE.
+     *
+     * @return boolean TRUE if debug mode is enabled, else FALSE
+     */
+    public function isDebugMode();
+
+    /**
+     * Return's the log level to use.
+     *
+     * @return string The log level to use
+     */
+    public function getLogLevel();
 }

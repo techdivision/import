@@ -138,6 +138,13 @@ interface SubjectInterface
     public function getTargetDir();
 
     /**
+     * Queries whether or not debug mode is enabled or not, default is TRUE.
+     *
+     * @return boolean TRUE if debug mode is enabled, else FALSE
+     */
+    public function isDebugMode();
+
+    /**
      * Return's the array with the subject's observers.
      *
      * @return array The subject's observers
