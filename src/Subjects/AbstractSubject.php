@@ -27,13 +27,13 @@ use League\Flysystem\FilesystemInterface;
 use Goodby\CSV\Import\Standard\Lexer;
 use Goodby\CSV\Import\Standard\LexerConfig;
 use Goodby\CSV\Import\Standard\Interpreter;
+use TechDivision\Import\Utils\RegistryKeys;
 use TechDivision\Import\Utils\ConfigurationKeys;
 use TechDivision\Import\Services\RegistryProcessor;
 use TechDivision\Import\Callbacks\CallbackInterface;
 use TechDivision\Import\Observers\ObserverInterface;
 use TechDivision\Import\Services\RegistryProcessorInterface;
 use TechDivision\Import\Configuration\SubjectInterface as SubjectConfigurationInterface;
-use TechDivision\Import\Utils\RegistryKeys;
 
 /**
  * An abstract subject implementation.
@@ -203,6 +203,16 @@ abstract class AbstractSubject implements SubjectInterface
 
         // return the new header's position
         return $position;
+    }
+
+    /**
+     * Queries whether or not debug mode is enabled or not, default is TRUE.
+     *
+     * @return boolean TRUE if debug mode is enabled, else FALSE
+     */
+    public function isDebugMode()
+    {
+        return $this->getConfiguration()->isDebugMode();
     }
 
     /**

@@ -1,3 +1,13 @@
+# Version 1.0.0-alpha17
+
+## Bugfixes
+
+* None
+
+## Features
+
+* Add debug-mode and log-level configuration options
+
 # Version 1.0.0-alpha16
 
 ## Bugfixes

@@ -33,16 +33,11 @@ interface ObserverInterface
 {
 
     /**
-     * Return's the observer's subject instance.
+     * Set's the obeserver's subject instance to initialize the observer with.
      *
-     * @return object The observer's subject instance
-     */
-    public function getSubject();
-
-    /**
-     * Return's the system logger.
+     * @param object $subject The observer's subject
      *
-     * @return \Psr\Log\LoggerInterface The system logger instance
+     * @return void
      */
-    public function getSystemLogger();
+    public function setSubject($subject);
 }
