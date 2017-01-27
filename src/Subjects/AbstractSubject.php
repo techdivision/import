@@ -652,8 +652,8 @@ abstract class AbstractSubject implements SubjectInterface
             // clean up the data after importing the bunch
             $this->tearDown();
 
-            // throw a new exception
-            throw new \Exception(sprintf('%s in line number %d', $e->getMessage(), $this->lineNumber), null, $e);
+            // re-throw the exception
+            throw $e;
         }
     }
 

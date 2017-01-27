@@ -1,3 +1,13 @@
+# Version 1.0.0-alpha18
+
+## Bugfixes
+
+* None
+
+## Features
+
+* Re-throw execption instead of wrapping them
+
 # Version 1.0.0-alpha17
 
 ## Bugfixes
