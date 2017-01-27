@@ -1,3 +1,13 @@
+# Version 1.0.0-alpha18
+
+## Bugfixes
+
+* None
+
+## Features
+
+* Add CSV filename/line number to exceptions to improve error handling/debugging
+
 # Version 1.0.0-alpha17
 
 ## Bugfixes
