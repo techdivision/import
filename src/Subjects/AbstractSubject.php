@@ -736,5 +736,8 @@ abstract class AbstractSubject implements SubjectInterface
                 }
             }
         }
+
+        // log a debug message with the actual line nr/file information
+        $this->getSystemLogger()->debug(sprintf('Successfully imported line %d of file %s', $this->lineNumber, $this->filename));
     }
 }

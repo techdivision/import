@@ -1,3 +1,13 @@
+# Version 1.0.0-alpha16
+
+## Bugfixes
+
+* Add debug log message with actual line nr/file name information
+
+## Features
+
+* None
+
 # Version 1.0.0-alpha15
 
 ## Bugfixes
