@@ -6,7 +6,7 @@
 
 ## Features
 
-* Add CSV filename/line number to exceptions to improve error handling/debugging
+* Re-throw execption instead of wrapping them
 
 # Version 1.0.0-alpha17
 
