@@ -75,7 +75,7 @@ class EavAttributeRepository extends AbstractRepository
 
         // execute the prepared statement and return the array with the fail EAV attributes
         $this->eavAttributesByEntityTypeIdAndAttributeSetNameStmt->execute(array($entityTypeId, $attributeSetName));
-        return $this->eavAttributesByEntityTypeIdAndAttributeSetNameStmt->fetchAll();
+        return $this->eavAttributesByEntityTypeIdAndAttributeSetNameStmt->fetchAll(\PDO::FETCH_ASSOC);
     }
 
     /**
@@ -91,7 +91,7 @@ class EavAttributeRepository extends AbstractRepository
 
         // execute the prepared statement and return the array with the fail EAV attributes
         $this->eavAttributesByOptionValueAndStoreIdStmt->execute(array($optionValue, $storeId));
-        return $this->eavAttributesByOptionValueAndStoreIdStmt->fetchAll();
+        return $this->eavAttributesByOptionValueAndStoreIdStmt->fetchAll(\PDO::FETCH_ASSOC);
     }
 
     /**
@@ -107,7 +107,8 @@ class EavAttributeRepository extends AbstractRepository
     {
 
         // execute the prepared statement and return the array with the fail EAV attributes
-        $eavAttributes = $this->findAllByOptionValueAndStoreId($optionValue, $storeId);
-        return reset($eavAttributes);
+        if (sizeof($eavAttributes = $this->findAllByOptionValueAndStoreId($optionValue, $storeId)) > 0) {
+            return reset($eavAttributes);
+        }
     }
 }

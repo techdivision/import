@@ -67,6 +67,26 @@ abstract class AbstractObserver implements ObserverInterface
     }
 
     /**
+     * Queries whether or not debug mode is enabled or not, default is TRUE.
+     *
+     * @return boolean TRUE if debug mode is enabled, else FALSE
+     */
+    protected function isDebugMode()
+    {
+        return $this->getSubject()->isDebugMode();
+    }
+
+    /**
+     * Stop's observer execution on the actual row.
+     *
+     * @return void
+     */
+    protected function skipRow()
+    {
+        $this->getSubject()->skipRow();
+    }
+
+    /**
      * Return's the name of the file to import.
      *
      * @return string The filename

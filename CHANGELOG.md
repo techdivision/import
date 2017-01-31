@@ -1,3 +1,13 @@
+# Version 1.0.0-alpha19
+
+## Bugfixes
+
+* None
+
+## Features
+
+* Add basic functionality to skip rows, e. g. if product has already been imported
+
 # Version 1.0.0-alpha18
 
 ## Bugfixes

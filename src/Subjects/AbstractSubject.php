@@ -125,6 +125,30 @@ abstract class AbstractSubject implements SubjectInterface
     protected $lineNumber = 0;
 
     /**
+     * The actual operation name.
+     *
+     * @var string
+     */
+    protected $operationName ;
+
+    /**
+     * The flag that stop's overserver execution on the actual row.
+     *
+     * @var boolean
+     */
+    protected $skipRow = false;
+
+    /**
+     * Stop's observer execution on the actual row.
+     *
+     * @return void
+     */
+    public function skipRow()
+    {
+        $this->skipRow = true;
+    }
+
+    /**
      * Return's the actual line number.
      *
      * @return integer The line number
@@ -132,6 +156,16 @@ abstract class AbstractSubject implements SubjectInterface
     public function getLineNumber()
     {
         return $this->lineNumber;
+    }
+
+    /**
+     * Return's the actual operation name.
+     *
+     * @return string
+     */
+    public function getOperationName()
+    {
+        return $this->operationName;
     }
 
     /**
@@ -414,7 +448,10 @@ abstract class AbstractSubject implements SubjectInterface
         );
 
         // initialize the filesystem
-        $this->setFilesystem(new Filesystem(new Local($this->getRootDir())));
+        $this->filesystem = new Filesystem(new Local($this->getRootDir()));
+
+        // initialize the operation name
+        $this->operationName = $this->getConfiguration()->getConfiguration()->getOperationName();
     }
 
     /**
@@ -728,8 +765,9 @@ abstract class AbstractSubject implements SubjectInterface
     public function importRow(array $row)
     {
 
-        // raise the line number
+        // raise the line number and reset the skip row flag
         $this->lineNumber++;
+        $this->skipRow = false;
 
         // initialize the headers with the columns from the first line
         if (sizeof($this->getHeaders()) === 0) {
@@ -741,6 +779,11 @@ abstract class AbstractSubject implements SubjectInterface
         foreach ($this->getObservers() as $observers) {
             // invoke the pre-import/import and post-import observers
             foreach ($observers as $observer) {
+                // query whether or not we have to skip the row
+                if ($this->skipRow) {
+                    break;
+                }
+                // if not, process the next observer
                 if ($observer instanceof ObserverInterface) {
                     $row = $observer->handle($row);
                 }
@@ -748,6 +791,13 @@ abstract class AbstractSubject implements SubjectInterface
         }
 
         // log a debug message with the actual line nr/file information
-        $this->getSystemLogger()->debug(sprintf('Successfully imported line %d of file %s', $this->lineNumber, $this->filename));
+        $this->getSystemLogger()->debug(
+            sprintf(
+                'Successfully processed row (operation: %s) in file %s on line %d',
+                $this->operationName,
+                $this->filename,
+                $this->lineNumber
+            )
+        );
     }
 }

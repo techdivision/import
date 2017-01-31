@@ -92,6 +92,13 @@ class RegistryKeys
     const SKU_ROW_ID_MAPPING = 'skuRowIdMapping';
 
     /**
+     * Key for the registry entry containing the SKU => store view code mapping.
+     *
+     * @var string
+     */
+    const SKU_STORE_VIEW_CODE_MAPPING = 'skuStoreViewCodeMapping';
+
+    /**
      * Key for the registry entry containing the attribute sets.
      *
      * @var string
