@@ -1,3 +1,13 @@
+# Version 1.0.0-alpha20
+
+## Bugfixes
+
+* None
+
+## Features
+
+* Documentation tasks for class EntityStatus
+
 # Version 1.0.0-alpha19
 
 ## Bugfixes
