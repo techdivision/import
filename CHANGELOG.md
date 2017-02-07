@@ -1,3 +1,13 @@
+# Version 1.0.0-alpha21
+
+## Bugfixes
+
+* None
+
+## Features
+
+* Separating artefact export functionality into an interface/trait
+
 # Version 1.0.0-alpha20
 
 ## Bugfixes
