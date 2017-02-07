@@ -20,6 +20,8 @@
 
 namespace TechDivision\Import\Repositories;
 
+use TechDivision\Import\Utils\MemberNames;
+
 /**
  * Repository implementation to load EAV attribute data.
  *
@@ -73,9 +75,17 @@ class EavAttributeRepository extends AbstractRepository
     public function findAllByEntityTypeIdAndAttributeSetName($entityTypeId, $attributeSetName)
     {
 
+        // initialize the array for the EAV attributes
+        $eavAttributes = array();
+
         // execute the prepared statement and return the array with the fail EAV attributes
         $this->eavAttributesByEntityTypeIdAndAttributeSetNameStmt->execute(array($entityTypeId, $attributeSetName));
-        return $this->eavAttributesByEntityTypeIdAndAttributeSetNameStmt->fetchAll(\PDO::FETCH_ASSOC);
+        foreach ($this->eavAttributesByEntityTypeIdAndAttributeSetNameStmt->fetchAll(\PDO::FETCH_ASSOC) as $eavAttribute) {
+            $eavAttributes[$eavAttribute[MemberNames::ATTRIBUTE_CODE]] = $eavAttribute;
+        }
+
+        // return the array with the EAV attributes
+        return $eavAttributes;
     }
 
     /**
