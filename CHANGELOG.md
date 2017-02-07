@@ -1,3 +1,14 @@
+# Version 1.0.0-alpha22
+
+## Bugfixes
+
+* None
+
+## Features
+
+* Apply header mappings only once per bunch, when headers are initialized
+* Add attribute code as key to array with EAV attributes
+
 # Version 1.0.0-alpha21
 
 ## Bugfixes

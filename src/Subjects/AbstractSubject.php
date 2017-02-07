@@ -139,6 +139,25 @@ abstract class AbstractSubject implements SubjectInterface
     protected $skipRow = false;
 
     /**
+     * Mappings for attribute code => CSV column header.
+     *
+     * @var array
+     */
+    protected $headerMappings = array(
+        'product_online' => 'status',
+        'tax_class_name' => 'tax_class_id',
+        'bundle_price_type' => 'price_type',
+        'bundle_sku_type' => 'sku_type',
+        'bundle_price_view' => 'price_view',
+        'bundle_weight_type' => 'weight_type',
+        'base_image' => 'image',
+        'base_image_label' => 'image_label',
+        'thumbnail_image' => 'thumbnail',
+        'thumbnail_image_label'=> 'thumbnail_label',
+        'bundle_shipment_type' => 'shipment_type'
+    );
+
+    /**
      * Stop's observer execution on the actual row.
      *
      * @return void
@@ -770,8 +789,10 @@ abstract class AbstractSubject implements SubjectInterface
         $this->skipRow = false;
 
         // initialize the headers with the columns from the first line
-        if (sizeof($this->getHeaders()) === 0) {
-            $this->setHeaders(array_flip($row));
+        if (sizeof($this->headers) === 0) {
+            foreach ($row as $value => $key) {
+                $this->headers[$this->mapAttributeCodeByHeaderMapping($key)] = $value;
+            }
             return;
         }
 
@@ -799,5 +820,25 @@ abstract class AbstractSubject implements SubjectInterface
                 $this->lineNumber
             )
         );
+    }
+
+    /**
+     * Map the passed attribute code, if a header mapping exists and return the
+     * mapped mapping.
+     *
+     * @param string $attributeCode The attribute code to map
+     *
+     * @return string The mapped attribute code, or the original one
+     */
+    public function mapAttributeCodeByHeaderMapping($attributeCode)
+    {
+
+        // query weather or not we've a mapping, if yes, map the attribute code
+        if (isset($this->headerMappings[$attributeCode])) {
+            $attributeCode = $this->headerMappings[$attributeCode];
+        }
+
+        // return the (mapped) attribute code
+        return $attributeCode;
     }
 }
