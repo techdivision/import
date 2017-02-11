@@ -1,3 +1,14 @@
+# Version 1.0.0-alpha23
+
+## Bugfixes
+
+* None
+
+## Features
+
+* Add method EavAttributeRepository::findAllByIsUserDefined() to load the user defined attributes
+* Move CallbackVisitor and ObserverVisitor to this package and initialize observers/callbacks in AbstractSubject
+
 # Version 1.0.0-alpha22
 
 ## Bugfixes

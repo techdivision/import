@@ -89,6 +89,13 @@ interface SubjectInterface
     public function getMultipleFieldDelimiter();
 
     /**
+     * Return's the callback mappings for this subject.
+     *
+     * @return array The array with the subject's callback mappings
+     */
+    public function getCallbackMappings();
+
+    /**
      * Imports the content of the file with the passed filename.
      *
      * @param string $serial   The unique process serial
