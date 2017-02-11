@@ -187,6 +187,15 @@ interface ImportProcessorInterface
     public function getEavAttributeByOptionValueAndStoreId($optionValue, $storeId);
 
     /**
+     * Return's an array with the available EAV attributes for the passed is user defined flag.
+     *
+     * @param integer $isUserDefined The flag itself
+     *
+     * @return array The array with the EAV attributes matching the passed flag
+     */
+    public function getEavAttributeByIsUserDefined($isUserDefined = 1);
+
+    /**
      * Return's an array with the available stores.
      *
      * @return array The array with the available stores

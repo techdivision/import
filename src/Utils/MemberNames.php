@@ -181,4 +181,18 @@ class MemberNames
      * @var string
      */
     const URL_PATH = 'url_path';
+
+    /**
+     * Name for the member 'is_user_defined'.
+     *
+     * @var string
+     */
+    const ID_USER_DEFINED = 'is_user_defined';
+
+    /**
+     * Name for the member 'entity_type_id'.
+     *
+     * @var string
+     */
+    const ENTITY_TYPE_ID = 'entity_type_id';
 }

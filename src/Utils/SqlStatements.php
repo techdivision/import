@@ -171,9 +171,9 @@ class SqlStatements
     const EAV_ATTRIBUTES_BY_ENTITY_TYPE_ID_AND_ATTRIBUTE_SET_NAME = 'SELECT t3.*
                                                                        FROM eav_attribute AS t3
                                                                  INNER JOIN eav_entity_type AS t0
-                                                                         ON t0.entity_type_id = ?
+                                                                         ON t0.entity_type_id = :entity_type_id
                                                                  INNER JOIN eav_attribute_set AS t1
-                                                                         ON t1.attribute_set_name = ?
+                                                                         ON t1.attribute_set_name = :attribute_set_name
                                                                         AND t1.entity_type_id = t0.entity_type_id
                                                                  INNER JOIN eav_entity_attribute AS t2
                                                                          ON t2.attribute_set_id = t1.attribute_set_id
@@ -187,11 +187,18 @@ class SqlStatements
     const EAV_ATTRIBUTES_BY_OPTION_VALUE_AND_STORE_ID = 'SELECT t1.*
                                                            FROM eav_attribute AS t1
                                                      INNER JOIN eav_attribute_option_value AS t2
-                                                             ON t2.value = ?
-                                                            AND t2.store_id = ?
+                                                             ON t2.value = :value
+                                                            AND t2.store_id = :store_id
                                                      INNER JOIN eav_attribute_option AS t3
                                                              ON t3.option_id = t2.option_id
                                                             AND t1.attribute_id = t3.attribute_id';
+
+    /**
+     * The SQL statement to load EAV attributes by passed is user defined flag.
+     *
+     * @var string
+     */
+    const EAV_ATTRIBUTES_BY_IS_USER_DEFINED = 'SELECT * FROM eav_attribute WHERE is_user_defined = :is_user_defined';
 
     /**
      * The SQL statement to load the attribute option value.

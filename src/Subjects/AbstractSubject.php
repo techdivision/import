@@ -30,7 +30,9 @@ use Goodby\CSV\Import\Standard\Interpreter;
 use TechDivision\Import\Utils\RegistryKeys;
 use TechDivision\Import\Utils\ConfigurationKeys;
 use TechDivision\Import\Services\RegistryProcessor;
+use TechDivision\Import\Callbacks\CallbackVisitor;
 use TechDivision\Import\Callbacks\CallbackInterface;
+use TechDivision\Import\Observers\ObserverVisitor;
 use TechDivision\Import\Observers\ObserverInterface;
 use TechDivision\Import\Services\RegistryProcessorInterface;
 use TechDivision\Import\Configuration\SubjectInterface as SubjectConfigurationInterface;
@@ -102,6 +104,13 @@ abstract class AbstractSubject implements SubjectInterface
      * @var array
      */
     protected $callbacks = array();
+
+    /**
+     * The subject's callback mappings.
+     *
+     * @var array
+     */
+    protected $callbackMappings = array();
 
     /**
      * Contain's the column names from the header line.
@@ -471,6 +480,10 @@ abstract class AbstractSubject implements SubjectInterface
 
         // initialize the operation name
         $this->operationName = $this->getConfiguration()->getConfiguration()->getOperationName();
+
+        // initialize the callbacks/observers
+        CallbackVisitor::get()->visit($this);
+        ObserverVisitor::get()->visit($this);
     }
 
     /**
@@ -616,6 +629,16 @@ abstract class AbstractSubject implements SubjectInterface
     public function getCallbacks()
     {
         return $this->callbacks;
+    }
+
+    /**
+     * Return's the callback mappings for this subject.
+     *
+     * @return array The array with the subject's callback mappings
+     */
+    public function getCallbackMappings()
+    {
+        return $this->callbackMappings;
     }
 
     /**
