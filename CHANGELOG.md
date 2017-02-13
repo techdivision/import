@@ -1,3 +1,14 @@
+# Version 1.0.0-alpha24
+
+## Bugfixes
+
+* None
+
+## Features
+
+* Move BunchKeys from CLI package to this package
+* Add SubjectInterface::needsOkFile() method to make sure, that subjects check if an OK file is needed or not
+
 # Version 1.0.0-alpha23
 
 ## Bugfixes
