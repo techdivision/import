@@ -104,4 +104,11 @@ interface SubjectInterface
      * @return void
      */
     public function import($serial, $filename);
+
+    /**
+     * Return's TRUE if an OK file is needed for the subject to be processed, else FALSE.
+     *
+     * @return boolean TRUE if the subject needs an OK file to be executed, else FALSE
+     */
+    public function needsOkFile();
 }

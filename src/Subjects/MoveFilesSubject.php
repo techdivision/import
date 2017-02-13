@@ -44,27 +44,35 @@ class MoveFilesSubject extends AbstractSubject
     public function import($serial, $filename)
     {
 
-        // stop processing, if the filename doesn't match
-        if (!$this->match($filename)) {
-            return;
+        // only process the file, if the filename match
+        if ($this->match($filename)) {
+            // initialize the global global data to import a bunch
+            $this->setUp();
+
+            // initialize serial and filename
+            $this->setSerial($serial);
+            $this->setFilename($filename);
+
+            // query whether the new source directory has to be created or not
+            if (!is_dir($newSourceDir = $this->getNewSourceDir())) {
+                mkdir($newSourceDir);
+            }
+
+            // move the file to the new source directory
+            rename($filename, sprintf('%s/%s', $newSourceDir, basename($filename)));
+
+            // clean up the data after importing the bunch
+            $this->tearDown();
         }
+    }
 
-        // initialize the global global data to import a bunch
-        $this->setUp();
-
-        // initialize serial and filename
-        $this->setSerial($serial);
-        $this->setFilename($filename);
-
-        // query whether the new source directory has to be created or not
-        if (!is_dir($newSourceDir = $this->getNewSourceDir())) {
-            mkdir($newSourceDir);
-        }
-
-        // move the file to the new source directory
-        rename($filename, sprintf('%s/%s', $newSourceDir, basename($filename)));
-
-        // clean up the data after importing the bunch
-        $this->tearDown();
+    /**
+     * Return's TRUE if an OK file is needed for the subject to be processed, else FALSE.
+     *
+     * @return boolean TRUE if the subject needs an OK file to be executed, else FALSE
+     */
+    public function needsOkFile()
+    {
+        return true;
     }
 }
