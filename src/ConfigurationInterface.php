@@ -59,6 +59,7 @@ interface ConfigurationInterface
      * @param string $id The ID of the database connection to return
      *
      * @return \TechDivision\Import\Cli\Configuration\Database The database configuration
+     * @throws \Exception Is thrown, if the database with the passed ID is not configured
      */
     public function getDatabase($id = null);
 
