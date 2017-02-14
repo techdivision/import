@@ -33,6 +33,13 @@ interface DatabaseInterface
 {
 
     /**
+     * Return's the database identifier for this database connection.
+     *
+     * @return string The database identifier
+     */
+    public function getId();
+
+    /**
      * Return's the PDO DSN to use.
      *
      * @return string The PDO DSN
@@ -52,4 +59,11 @@ interface DatabaseInterface
      * @return string The DB password
      */
     public function getPassword();
+
+    /**
+     * Return's the flag to signal that this is the default datasource or not.
+     *
+     * @return boolean TRUE if this is the default datasource, else FALSE
+     */
+    public function isDefault();
 }

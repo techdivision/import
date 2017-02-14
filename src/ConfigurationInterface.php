@@ -54,11 +54,13 @@ interface ConfigurationInterface
     public function getArchiveDir();
 
     /**
-     * Return's the database configuration
+     * Return's the database configuration.
      *
-     * @return TechDivision\Import\Configuration\Database The database configuration
+     * @param string $id The ID of the database connection to return
+     *
+     * @return \TechDivision\Import\Cli\Configuration\Database The database configuration
      */
-    public function getDatabase();
+    public function getDatabase($id = null);
 
     /**
      * Return's the ArrayCollection with the configured operations.

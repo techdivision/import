@@ -1,3 +1,13 @@
+# Version 1.0.0-alpha25
+
+## Bugfixes
+
+* None
+
+## Features
+
+* Extend configuration to implement multiple database handling
+
 # Version 1.0.0-alpha24
 
 ## Bugfixes
