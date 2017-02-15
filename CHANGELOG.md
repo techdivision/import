@@ -1,3 +1,14 @@
+# Version 1.0.0-alpha26
+
+## Bugfixes
+
+* None
+
+## Features
+
+* Add missing methods addDatabase() and clearDatabases() to ConfigurationInterface
+* Replace parameter ID from getDatabase() method with value from getUseDbId() method in ConfigurationInterface
+
 # Version 1.0.0-alpha25
 
 ## Bugfixes

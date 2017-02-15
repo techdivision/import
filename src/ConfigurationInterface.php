@@ -20,6 +20,8 @@
 
 namespace TechDivision\Import;
 
+use TechDivision\Import\Configuration\DatabaseInterface;
+
 /**
  * The interface for the import configuration.
  *
@@ -56,12 +58,10 @@ interface ConfigurationInterface
     /**
      * Return's the database configuration.
      *
-     * @param string $id The ID of the database connection to return
-     *
      * @return \TechDivision\Import\Cli\Configuration\Database The database configuration
-     * @throws \Exception Is thrown, if the database with the passed ID is not configured
+     * @throws \Exception Is thrown, if no database configuration is available
      */
-    public function getDatabase($id = null);
+    public function getDatabase();
 
     /**
      * Return's the ArrayCollection with the configured operations.
@@ -196,4 +196,27 @@ interface ConfigurationInterface
      * @return string The log level to use
      */
     public function getLogLevel();
+
+    /**
+     * Remove's all configured database configuration.
+     *
+     * @return void
+     */
+    public function clearDatabases();
+
+    /**
+     * Add's the passed database configuration.
+     *
+     * @param \TechDivision\Import\Configuration\DatabaseInterface $database The database configuration
+     *
+     * @return void
+     */
+    public function addDatabase(DatabaseInterface $database);
+
+    /**
+     * Return's the explicit DB ID to use.
+     *
+     * @return string The explicit DB ID to use
+     */
+    public function getUseDbId();
 }
