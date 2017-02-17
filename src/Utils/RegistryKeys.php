@@ -64,6 +64,13 @@ class RegistryKeys
     const FILES = 'files';
 
     /**
+     * Key for the registry entry containing the number of imported bunches.
+     *
+     * @var string
+     */
+    const BUNCHES = 'bunches';
+
+    /**
      * Key for the source directory of the next subject.
      *
      * @var string

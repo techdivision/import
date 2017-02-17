@@ -21,6 +21,7 @@
 namespace TechDivision\Import;
 
 use TechDivision\Import\Configuration\DatabaseInterface;
+use TechDivision\Import\Configuration\DatabaseConfigurationInterface;
 
 /**
  * The interface for the import configuration.
@@ -71,12 +72,12 @@ interface ConfigurationInterface
     public function getOperations();
 
     /**
-     * Return's the array with the subjects of the operation to use.
+     * Return's the array with the plugins of the operation to use.
      *
-     * @return \Doctrine\Common\Collections\ArrayCollection The ArrayCollection with the subjects
-     * @throws \Exception Is thrown, if no subjects are available for the actual operation
+     * @return \Doctrine\Common\Collections\ArrayCollection The ArrayCollection with the plugins
+     * @throws \Exception Is thrown, if no plugins are available for the actual operation
      */
-    public function getSubjects();
+    public function getPlugins();
 
     /**
      * Return's the subject's source date format to use.
@@ -207,11 +208,11 @@ interface ConfigurationInterface
     /**
      * Add's the passed database configuration.
      *
-     * @param \TechDivision\Import\Configuration\DatabaseInterface $database The database configuration
+     * @param \TechDivision\Import\Configuration\DatabaseConfigurationInterface $database The database configuration
      *
      * @return void
      */
-    public function addDatabase(DatabaseInterface $database);
+    public function addDatabase(DatabaseConfigurationInterface $database);
 
     /**
      * Return's the explicit DB ID to use.

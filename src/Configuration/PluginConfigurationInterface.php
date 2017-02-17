@@ -1,7 +1,7 @@
 <?php
 
 /**
- * TechDivision\Import\Configuration\DatabaseInterface
+ * TechDivision\Import\Configuration\PluginConfigurationInterface
  *
  * NOTICE OF LICENSE
  *
@@ -21,7 +21,7 @@
 namespace TechDivision\Import\Configuration;
 
 /**
- * Interface for the database configuration implementation.
+ * Interface for the plugin configuration implementation.
  *
  * @author    Tim Wagner <t.wagner@techdivision.com>
  * @copyright 2016 TechDivision GmbH <info@techdivision.com>
@@ -29,41 +29,27 @@ namespace TechDivision\Import\Configuration;
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
  */
-interface DatabaseInterface
+interface PluginConfigurationInterface
 {
 
     /**
-     * Return's the database identifier for this database connection.
+     * Return's the subject's class name.
      *
-     * @return string The database identifier
+     * @return string The subject's class name
      */
-    public function getId();
+    public function getClassName();
 
     /**
-     * Return's the PDO DSN to use.
+     * Return's the ArrayCollection with the operation's subjects.
      *
-     * @return string The PDO DSN
+     * @return \Doctrine\Common\Collections\ArrayCollection The ArrayCollection with the operation's subjects
      */
-    public function getDsn();
+    public function getSubjects();
 
     /**
-     * Return's the DB username to use.
+     * Return's the reference to the configuration instance.
      *
-     * @return string The DB username
+     * @return \TechDivision\Import\ConfigurationInterface The configuration instance
      */
-    public function getUsername();
-
-    /**
-     * Return's the DB password to use.
-     *
-     * @return string The DB password
-     */
-    public function getPassword();
-
-    /**
-     * Return's the flag to signal that this is the default datasource or not.
-     *
-     * @return boolean TRUE if this is the default datasource, else FALSE
-     */
-    public function isDefault();
+    public function getConfiguration();
 }

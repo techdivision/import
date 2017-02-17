@@ -35,7 +35,7 @@ use TechDivision\Import\Callbacks\CallbackInterface;
 use TechDivision\Import\Observers\ObserverVisitor;
 use TechDivision\Import\Observers\ObserverInterface;
 use TechDivision\Import\Services\RegistryProcessorInterface;
-use TechDivision\Import\Configuration\SubjectInterface as SubjectConfigurationInterface;
+use TechDivision\Import\Configuration\SubjectConfigurationInterface;
 
 /**
  * An abstract subject implementation.
@@ -59,7 +59,7 @@ abstract class AbstractSubject implements SubjectInterface
     /**
      * The system configuration.
      *
-     * @var \TechDivision\Import\Configuration\SubjectInterface
+     * @var \TechDivision\Import\Configuration\SubjectConfigurationInterface
      */
     protected $configuration;
 
@@ -165,6 +165,23 @@ abstract class AbstractSubject implements SubjectInterface
         'thumbnail_image_label'=> 'thumbnail_label',
         'bundle_shipment_type' => 'shipment_type'
     );
+
+    /**
+     * Initialize the subject instance.
+     *
+     * @param \Psr\Log\LoggerInterface                                         $systemLogger      The system logger instance
+     * @param \TechDivision\Import\Configuration\SubjectConfigurationInterface $configuration     The subject configuration instance
+     * @param \TechDivision\Import\Services\RegistryProcessorInterface         $registryProcessor The registry processor instance
+     */
+    public function __construct(
+        LoggerInterface $systemLogger,
+        SubjectConfigurationInterface $configuration,
+        RegistryProcessorInterface $registryProcessor
+    ) {
+        $this->systemLogger = $systemLogger;
+        $this->configuration = $configuration;
+        $this->registryProcessor = $registryProcessor;
+    }
 
     /**
      * Stop's observer execution on the actual row.
@@ -278,37 +295,13 @@ abstract class AbstractSubject implements SubjectInterface
     }
 
     /**
-     * Set's the system configuration.
-     *
-     * @param \TechDivision\Import\Configuration\Subject $configuration The system configuration
-     *
-     * @return void
-     */
-    public function setConfiguration(SubjectConfigurationInterface $configuration)
-    {
-        $this->configuration = $configuration;
-    }
-
-    /**
      * Return's the system configuration.
      *
-     * @return \TechDivision\Import\Configuration\SubjectInterface The system configuration
+     * @return \TechDivision\Import\Configuration\SubjectConfigurationInterface The system configuration
      */
     public function getConfiguration()
     {
         return $this->configuration;
-    }
-
-    /**
-     * Set's the system logger.
-     *
-     * @param \Psr\Log\LoggerInterface $systemLogger The system logger
-     *
-     * @return void
-     */
-    public function setSystemLogger(LoggerInterface $systemLogger)
-    {
-        $this->systemLogger = $systemLogger;
     }
 
     /**
@@ -363,18 +356,6 @@ abstract class AbstractSubject implements SubjectInterface
     public function getFilesystem()
     {
         return $this->filesystem;
-    }
-
-    /**
-     * Sets's the RegistryProcessor instance to handle the running threads.
-     *
-     * @param \TechDivision\Import\Services\RegistryProcessorInterface $registryProcessor The registry processor instance
-     *
-     * @return void
-     */
-    public function setRegistryProcessor(RegistryProcessorInterface $registryProcessor)
-    {
-        $this->registryProcessor = $registryProcessor;
     }
 
     /**

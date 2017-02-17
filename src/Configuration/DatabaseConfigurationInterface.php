@@ -1,7 +1,7 @@
 <?php
 
 /**
- * TechDivision\Import\Configuration\OperationInterface
+ * TechDivision\Import\Configuration\DatabaseConfigurationInterface
  *
  * NOTICE OF LICENSE
  *
@@ -21,7 +21,7 @@
 namespace TechDivision\Import\Configuration;
 
 /**
- * Interface for the operation configuration implementation.
+ * Interface for the database configuration implementation.
  *
  * @author    Tim Wagner <t.wagner@techdivision.com>
  * @copyright 2016 TechDivision GmbH <info@techdivision.com>
@@ -29,36 +29,41 @@ namespace TechDivision\Import\Configuration;
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
  */
-interface OperationInterface
+interface DatabaseConfigurationInterface
 {
 
     /**
-     * Query's whether or not the passed operation equals this instance.
+     * Return's the database identifier for this database connection.
      *
-     * @param \TechDivision\Import\Cli\Configuration\Operation $operation The operation to query
-     *
-     * @return boolean TRUE if the operations are equal, else FALSE
+     * @return string The database identifier
      */
-    public function equals(OperationInterface $operation);
+    public function getId();
 
     /**
-     * Return's the operation's name.
+     * Return's the PDO DSN to use.
      *
-     * @return string The operation's class name
+     * @return string The PDO DSN
      */
-    public function getName();
+    public function getDsn();
 
     /**
-     * Return's the ArrayCollection with the operation's subjects.
+     * Return's the DB username to use.
      *
-     * @return \Doctrine\Common\Collections\ArrayCollection The ArrayCollection with the operation's subjects
+     * @return string The DB username
      */
-    public function getSubjects();
+    public function getUsername();
 
     /**
-     * String representation of the operation (the name).
+     * Return's the DB password to use.
      *
-     * @return string The operation name
+     * @return string The DB password
      */
-    public function __toString();
+    public function getPassword();
+
+    /**
+     * Return's the flag to signal that this is the default datasource or not.
+     *
+     * @return boolean TRUE if this is the default datasource, else FALSE
+     */
+    public function isDefault();
 }

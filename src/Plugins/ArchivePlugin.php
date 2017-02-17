@@ -1,0 +1,104 @@
+<?php
+
+/**
+ * TechDivision\Import\Plugins\ArchivePlugin
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Open Software License (OSL 3.0)
+ * that is available through the world-wide-web at this URL:
+ * http://opensource.org/licenses/osl-3.0.php
+ *
+ * PHP version 5
+ *
+ * @author    Tim Wagner <t.wagner@techdivision.com>
+ * @copyright 2016 TechDivision GmbH <info@techdivision.com>
+ * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
+ * @link      https://github.com/techdivision/import
+ * @link      http://www.techdivision.com
+ */
+
+namespace TechDivision\Import\Plugins;
+
+use TechDivision\Import\Utils\RegistryKeys;
+
+/**
+ * Plugin that archives the artefacts.
+ *
+ * @author    Tim Wagner <t.wagner@techdivision.com>
+ * @copyright 2016 TechDivision GmbH <info@techdivision.com>
+ * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
+ * @link      https://github.com/techdivision/import
+ * @link      http://www.techdivision.com
+ */
+class ArchivePlugin extends AbstractPlugin
+{
+
+    /**
+     * Process the plugin functionality.
+     *
+     * @return void
+     * @throws \Exception Is thrown, if the plugin can not be processed
+     */
+    public function process()
+    {
+
+        // query whether or not, the import artefacts have to be archived
+        if (!$this->getConfiguration()->haveArchiveArtefacts()) {
+            $this->getSystemLogger()->info('Archiving functionality has not been activated');
+            return;
+        }
+
+        // load the actual status
+        $status = $this->getRegistryProcessor()->getAttribute($this->getSerial());
+
+        // load the number of imported bunches from the status
+        $bunches = $status[RegistryKeys::BUNCHES];
+
+        // if no files have been imported, return immediately
+        if ($bunches === 0) {
+            $this->getSystemLogger()->info('Found no files to archive');
+            return;
+        }
+
+        // clear the filecache
+        clearstatcache();
+
+        // query whether or not the configured source directory is available
+        if (!is_dir($sourceDir = $status[RegistryKeys::SOURCE_DIRECTORY])) {
+            throw new \Exception(sprintf('Configured source directory %s is not available!', $sourceDir));
+        }
+
+        // init file iterator on source directory
+        $fileIterator = new \FilesystemIterator($sourceDir);
+
+        // log the number of files that has to be archived
+        $this->getSystemLogger()->info(sprintf('Found %d files to archive in directory %s', $bunches, $sourceDir));
+
+        // initialize the directory to create the archive in
+        $archiveDir = sprintf('%s/%s', $this->getConfiguration()->getTargetDir(), $this->getConfiguration()->getArchiveDir());
+
+        // query whether or not the directory already exists
+        if (!is_dir($archiveDir)) {
+            mkdir($archiveDir);
+        }
+
+        // create the ZIP archive
+        $archive = new \ZipArchive();
+        $archive->open($archiveFile = sprintf('%s/%s.zip', $archiveDir, $this->getSerial()), \ZipArchive::CREATE);
+
+        // iterate through all files and add them to the ZIP archive
+        foreach ($fileIterator as $filename) {
+            $archive->addFile($filename);
+        }
+
+        // save the ZIP archive
+        $archive->close();
+
+        // finally remove the directory with the imported files
+        $this->removeDir($sourceDir);
+
+        // and and log a message that the import artefacts have been archived
+        $this->getSystemLogger()->info(sprintf('Successfully archived imported files to %s!', $archiveFile));
+    }
+}

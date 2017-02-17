@@ -1,7 +1,7 @@
 <?php
 
 /**
- * TechDivision\Import\Configuration\SubjectInterface
+ * TechDivision\Import\Configuration\SubjectConfigurationInterface
  *
  * NOTICE OF LICENSE
  *
@@ -29,7 +29,7 @@ namespace TechDivision\Import\Configuration;
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
  */
-interface SubjectInterface
+interface SubjectConfigurationInterface
 {
 
     /**

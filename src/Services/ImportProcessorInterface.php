@@ -260,4 +260,12 @@ interface ImportProcessorInterface
      * @return array The Magento 2 configuration
      */
     public function getCoreConfigData();
+
+    /**
+     * Returns the array with the global data necessary for the
+     * import process.
+     *
+     * @return array The array with the global data
+     */
+    public function getGlobalData();
 }
