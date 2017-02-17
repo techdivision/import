@@ -1,3 +1,13 @@
+# Version 1.0.0-alpha29
+
+## Bugfixes
+
+* None
+
+## Features
+
+* Add PHPUnit test für SubjectPlugin class
+
 # Version 1.0.0-alpha28
 
 ## Bugfixes
