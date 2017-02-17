@@ -1,3 +1,13 @@
+# Version 1.0.0-alpha27
+
+## Bugfixes
+
+* None
+
+## Features
+
+* Add new configuration options for PID filename + if an OK file is needed
+
 # Version 1.0.0-alpha26
 
 ## Bugfixes

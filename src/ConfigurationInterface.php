@@ -219,4 +219,11 @@ interface ConfigurationInterface
      * @return string The explicit DB ID to use
      */
     public function getUseDbId();
+
+    /**
+     * Return's the PID filename to use.
+     *
+     * @return string The PID filename to use
+     */
+    public function getPidFilename();
 }
