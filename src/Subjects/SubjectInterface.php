@@ -106,9 +106,9 @@ interface SubjectInterface
     public function import($serial, $filename);
 
     /**
-     * Return's TRUE if an OK file is needed for the subject to be processed, else FALSE.
+     * Queries whether or not that the subject needs an OK file to be processed.
      *
-     * @return boolean TRUE if the subject needs an OK file to be executed, else FALSE
+     * @return boolean TRUE if the subject needs an OK file, else FALSE
      */
-    public function needsOkFile();
+    public function isOkFileNeeded();
 }

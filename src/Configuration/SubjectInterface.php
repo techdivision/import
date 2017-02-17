@@ -184,4 +184,11 @@ interface SubjectInterface
      * @throws \Exception Is thrown, if the requested param is not available
      */
     public function getParam($name, $defaultValue = null);
+
+    /**
+     * Queries whether or not that the subject needs an OK file to be processed.
+     *
+     * @return boolean TRUE if the subject needs an OK file, else FALSE
+     */
+    public function isOkFileNeeded();
 }
