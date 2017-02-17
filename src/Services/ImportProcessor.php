@@ -20,6 +20,9 @@
 
 namespace TechDivision\Import\Services;
 
+use TechDivision\Import\Utils\RegistryKeys;
+use TechDivision\Import\Utils\MemberNames;
+
 /**
  * Processor implementation to load global data.
  *
@@ -571,5 +574,68 @@ class ImportProcessor implements ImportProcessorInterface
     public function getCoreConfigData()
     {
         return $this->getCoreConfigDataRepository()->findAll();
+    }
+
+    /**
+     * Returns the array with the global data necessary for the
+     * import process.
+     *
+     * @return array The array with the global data
+     */
+    public function getGlobalData()
+    {
+
+        // initialize the array for the global data
+        $globalData = array();
+
+        // initialize the global data
+        $globalData[RegistryKeys::STORES] = $this->getStores();
+        $globalData[RegistryKeys::LINK_TYPES] = $this->getLinkTypes();
+        $globalData[RegistryKeys::TAX_CLASSES] = $this->getTaxClasses();
+        $globalData[RegistryKeys::DEFAULT_STORE] = $this->getDefaultStore();
+        $globalData[RegistryKeys::STORE_WEBSITES] = $this->getStoreWebsites();
+        $globalData[RegistryKeys::LINK_ATTRIBUTES] = $this->getLinkAttributes();
+        $globalData[RegistryKeys::ROOT_CATEGORIES] = $this->getRootCategories();
+        $globalData[RegistryKeys::CORE_CONFIG_DATA] = $this->getCoreConfigData();
+        $globalData[RegistryKeys::ATTRIBUTE_SETS] = $eavAttributeSets = $this->getEavAttributeSetsByEntityTypeId(4);
+
+        // prepare the categories
+        $categories = array();
+        foreach ($this->getCategories() as $category) {
+            // expload the entity IDs from the category path
+            $entityIds = explode('/', $category[MemberNames::PATH]);
+
+            // cut-off the root category
+            array_shift($entityIds);
+
+            // continue with the next category if no entity IDs are available
+            if (sizeof($entityIds) === 0) {
+                continue;
+            }
+
+            // initialize the array for the path elements
+            $path = array();
+            foreach ($this->getCategoryVarcharsByEntityIds($entityIds) as $cat) {
+                $path[] = $cat[MemberNames::VALUE];
+            }
+
+            // append the catogory with the string path as key
+            $categories[implode('/', $path)] = $category;
+        }
+
+        // initialize the array with the categories
+        $globalData[RegistryKeys::CATEGORIES] = $categories;
+
+        // prepare an array with the EAV attributes grouped by their attribute set name as keys
+        $eavAttributes = array();
+        foreach (array_keys($eavAttributeSets) as $eavAttributeSetName) {
+            $eavAttributes[$eavAttributeSetName] = $this->getEavAttributesByEntityTypeIdAndAttributeSetName(4, $eavAttributeSetName);
+        }
+
+        // initialize the array with the EAV attributes
+        $globalData[RegistryKeys::EAV_ATTRIBUTES] = $eavAttributes;
+
+        // return the array
+        return $globalData;
     }
 }
