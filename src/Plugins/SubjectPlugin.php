@@ -92,7 +92,8 @@ class SubjectPlugin extends AbstractPlugin
 
             // update the number of imported bunches
             $this->getRegistryProcessor()->mergeAttributesRecursive(
-                $this->getSerial(), array(RegistryKeys::BUNCHES => $this->bunches)
+                $this->getSerial(),
+                array(RegistryKeys::BUNCHES => $this->bunches)
             );
 
             // finally, if a PID has been set (because CSV files has been found),
