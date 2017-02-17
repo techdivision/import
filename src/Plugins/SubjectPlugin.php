@@ -75,24 +75,24 @@ class SubjectPlugin extends AbstractPlugin
             // load the plugin's subjects
             $subjects = $this->getPluginConfiguration()->getSubjects();
 
-            // initialize the status information for the subjects */
-            /** @var \TechDivision\Import\Configuration\SubjectInterface $subject */
+            // initialize the status information for the subjects
+            /** @var \TechDivision\Import\Configuration\SubjectConfigurationInterface $subject */
             foreach ($subjects as $subject) {
                 $status[$subject->getPrefix()] = array();
             }
 
-            // append it to the registry
+            // and update it in the registry
             $this->getRegistryProcessor()->mergeAttributesRecursive($this->getSerial(), $status);
 
             // process all the subjects found in the system configuration
+            /** @var \TechDivision\Import\Configuration\SubjectConfigurationInterface $subject */
             foreach ($subjects as $subject) {
                 $this->processSubject($subject);
             }
 
             // update the number of imported bunches
             $this->getRegistryProcessor()->mergeAttributesRecursive(
-                $this->getSerial(),
-                array(RegistryKeys::BUNCHES => $this->bunches)
+                $this->getSerial(), array(RegistryKeys::BUNCHES => $this->bunches)
             );
 
             // finally, if a PID has been set (because CSV files has been found),
@@ -106,6 +106,7 @@ class SubjectPlugin extends AbstractPlugin
             // finally, if a PID has been set (because CSV files has been found),
             // remove it from the PID file to unlock the importer
             $this->unlock();
+
             // rollback the transaction
             $importProcessor->getConnection()->rollBack();
 
