@@ -51,7 +51,7 @@ class CategoryAssembler
     /**
      * Initialize the assembler with the passed instances.
      *
-     * @param \TechDivision\Import\Repositories\CategoryRepository $categoryRepository The repository to access categories
+     * @param \TechDivision\Import\Repositories\CategoryRepository        $categoryRepository        The repository to access categories
      * @param \TechDivision\Import\Repositories\CategoryVarcharRepository $categoryVarcharRepository The repository instance
      */
     public function __construct($categoryRepository, $categoryVarcharRepository)
