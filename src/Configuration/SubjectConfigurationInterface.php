@@ -29,7 +29,7 @@ namespace TechDivision\Import\Configuration;
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
  */
-interface SubjectConfigurationInterface
+interface SubjectConfigurationInterface extends ProcessorConfigurationInterface
 {
 
     /**
@@ -87,20 +87,6 @@ interface SubjectConfigurationInterface
      * @return string The subject's class name
      */
     public function getClassName();
-
-    /**
-     * Return's the subject's processor factory type to use.
-     *
-     * @return string The subject's processor factory type
-     */
-    public function getProcessorFactory();
-
-    /**
-     * Return's the utility class with the SQL statements to use.
-     *
-     * @return string The utility class name
-     */
-    public function getUtilityClassName();
 
     /**
      * Return's the reference to the configuration instance.

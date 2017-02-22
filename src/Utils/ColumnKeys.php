@@ -62,4 +62,18 @@ class ColumnKeys
      * @var string
      */
     const STORE_VIEW_CODE = 'store_view_code';
+
+    /**
+     * Name for the column 'attribute_set_code'.
+     *
+     * @var string
+     */
+    const ATTRIBUTE_SET_CODE = 'attribute_set_code';
+
+    /**
+     * Name for the column 'additional_attributes'.
+     *
+     * @var string
+     */
+    const ADDITIONAL_ATTRIBUTES = 'additional_attributes';
 }

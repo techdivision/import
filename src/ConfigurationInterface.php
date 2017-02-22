@@ -20,7 +20,6 @@
 
 namespace TechDivision\Import;
 
-use TechDivision\Import\Configuration\DatabaseInterface;
 use TechDivision\Import\Configuration\DatabaseConfigurationInterface;
 
 /**
@@ -34,6 +33,13 @@ use TechDivision\Import\Configuration\DatabaseConfigurationInterface;
  */
 interface ConfigurationInterface
 {
+
+    /**
+     * Return's the entity type code to be used.
+     *
+     * @return string The entity type code to be used
+     */
+    public function getEntityTypeCode();
 
     /**
      * Return's the operation name that has to be used.

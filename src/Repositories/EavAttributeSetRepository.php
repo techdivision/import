@@ -76,7 +76,7 @@ class EavAttributeSetRepository extends AbstractRepository
 
         // execute the prepared statement and return the EAV attribute set with the passed ID
         $this->eavAttributeSetStmt->execute(array($id));
-        return $this->eavAttributeSetStmt->fetch();
+        return $this->eavAttributeSetStmt->fetch(\PDO::FETCH_ASSOC);
     }
 
     /**
@@ -97,7 +97,7 @@ class EavAttributeSetRepository extends AbstractRepository
         $this->eavAttributeSetsByEntityTypeIdStmt->execute(array($entityTypeId));
 
         // prepare the array with the attribute set codes as keys
-        foreach ($this->eavAttributeSetsByEntityTypeIdStmt->fetchAll() as $eavAttributeSet) {
+        foreach ($this->eavAttributeSetsByEntityTypeIdStmt->fetchAll(\PDO::FETCH_ASSOC) as $eavAttributeSet) {
             $eavAttributeSets[$eavAttributeSet[MemberNames::ATTRIBUTE_SET_NAME]] = $eavAttributeSet;
         }
 

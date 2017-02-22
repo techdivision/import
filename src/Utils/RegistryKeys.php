@@ -181,4 +181,11 @@ class RegistryKeys
      * @var string
      */
     const CORE_CONFIG_DATA = 'coreConfigData';
+
+    /**
+     * Key for the registry entry containing the EAV entity types.
+     *
+     * @var string
+     */
+    const ENTITY_TYPES = 'entityTypes';
 }

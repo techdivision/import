@@ -43,6 +43,13 @@ class ImportProcessor implements ImportProcessorInterface
     protected $connection;
 
     /**
+     * The category assembler instance.
+     *
+     * @var \TechDivision\Import\Assembler\CategoryAssembler
+     */
+    protected $categoryAssembler;
+
+    /**
      * The repository to access categories.
      *
      * @var \TechDivision\Import\Repositories\CategoryRepository
@@ -69,6 +76,13 @@ class ImportProcessor implements ImportProcessorInterface
      * @var \TechDivision\Import\Repositories\EavAttributeSetRepository
      */
     protected $eavAttributeSetRepository;
+
+    /**
+     * The repository to access EAV entity types.
+     *
+     * @var \TechDivision\Import\Repositories\EavEntityTypeRepository
+     */
+    protected $eavEntityTypeRepository;
 
     /**
      * The repository to access stores.
@@ -179,6 +193,28 @@ class ImportProcessor implements ImportProcessorInterface
     }
 
     /**
+     * Set's the category assembler.
+     *
+     * @param \TechDivision\Import\Assembler\CategoryAssembler $categoryAssembler The category assembler
+     *
+     * @return void
+     */
+    public function setCategoryAssembler($categoryAssembler)
+    {
+        $this->categoryAssembler = $categoryAssembler;
+    }
+
+    /**
+     * Return's the category assembler.
+     *
+     * @return \TechDivision\Import\Assembler\CategoryAssembler The category assembler instance
+     */
+    public function getCategoryAssembler()
+    {
+        return $this->categoryAssembler;
+    }
+
+    /**
      * Set's the repository to access categories.
      *
      * @param \TechDivision\Import\Repositories\CategoryRepository $categoryRepository The repository to access categories
@@ -264,6 +300,28 @@ class ImportProcessor implements ImportProcessorInterface
     public function getEavAttributeSetRepository()
     {
         return $this->eavAttributeSetRepository;
+    }
+
+    /**
+     * Return's the repository to access EAV entity types.
+     *
+     * @return \TechDivision\Import\Repositories\EavEntityTypeRepository The repository instance
+     */
+    public function getEavEntityTypeRepository()
+    {
+        return $this->eavEntityTypeRepository;
+    }
+
+    /**
+     * Set's the repository to access EAV entity types.
+     *
+     * @param \TechDivision\Import\Repositories\EavEntityTypeRepository $eavEntityTypeRepository The repository the access EAV entity types
+     *
+     * @return void
+     */
+    public function setEavEntityTypeRepository($eavEntityTypeRepository)
+    {
+        $this->eavEntityTypeRepository = $eavEntityTypeRepository;
     }
 
     /**
@@ -474,6 +532,16 @@ class ImportProcessor implements ImportProcessorInterface
     }
 
     /**
+     * Return's an array with all available EAV entity types with the entity type code as key.
+     *
+     * @return array The available link types
+     */
+    public function getEavEntityTypes()
+    {
+        return $this->getEavEntityTypeRepository()->findAll();
+    }
+
+    /**
      * Return's an array with the available stores.
      *
      * @return array The array with the available stores
@@ -597,43 +665,35 @@ class ImportProcessor implements ImportProcessorInterface
         $globalData[RegistryKeys::LINK_ATTRIBUTES] = $this->getLinkAttributes();
         $globalData[RegistryKeys::ROOT_CATEGORIES] = $this->getRootCategories();
         $globalData[RegistryKeys::CORE_CONFIG_DATA] = $this->getCoreConfigData();
-        $globalData[RegistryKeys::ATTRIBUTE_SETS] = $eavAttributeSets = $this->getEavAttributeSetsByEntityTypeId(4);
+        $globalData[RegistryKeys::ENTITY_TYPES] = $eavEntityTypes = $this->getEavEntityTypes();
 
-        // prepare the categories
-        $categories = array();
-        foreach ($this->getCategories() as $category) {
-            // expload the entity IDs from the category path
-            $entityIds = explode('/', $category[MemberNames::PATH]);
-
-            // cut-off the root category
-            array_shift($entityIds);
-
-            // continue with the next category if no entity IDs are available
-            if (sizeof($entityIds) === 0) {
-                continue;
-            }
-
-            // initialize the array for the path elements
-            $path = array();
-            foreach ($this->getCategoryVarcharsByEntityIds($entityIds) as $cat) {
-                $path[] = $cat[MemberNames::VALUE];
-            }
-
-            // append the catogory with the string path as key
-            $categories[implode('/', $path)] = $category;
-        }
-
-        // initialize the array with the categories
-        $globalData[RegistryKeys::CATEGORIES] = $categories;
-
-        // prepare an array with the EAV attributes grouped by their attribute set name as keys
+        // prepare the attribute sets
         $eavAttributes = array();
-        foreach (array_keys($eavAttributeSets) as $eavAttributeSetName) {
-            $eavAttributes[$eavAttributeSetName] = $this->getEavAttributesByEntityTypeIdAndAttributeSetName(4, $eavAttributeSetName);
+        $eavAttributeSets = array();
+        foreach ($eavEntityTypes as $eavEntityTypeCode => $eavEntityType) {
+            // load the attribute sets for the entity type
+            $attributeSets = $this->getEavAttributeSetsByEntityTypeId($entityTypeId = $eavEntityType[MemberNames::ENTITY_TYPE_ID]);
+            // append the attribute sets to the array
+            $eavAttributeSets[$eavEntityTypeCode] = $attributeSets;
+
+            // iterate over the attribute sets and initialize the attributes
+            foreach ($attributeSets as $attributeSet) {
+                // load the attribute set name
+                $eavAttributeSetName = $attributeSet[MemberNames::ATTRIBUTE_SET_NAME];
+                // load the attributes for the attribute set
+                $eavAttributes[$eavEntityTypeCode][$eavAttributeSetName] = $this->getEavAttributesByEntityTypeIdAndAttributeSetName(
+                    $entityTypeId,
+                    $eavAttributeSetName
+                );
+            }
         }
 
-        // initialize the array with the EAV attributes
+        // initialize the arrays with the EAV attributes and attribute sets
         $globalData[RegistryKeys::EAV_ATTRIBUTES] = $eavAttributes;
+        $globalData[RegistryKeys::ATTRIBUTE_SETS] = $eavAttributeSets;
+
+        // initialize the array with the avaliable categories
+        $globalData[RegistryKeys::CATEGORIES] = $this->categoryAssembler->getCategoriesWithResolvedPath();
 
         // return the array
         return $globalData;

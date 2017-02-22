@@ -104,6 +104,13 @@ interface ImportProcessorInterface
     public function getEavAttributeSetRepository();
 
     /**
+     * Return's the repository to access EAV entity types.
+     *
+     * @return \TechDivision\Import\Repositories\EavEntityTypeRepository The repository instance
+     */
+    public function getEavEntityTypeRepository();
+
+    /**
      * Return's the repository to access stores.
      *
      * @return \TechDivision\Import\Repositories\StoreRepository The repository instance
@@ -146,6 +153,13 @@ interface ImportProcessorInterface
      * @return array The EAV attribute set
      */
     public function getEavAttributeSet($id);
+
+    /**
+     * Return's the category assembler.
+     *
+     * @return \TechDivision\Import\Assembler\CategoryAssembler The category assembler instance
+     */
+    public function getCategoryAssembler();
 
     /**
      * Return's the attribute sets for the passed entity type ID.
@@ -194,6 +208,13 @@ interface ImportProcessorInterface
      * @return array The array with the EAV attributes matching the passed flag
      */
     public function getEavAttributeByIsUserDefined($isUserDefined = 1);
+
+    /**
+     * Return's an array with all available EAV entity types with the entity type code as key.
+     *
+     * @return array The available link types
+     */
+    public function getEavEntityTypes();
 
     /**
      * Return's an array with the available stores.
