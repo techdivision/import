@@ -27,6 +27,7 @@ use League\Flysystem\FilesystemInterface;
 use Goodby\CSV\Import\Standard\Lexer;
 use Goodby\CSV\Import\Standard\LexerConfig;
 use Goodby\CSV\Import\Standard\Interpreter;
+use TechDivision\Import\Utils\MemberNames;
 use TechDivision\Import\Utils\RegistryKeys;
 use TechDivision\Import\Utils\ConfigurationKeys;
 use TechDivision\Import\Services\RegistryProcessor;
@@ -146,6 +147,27 @@ abstract class AbstractSubject implements SubjectInterface
      * @var boolean
      */
     protected $skipRow = false;
+
+    /**
+     * The available EAV attribute sets.
+     *
+     * @var array
+     */
+    protected $attributeSets = array();
+
+    /**
+     * The available EAV attributes, grouped by their attribute set and the attribute set name as keys.
+     *
+     * @var array
+     */
+    protected $attributes = array();
+
+    /**
+     * The attribute set of the entity that has to be created.
+     *
+     * @var array
+     */
+    protected $attributeSet = array();
 
     /**
      * Mappings for attribute code => CSV column header.
@@ -451,10 +473,15 @@ abstract class AbstractSubject implements SubjectInterface
     public function setUp()
     {
 
+        // load the status of the actual import
+        $status = $this->getRegistryProcessor()->getAttribute($this->getSerial());
+
+        // load the global data we've prepared initially
+        $this->attributes = $status[RegistryKeys::GLOBAL_DATA][RegistryKeys::EAV_ATTRIBUTES];
+        $this->attributeSets = $status[RegistryKeys::GLOBAL_DATA][RegistryKeys::ATTRIBUTE_SETS];
+
         // initialize the filesystems root directory
-        $this->setRootDir(
-            $this->getConfiguration()->getParam(ConfigurationKeys::ROOT_DIRECTORY, getcwd())
-        );
+        $this->rootDir = $this->getConfiguration()->getParam(ConfigurationKeys::ROOT_DIRECTORY, getcwd());
 
         // initialize the filesystem
         $this->filesystem = new Filesystem(new Local($this->getRootDir()));
@@ -854,5 +881,131 @@ abstract class AbstractSubject implements SubjectInterface
     public function isOkFileNeeded()
     {
         return $this->getConfiguration()->isOkFileNeeded();
+    }
+
+    /**
+     * Return's the entity type code to be used.
+     *
+     * @return string The entity type code to be used
+     */
+    public function getEntityTypeCode()
+    {
+        return $this->getConfiguration()->getConfiguration()->getEntityTypeCode();
+    }
+
+    /**
+     * Set's the attribute set of the product that has to be created.
+     *
+     * @param array $attributeSet The attribute set
+     *
+     * @return void
+     */
+    public function setAttributeSet(array $attributeSet)
+    {
+        $this->attributeSet = $attributeSet;
+    }
+
+    /**
+     * Return's the attribute set of the product that has to be created.
+     *
+     * @return array The attribute set
+     */
+    public function getAttributeSet()
+    {
+        return $this->attributeSet;
+    }
+
+    /**
+     * Return's the attribute set with the passed attribute set name.
+     *
+     * @param string $attributeSetName The name of the requested attribute set
+     *
+     * @return array The attribute set data
+     * @throws \Exception Is thrown, if the attribute set with the passed name is not available
+     */
+    public function getAttributeSetByAttributeSetName($attributeSetName)
+    {
+
+        // query whether or not attribute sets for the actualy entity type code are available
+        if (isset($this->attributeSets[$entityTypeCode = $this->getEntityTypeCode()])) {
+            // load the attribute sets for the actualy entity type code
+            $attributSets = $this->attributeSets[$entityTypeCode];
+
+            // query whether or not, the requested attribute set is available
+            if (isset($attributSets[$attributeSetName])) {
+                return $attributSets[$attributeSetName];
+            }
+        }
+
+        // throw an exception, if not
+        throw new \Exception(
+            sprintf(
+                'Found invalid attribute set name %s in file %s on line %d',
+                $attributeSetName,
+                $this->getFilename(),
+                $this->getLineNumber()
+            )
+        );
+    }
+
+    /**
+     * Return's the attributes for the attribute set of the product that has to be created.
+     *
+     * @return array The attributes
+     * @throws \Exception Is thrown if the attributes for the actual attribute set are not available
+     */
+    public function getAttributes()
+    {
+
+        // query whether or not, the requested EAV attributes are available
+        if (isset($this->attributes[$entityTypeCode = $this->getEntityTypeCode()])) {
+            // load the attributes for the entity type code
+            $attributes = $this->attributes[$entityTypeCode];
+
+            // query whether or not attributes for the actual attribute set name
+            if (isset($attributes[$attributeSetName = $this->attributeSet[MemberNames::ATTRIBUTE_SET_NAME]])) {
+                return $attributes[$attributeSetName];
+            }
+        }
+
+        // throw an exception, if not
+        throw new \Exception(
+            sprintf(
+                'Found invalid attribute set name "%s" in file %s on line %d',
+                $attributeSetName,
+                $this->getFilename(),
+                $this->getLineNumber()
+            )
+        );
+    }
+
+    /**
+     * Return's the EAV attribute with the passed attribute code.
+     *
+     * @param string $attributeCode The attribute code
+     *
+     * @return array The array with the EAV attribute
+     * @throws \Exception Is thrown if the attribute with the passed code is not available
+     */
+    public function getEavAttributeByAttributeCode($attributeCode)
+    {
+
+        // load the attributes
+        $attributes = $this->getAttributes();
+
+        // query whether or not the attribute exists
+        if (isset($attributes[$attributeCode])) {
+            return $attributes[$attributeCode];
+        }
+
+        // throw an exception if the requested attribute is not available
+        throw new \Exception(
+            sprintf(
+                'Can\'t load attribute with code "%s" in file %s and line %d',
+                $attributeCode,
+                $this->getFilename(),
+                $this->getLineNumber()
+            )
+        );
     }
 }

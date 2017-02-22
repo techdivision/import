@@ -223,4 +223,28 @@ abstract class AbstractPlugin implements PluginInterface
             throw new \Exception(sprintf('Can\'t remove directory %s', $src));
         }
     }
+
+    /**
+     * Return's the configured processor instance.
+     *
+     * @return object The processor instance
+     * @throws \Exception Is thrown, if no processor factory has been configured
+     */
+    protected function getProcessor()
+    {
+
+        // load the plugin configuration
+        $pluginConfiguration = $this->getPluginConfiguration();
+
+        // instanciate and set the processor processor, if specified
+        if ($processorFactory = $pluginConfiguration->getProcessorFactory()) {
+            return $processorFactory::factory(
+                $this->getImportProcessor()->getConnection(),
+                $pluginConfiguration
+            );
+        }
+
+        // throw an exception if no processor factory has been configured
+        throw new \Exception(sprintf('No processor factory has been specified for plugin %s', get_class($this)));
+    }
 }

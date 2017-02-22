@@ -1,7 +1,7 @@
 <?php
 
 /**
- * TechDivision\Import\Configuration\PluginConfigurationInterface
+ * TechDivision\Import\Utils\Filter\ConvertLiteralUrl
  *
  * NOTICE OF LICENSE
  *
@@ -18,10 +18,10 @@
  * @link      http://www.techdivision.com
  */
 
-namespace TechDivision\Import\Configuration;
+namespace TechDivision\Import\Utils\Filter;
 
 /**
- * Interface for the plugin configuration implementation.
+ * Filter to convert URLs.
  *
  * @author    Tim Wagner <t.wagner@techdivision.com>
  * @copyright 2016 TechDivision GmbH <info@techdivision.com>
@@ -29,27 +29,24 @@ namespace TechDivision\Import\Configuration;
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
  */
-interface PluginConfigurationInterface extends ProcessorConfigurationInterface
+class ConvertLiteralUrl extends ConvertLiteral
 {
-
     /**
-     * Return's the subject's class name.
+     * Filter and return the value.
      *
-     * @return string The subject's class name
+     * @param string $string The value to filter
+     *
+     * @return string The filtered value
      */
-    public function getClassName();
+    public function filter($string)
+    {
 
-    /**
-     * Return's the ArrayCollection with the operation's subjects.
-     *
-     * @return \Doctrine\Common\Collections\ArrayCollection The ArrayCollection with the operation's subjects
-     */
-    public function getSubjects();
+        // replace all characters that are not numbers or simple chars
+        $string = preg_replace('#[^0-9a-z]+#i', '-', parent::filter($string));
+        $string = strtolower($string);
+        $string = trim($string, '-');
 
-    /**
-     * Return's the reference to the configuration instance.
-     *
-     * @return \TechDivision\Import\ConfigurationInterface The configuration instance
-     */
-    public function getConfiguration();
+        // return the converted URL
+        return $string;
+    }
 }

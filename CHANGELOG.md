@@ -1,3 +1,13 @@
+# Version 1.0.0-alpha30
+
+## Bugfixes
+
+* None
+
+## Features
+
+* Refactoring for optimisation for category import functionality
+
 # Version 1.0.0-alpha29
 
 ## Bugfixes

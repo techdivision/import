@@ -111,4 +111,11 @@ interface SubjectInterface
      * @return boolean TRUE if the subject needs an OK file, else FALSE
      */
     public function isOkFileNeeded();
+
+    /**
+     * Return's the entity type code to be used.
+     *
+     * @return string The entity type code to be used
+     */
+    public function getEntityTypeCode();
 }

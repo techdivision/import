@@ -1,7 +1,7 @@
 <?php
 
 /**
- * TechDivision\Import\Configuration\PluginConfigurationInterface
+ * TechDivision\Import\Configuration\ProcessorConfigurationInterface
  *
  * NOTICE OF LICENSE
  *
@@ -21,7 +21,7 @@
 namespace TechDivision\Import\Configuration;
 
 /**
- * Interface for the plugin configuration implementation.
+ * Interface for the processor configuration implementation.
  *
  * @author    Tim Wagner <t.wagner@techdivision.com>
  * @copyright 2016 TechDivision GmbH <info@techdivision.com>
@@ -29,27 +29,20 @@ namespace TechDivision\Import\Configuration;
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
  */
-interface PluginConfigurationInterface extends ProcessorConfigurationInterface
+interface ProcessorConfigurationInterface
 {
 
     /**
-     * Return's the subject's class name.
+     * Return's the processor factory type to use.
      *
-     * @return string The subject's class name
+     * @return string The processor factory type
      */
-    public function getClassName();
+    public function getProcessorFactory();
 
     /**
-     * Return's the ArrayCollection with the operation's subjects.
+     * Return's the utility class with the SQL statements to use.
      *
-     * @return \Doctrine\Common\Collections\ArrayCollection The ArrayCollection with the operation's subjects
+     * @return string The utility class name
      */
-    public function getSubjects();
-
-    /**
-     * Return's the reference to the configuration instance.
-     *
-     * @return \TechDivision\Import\ConfigurationInterface The configuration instance
-     */
-    public function getConfiguration();
+    public function getUtilityClassName();
 }

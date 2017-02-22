@@ -195,4 +195,11 @@ class MemberNames
      * @var string
      */
     const ENTITY_TYPE_ID = 'entity_type_id';
+
+    /**
+     * Name for the member 'entity_type_code'.
+     *
+     * @var string
+     */
+    const ENTITY_TYPE_CODE = 'entity_type_code';
 }

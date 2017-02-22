@@ -35,13 +35,6 @@ class CategoryRepository extends AbstractRepository
 {
 
     /**
-     * The cache for the query results.
-     *
-     * @var array
-     */
-    protected $cache = array();
-
-    /**
      * The statement to load the categories.
      *
      * @var \PDOStatement
@@ -78,16 +71,9 @@ class CategoryRepository extends AbstractRepository
      */
     public function findAll()
     {
-
-        // query whether or not we've already loaded the value
-        if (!isset($this->cache[__METHOD__])) {
-            // try to load the categories
-            $this->categoriesStmt->execute();
-            $this->cache[__METHOD__] = $this->categoriesStmt->fetchAll();
-        }
-
-        // return the categories from the cache
-        return $this->cache[__METHOD__];
+        // try to load the categories
+        $this->categoriesStmt->execute();
+        return $this->categoriesStmt->fetchAll(\PDO::FETCH_ASSOC);
     }
 
     /**
@@ -98,22 +84,16 @@ class CategoryRepository extends AbstractRepository
     public function findAllRootCategories()
     {
 
-        // query whether or not we've already loaded the value
-        if (!isset($this->cache[__METHOD__])) {
-            // try to load the categories
-            $this->rootCategoriesStmt->execute();
+        // try to load the categories
+        $this->rootCategoriesStmt->execute();
 
-            // initialize the array with the store code as key
-            $rootCategories = array();
-            foreach ($this->rootCategoriesStmt->fetchAll() as $category) {
-                $rootCategories[$category[MemberNames::CODE]] = $category;
-            }
-
-            // append the root categories to the cache
-            $this->cache[__METHOD__] = $rootCategories;
+        // initialize the array with the store code as key
+        $rootCategories = array();
+        foreach ($this->rootCategoriesStmt->fetchAll(\PDO::FETCH_ASSOC) as $category) {
+            $rootCategories[$category[MemberNames::CODE]] = $category;
         }
 
-        // return the categories from the cache
-        return $this->cache[__METHOD__];
+        // append the root categories to the cache
+        return $rootCategories;
     }
 }

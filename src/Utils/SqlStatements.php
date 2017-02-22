@@ -69,7 +69,7 @@ class SqlStatements
                                    AND t2.attribute_id = t1.attribute_id
                                    AND t2.store_id = 0
                                    AND t2.entity_id = t0.entity_id) AS url_path
-        FROM catalog_category_entity AS t0';
+                          FROM catalog_category_entity AS t0';
 
     /**
      * The SQL statement to load the root categories.
@@ -144,6 +144,13 @@ class SqlStatements
      * @var string
      */
     const LINK_ATTRIBUTES = 'SELECT t1.* FROM catalog_product_link_attribute AS t1';
+
+    /**
+     * The SQL statement to load all available EAV entity types.
+     *
+     * @var string
+     */
+    const EAV_ENTITY_TYPES = 'SELECT t1.* FROM eav_entity_type AS t1';
 
     /**
      * The SQL statement to load the attribute set.

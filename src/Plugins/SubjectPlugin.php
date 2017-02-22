@@ -22,10 +22,7 @@ namespace TechDivision\Import\Plugins;
 
 use TechDivision\Import\Utils\BunchKeys;
 use TechDivision\Import\Utils\RegistryKeys;
-use TechDivision\Import\ApplicationInterface;
 use TechDivision\Import\Subjects\ExportableSubjectInterface;
-use TechDivision\Import\Cli\Exceptions\LineNotFoundException;
-use TechDivision\Import\Cli\Exceptions\FileNotFoundException;
 use TechDivision\Import\Configuration\SubjectConfigurationInterface;
 
 /**
@@ -74,6 +71,9 @@ class SubjectPlugin extends AbstractPlugin
 
             // load the plugin's subjects
             $subjects = $this->getPluginConfiguration()->getSubjects();
+
+            // initialize the array for the status
+            $status = array();
 
             // initialize the status information for the subjects
             /** @var \TechDivision\Import\Configuration\SubjectConfigurationInterface $subject */
@@ -211,13 +211,13 @@ class SubjectPlugin extends AbstractPlugin
         $className = $subjectConfiguration->getClassName();
 
         // initialize the instances
-        $productProcessor = null;
+        $processor = null;
         $systemLogger = $this->getSystemLogger();
         $registryProcessor = $this->getRegistryProcessor();
 
         // instanciate and set the product processor, if specified
         if ($processorFactory = $subjectConfiguration->getProcessorFactory()) {
-            $productProcessor = $processorFactory::factory(
+            $processor = $processorFactory::factory(
                 $this->getImportProcessor()->getConnection(),
                 $subjectConfiguration
             );
@@ -228,7 +228,7 @@ class SubjectPlugin extends AbstractPlugin
             $systemLogger,
             $subjectConfiguration,
             $registryProcessor,
-            $productProcessor
+            $processor
         );
     }
 
