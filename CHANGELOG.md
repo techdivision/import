@@ -6,7 +6,7 @@
 
 ## Features
 
-* Refactoring for optimisation for category import functionality
+* Move generic UrlRewrite actions/processor to this library
 
 # Version 1.0.0-alpha30
 
