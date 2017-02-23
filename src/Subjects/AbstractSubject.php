@@ -170,6 +170,27 @@ abstract class AbstractSubject implements SubjectInterface
     protected $attributeSet = array();
 
     /**
+     * The available root categories.
+     *
+     * @var array
+     */
+    protected $rootCategories = array();
+
+    /**
+     * The default store.
+     *
+     * @var array
+     */
+    protected $defaultStore;
+
+    /**
+     * The store view code the create the product/attributes for.
+     *
+     * @var string
+     */
+    protected $storeViewCode;
+
+    /**
      * Mappings for attribute code => CSV column header.
      *
      * @var array
@@ -478,7 +499,9 @@ abstract class AbstractSubject implements SubjectInterface
 
         // load the global data we've prepared initially
         $this->attributes = $status[RegistryKeys::GLOBAL_DATA][RegistryKeys::EAV_ATTRIBUTES];
+        $this->defaultStore = $status[RegistryKeys::GLOBAL_DATA][RegistryKeys::DEFAULT_STORE];
         $this->attributeSets = $status[RegistryKeys::GLOBAL_DATA][RegistryKeys::ATTRIBUTE_SETS];
+        $this->rootCategories = $status[RegistryKeys::GLOBAL_DATA][RegistryKeys::ROOT_CATEGORIES];
 
         // initialize the filesystems root directory
         $this->rootDir = $this->getConfiguration()->getParam(ConfigurationKeys::ROOT_DIRECTORY, getcwd());
@@ -1007,5 +1030,73 @@ abstract class AbstractSubject implements SubjectInterface
                 $this->getLineNumber()
             )
         );
+    }
+
+    /**
+     * Return's the default store.
+     *
+     * @return array The default store
+     */
+    public function getDefaultStore()
+    {
+        return $this->defaultStore;
+    }
+
+    /**
+     * Set's the store view code the create the product/attributes for.
+     *
+     * @param string $storeViewCode The store view code
+     *
+     * @return void
+     */
+    public function setStoreViewCode($storeViewCode)
+    {
+        $this->storeViewCode = $storeViewCode;
+    }
+
+    /**
+     * Return's the store view code the create the product/attributes for.
+     *
+     * @param string|null $default The default value to return, if the store view code has not been set
+     *
+     * @return string The store view code
+     */
+    public function getStoreViewCode($default = null)
+    {
+
+        // return the store view code, if available
+        if ($this->storeViewCode != null) {
+            return $this->storeViewCode;
+        }
+
+        // if NOT and a default code is available
+        if ($default != null) {
+            // return the default value
+            return $default;
+        }
+    }
+
+    /**
+     * Return's the root category for the actual view store.
+     *
+     * @return array The store's root category
+     * @throws \Exception Is thrown if the root category for the passed store code is NOT available
+     */
+    public function getRootCategory()
+    {
+
+        // load the default store
+        $defaultStore = $this->getDefaultStore();
+
+        // load the actual store view code
+        $storeViewCode = $this->getStoreViewCode($defaultStore[MemberNames::CODE]);
+
+        // query weather or not we've a root category or not
+        if (isset($this->rootCategories[$storeViewCode])) {
+            return $this->rootCategories[$storeViewCode];
+        }
+
+        // throw an exception if the root category is NOT available
+        throw new \Exception(sprintf('Root category for %s is not available', $storeViewCode));
     }
 }
