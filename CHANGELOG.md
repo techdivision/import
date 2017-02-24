@@ -1,3 +1,13 @@
+# Version 1.0.0-alpha32
+
+## Bugfixes
+
+* None
+
+## Features
+
+* Add UrlKeyFilterTrait that provides string to URL key convertion functionality
+
 # Version 1.0.0-alpha31
 
 ## Bugfixes
