@@ -120,6 +120,13 @@ class RegistryKeys
     const EAV_ATTRIBUTES = 'eavAttributes';
 
     /**
+     * Key for the registry entry containing the eav user defined attributes.
+     *
+     * @var string
+     */
+    const EAV_USER_DEFINED_ATTRIBUTES = 'eavUserDefinedAttributes';
+
+    /**
      * Key for the registry entry containing the stores.
      *
      * @var string

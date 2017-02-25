@@ -20,6 +20,8 @@
 
 namespace TechDivision\Import\Callbacks;
 
+use TechDivision\Import\Subjects\SubjectInterface;
+
 /**
  * An abstract callback implementation.
  *
@@ -33,11 +35,18 @@ abstract class AbstractCallback implements CallbackInterface
 {
 
     /**
+     * The observer's subject instance.
+     *
+     * @var \TechDivision\Import\Subjects\SubjectInterface
+     */
+    protected $subject;
+
+    /**
      * Initializes the observer with the passed subject instance.
      *
-     * @param object|null $subject The observer's subject instance
+     * @param \TechDivision\Import\Subjects\SubjectInterface|null $subject The observer's subject instance
      */
-    public function __construct($subject = null)
+    public function __construct(SubjectInterface $subject = null)
     {
         if ($subject != null) {
             $this->setSubject($subject);
@@ -47,11 +56,11 @@ abstract class AbstractCallback implements CallbackInterface
     /**
      * Set's the obeserver's subject instance to initialize the observer with.
      *
-     * @param object $subject The observer's subject
+     * @param \TechDivision\Import\Subjects\SubjectInterface $subject The observer's subject
      *
      * @return void
      */
-    public function setSubject($subject)
+    public function setSubject(SubjectInterface $subject)
     {
         $this->subject = $subject;
     }
@@ -59,7 +68,7 @@ abstract class AbstractCallback implements CallbackInterface
     /**
      * Return's the observer's subject instance.
      *
-     * @return object The observer's subject instance
+     * @return \TechDivision\Import\Subjects\SubjectInterface The observer's subject instance
      */
     public function getSubject()
     {

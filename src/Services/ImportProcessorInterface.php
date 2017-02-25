@@ -207,7 +207,18 @@ interface ImportProcessorInterface
      *
      * @return array The array with the EAV attributes matching the passed flag
      */
-    public function getEavAttributeByIsUserDefined($isUserDefined = 1);
+    public function getEavAttributesByIsUserDefined($isUserDefined = 1);
+
+    /**
+     * Return's an array with the available EAV attributes for the passed is entity type and
+     * user defined flag.
+     *
+     * @param integer $entityTypeId  The entity type ID of the EAV attributes to return
+     * @param integer $isUserDefined The flag itself
+     *
+     * @return array The array with the EAV attributes matching the passed entity type and user defined flag
+     */
+    public function getEavAttributesByEntityTypeIdAndIsUserDefined($entityTypeId, $isUserDefined = 1);
 
     /**
      * Return's an array with all available EAV entity types with the entity type code as key.

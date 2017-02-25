@@ -86,6 +86,20 @@ class AdditionalAttributeObserver extends AbstractObserver
 
                 // append/replace the attribute value
                 $this->setValue($attributeCode, $optionValue);
+
+                // add a log message in debug mod
+                if ($this->isDebugMode()){
+                    $this->getSystemLogger()->debug(
+                        sprintf(
+                            'Extract new column "%s" with value "%s" from column "%s" in file %s on line %d',
+                            $attributeCode,
+                            $optionValue,
+                            ColumnKeys::ADDITIONAL_ATTRIBUTES,
+                            $this->getFilename(),
+                            $this->getLineNumber()
+                        )
+                    );
+                }
             }
         }
     }
