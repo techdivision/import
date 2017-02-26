@@ -90,6 +90,15 @@ abstract class AbstractFileUploadObserver extends AbstractObserver
         if ($this->hasCopyImages()) {
             // upload the file and set the new image path
             $imagePath = $this->uploadFile($image);
+
+            // log a message that the image has been copied
+            $this->getSystemLogger()->debug(
+                sprintf(
+                    'Successfully copied image %s => %s',
+                    $image,
+                    $imagePath
+                )
+            );
         }
 
         // write the real image path to the target column
