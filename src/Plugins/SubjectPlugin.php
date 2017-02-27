@@ -63,12 +63,6 @@ class SubjectPlugin extends AbstractPlugin
             // immediately add the PID to lock this import process
             $this->lock();
 
-            // load system logger and registry
-            $importProcessor = $this->getImportProcessor();
-
-            // start the transaction
-            $importProcessor->getConnection()->beginTransaction();
-
             // load the plugin's subjects
             $subjects = $this->getPluginConfiguration()->getSubjects();
 
@@ -100,16 +94,10 @@ class SubjectPlugin extends AbstractPlugin
             // remove it from the PID file to unlock the importer
             $this->unlock();
 
-            // commit the transaction
-            $importProcessor->getConnection()->commit();
-
         } catch (\Exception $e) {
             // finally, if a PID has been set (because CSV files has been found),
             // remove it from the PID file to unlock the importer
             $this->unlock();
-
-            // rollback the transaction
-            $importProcessor->getConnection()->rollBack();
 
             // re-throw the exception
             throw $e;
