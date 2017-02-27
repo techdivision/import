@@ -88,7 +88,7 @@ class AdditionalAttributeObserver extends AbstractObserver
                 $this->setValue($attributeCode, $optionValue);
 
                 // add a log message in debug mod
-                if ($this->isDebugMode()){
+                if ($this->isDebugMode()) {
                     $this->getSystemLogger()->debug(
                         sprintf(
                             'Extract new column "%s" with value "%s" from column "%s" in file %s on line %d',

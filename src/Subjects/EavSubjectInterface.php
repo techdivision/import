@@ -124,5 +124,5 @@ interface EavSubjectInterface
      *
      * @return array|boolean The attribute option value instance
      */
-   public function getEavAttributeOptionValueByOptionValueAndStoreId($value, $storeId);
+    public function getEavAttributeOptionValueByOptionValueAndStoreId($value, $storeId);
 }

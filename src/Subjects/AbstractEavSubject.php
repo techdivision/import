@@ -325,7 +325,7 @@ abstract class AbstractEavSubject extends AbstractSubject implements EavSubjectI
         }
 
         // throw an exception if an unknown entity type has been passed
-        throw new \Exception(sprintf('Unknown entity type code %s', $entityTypeCode) );
+        throw new \Exception(sprintf('Unknown entity type code %s', $entityTypeCode));
     }
 
     /**
