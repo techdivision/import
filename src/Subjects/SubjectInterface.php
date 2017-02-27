@@ -47,20 +47,6 @@ interface SubjectInterface
     public function tearDown();
 
     /**
-     * Return's the root directory for the virtual filesystem.
-     *
-     * @return string The root directory for the virtual filesystem
-     */
-    public function getRootDir();
-
-    /**
-     * Return's the virtual filesystem instance.
-     *
-     * @return \League\Flysystem\FilesystemInterface The filesystem instance
-     */
-    public function getFilesystem();
-
-    /**
      * Return's the system configuration.
      *
      * @return \TechDivision\Import\Configuration\SubjectInterface The system configuration
@@ -73,6 +59,20 @@ interface SubjectInterface
      * @return \Psr\Log\LoggerInterface The system logger instance
      */
     public function getSystemLogger();
+
+    /**
+     * Return's the header mappings for the actual entity.
+     *
+     * @return array The header mappings
+     */
+    public function getHeaderMappings();
+
+    /**
+     * Return's the default callback mappings.
+     *
+     * @return array The default callback mappings
+     */
+    public function getDefaultCallbackMappings();
 
     /**
      * Return's the source date format to use.
@@ -113,9 +113,9 @@ interface SubjectInterface
     public function isOkFileNeeded();
 
     /**
-     * Return's the entity type code to be used.
+     * Return's the default store.
      *
-     * @return string The entity type code to be used
+     * @return array The default store
      */
-    public function getEntityTypeCode();
+    public function getDefaultStore();
 }

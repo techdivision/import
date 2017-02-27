@@ -1,7 +1,7 @@
 <?php
 
 /**
- * TechDivision\Import\Callbacks\CallbackInterface
+ * TechDivision\Import\Subjects\FilesystemSubjectInterface
  *
  * NOTICE OF LICENSE
  *
@@ -18,10 +18,10 @@
  * @link      http://www.techdivision.com
  */
 
-namespace TechDivision\Import\Callbacks;
+namespace TechDivision\Import\Subjects;
 
 /**
- * interface for all callback implementations.
+ * The interface for all subject implementations that supports filesystem handling.
  *
  * @author    Tim Wagner <t.wagner@techdivision.com>
  * @copyright 2016 TechDivision GmbH <info@techdivision.com>
@@ -29,29 +29,31 @@ namespace TechDivision\Import\Callbacks;
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
  */
-interface CallbackInterface
+interface FilesystemSubjectInterface
 {
 
     /**
-     * Will be invoked by a observer it has been registered for.
+     * Return's the root directory for the virtual filesystem.
      *
-     * @param mixed $value The value to handle
-     *
-     * @return mixed The modified value
+     * @return string The root directory for the virtual filesystem
      */
-    public function handle($value);
+    public function getRootDir();
 
     /**
-     * Return's the observer's subject instance.
+     * Return's the virtual filesystem instance.
      *
-     * @return object The observer's subject instance
+     * @return \League\Flysystem\FilesystemInterface The filesystem instance
      */
-    public function getSubject();
+    public function getFilesystem();
 
     /**
-     * Return's the system logger.
+     * This method tries to resolve the passed path and returns it. If the path
+     * is relative, the actual working directory will be prepended.
      *
-     * @return \Psr\Log\LoggerInterface The system logger instance
+     * @param string $path The path to be resolved
+     *
+     * @return string The resolved path
+     * @throws \InvalidArgumentException Is thrown, if the path can not be resolved
      */
-    public function getSystemLogger();
+    public function resolvePath($path);
 }

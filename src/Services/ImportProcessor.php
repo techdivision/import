@@ -526,9 +526,23 @@ class ImportProcessor implements ImportProcessorInterface
      *
      * @return array The array with the EAV attributes matching the passed flag
      */
-    public function getEavAttributeByIsUserDefined($isUserDefined = 1)
+    public function getEavAttributesByIsUserDefined($isUserDefined = 1)
     {
         return $this->getEavAttributeRepository()->findAllByIsUserDefined($isUserDefined);
+    }
+
+    /**
+     * Return's an array with the available EAV attributes for the passed is entity type and
+     * user defined flag.
+     *
+     * @param integer $entityTypeId  The entity type ID of the EAV attributes to return
+     * @param integer $isUserDefined The flag itself
+     *
+     * @return array The array with the EAV attributes matching the passed entity type and user defined flag
+     */
+    public function getEavAttributesByEntityTypeIdAndIsUserDefined($entityTypeId, $isUserDefined = 1)
+    {
+        return $this->getEavAttributeRepository()->findAllByEntityTypeIdAndIsUserDefined($entityTypeId, $isUserDefined);
     }
 
     /**
@@ -688,9 +702,19 @@ class ImportProcessor implements ImportProcessorInterface
             }
         }
 
-        // initialize the arrays with the EAV attributes and attribute sets
+        // prepare the user defined attributes
+        $eavUserDefinedAttributes = array();
+        foreach ($eavEntityTypes as $eavEntityTypeCode => $eavEntityType) {
+            // load the user defined attributes for the entity type
+            $eavUserDefinedAttributes[$eavEntityTypeCode] = $this->getEavAttributesByEntityTypeIdAndIsUserDefined(
+                $eavEntityType[MemberNames::ENTITY_TYPE_ID]
+            );
+        }
+
+        // initialize the arrays with the EAV attributes, EAV user defined attributes and attribute sets
         $globalData[RegistryKeys::EAV_ATTRIBUTES] = $eavAttributes;
         $globalData[RegistryKeys::ATTRIBUTE_SETS] = $eavAttributeSets;
+        $globalData[RegistryKeys::EAV_USER_DEFINED_ATTRIBUTES] = $eavUserDefinedAttributes;
 
         // initialize the array with the avaliable categories
         $globalData[RegistryKeys::CATEGORIES] = $this->categoryAssembler->getCategoriesWithResolvedPath();

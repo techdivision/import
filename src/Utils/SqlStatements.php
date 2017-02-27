@@ -208,6 +208,16 @@ class SqlStatements
     const EAV_ATTRIBUTES_BY_IS_USER_DEFINED = 'SELECT * FROM eav_attribute WHERE is_user_defined = :is_user_defined';
 
     /**
+     * The SQL statement to load EAV attributes by passed entity type ID and is user defined flag.
+     *
+     * @var string
+     */
+    const EAV_ATTRIBUTES_BY_ENTITY_TYPE_ID_AND_IS_USER_DEFINED = 'SELECT *
+                                                                    FROM eav_attribute
+                                                                   WHERE entity_type_id = :entity_type_id
+                                                                     AND is_user_defined = :is_user_defined';
+
+    /**
      * The SQL statement to load the attribute option value.
      *
      * @var string

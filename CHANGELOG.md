@@ -1,3 +1,16 @@
+# Version 1.0.0-alpha33
+
+## Bugfixes
+
+* None
+
+## Features
+
+* Refactor filesystem/file upload functionality
+* Refactor EAV attribute handling
+* Move EE utilities to techdivision/import-ee library
+* Extract attribute import functionality from AbstractAttrbiuteObserver to AttributeObserverTrait
+
 # Version 1.0.0-alpha32
 
 ## Bugfixes

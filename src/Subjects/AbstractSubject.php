@@ -21,15 +21,11 @@
 namespace TechDivision\Import\Subjects;
 
 use Psr\Log\LoggerInterface;
-use League\Flysystem\Filesystem;
-use League\Flysystem\Adapter\Local;
-use League\Flysystem\FilesystemInterface;
 use Goodby\CSV\Import\Standard\Lexer;
 use Goodby\CSV\Import\Standard\LexerConfig;
 use Goodby\CSV\Import\Standard\Interpreter;
 use TechDivision\Import\Utils\MemberNames;
 use TechDivision\Import\Utils\RegistryKeys;
-use TechDivision\Import\Utils\ConfigurationKeys;
 use TechDivision\Import\Services\RegistryProcessor;
 use TechDivision\Import\Callbacks\CallbackVisitor;
 use TechDivision\Import\Callbacks\CallbackInterface;
@@ -51,11 +47,11 @@ abstract class AbstractSubject implements SubjectInterface
 {
 
     /**
-     * The root directory for the virtual filesystem.
+     * The trait that provides basic filesystem handling functionality.
      *
-     * @var string
+     * @var TechDivision\Import\Subjects\FilesystemTrait
      */
-    protected $rootDir;
+    use FilesystemTrait;
 
     /**
      * The system configuration.
@@ -121,13 +117,6 @@ abstract class AbstractSubject implements SubjectInterface
     protected $headers = array();
 
     /**
-     * The virtual filesystem instance.
-     *
-     * @var \League\Flysystem\FilesystemInterface
-     */
-    protected $filesystem;
-
-    /**
      * The actual line number.
      *
      * @var integer
@@ -147,27 +136,6 @@ abstract class AbstractSubject implements SubjectInterface
      * @var boolean
      */
     protected $skipRow = false;
-
-    /**
-     * The available EAV attribute sets.
-     *
-     * @var array
-     */
-    protected $attributeSets = array();
-
-    /**
-     * The available EAV attributes, grouped by their attribute set and the attribute set name as keys.
-     *
-     * @var array
-     */
-    protected $attributes = array();
-
-    /**
-     * The attribute set of the entity that has to be created.
-     *
-     * @var array
-     */
-    protected $attributeSet = array();
 
     /**
      * The available root categories.
@@ -191,25 +159,6 @@ abstract class AbstractSubject implements SubjectInterface
     protected $storeViewCode;
 
     /**
-     * Mappings for attribute code => CSV column header.
-     *
-     * @var array
-     */
-    protected $headerMappings = array(
-        'product_online' => 'status',
-        'tax_class_name' => 'tax_class_id',
-        'bundle_price_type' => 'price_type',
-        'bundle_sku_type' => 'sku_type',
-        'bundle_price_view' => 'price_view',
-        'bundle_weight_type' => 'weight_type',
-        'base_image' => 'image',
-        'base_image_label' => 'image_label',
-        'thumbnail_image' => 'thumbnail',
-        'thumbnail_image_label'=> 'thumbnail_label',
-        'bundle_shipment_type' => 'shipment_type'
-    );
-
-    /**
      * Initialize the subject instance.
      *
      * @param \Psr\Log\LoggerInterface                                         $systemLogger      The system logger instance
@@ -224,6 +173,16 @@ abstract class AbstractSubject implements SubjectInterface
         $this->systemLogger = $systemLogger;
         $this->configuration = $configuration;
         $this->registryProcessor = $registryProcessor;
+    }
+
+    /**
+     * Return's the default callback mappings.
+     *
+     * @return array The default callback mappings
+     */
+    public function getDefaultCallbackMappings()
+    {
+        return array();
     }
 
     /**
@@ -358,50 +317,6 @@ abstract class AbstractSubject implements SubjectInterface
     }
 
     /**
-     * Set's root directory for the virtual filesystem.
-     *
-     * @param string $rootDir The root directory for the virtual filesystem
-     *
-     * @return void
-     */
-    public function setRootDir($rootDir)
-    {
-        $this->rootDir = $rootDir;
-    }
-
-    /**
-     * Return's the root directory for the virtual filesystem.
-     *
-     * @return string The root directory for the virtual filesystem
-     */
-    public function getRootDir()
-    {
-        return $this->rootDir;
-    }
-
-    /**
-     * Set's the virtual filesystem instance.
-     *
-     * @param \League\Flysystem\FilesystemInterface $filesystem The filesystem instance
-     *
-     * @return void
-     */
-    public function setFilesystem(FilesystemInterface $filesystem)
-    {
-        $this->filesystem = $filesystem;
-    }
-
-    /**
-     * Return's the virtual filesystem instance.
-     *
-     * @return \League\Flysystem\FilesystemInterface The filesystem instance
-     */
-    public function getFilesystem()
-    {
-        return $this->filesystem;
-    }
-
-    /**
      * Return's the RegistryProcessor instance to handle the running threads.
      *
      * @return \TechDivision\Import\Services\RegistryProcessorInterface The registry processor instance
@@ -498,50 +413,34 @@ abstract class AbstractSubject implements SubjectInterface
         $status = $this->getRegistryProcessor()->getAttribute($this->getSerial());
 
         // load the global data we've prepared initially
-        $this->attributes = $status[RegistryKeys::GLOBAL_DATA][RegistryKeys::EAV_ATTRIBUTES];
         $this->defaultStore = $status[RegistryKeys::GLOBAL_DATA][RegistryKeys::DEFAULT_STORE];
-        $this->attributeSets = $status[RegistryKeys::GLOBAL_DATA][RegistryKeys::ATTRIBUTE_SETS];
         $this->rootCategories = $status[RegistryKeys::GLOBAL_DATA][RegistryKeys::ROOT_CATEGORIES];
-
-        // initialize the filesystems root directory
-        $this->rootDir = $this->getConfiguration()->getParam(ConfigurationKeys::ROOT_DIRECTORY, getcwd());
-
-        // initialize the filesystem
-        $this->filesystem = new Filesystem(new Local($this->getRootDir()));
 
         // initialize the operation name
         $this->operationName = $this->getConfiguration()->getConfiguration()->getOperationName();
 
+        // merge the callback mappings with the mappings from the child instance
+        $this->callbackMappings = array_merge($this->callbackMappings, $this->getDefaultCallbackMappings());
+
+        // merge the callback mappings the the one from the configuration file
+        foreach ($this->getConfiguration()->getCallbacks() as $callbackMappings) {
+            foreach ($callbackMappings as $attributeCode => $mappings) {
+                // write a log message, that default callback configuration will
+                // be overwritten with the one from the configuration file
+                if (isset($this->callbackMappings[$attributeCode])) {
+                    $this->getSystemLogger()->notice(
+                        sprintf('Now override callback mappings for attribute %s with values found in configuration file', $attributeCode)
+                    );
+                }
+
+                // override the attributes callbacks
+                $this->callbackMappings[$attributeCode] = $mappings;
+            }
+        }
+
         // initialize the callbacks/observers
         CallbackVisitor::get()->visit($this);
         ObserverVisitor::get()->visit($this);
-    }
-
-    /**
-     * This method tries to resolve the passed path and returns it. If the path
-     * is relative, the actual working directory will be prepended.
-     *
-     * @param string $path The path to be resolved
-     *
-     * @return string The resolved path
-     * @throws \InvalidArgumentException Is thrown, if the path can not be resolved
-     */
-    public function resolvePath($path)
-    {
-        // if we've an absolute path, return it immediately
-        if ($this->getFilesystem()->has($path)) {
-            return $path;
-        }
-
-        // try to prepend the actual working directory, assuming we've a relative path
-        if ($this->getFilesystem()->has($path = getcwd() . DIRECTORY_SEPARATOR . $path)) {
-            return $path;
-        }
-
-        // throw an exception if the passed directory doesn't exists
-        throw new \InvalidArgumentException(
-            sprintf('Directory %s doesn\'t exist', $path)
-        );
     }
 
     /**
@@ -887,9 +786,12 @@ abstract class AbstractSubject implements SubjectInterface
     public function mapAttributeCodeByHeaderMapping($attributeCode)
     {
 
+        // load the header mappings
+        $headerMappings = $this->getHeaderMappings();
+
         // query weather or not we've a mapping, if yes, map the attribute code
-        if (isset($this->headerMappings[$attributeCode])) {
-            $attributeCode = $this->headerMappings[$attributeCode];
+        if (isset($headerMappings[$attributeCode])) {
+            $attributeCode = $headerMappings[$attributeCode];
         }
 
         // return the (mapped) attribute code
@@ -904,132 +806,6 @@ abstract class AbstractSubject implements SubjectInterface
     public function isOkFileNeeded()
     {
         return $this->getConfiguration()->isOkFileNeeded();
-    }
-
-    /**
-     * Return's the entity type code to be used.
-     *
-     * @return string The entity type code to be used
-     */
-    public function getEntityTypeCode()
-    {
-        return $this->getConfiguration()->getConfiguration()->getEntityTypeCode();
-    }
-
-    /**
-     * Set's the attribute set of the product that has to be created.
-     *
-     * @param array $attributeSet The attribute set
-     *
-     * @return void
-     */
-    public function setAttributeSet(array $attributeSet)
-    {
-        $this->attributeSet = $attributeSet;
-    }
-
-    /**
-     * Return's the attribute set of the product that has to be created.
-     *
-     * @return array The attribute set
-     */
-    public function getAttributeSet()
-    {
-        return $this->attributeSet;
-    }
-
-    /**
-     * Return's the attribute set with the passed attribute set name.
-     *
-     * @param string $attributeSetName The name of the requested attribute set
-     *
-     * @return array The attribute set data
-     * @throws \Exception Is thrown, if the attribute set with the passed name is not available
-     */
-    public function getAttributeSetByAttributeSetName($attributeSetName)
-    {
-
-        // query whether or not attribute sets for the actualy entity type code are available
-        if (isset($this->attributeSets[$entityTypeCode = $this->getEntityTypeCode()])) {
-            // load the attribute sets for the actualy entity type code
-            $attributSets = $this->attributeSets[$entityTypeCode];
-
-            // query whether or not, the requested attribute set is available
-            if (isset($attributSets[$attributeSetName])) {
-                return $attributSets[$attributeSetName];
-            }
-        }
-
-        // throw an exception, if not
-        throw new \Exception(
-            sprintf(
-                'Found invalid attribute set name %s in file %s on line %d',
-                $attributeSetName,
-                $this->getFilename(),
-                $this->getLineNumber()
-            )
-        );
-    }
-
-    /**
-     * Return's the attributes for the attribute set of the product that has to be created.
-     *
-     * @return array The attributes
-     * @throws \Exception Is thrown if the attributes for the actual attribute set are not available
-     */
-    public function getAttributes()
-    {
-
-        // query whether or not, the requested EAV attributes are available
-        if (isset($this->attributes[$entityTypeCode = $this->getEntityTypeCode()])) {
-            // load the attributes for the entity type code
-            $attributes = $this->attributes[$entityTypeCode];
-
-            // query whether or not attributes for the actual attribute set name
-            if (isset($attributes[$attributeSetName = $this->attributeSet[MemberNames::ATTRIBUTE_SET_NAME]])) {
-                return $attributes[$attributeSetName];
-            }
-        }
-
-        // throw an exception, if not
-        throw new \Exception(
-            sprintf(
-                'Found invalid attribute set name "%s" in file %s on line %d',
-                $attributeSetName,
-                $this->getFilename(),
-                $this->getLineNumber()
-            )
-        );
-    }
-
-    /**
-     * Return's the EAV attribute with the passed attribute code.
-     *
-     * @param string $attributeCode The attribute code
-     *
-     * @return array The array with the EAV attribute
-     * @throws \Exception Is thrown if the attribute with the passed code is not available
-     */
-    public function getEavAttributeByAttributeCode($attributeCode)
-    {
-
-        // load the attributes
-        $attributes = $this->getAttributes();
-
-        // query whether or not the attribute exists
-        if (isset($attributes[$attributeCode])) {
-            return $attributes[$attributeCode];
-        }
-
-        // throw an exception if the requested attribute is not available
-        throw new \Exception(
-            sprintf(
-                'Can\'t load attribute with code "%s" in file %s and line %d',
-                $attributeCode,
-                $this->getFilename(),
-                $this->getLineNumber()
-            )
-        );
     }
 
     /**

@@ -33,6 +33,36 @@ class MoveFilesSubject extends AbstractSubject
 {
 
     /**
+     * Return's the header mappings for the actual entity.
+     *
+     * @return array The header mappings
+     */
+    public function getHeaderMappings()
+    {
+        return array();
+    }
+
+    /**
+     * Return's the default callback mappings.
+     *
+     * @return array The default callback mappings
+     */
+    public function getDefaultCallbackMappings()
+    {
+        return array();
+    }
+
+    /**
+     * Return's the default callback frontend input mappings for the user defined attributes.
+     *
+     * @return array The default frontend input callback mappings
+     */
+    public function getDefaultFrontendInputCallbackMappings()
+    {
+        return array();
+    }
+
+    /**
      * Imports the content of the file with the passed filename.
      *
      * @param string $serial   The unique process serial

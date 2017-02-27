@@ -120,6 +120,13 @@ class RegistryKeys
     const EAV_ATTRIBUTES = 'eavAttributes';
 
     /**
+     * Key for the registry entry containing the eav user defined attributes.
+     *
+     * @var string
+     */
+    const EAV_USER_DEFINED_ATTRIBUTES = 'eavUserDefinedAttributes';
+
+    /**
      * Key for the registry entry containing the stores.
      *
      * @var string
@@ -188,4 +195,11 @@ class RegistryKeys
      * @var string
      */
     const ENTITY_TYPES = 'entityTypes';
+
+    /**
+     * Key for the registry entry containing the paths => row ID mapping.
+     *
+     * @var string
+     */
+    const PATH_ROW_ID_MAPPING = 'pathRowIdMapping';
 }
