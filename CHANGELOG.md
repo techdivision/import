@@ -1,3 +1,13 @@
+# Version 1.0.0-alpha34
+
+## Bugfixes
+
+* None
+
+## Features
+
+* Move transaction handling from SubjectPlugin::process() to Simple::process() method
+
 # Version 1.0.0-alpha33
 
 ## Bugfixes
