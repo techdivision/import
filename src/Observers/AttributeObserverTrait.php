@@ -96,7 +96,7 @@ trait AttributeObserverTrait
             if (!isset($attributes[$attributeCode = $headers[$key]])) {
                 // log a message in debug mode
                 if ($this->isDebugMode()) {
-                    $this->getSystemLogger()->warning(
+                    $this->getSystemLogger()->debug(
                         sprintf(
                             'Can\'t find attribute with attribute code %s in file %s on line %d',
                             $attributeCode,

@@ -1,3 +1,13 @@
+# Version 1.0.0-alpha35
+
+## Bugfixes
+
+* None
+
+## Features
+
+* Switch log level to debug instead of warning, when a column can not be mapped to a attribute directly
+
 # Version 1.0.0-alpha34
 
 ## Bugfixes
