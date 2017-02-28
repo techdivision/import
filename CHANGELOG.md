@@ -1,3 +1,13 @@
+# Version 1.0.0-alpha36
+
+## Bugfixes
+
+* None
+
+## Features
+
+* Add URL path to pre-loaded categories
+
 # Version 1.0.0-alpha35
 
 ## Bugfixes

@@ -64,6 +64,13 @@ class SqlStatements
                                    AND t2.entity_id = t0.entity_id) AS name,
                                (SELECT `value`
                                   FROM eav_attribute t1, catalog_category_entity_varchar t2
+                                 WHERE t1.attribute_code = \'url_key\'
+                                   AND t1.entity_type_id = 3
+                                   AND t2.attribute_id = t1.attribute_id
+                                   AND t2.store_id = 0
+                                   AND t2.entity_id = t0.entity_id) AS url_key,
+                               (SELECT `value`
+                                  FROM eav_attribute t1, catalog_category_entity_varchar t2
                                  WHERE t1.attribute_code = \'url_path\'
                                    AND t1.entity_type_id = 3
                                    AND t2.attribute_id = t1.attribute_id
