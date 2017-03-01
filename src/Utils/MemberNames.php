@@ -251,4 +251,11 @@ class MemberNames
      * @var string
      */
     const METADATA = 'metadata';
+
+    /**
+     * Name for the member 'url_rewrite_id'.
+     *
+     * @var string
+     */
+    const URL_REWRITE_ID = 'url_rewrite_id';
 }
