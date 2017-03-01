@@ -1,3 +1,13 @@
+# Version 1.0.0-alpha37
+
+## Bugfixes
+
+* Fixed invalid return of entity_id instead of url_rewrite_id in UrlRewriteUpdateProcessor
+
+## Features
+
+* None
+
 # Version 1.0.0-alpha36
 
 ## Bugfixes

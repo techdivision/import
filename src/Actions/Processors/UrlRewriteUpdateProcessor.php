@@ -64,6 +64,6 @@ class UrlRewriteUpdateProcessor extends AbstractUpdateProcessor
     public function execute($row, $name = null)
     {
         parent::execute($row, $name);
-        return $row[MemberNames::ENTITY_ID];
+        return $row[MemberNames::URL_REWRITE_ID];
     }
 }
