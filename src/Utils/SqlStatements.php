@@ -125,11 +125,18 @@ class SqlStatements
                               AND t2.is_default = 1;';
 
     /**
-     * The SQL statement to load the stores.
+     * The SQL statement to load the store websites.
      *
      * @var string
      */
     const STORE_WEBSITES = 'SELECT t1.* FROM store_website AS t1';
+
+    /**
+     * The SQL statement to load the store groups.
+     *
+     * @var string
+     */
+    const STORE_GROUPS = 'SELECT t1.* FROM store_group AS t1';
 
     /**
      * The SQL statement to load the tax classes.

@@ -1,3 +1,13 @@
+# Version 1.0.0-alpha38
+
+## Bugfixes
+
+* None
+
+## Features
+
+* Add functionality to load values from Magento 2 core_config_data table
+
 # Version 1.0.0-alpha37
 
 ## Bugfixes

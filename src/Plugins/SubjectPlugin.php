@@ -24,6 +24,7 @@ use TechDivision\Import\Utils\BunchKeys;
 use TechDivision\Import\Utils\RegistryKeys;
 use TechDivision\Import\Subjects\ExportableSubjectInterface;
 use TechDivision\Import\Configuration\SubjectConfigurationInterface;
+use TechDivision\Import\Utils\Generators\CoreConfigDataUidGenerator;
 
 /**
  * Plugin that processes the subjects.
@@ -202,6 +203,7 @@ class SubjectPlugin extends AbstractPlugin
         $processor = null;
         $systemLogger = $this->getSystemLogger();
         $registryProcessor = $this->getRegistryProcessor();
+        $coreConfigDataUidGenerator = new CoreConfigDataUidGenerator();
 
         // instanciate and set the product processor, if specified
         if ($processorFactory = $subjectConfiguration->getProcessorFactory()) {
@@ -216,6 +218,7 @@ class SubjectPlugin extends AbstractPlugin
             $systemLogger,
             $subjectConfiguration,
             $registryProcessor,
+            $coreConfigDataUidGenerator,
             $processor
         );
     }
