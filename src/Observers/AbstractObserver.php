@@ -22,6 +22,7 @@ namespace TechDivision\Import\Observers;
 
 use TechDivision\Import\Utils\EntityStatus;
 use TechDivision\Import\Utils\ColumnKeys;
+use TechDivision\Import\Utils\ScopeKeys;
 
 /**
  * An abstract observer implementation.
@@ -414,6 +415,22 @@ abstract class AbstractObserver implements ObserverInterface
 
         // return the value
         return $value;
+    }
+
+    /**
+     * Return's the Magento configuration value.
+     *
+     * @param string  $path    The Magento path of the requested configuration value
+     * @param mixed   $default The default value that has to be returned, if the requested configuration value is not set
+     * @param string  $scope   The scope the configuration value has been set
+     * @param integer $scopeId The scope ID the configuration value has been set
+     *
+     * @return mixed The configuration value
+     * @throws \Exception Is thrown, if nor a value can be found or a default value has been passed
+     */
+    protected function getCoreConfigData($path, $default = null, $scope = ScopeKeys::SCOPE_DEFAULT, $scopeId = 0)
+    {
+        return $this->getSubject()->getCoreConfigData($path, $default, $scope, $scopeId);
     }
 
     /**

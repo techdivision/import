@@ -20,6 +20,8 @@
 
 namespace TechDivision\Import\Repositories;
 
+use TechDivision\Import\Utils\Generators\GeneratorInterface;
+
 /**
  * Repository implementation to load the Magento 2 configuration data.
  *
@@ -33,11 +35,28 @@ class CoreConfigDataRepository extends AbstractRepository
 {
 
     /**
+     * The UID generator for the core config data.
+     *
+     * @var \TechDivision\Import\Utils\Generators\GeneratorInterface
+     */
+    protected $coreConfigDataUidGenerator;
+
+    /**
      * The statement to load the configuration.
      *
      * @var \PDOStatement
      */
     protected $coreConfigDataStmt;
+
+    /**
+     * Initialize the subject instance.
+     *
+     * @param \TechDivision\Import\Utils\Generators\GeneratorInterface $coreConfigDataUidGenerator The UID generator for the core config data
+     */
+    public function __construct(GeneratorInterface $coreConfigDataUidGenerator)
+    {
+        $this->coreConfigDataUidGenerator = $coreConfigDataUidGenerator;
+    }
 
     /**
      * Initializes the repository's prepared statements.
@@ -61,7 +80,22 @@ class CoreConfigDataRepository extends AbstractRepository
      */
     public function findAll()
     {
+
+        // prepare the core configuration data
+        $coreConfigDatas = array();
+
+        // execute the prepared statement
         $this->coreConfigDataStmt->execute();
-        return $this->coreConfigDataStmt->fetchAll(\PDO::FETCH_ASSOC);
+
+        // create the array with the resolved category path as keys
+        foreach ($this->coreConfigDataStmt->fetchAll(\PDO::FETCH_ASSOC) as $coreConfigData) {
+            // prepare the unique identifier
+            $uniqueIdentifier = $this->coreConfigDataUidGenerator->generate($coreConfigData);
+            // append the config data value with the unique identifier
+            $coreConfigDatas[$uniqueIdentifier] = $coreConfigData;
+        }
+
+        // return array with the configuration data
+        return $coreConfigDatas;
     }
 }

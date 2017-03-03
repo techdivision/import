@@ -33,6 +33,8 @@ use TechDivision\Import\Observers\ObserverVisitor;
 use TechDivision\Import\Observers\ObserverInterface;
 use TechDivision\Import\Services\RegistryProcessorInterface;
 use TechDivision\Import\Configuration\SubjectConfigurationInterface;
+use TechDivision\Import\Utils\ScopeKeys;
+use TechDivision\Import\Utils\Generators\GeneratorInterface;
 
 /**
  * An abstract subject implementation.
@@ -145,6 +147,20 @@ abstract class AbstractSubject implements SubjectInterface
     protected $rootCategories = array();
 
     /**
+     * The Magento configuration.
+     *
+     * @var array
+     */
+    protected $coreConfigData = array();
+
+    /**
+     * The available stores.
+     *
+     * @var array
+     */
+    protected $stores = array();
+
+    /**
      * The default store.
      *
      * @var array
@@ -159,20 +175,30 @@ abstract class AbstractSubject implements SubjectInterface
     protected $storeViewCode;
 
     /**
+     * The UID generator for the core config data.
+     *
+     * @var \TechDivision\Import\Utils\Generators\GeneratorInterface
+     */
+    protected $coreConfigDataUidGenerator;
+
+    /**
      * Initialize the subject instance.
      *
-     * @param \Psr\Log\LoggerInterface                                         $systemLogger      The system logger instance
-     * @param \TechDivision\Import\Configuration\SubjectConfigurationInterface $configuration     The subject configuration instance
-     * @param \TechDivision\Import\Services\RegistryProcessorInterface         $registryProcessor The registry processor instance
+     * @param \Psr\Log\LoggerInterface                                         $systemLogger               The system logger instance
+     * @param \TechDivision\Import\Configuration\SubjectConfigurationInterface $configuration              The subject configuration instance
+     * @param \TechDivision\Import\Services\RegistryProcessorInterface         $registryProcessor          The registry processor instance
+     * @param \TechDivision\Import\Utils\Generators\GeneratorInterface         $coreConfigDataUidGenerator The UID generator for the core config data
      */
     public function __construct(
         LoggerInterface $systemLogger,
         SubjectConfigurationInterface $configuration,
-        RegistryProcessorInterface $registryProcessor
+        RegistryProcessorInterface $registryProcessor,
+        GeneratorInterface $coreConfigDataUidGenerator
     ) {
         $this->systemLogger = $systemLogger;
         $this->configuration = $configuration;
         $this->registryProcessor = $registryProcessor;
+        $this->coreConfigDataUidGenerator = $coreConfigDataUidGenerator;
     }
 
     /**
@@ -413,8 +439,10 @@ abstract class AbstractSubject implements SubjectInterface
         $status = $this->getRegistryProcessor()->getAttribute($this->getSerial());
 
         // load the global data we've prepared initially
+        $this->stores = $status[RegistryKeys::GLOBAL_DATA][RegistryKeys::STORES];
         $this->defaultStore = $status[RegistryKeys::GLOBAL_DATA][RegistryKeys::DEFAULT_STORE];
         $this->rootCategories = $status[RegistryKeys::GLOBAL_DATA][RegistryKeys::ROOT_CATEGORIES];
+        $this->coreConfigData = $status[RegistryKeys::GLOBAL_DATA][RegistryKeys::CORE_CONFIG_DATA];
 
         // initialize the operation name
         $this->operationName = $this->getConfiguration()->getConfiguration()->getOperationName();
@@ -874,5 +902,88 @@ abstract class AbstractSubject implements SubjectInterface
 
         // throw an exception if the root category is NOT available
         throw new \Exception(sprintf('Root category for %s is not available', $storeViewCode));
+    }
+
+    /**
+     * Return's the Magento configuration value.
+     *
+     * @param string  $path    The Magento path of the requested configuration value
+     * @param mixed   $default The default value that has to be returned, if the requested configuration value is not set
+     * @param string  $scope   The scope the configuration value has been set
+     * @param integer $scopeId The scope ID the configuration value has been set
+     *
+     * @return mixed The configuration value
+     * @throws \Exception Is thrown, if nor a value can be found or a default value has been passed
+     */
+    public function getCoreConfigData($path, $default = null, $scope = ScopeKeys::SCOPE_DEFAULT, $scopeId = 0)
+    {
+
+        // initialize the core config data
+        $coreConfigData = array(
+            MemberNames::PATH => $path,
+            MemberNames::SCOPE => $scope,
+            MemberNames::SCOPE_ID => $scopeId
+        );
+
+        // generate the UID from the passed data
+        $uniqueIdentifier = $this->coreConfigDataUidGenerator->generate($coreConfigData);
+
+        // iterate over the core config data and try to find the requested configuration value
+        if (isset($this->coreConfigData[$uniqueIdentifier])) {
+            return $this->coreConfigData[$uniqueIdentifier][MemberNames::VALUE];
+        }
+
+        // query whether or not we've to query for the configuration value on fallback level 'websites' also
+        if ($scope === ScopeKeys::SCOPE_STORES && isset($this->stores[$scopeId])) {
+            // replace scope with 'websites' and website ID
+            $coreConfigData = array_merge(
+                $coreConfigData,
+                array(
+                    MemberNames::SCOPE    => ScopeKeys::SCOPE_WEBSITES,
+                    MemberNames::SCOPE_ID => $this->stores[$scopeId][MemberNames::WEBSITE_ID]
+                )
+            );
+
+            // generate the UID from the passed data, merged with the 'websites' scope and ID
+            $uniqueIdentifier = $this->coreConfigDataUidGenerator->generate($coreConfigData);
+
+            // query whether or not, the configuration value on 'websites' level
+            if (isset($this->coreConfigData[$uniqueIdentifier][MemberNames::VALUE])) {
+                return $this->coreConfigData[$uniqueIdentifier][MemberNames::VALUE];
+            }
+        }
+
+        // replace scope with 'default' and scope ID '0'
+        $coreConfigData = array_merge(
+            $coreConfigData,
+            array(
+                MemberNames::SCOPE    => ScopeKeys::SCOPE_DEFAULT,
+                MemberNames::SCOPE_ID => 0
+            )
+        );
+
+        // generate the UID from the passed data, merged with the 'default' scope and ID 0
+        $uniqueIdentifier = $this->coreConfigDataUidGenerator->generate($coreConfigData);
+
+        // query whether or not, the configuration value on 'default' level
+        if (isset($this->coreConfigData[$uniqueIdentifier][MemberNames::VALUE])) {
+            return $this->coreConfigData[$uniqueIdentifier][MemberNames::VALUE];
+        }
+
+        // if not, return the passed default value
+        if ($default !== null) {
+            return $default;
+        }
+
+        // throw an exception if no value can be found
+        // in the Magento configuration
+        throw new \Exception(
+            sprintf(
+                'Can\'t find a value for configuration "%s-%s-%d" in "core_config_data"',
+                $path,
+                $scope,
+                $scopeId
+            )
+        );
     }
 }

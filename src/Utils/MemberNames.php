@@ -258,4 +258,18 @@ class MemberNames
      * @var string
      */
     const URL_REWRITE_ID = 'url_rewrite_id';
+
+    /**
+     * Name for the member 'scope'.
+     *
+     * @var string
+     */
+    const SCOPE = 'scope';
+
+    /**
+     * Name for the member 'scope_id'.
+     *
+     * @var string
+     */
+    const SCOPE_ID = 'scope_id';
 }
