@@ -1,3 +1,13 @@
+# Version 1.0.0-alpha39
+
+## Bugfixes
+
+* None
+
+## Features
+
+* Added configuration key file specific to the file upload
+
 # Version 1.0.0-alpha38
 
 ## Bugfixes
