@@ -91,6 +91,18 @@ class SubjectPlugin extends AbstractPlugin
                 array(RegistryKeys::BUNCHES => $this->bunches)
             );
 
+            // stop the application if we don't process ANY bunch
+            if ($this->bunches === 0) {
+                $this->getApplication()->stop(
+                    sprintf(
+                        'Operation %s has been stopped by %s, because no import files has been found in directory %s',
+                        $this->getConfiguration()->getOperationName(),
+                        get_class($this),
+                        $status[RegistryKeys::SOURCE_DIRECTORY]
+                    )
+                );
+            }
+
             // finally, if a PID has been set (because CSV files has been found),
             // remove it from the PID file to unlock the importer
             $this->unlock();

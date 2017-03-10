@@ -105,9 +105,11 @@ interface ApplicationInterface
     /**
      * Stop processing the operation.
      *
+     * @param string $reason The reason why the operation has been stopped
+     *
      * @return void
      */
-    public function stop();
+    public function stop($reason);
 
     /**
      * Return's TRUE if the operation has been stopped, else FALSE.
