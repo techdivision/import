@@ -1,3 +1,13 @@
+# Version 1.0.0-alpha40
+
+## Bugfixes
+
+* None
+
+## Features
+
+* Move UrlRewriteRepository to this library
+
 # Version 1.0.0-alpha39
 
 ## Bugfixes
