@@ -78,6 +78,7 @@ Actually we've a pre-alpha status, so we **STRONGLY** recommend not to use M2IF 
 The following functionality is already available, for CE and EE
 
 - [x] Delete, Add/Update + Replace Import Mode
+- [x] Categories
 - [x] Simple Products
 - [x] Configurable Products
 - [x] Bundle Products
@@ -106,7 +107,6 @@ This and many more is, what we're actually working on
 
 Planned with future versions, are importer types for
 
-- [ ] Categories
 - [ ] Product Attributes
 - [ ] Customers
 - [ ] Advanced Pricing

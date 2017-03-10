@@ -101,4 +101,18 @@ interface ApplicationInterface
      * @throws \Exception Is thrown if the operation can't be finished successfully
      */
     public function process();
+
+    /**
+     * Stop processing the operation.
+     *
+     * @return void
+     */
+    public function stop();
+
+    /**
+     * Return's TRUE if the operation has been stopped, else FALSE.
+     *
+     * @return boolean TRUE if the process has been stopped, else FALSE
+     */
+    public function isStopped();
 }
