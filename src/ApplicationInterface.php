@@ -101,4 +101,20 @@ interface ApplicationInterface
      * @throws \Exception Is thrown if the operation can't be finished successfully
      */
     public function process();
+
+    /**
+     * Stop processing the operation.
+     *
+     * @param string $reason The reason why the operation has been stopped
+     *
+     * @return void
+     */
+    public function stop($reason);
+
+    /**
+     * Return's TRUE if the operation has been stopped, else FALSE.
+     *
+     * @return boolean TRUE if the process has been stopped, else FALSE
+     */
+    public function isStopped();
 }

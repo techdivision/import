@@ -1,3 +1,14 @@
+# Version 1.0.0-alpha41
+
+## Bugfixes
+
+* None
+
+## Features
+
+* Add stop() and isStopped() methods to ApplicationInterface
+* Stop processing when no CSV files that have to be imported are found
+
 # Version 1.0.0-alpha40
 
 ## Bugfixes
