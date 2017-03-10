@@ -249,6 +249,16 @@ class SqlStatements
     const CORE_CONFIG_DATA = 'SELECT * FROM core_config_data';
 
     /**
+     * The SQL statement to load the URL rewrites for the passed entity type and ID.
+     *
+     * @var string
+     */
+    const URL_REWRITES_BY_ENTITY_TYPE_AND_ENTITY_ID = 'SELECT *
+                                                         FROM url_rewrite
+                                                        WHERE entity_type = :entity_type
+                                                          AND entity_id = :entity_id';
+
+    /**
      * The SQL statement to remove a existing URL rewrite.
      *
      * @var string
