@@ -1,3 +1,13 @@
+# Version 1.0.0-alpha42
+
+## Bugfixes
+
+* Fixed access to not existent status key in SubjectPlugin class
+
+## Features
+
+* Add getRegistryProcessor() method to AbstractObserver class
+
 # Version 1.0.0-alpha41
 
 ## Bugfixes

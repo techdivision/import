@@ -98,7 +98,7 @@ class SubjectPlugin extends AbstractPlugin
                         'Operation %s has been stopped by %s, because no import files has been found in directory %s',
                         $this->getConfiguration()->getOperationName(),
                         get_class($this),
-                        $status[RegistryKeys::SOURCE_DIRECTORY]
+                        $this->getConfiguration()->getSourceDir()
                     )
                 );
             }
