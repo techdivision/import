@@ -107,6 +107,16 @@ abstract class AbstractObserver implements ObserverInterface
     }
 
     /**
+     * Return's the RegistryProcessor instance to handle the running threads.
+     *
+     * @return \TechDivision\Import\Services\RegistryProcessorInterface The registry processor instance
+     */
+    public function getRegistryProcessor()
+    {
+        return $this->getSubject()->getRegistryProcessor();
+    }
+
+    /**
      * Set's the actual row, that has to be processed.
      *
      * @param array $row The row
