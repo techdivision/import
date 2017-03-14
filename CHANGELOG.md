@@ -1,3 +1,13 @@
+# Version 1.0.0-alpha43
+
+## Bugfixes
+
+* None
+
+## Features
+
+* Add interfaces for logger configuration
+
 # Version 1.0.0-alpha42
 
 ## Bugfixes
