@@ -22,6 +22,7 @@ namespace TechDivision\Import\Plugins;
 
 use TechDivision\Import\ApplicationInterface;
 use TechDivision\Import\Configuration\PluginConfigurationInterface;
+use TechDivision\Import\Utils\LoggerKeys;
 
 /**
  * Abstract plugin implementation.
@@ -114,13 +115,26 @@ abstract class AbstractPlugin implements PluginInterface
     }
 
     /**
-     * Return's the system logger.
+     * Return's the logger with the passed name, by default the system logger.
      *
-     * @return \Psr\Log\LoggerInterface The system logger instance
+     * @param string $name The name of the requested system logger
+     *
+     * @return \Psr\Log\LoggerInterface The logger instance
+     * @throws \Exception Is thrown, if the requested logger is NOT available
      */
-    protected function getSystemLogger()
+    protected function getSystemLogger($name = LoggerKeys::SYSTEM)
     {
-        return $this->getApplication()->getSystemLogger();
+        return $this->getApplication()->getSystemLogger($name);
+    }
+
+    /**
+     * Return's the array with the system logger instances.
+     *
+     * @return array The logger instance
+     */
+    protected function getSystemLoggers()
+    {
+        return $this->getApplication()->getSystemLoggers();
     }
 
     /**

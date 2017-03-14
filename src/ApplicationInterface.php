@@ -20,6 +20,8 @@
 
 namespace TechDivision\Import;
 
+use TechDivision\Import\Utils\LoggerKeys;
+
 /**
  * The interface for a M2IF application implementation.
  *
@@ -40,11 +42,21 @@ interface ApplicationInterface
     public function getSerial();
 
     /**
-     * Return's the system logger.
+     * Return's the logger with the passed name, by default the system logger.
      *
-     * @return \Psr\Log\LoggerInterface The system logger instance
+     * @param string $name The name of the requested system logger
+     *
+     * @return \Psr\Log\LoggerInterface The logger instance
+     * @throws \Exception Is thrown, if the requested logger is NOT available
      */
-    public function getSystemLogger();
+    public function getSystemLogger($name = LoggerKeys::SYSTEM);
+
+    /**
+     * Return's the array with the system logger instances.
+     *
+     * @return array The array with the system logger instances
+     */
+    public function getSystemLoggers();
 
     /**
      * Return's the RegistryProcessor instance to handle the running threads.

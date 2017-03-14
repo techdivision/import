@@ -213,7 +213,7 @@ class SubjectPlugin extends AbstractPlugin
 
         // initialize the instances
         $processor = null;
-        $systemLogger = $this->getSystemLogger();
+        $systemLoggers = $this->getSystemLoggers();
         $registryProcessor = $this->getRegistryProcessor();
         $coreConfigDataUidGenerator = new CoreConfigDataUidGenerator();
 
@@ -227,10 +227,10 @@ class SubjectPlugin extends AbstractPlugin
 
         // initialize a new handler with the passed class name
         return new $className(
-            $systemLogger,
             $subjectConfiguration,
             $registryProcessor,
             $coreConfigDataUidGenerator,
+            $systemLoggers,
             $processor
         );
     }

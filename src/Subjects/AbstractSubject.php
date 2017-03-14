@@ -35,6 +35,7 @@ use TechDivision\Import\Services\RegistryProcessorInterface;
 use TechDivision\Import\Configuration\SubjectConfigurationInterface;
 use TechDivision\Import\Utils\ScopeKeys;
 use TechDivision\Import\Utils\Generators\GeneratorInterface;
+use TechDivision\Import\Utils\LoggerKeys;
 
 /**
  * An abstract subject implementation.
@@ -63,11 +64,11 @@ abstract class AbstractSubject implements SubjectInterface
     protected $configuration;
 
     /**
-     * The system logger implementation.
+     * The array with the system logger instances.
      *
-     * @var \Psr\Log\LoggerInterface
+     * @var array
      */
-    protected $systemLogger;
+    protected $systemLoggers = array();
 
     /**
      * The RegistryProcessor instance to handle running threads.
@@ -184,21 +185,21 @@ abstract class AbstractSubject implements SubjectInterface
     /**
      * Initialize the subject instance.
      *
-     * @param \Psr\Log\LoggerInterface                                         $systemLogger               The system logger instance
      * @param \TechDivision\Import\Configuration\SubjectConfigurationInterface $configuration              The subject configuration instance
      * @param \TechDivision\Import\Services\RegistryProcessorInterface         $registryProcessor          The registry processor instance
      * @param \TechDivision\Import\Utils\Generators\GeneratorInterface         $coreConfigDataUidGenerator The UID generator for the core config data
+     * @param array                                                            $systemLoggers              The array with the system loggers instances
      */
     public function __construct(
-        LoggerInterface $systemLogger,
         SubjectConfigurationInterface $configuration,
         RegistryProcessorInterface $registryProcessor,
-        GeneratorInterface $coreConfigDataUidGenerator
+        GeneratorInterface $coreConfigDataUidGenerator,
+        array $systemLoggers
     ) {
-        $this->systemLogger = $systemLogger;
         $this->configuration = $configuration;
         $this->registryProcessor = $registryProcessor;
         $this->coreConfigDataUidGenerator = $coreConfigDataUidGenerator;
+        $this->systemLoggers = $systemLoggers;
     }
 
     /**
@@ -333,13 +334,33 @@ abstract class AbstractSubject implements SubjectInterface
     }
 
     /**
-     * Return's the system logger.
+     * Return's the logger with the passed name, by default the system logger.
      *
-     * @return \Psr\Log\LoggerInterface The system logger instance
+     * @param string $name The name of the requested system logger
+     *
+     * @return \Psr\Log\LoggerInterface The logger instance
+     * @throws \Exception Is thrown, if the requested logger is NOT available
      */
-    public function getSystemLogger()
+    public function getSystemLogger($name = LoggerKeys::SYSTEM)
     {
-        return $this->systemLogger;
+
+        // query whether or not, the requested logger is available
+        if (isset($this->systemLoggers[$name])) {
+            return $this->systemLoggers[$name];
+        }
+
+        // throw an exception if the requested logger is NOT available
+        throw new \Exception(sprintf('The requested logger \'%s\' is not available', $name));
+    }
+
+    /**
+     * Return's the array with the system logger instances.
+     *
+     * @return array The logger instance
+     */
+    public function getSystemLoggers()
+    {
+        return $this->systemLoggers;
     }
 
     /**
