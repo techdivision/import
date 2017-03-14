@@ -20,9 +20,10 @@
 
 namespace TechDivision\Import\Observers;
 
-use TechDivision\Import\Utils\EntityStatus;
-use TechDivision\Import\Utils\ColumnKeys;
 use TechDivision\Import\Utils\ScopeKeys;
+use TechDivision\Import\Utils\ColumnKeys;
+use TechDivision\Import\Utils\LoggerKeys;
+use TechDivision\Import\Utils\EntityStatus;
 
 /**
  * An abstract observer implementation.
@@ -179,13 +180,26 @@ abstract class AbstractObserver implements ObserverInterface
     }
 
     /**
-     * Return's the system logger.
+     * Return's the logger with the passed name, by default the system logger.
      *
-     * @return \Psr\Log\LoggerInterface The system logger instance
+     * @param string $name The name of the requested system logger
+     *
+     * @return \Psr\Log\LoggerInterface The logger instance
+     * @throws \Exception Is thrown, if the requested logger is NOT available
      */
-    protected function getSystemLogger()
+    protected function getSystemLogger($name = LoggerKeys::SYSTEM)
     {
-        return $this->getSubject()->getSystemLogger();
+        return $this->getSubject()->getSystemLogger($name);
+    }
+
+    /**
+     * Return's the array with the system logger instances.
+     *
+     * @return array The logger instance
+     */
+    protected function getSystemLoggers()
+    {
+        return $this->getSubject()->getSystemLoggers();
     }
 
     /**

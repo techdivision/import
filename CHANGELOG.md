@@ -1,3 +1,13 @@
+# Version 1.0.0-alpha44
+
+## Bugfixes
+
+* None
+
+## Features
+
+* Extend method getSystemLogger() with parameter name to load a specific logger
+
 # Version 1.0.0-alpha43
 
 ## Bugfixes
