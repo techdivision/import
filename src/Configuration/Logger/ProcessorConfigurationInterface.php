@@ -20,6 +20,8 @@
 
 namespace TechDivision\Import\Configuration\Logger;
 
+use TechDivision\Import\Configuration\ParamsConfigurationInterface;
+
 /**
  * The interface for a logger's processor configuration.
  *
@@ -29,7 +31,7 @@ namespace TechDivision\Import\Configuration\Logger;
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
  */
-interface ProcessorConfigurationInterface
+interface ProcessorConfigurationInterface extends ParamsConfigurationInterface
 {
 
     /**
@@ -38,31 +40,4 @@ interface ProcessorConfigurationInterface
      * @return string The type
      */
     public function getType();
-
-    /**
-     * Return's the array with the params.
-     *
-     * @return array The params
-     */
-    public function getParams();
-
-    /**
-     * Query whether or not the param with the passed name exists.
-     *
-     * @param string $name The name of the param to be queried
-     *
-     * @return boolean TRUE if the requested param exists, else FALSE
-     */
-    public function hasParam($name);
-
-    /**
-     * Return's the param with the passed name.
-     *
-     * @param string $name         The name of the param to return
-     * @param mixed  $defaultValue The default value if the param doesn't exists
-     *
-     * @return string The requested param
-     * @throws \Exception Is thrown, if the requested param is not available
-     */
-    public function getParam($name, $defaultValue = null);
 }

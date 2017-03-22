@@ -21,7 +21,9 @@
 namespace TechDivision\Import\Callbacks;
 
 use TechDivision\Import\Utils\MemberNames;
+use TechDivision\Import\Utils\RegistryKeys;
 use TechDivision\Import\Utils\StoreViewCodes;
+use TechDivision\Import\Utils\FrontendInputTypes;
 
 /**
  * A callback implementation that converts the passed select value.
@@ -38,22 +40,62 @@ class SelectCallback extends AbstractCallback
     /**
      * Will be invoked by a observer it has been registered for.
      *
-     * @param mixed $value The value to handle
+     * @param string $attributeCode  The code of the attribute the passed value is for
+     * @param mixed  $attributeValue The value to handle
      *
-     * @return mixed The modified value
-     * @see \TechDivision\Import\Product\Callbacks\ProductImportCallbackInterface::handle()
+     * @return mixed|null The modified value
+     * @see \TechDivision\Import\Callbacks\CallbackInterface::handle()
      */
-    public function handle($value)
+    public function handle($attributeCode, $attributeValue)
     {
 
         // load the store ID
         $storeId = $this->getRowStoreId(StoreViewCodes::ADMIN);
 
-        // try to load the attribute option value
-        $eavAttributeOptionValue = $this->getEavAttributeOptionValueByOptionValueAndStoreId($value, $storeId);
+        // try to load the attribute option value and return the option ID
+        if ($eavAttributeOptionValue = $this->getEavAttributeOptionValueByOptionValueAndStoreId($attributeValue, $storeId)) {
+            return $eavAttributeOptionValue[MemberNames::OPTION_ID];
+        }
 
-        // return the option ID
-        return $eavAttributeOptionValue[MemberNames::OPTION_ID];
+        // query whether or not we're in debug mode
+        if ($this->isDebugMode()) {
+            // log a warning and return immediately
+            $this->getSystemLogger()->warning(
+                $this->appendExceptionSuffix(
+                    sprintf(
+                        'Can\'t find select option value "%s" for attribute %s',
+                        $attributeValue,
+                        $attributeCode
+                    )
+                )
+            );
+
+            // add the missing option value to the registry
+            $this->mergeAttributesRecursive(
+                array(
+                    RegistryKeys::MISSING_OPTION_VALUES => array(
+                        $attributeCode => array(
+                            $attributeValue => FrontendInputTypes::SELECT
+                        )
+                    )
+                )
+            );
+
+            // return NULL, if the value can't be mapped to an option
+            return;
+        }
+
+        // throw an exception if the attribute is NOT
+        // available and we're not in debug mode
+        throw new \Exception(
+            $this->appendExceptionSuffix(
+                sprintf(
+                    'Can\'t find select option value "%s" for attribute %s',
+                    $attributeValue,
+                    $attributeCode
+                )
+            )
+        );
     }
 
     /**
@@ -65,7 +107,7 @@ class SelectCallback extends AbstractCallback
      * @return integer The ID of the actual store
      * @throws \Exception Is thrown, if the store with the actual code is not available
      */
-    public function getRowStoreId($default = null)
+    protected function getRowStoreId($default = null)
     {
         return $this->getSubject()->getRowStoreId($default);
     }
@@ -78,7 +120,7 @@ class SelectCallback extends AbstractCallback
      *
      * @return array|boolean The attribute option value instance
      */
-    public function getEavAttributeOptionValueByOptionValueAndStoreId($value, $storeId)
+    protected function getEavAttributeOptionValueByOptionValueAndStoreId($value, $storeId)
     {
         return $this->getSubject()->getEavAttributeOptionValueByOptionValueAndStoreId($value, $storeId);
     }

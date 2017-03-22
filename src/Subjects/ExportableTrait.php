@@ -20,8 +20,8 @@
 
 namespace TechDivision\Import\Subjects;
 
-use Goodby\CSV\Export\Standard\Exporter;
-use Goodby\CSV\Export\Standard\ExporterConfig;
+use TechDivision\Import\Utils\ColumnKeys;
+use TechDivision\Import\Utils\ExporterTrait;
 
 /**
  * The trait implementation for the artefact export functionality.
@@ -34,6 +34,13 @@ use Goodby\CSV\Export\Standard\ExporterConfig;
  */
 trait ExportableTrait
 {
+
+    /**
+     * The exporter trait implementation.
+     *
+     * @var \TechDivision\Import\Utils\ExporterTrait
+     */
+    use ExporterTrait;
 
     /**
      * The array containing the data for product type configuration (configurables, bundles, etc).
@@ -70,8 +77,40 @@ trait ExportableTrait
             return;
         }
 
+        // serialize the original data
+        array_walk($artefacts, function(&$artefact) {
+            if (isset($artefact[ColumnKeys::ORIGINAL_DATA])) {
+                $artefact[ColumnKeys::ORIGINAL_DATA] = serialize($artefact[ColumnKeys::ORIGINAL_DATA]);
+            }
+        });
+
         // append the artefacts to the stack
         $this->artefacs[$type][$this->getLastEntityId()][] = $artefacts;
+    }
+
+    /**
+     * Create's and return's a new empty artefact entity.
+     *
+     * @param array $columns             The array with the column data
+     * @param array $originalColumnNames The array with a mapping from the old to the new column names
+     *
+     * @return array The new artefact entity
+     */
+    public function newArtefact(array $columns, array $originalColumnNames = array())
+    {
+
+        // initialize the original data
+        $originalData = array(
+            ColumnKeys::ORIGINAL_FILENAME     => $this->getFilename(),
+            ColumnKeys::ORIGINAL_LINE_NUMBER  => $this->getLineNumber(),
+            ColumnKeys::ORIGINAL_COLUMN_NAMES => $originalColumnNames
+        );
+
+        // prepare a new artefact entity
+        $artefact = array(ColumnKeys::ORIGINAL_DATA => $originalData);
+
+        // merge the columns into the artefact entity and return it
+        return array_merge($artefact, $columns);
     }
 
     /**
@@ -92,7 +131,6 @@ trait ExportableTrait
         foreach ($this->getArtefacts() as $artefactType => $artefacts) {
             // initialize the bunch and the exporter
             $bunch = array();
-            $exporter = new Exporter($this->getExportConfig());
 
             // iterate over the artefact types artefacts
             foreach ($artefacts as $entityArtefacts) {
@@ -110,7 +148,16 @@ trait ExportableTrait
             }
 
             // export the artefact (bunch)
-            $exporter->export(sprintf('%s/%s_%s_%s.csv', $targetDir, $artefactType, $timestamp, $counter), $bunch);
+            $this->getExporterInstance()->export(
+                sprintf(
+                    '%s/%s_%s_%s.csv',
+                    $targetDir,
+                    $artefactType,
+                    $timestamp,
+                    $counter
+                ),
+                $bunch
+            );
         }
     }
 
@@ -122,50 +169,5 @@ trait ExportableTrait
     protected function getTargetDir()
     {
         return $this->getNewSourceDir();
-    }
-
-    /**
-     * Initialize and return the exporter configuration.
-     *
-     * @return \Goodby\CSV\Export\Standard\ExporterConfig The exporter configuration
-     */
-    protected function getExportConfig()
-    {
-
-        // initialize the lexer configuration
-        $config = new ExporterConfig();
-
-        // query whether or not a delimiter character has been configured
-        if ($delimiter = $this->getConfiguration()->getDelimiter()) {
-            $config->setDelimiter($delimiter);
-        }
-
-        // query whether or not a custom escape character has been configured
-        if ($escape = $this->getConfiguration()->getEscape()) {
-            $config->setEscape($escape);
-        }
-
-        // query whether or not a custom enclosure character has been configured
-        if ($enclosure = $this->getConfiguration()->getEnclosure()) {
-            $config->setEnclosure($enclosure);
-        }
-
-        // query whether or not a custom source charset has been configured
-        if ($fromCharset = $this->getConfiguration()->getFromCharset()) {
-            $config->setFromCharset($fromCharset);
-        }
-
-        // query whether or not a custom target charset has been configured
-        if ($toCharset = $this->getConfiguration()->getToCharset()) {
-            $config->setToCharset($toCharset);
-        }
-
-        // query whether or not a custom file mode has been configured
-        if ($fileMode = $this->getConfiguration()->getFileMode()) {
-            $config->setFileMode($fileMode);
-        }
-
-        // return the lexer configuratio
-        return $config;
     }
 }

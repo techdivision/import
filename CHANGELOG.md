@@ -1,3 +1,14 @@
+# Version 1.0.0-alpha45
+
+## Bugfixes
+
+* None
+
+## Features
+
+* Add functionality to use SwiftMailer for logging and mail sending purposes
+* Add plugin to create a CSV file with missing attribute option values
+
 # Version 1.0.0-alpha44
 
 ## Bugfixes

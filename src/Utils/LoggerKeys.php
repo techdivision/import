@@ -62,4 +62,18 @@ class LoggerKeys
      * @var string
      */
     const MAIL = 'mail';
+
+    /**
+     * The key for param 'bubble'.
+     *
+     * @var string
+     */
+    const BUBBLE = 'bubble';
+
+    /**
+     * The key for param 'log-level'.
+     *
+     * @var string
+     */
+    const LOG_LEVEL = 'log-level';
 }
