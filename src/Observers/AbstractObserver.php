@@ -140,6 +140,40 @@ abstract class AbstractObserver implements ObserverInterface
     }
 
     /**
+     * Append's the exception suffix containing filename and line number to the
+     * passed message. If no message has been passed, only the suffix will be
+     * returned
+     *
+     * @param string|null $message    The message to append the exception suffix to
+     * @param string|null $filename   The filename used to create the suffix
+     * @param string|null $lineNumber The line number used to create the suffx
+     *
+     * @return string The message with the appended exception suffix
+     */
+    protected function appendExceptionSuffix($message = null, $filename = null, $lineNumber = null)
+    {
+        return $this->getSubject()-> appendExceptionSuffix($message, $filename, $lineNumber);
+    }
+
+    /**
+     * Wraps the passed exeception into a new one by trying to resolve the original filname,
+     * line number and column name and use it for a detailed exception message.
+     *
+     * @param string     $columnName The column name that should be resolved
+     * @param \Exception $parent     The exception we want to wrap
+     * @param string     $className  The class name of the exception type we want to wrap the parent one
+     *
+     * @return \Exception the wrapped exception
+     */
+    protected function wrapException(
+        $columnName,
+        \Exception $parent = null,
+        $className = '\TechDivision\Import\Exceptions\WrappedColumnException'
+    ) {
+        return $this->getSubject()->wrapException($columnName, $parent, $className);
+    }
+
+    /**
      * Queries whether or not debug mode is enabled or not, default is TRUE.
      *
      * @return boolean TRUE if debug mode is enabled, else FALSE

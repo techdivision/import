@@ -1,7 +1,7 @@
 <?php
 
 /**
- * TechDivision\Import\Callbacks\CallbackInterface
+ * TechDivision\Import\Utils\FrontentInputTypes
  *
  * NOTICE OF LICENSE
  *
@@ -18,10 +18,10 @@
  * @link      http://www.techdivision.com
  */
 
-namespace TechDivision\Import\Callbacks;
+namespace TechDivision\Import\Utils;
 
 /**
- * interface for all callback implementations.
+ * Utility class containing the available frontend input types.
  *
  * @author    Tim Wagner <t.wagner@techdivision.com>
  * @copyright 2016 TechDivision GmbH <info@techdivision.com>
@@ -29,16 +29,44 @@ namespace TechDivision\Import\Callbacks;
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
  */
-interface CallbackInterface
+class FrontendInputTypes
 {
 
     /**
-     * Will be invoked by a observer it has been registered for.
-     *
-     * @param string $attributeCode  The code of the attribute the passed value is for
-     * @param mixed  $attributeValue The value to handle
-     *
-     * @return mixed The modified value
+     * This is a utility class, so protect it against direct
+     * instantiation.
      */
-    public function handle($attributeCode, $attributeValue);
+    private function __construct()
+    {
+    }
+
+    /**
+     * This is a utility class, so protect it against cloning.
+     *
+     * @return void
+     */
+    private function __clone()
+    {
+    }
+
+    /**
+     * Name for the frontend input type 'select'.
+     *
+     * @var string
+     */
+    const SELECT = 'select';
+
+    /**
+     * Name for the frontend input type 'multiselect'.
+     *
+     * @var string
+     */
+    const MULTISELECT = 'multiselect';
+
+    /**
+     * Name for the frontend input type 'boolean'.
+     *
+     * @var string
+     */
+    const BOOLEAN = 'boolean';
 }

@@ -158,11 +158,14 @@ trait AttributeObserverTrait
                 // set the attribute value
                 $this->attributeValue = $attributeValue;
 
-                // load the prepared values
-                $entity = $this->initializeAttribute($this->prepareAttributes());
+                // try to prepare the attribute values
+                if ($attr = $this->prepareAttributes()) {
+                    // initialize and persist the attribute
+                    $entity = $this->initializeAttribute($attr);
+                    $this->$persistMethod($entity);
+                }
 
-                // persist the attribute and continue
-                $this->$persistMethod($entity);
+                // continue with the next value
                 continue;
             }
 
@@ -182,7 +185,7 @@ trait AttributeObserverTrait
     /**
      * Prepare the attributes of the entity that has to be persisted.
      *
-     * @return array The prepared attributes
+     * @return array|null The prepared attributes
      */
     protected function prepareAttributes()
     {
@@ -192,7 +195,12 @@ trait AttributeObserverTrait
 
         // invoke the pre-cast callbacks
         foreach ($callbacks as $callback) {
-            $this->attributeValue = $callback->handle($this->attributeValue);
+            $this->attributeValue = $callback->handle($this->attributeCode, $this->attributeValue);
+        }
+
+        // query whether or not the attribute has been be processed by the callbacks
+        if ($this->attributeValue === null) {
+            return;
         }
 
         // load the ID of the product that has been created recently

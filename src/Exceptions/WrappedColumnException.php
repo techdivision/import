@@ -1,7 +1,7 @@
 <?php
 
 /**
- * TechDivision\Import\Callbacks\CallbackInterface
+ * TechDivision\Import\Exceptions\WrappedColumnException
  *
  * NOTICE OF LICENSE
  *
@@ -18,10 +18,10 @@
  * @link      http://www.techdivision.com
  */
 
-namespace TechDivision\Import\Callbacks;
+namespace TechDivision\Import\Exceptions;
 
 /**
- * interface for all callback implementations.
+ * Interface for the operation configuration implementation.
  *
  * @author    Tim Wagner <t.wagner@techdivision.com>
  * @copyright 2016 TechDivision GmbH <info@techdivision.com>
@@ -29,16 +29,6 @@ namespace TechDivision\Import\Callbacks;
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
  */
-interface CallbackInterface
+class WrappedColumnException extends \Exception
 {
-
-    /**
-     * Will be invoked by a observer it has been registered for.
-     *
-     * @param string $attributeCode  The code of the attribute the passed value is for
-     * @param mixed  $attributeValue The value to handle
-     *
-     * @return mixed The modified value
-     */
-    public function handle($attributeCode, $attributeValue);
 }

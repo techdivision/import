@@ -52,6 +52,15 @@ interface ApplicationInterface
     public function getSystemLogger($name = LoggerKeys::SYSTEM);
 
     /**
+     * Query whether or not the system logger with the passed name is available.
+     *
+     * @param string $name The name of the requested system logger
+     *
+     * @return boolean TRUE if the logger with the passed name exists, else FALSE
+     */
+    public function hasSystemLogger($name = LoggerKeys::SYSTEM);
+
+    /**
      * Return's the array with the system logger instances.
      *
      * @return array The array with the system logger instances

@@ -22,6 +22,7 @@ namespace TechDivision\Import\Subjects;
 
 use TechDivision\Import\Utils\MemberNames;
 use TechDivision\Import\Utils\RegistryKeys;
+use TechDivision\Import\Utils\FrontendInputTypes;
 
 /**
  * An abstract EAV subject implementation.
@@ -82,9 +83,9 @@ abstract class AbstractEavSubject extends AbstractSubject implements EavSubjectI
      * @var array
      */
     protected $defaultFrontendInputCallbackMappings = array(
-        'select' => 'TechDivision\\Import\\Callbacks\\SelectCallback',
-        'multiselect' => 'TechDivision\\Import\\Callbacks\\MultiselectCallback',
-        'boolean' => 'TechDivision\\Import\\Callbacks\\BooleanCallback'
+        FrontendInputTypes::SELECT      => 'TechDivision\\Import\\Callbacks\\SelectCallback',
+        FrontendInputTypes::MULTISELECT => 'TechDivision\\Import\\Callbacks\\MultiselectCallback',
+        FrontendInputTypes::BOOLEAN     => 'TechDivision\\Import\\Callbacks\\BooleanCallback'
     );
 
     /**

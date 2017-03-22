@@ -20,6 +20,9 @@
 
 namespace TechDivision\Import\Callbacks;
 
+use TechDivision\Import\Utils\RegistryKeys;
+use TechDivision\Import\Utils\FrontendInputTypes;
+
 /**
  * A callback implementation that converts the passed boolean value.
  *
@@ -49,13 +52,57 @@ class BooleanCallback extends AbstractCallback
     /**
      * Will be invoked by a observer it has been registered for.
      *
-     * @param mixed $value The value to handle
+     * @param string $attributeCode  The code of the attribute the passed value is for
+     * @param mixed  $attributeValue The value to handle
      *
      * @return mixed The modified value
-     * @see \TechDivision\Import\Product\Callbacks\ProductImportCallbackInterface::handle()
+     * @see \TechDivision\Import\Callbacks\CallbackInterface::handle()
      */
-    public function handle($value)
+    public function handle($attributeCode, $attributeValue)
     {
-        return (boolean) $this->booleanValues[strtolower($value)];
+
+        // query whether or not, the passed value can be mapped to a boolean representation
+        if (isset($this->booleanValues[strtolower($attributeValue)])) {
+            return (boolean) $this->booleanValues[strtolower($attributeValue)];
+        }
+
+        // query whether or not we're in debug mode
+        if ($this->isDebugMode()) {
+            // log a warning and continue with the next value
+            $this->getSystemLogger()->warning(
+                $this->appendExceptionSuffix(
+                    sprintf(
+                        'Can\'t map option value "%s" for attribute %s to a boolean representation',
+                        $attributeValue,
+                        $attributeCode
+                    )
+                )
+            );
+
+            // add the missing option value to the registry
+            $this->mergeAttributesRecursive(
+                array(
+                    RegistryKeys::MISSING_OPTION_VALUES => array(
+                        $attributeCode => array(
+                            $attributeValue => FrontendInputTypes::BOOLEAN
+                        )
+                    )
+                )
+            );
+
+            // return NULL, if NO value can be mapped to a boolean representation
+            return;
+        }
+
+        // throw an exception if the attribute is not available
+        throw new \Exception(
+            $this->appendExceptionSuffix(
+                sprintf(
+                    'Can\'t map option value "%s" for attribute %s to a boolean representation',
+                    $attributeValue,
+                    $attributeCode
+                )
+            )
+        );
     }
 }

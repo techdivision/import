@@ -202,4 +202,11 @@ class RegistryKeys
      * @var string
      */
     const PATH_ROW_ID_MAPPING = 'pathRowIdMapping';
+
+    /**
+     * Key for the registry entry containing the missing attribute option values.
+     *
+     * @var string
+     */
+    const MISSING_OPTION_VALUES = 'missingOptionValues';
 }

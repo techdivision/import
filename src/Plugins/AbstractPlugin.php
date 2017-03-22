@@ -20,9 +20,9 @@
 
 namespace TechDivision\Import\Plugins;
 
+use TechDivision\Import\Utils\LoggerKeys;
 use TechDivision\Import\ApplicationInterface;
 use TechDivision\Import\Configuration\PluginConfigurationInterface;
-use TechDivision\Import\Utils\LoggerKeys;
 
 /**
  * Abstract plugin implementation.
@@ -125,6 +125,18 @@ abstract class AbstractPlugin implements PluginInterface
     protected function getSystemLogger($name = LoggerKeys::SYSTEM)
     {
         return $this->getApplication()->getSystemLogger($name);
+    }
+
+    /**
+     * Query whether or not the system logger with the passed name is available.
+     *
+     * @param string $name The name of the requested system logger
+     *
+     * @return boolean TRUE if the logger with the passed name exists, else FALSE
+     */
+    protected function hasSystemLogger($name = LoggerKeys::SYSTEM)
+    {
+        return $this->getApplication()->hasSystemLogger($name);
     }
 
     /**
@@ -260,5 +272,22 @@ abstract class AbstractPlugin implements PluginInterface
 
         // throw an exception if no processor factory has been configured
         throw new \Exception(sprintf('No processor factory has been specified for plugin %s', get_class($this)));
+    }
+
+    /**
+     * Return's the configured swift mailer instance.
+     *
+     * @return \Swift_Mailer|null The mailer instance
+     */
+    protected function getSwiftMailer()
+    {
+
+        // the swift mailer configuration
+        if ($swiftMailerConfiguration = $this->getPluginConfiguration()->getSwiftMailer()) {
+            // load the factory that creates the swift mailer instance
+            $factory = $swiftMailerConfiguration->getFactory();
+            // create the swift mailer instance
+            return $factory::factory($swiftMailerConfiguration);
+        }
     }
 }

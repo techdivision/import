@@ -24,8 +24,12 @@ use Psr\Log\LoggerInterface;
 use Goodby\CSV\Import\Standard\Lexer;
 use Goodby\CSV\Import\Standard\LexerConfig;
 use Goodby\CSV\Import\Standard\Interpreter;
+use TechDivision\Import\Utils\ScopeKeys;
+use TechDivision\Import\Utils\LoggerKeys;
+use TechDivision\Import\Utils\ColumnKeys;
 use TechDivision\Import\Utils\MemberNames;
 use TechDivision\Import\Utils\RegistryKeys;
+use TechDivision\Import\Utils\Generators\GeneratorInterface;
 use TechDivision\Import\Services\RegistryProcessor;
 use TechDivision\Import\Callbacks\CallbackVisitor;
 use TechDivision\Import\Callbacks\CallbackInterface;
@@ -33,9 +37,6 @@ use TechDivision\Import\Observers\ObserverVisitor;
 use TechDivision\Import\Observers\ObserverInterface;
 use TechDivision\Import\Services\RegistryProcessorInterface;
 use TechDivision\Import\Configuration\SubjectConfigurationInterface;
-use TechDivision\Import\Utils\ScopeKeys;
-use TechDivision\Import\Utils\Generators\GeneratorInterface;
-use TechDivision\Import\Utils\LoggerKeys;
 
 /**
  * An abstract subject implementation.
@@ -183,6 +184,13 @@ abstract class AbstractSubject implements SubjectInterface
     protected $coreConfigDataUidGenerator;
 
     /**
+     * The actual row.
+     *
+     * @var array
+     */
+    protected $row = array();
+
+    /**
      * Initialize the subject instance.
      *
      * @param \TechDivision\Import\Configuration\SubjectConfigurationInterface $configuration              The subject configuration instance
@@ -210,6 +218,16 @@ abstract class AbstractSubject implements SubjectInterface
     public function getDefaultCallbackMappings()
     {
         return array();
+    }
+
+    /**
+     * Return's the actual row.
+     *
+     * @return array The actual row
+     */
+    public function getRow()
+    {
+        return $this->row;
     }
 
     /**
@@ -774,10 +792,8 @@ abstract class AbstractSubject implements SubjectInterface
     }
 
     /**
-     * Imports the passed row into the database.
-     *
-     * If the import failed, the exception will be catched and logged,
-     * but the import process will be continued.
+     * Imports the passed row into the database. If the import failed, the exception
+     * will be catched and logged, but the import process will be continued.
      *
      * @param array $row The row with the data to be imported
      *
@@ -786,13 +802,16 @@ abstract class AbstractSubject implements SubjectInterface
     public function importRow(array $row)
     {
 
+        // initialize the row
+        $this->row = $row;
+
         // raise the line number and reset the skip row flag
         $this->lineNumber++;
         $this->skipRow = false;
 
         // initialize the headers with the columns from the first line
         if (sizeof($this->headers) === 0) {
-            foreach ($row as $value => $key) {
+            foreach ($this->row as $value => $key) {
                 $this->headers[$this->mapAttributeCodeByHeaderMapping($key)] = $value;
             }
             return;
@@ -806,9 +825,10 @@ abstract class AbstractSubject implements SubjectInterface
                 if ($this->skipRow) {
                     break;
                 }
+
                 // if not, process the next observer
                 if ($observer instanceof ObserverInterface) {
-                    $row = $observer->handle($row);
+                    $this->row = $observer->handle($this->row);
                 }
             }
         }
@@ -1006,5 +1026,156 @@ abstract class AbstractSubject implements SubjectInterface
                 $scopeId
             )
         );
+    }
+
+    /**
+     * Resolve the original column name for the passed one.
+     *
+     * @param string $columnName The column name that has to be resolved
+     *
+     * @return string|null The original column name
+     */
+    public function resolveOriginalColumnName($columnName)
+    {
+
+        // try to load the original data
+        $originalData = $this->getOriginalData();
+
+        // query whether or not original data is available
+        if (isset($originalData[ColumnKeys::ORIGINAL_COLUMN_NAMES])) {
+            // query whether or not the original column name is available
+            if (isset($originalData[ColumnKeys::ORIGINAL_COLUMN_NAMES][$columnName])) {
+                return $originalData[ColumnKeys::ORIGINAL_COLUMN_NAMES][$columnName];
+            }
+
+            // query whether or a wildcard column name is available
+            if (isset($originalData[ColumnKeys::ORIGINAL_COLUMN_NAMES]['*'])) {
+                return $originalData[ColumnKeys::ORIGINAL_COLUMN_NAMES]['*'];
+            }
+        }
+    }
+
+    /**
+     * Return's the original data if available, or an empty array.
+     *
+     * @return array The original data
+     */
+    public function getOriginalData()
+    {
+
+        // initialize the array for the original data
+        $originalData = array();
+
+        // query whether or not the column contains original data
+        if ($this->hasOriginalData()) {
+            // unerialize the original data from the column
+            $originalData = unserialize($this->row[$this->headers[ColumnKeys::ORIGINAL_DATA]]);
+        }
+
+        // return an empty array, if not
+        return $originalData;
+    }
+
+    /**
+     * Query's whether or not the actual column contains original data like
+     * filename, line number and column names.
+     *
+     * @return boolean TRUE if the actual column contains origin data, else FALSE
+     */
+    public function hasOriginalData()
+    {
+        return isset($this->headers[ColumnKeys::ORIGINAL_DATA]) && isset($this->row[$this->headers[ColumnKeys::ORIGINAL_DATA]]);
+    }
+
+    /**
+     * Wraps the passed exeception into a new one by trying to resolve the original filname,
+     * line number and column names and use it for a detailed exception message.
+     *
+     * @param array      $columnNames The column names that should be resolved and wrapped
+     * @param \Exception $parent      The exception we want to wrap
+     * @param string     $className   The class name of the exception type we want to wrap the parent one
+     *
+     * @return \Exception the wrapped exception
+     */
+    public function wrapException(
+        array $columnNames,
+        \Exception $parent = null,
+        $className = '\TechDivision\Import\Exceptions\WrappedColumnException'
+    ) {
+
+        // query whether or not has been a result of invalid data of a previous column of a CSV file
+        if ($this->hasOriginalData()) {
+            // load the original data
+            $originalData = $this->getOriginalData();
+
+            // replace old filename and line number with original data
+            $message = $this->appendExceptionSuffix(
+                $this->stripExceptionSuffix($parent->getMessage()),
+                $originalData[ColumnKeys::ORIGINAL_FILENAME],
+                $originalData[ColumnKeys::ORIGINAL_LINE_NUMBER]
+            );
+
+            // prepare the original column names
+            $originalColumnNames = array();
+            foreach ($columnNames as $columnName) {
+                $originalColumnNames = $this->resolveOriginalColumnName($columnName);
+            }
+
+            // append the column information
+            $message = sprintf('%s in column(s) %s', $message, implode(', ', $originalColumnNames));
+
+            // create a new exception and wrap the parent one
+            return new $className($message, null, $parent);
+        }
+
+        // simply return the parent exception, because
+        // we can't find any original information
+        return $parent;
+    }
+
+    /**
+     * Strip's the exception suffix containing filename and line number from the
+     * passed message.
+     *
+     * @param string $message The message to strip the exception suffix from
+     *
+     * @return mixed The message without the exception suffix
+     */
+    public function stripExceptionSuffix($message)
+    {
+        return str_replace($this->appendExceptionSuffix(), '', $message);
+    }
+
+    /**
+     * Append's the exception suffix containing filename and line number to the
+     * passed message. If no message has been passed, only the suffix will be
+     * returned
+     *
+     * @param string|null $message    The message to append the exception suffix to
+     * @param string|null $filename   The filename used to create the suffix
+     * @param string|null $lineNumber The line number used to create the suffx
+     *
+     * @return string The message with the appended exception suffix
+     */
+    public function appendExceptionSuffix($message = null, $filename = null, $lineNumber = null)
+    {
+
+        // query whether or not a filename has been passed
+        if ($filename === null) {
+            $filename = $this->getFilename();
+        }
+
+        // query whether or not a line number has been passed
+        if ($lineNumber === null) {
+            $lineNumber = $this->getLineNumber();
+        }
+
+        // if no message has been passed, only return the suffix
+        if ($message === null) {
+            return sprintf(' in file %s on line %d', $filename, $lineNumber);
+        }
+
+        // concatenate the message with the suffix and return it
+        return sprintf('%s in file %s on line %d', $message, $filename, $lineNumber);
     }
 }

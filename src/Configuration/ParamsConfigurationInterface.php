@@ -1,7 +1,7 @@
 <?php
 
 /**
- * TechDivision\Import\Configuration\LoggerConfigurationInterface
+ * TechDivision\Import\Configuration\ParamsConfigurationInterface
  *
  * NOTICE OF LICENSE
  *
@@ -21,7 +21,7 @@
 namespace TechDivision\Import\Configuration;
 
 /**
- * The interface for a logger configuration.
+ * The interface for all configurations that supports parameters.
  *
  * @author    Tim Wagner <t.wagner@techdivision.com>
  * @copyright 2016 TechDivision GmbH <info@techdivision.com>
@@ -29,41 +29,33 @@ namespace TechDivision\Import\Configuration;
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
  */
-interface LoggerConfigurationInterface extends ParamsConfigurationInterface
+interface ParamsConfigurationInterface
 {
 
     /**
-     * Return's the logger's channel name to use.
+     * Return's the array with the params.
      *
-     * @return string The channel name
+     * @return array The params
      */
-    public function getChannelName();
+    public function getParams();
 
     /**
-     * Return's the logger's unique name to use.
+     * Query whether or not the param with the passed name exists.
      *
-     * @return string The unique name
+     * @param string $name The name of the param to be queried
+     *
+     * @return boolean TRUE if the requested param exists, else FALSE
      */
-    public function getName();
+    public function hasParam($name);
 
     /**
-     * Return's the factory used to create the logger instance.
+     * Return's the param with the passed name.
      *
-     * @return string The factory to use
-     */
-    public function getFactory();
-
-    /**
-     * Return's the logger's type to use.
+     * @param string $name         The name of the param to return
+     * @param mixed  $defaultValue The default value if the param doesn't exists
      *
-     * @return string The type
+     * @return string The requested param
+     * @throws \Exception Is thrown, if the requested param is not available
      */
-    public function getType();
-
-    /**
-     * Return's the array with the logger's handlers.
-     *
-     * @return \Doctrine\Common\Collections\ArrayCollection The ArrayCollection with the handlers
-     */
-    public function getHandlers();
+    public function getParam($name, $defaultValue = null);
 }

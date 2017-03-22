@@ -1,7 +1,7 @@
 <?php
 
 /**
- * TechDivision\Import\Utils\ColumnKeys
+ * TechDivision\Import\Utils\SwiftMailerKeys
  *
  * NOTICE OF LICENSE
  *
@@ -21,7 +21,7 @@
 namespace TechDivision\Import\Utils;
 
 /**
- * Utility class containing the CSV column names.
+ * A utility class for the swift mailer configuration keys.
  *
  * @author    Tim Wagner <t.wagner@techdivision.com>
  * @copyright 2016 TechDivision GmbH <info@techdivision.com>
@@ -29,7 +29,7 @@ namespace TechDivision\Import\Utils;
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
  */
-class ColumnKeys
+class SwiftMailerKeys
 {
 
     /**
@@ -50,86 +50,72 @@ class ColumnKeys
     }
 
     /**
-     * Name for the column 'original_data'.
+     * The key for param 'to'.
      *
      * @var string
      */
-    const ORIGINAL_DATA = 'original_data';
+    const TO = 'to';
 
     /**
-     * Name for the column 'original_filename'.
+     * The key for param 'from'.
      *
      * @var string
      */
-    const ORIGINAL_FILENAME = 'original_filename';
+    const FROM = 'from';
 
     /**
-     * Name for the column 'original_line_number'.
+     * The key for param 'subject'.
      *
      * @var string
      */
-    const ORIGINAL_LINE_NUMBER = 'original_line_number';
+    const SUBJECT = 'subject';
 
     /**
-     * Name for the column 'original_column_name'.
+     * The key for param 'content-type'.
      *
      * @var string
      */
-    const ORIGINAL_COLUMN_NAME = 'original_column_name';
+    const CONTENT_TYPE = 'content-type';
 
     /**
-     * Name for the column 'original_column_names'.
+     * The key for param 'smtp-host'.
      *
      * @var string
      */
-    const ORIGINAL_COLUMN_NAMES = 'original_column_names';
+    const SMTP_HOST = 'smtp-host';
 
     /**
-     * Name for the column 'product_type'.
+     * The key for param 'smtp-port'.
      *
      * @var string
      */
-    const PRODUCT_TYPE = 'product_type';
+    const SMTP_PORT = 'smtp-port';
 
     /**
-     * Name for the column 'store_view_code'.
+     * The key for param 'smtp-security'.
      *
      * @var string
      */
-    const STORE_VIEW_CODE = 'store_view_code';
+    const SMTP_SECURITY = 'smtp-security';
 
     /**
-     * Name for the column 'attribute_code'.
+     * The key for param 'smtp-username'.
      *
      * @var string
      */
-    const ATTRIBUTE_CODE = 'attribute_code';
+    const SMTP_USERNAME = 'smtp-username';
 
     /**
-     * Name for the column 'attribute_set_code'.
+     * The key for param 'smtp-password'.
      *
      * @var string
      */
-    const ATTRIBUTE_SET_CODE = 'attribute_set_code';
+    const SMTP_PASSWORD = 'smtp-password';
 
     /**
-     * Name for the column 'additional_attributes'.
+     * The key for param 'smtp-auth-mode'.
      *
      * @var string
      */
-    const ADDITIONAL_ATTRIBUTES = 'additional_attributes';
-
-    /**
-     * Name for the column 'value'.
-     *
-     * @var string
-     */
-    const VALUE = 'value';
-
-    /**
-     * Name for the column 'sort_order'.
-     *
-     * @var string
-     */
-    const SORT_ORDER = 'sort_order';
+    const SMTP_AUTH_MODE = 'smtp-auth-mode';
 }

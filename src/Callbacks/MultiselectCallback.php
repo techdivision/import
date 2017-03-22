@@ -21,7 +21,9 @@
 namespace TechDivision\Import\Callbacks;
 
 use TechDivision\Import\Utils\MemberNames;
+use TechDivision\Import\Utils\RegistryKeys;
 use TechDivision\Import\Utils\StoreViewCodes;
+use TechDivision\Import\Utils\FrontendInputTypes;
 
 /**
  * A callback implementation that converts the passed multiselect value.
@@ -38,25 +40,75 @@ class MultiselectCallback extends AbstractCallback
     /**
      * Will be invoked by a observer it has been registered for.
      *
-     * @param mixed $value The value to handle
+     * @param string $attributeCode  The code of the attribute the passed value is for
+     * @param mixed  $attributeValue The value to handle
      *
-     * @return mixed The modified value
-     * @see \TechDivision\Import\Product\Callbacks\ProductImportCallbackInterface::handle()
+     * @return mixed|null The modified value
+     * @see \TechDivision\Import\Callbacks\CallbackInterface::handle()
      */
-    public function handle($value)
+    public function handle($attributeCode, $attributeValue)
     {
 
         // explode the multiselect values
-        $vals = explode('|', $value);
+        $vals = explode('|', $attributeValue);
 
         // initialize the array for the mapped values
         $mappedValues = array();
 
         // convert the option values into option value ID's
         foreach ($vals as $val) {
+            // load the ID of the actual store
             $storeId = $this->getRowStoreId(StoreViewCodes::ADMIN);
-            $eavAttributeOptionValue = $this->getEavAttributeOptionValueByOptionValueAndStoreId($val, $storeId);
-            $mappedValues[] = $eavAttributeOptionValue[MemberNames::OPTION_ID];
+
+            // try to load the attribute option value and add the option ID
+            if ($eavAttributeOptionValue = $this->getEavAttributeOptionValueByOptionValueAndStoreId($val, $storeId)) {
+                $mappedValues[] = $eavAttributeOptionValue[MemberNames::OPTION_ID];
+                continue;
+            }
+
+            // query whether or not we're in debug mode
+            if ($this->isDebugMode()) {
+                // log a warning and continue with the next value
+                $this->getSystemLogger()->warning(
+                    $this->appendExceptionSuffix(
+                        sprintf(
+                            'Can\'t find multiselect option value "%s" for attribute %s',
+                            $val,
+                            $attributeCode
+                        )
+                    )
+                );
+
+                // add the missing option value to the registry
+                $this->mergeAttributesRecursive(
+                    array(
+                        RegistryKeys::MISSING_OPTION_VALUES => array(
+                            $attributeCode => array(
+                                $val => FrontendInputTypes::MULTISELECT
+                            )
+                        )
+                    )
+                );
+
+                // continue with the next option value
+                continue;
+            }
+
+            // throw an exception if the attribute is not available
+            throw new \Exception(
+                $this->appendExceptionSuffix(
+                    sprintf(
+                        'Can\'t find multiselect option value "%s" for attribute %s',
+                        $val,
+                        $attributeCode
+                    )
+                )
+            );
+        }
+
+        // return NULL, if NO value can be mapped to an option
+        if (sizeof($mappedValues) === 0) {
+            return;
         }
 
         // re-concatenate and return the values
@@ -72,7 +124,7 @@ class MultiselectCallback extends AbstractCallback
      * @return integer The ID of the actual store
      * @throws \Exception Is thrown, if the store with the actual code is not available
      */
-    public function getRowStoreId($default = null)
+    protected function getRowStoreId($default = null)
     {
         return $this->getSubject()->getRowStoreId($default);
     }
@@ -85,7 +137,7 @@ class MultiselectCallback extends AbstractCallback
      *
      * @return array|boolean The attribute option value instance
      */
-    public function getEavAttributeOptionValueByOptionValueAndStoreId($value, $storeId)
+    protected function getEavAttributeOptionValueByOptionValueAndStoreId($value, $storeId)
     {
         return $this->getSubject()->getEavAttributeOptionValueByOptionValueAndStoreId($value, $storeId);
     }
