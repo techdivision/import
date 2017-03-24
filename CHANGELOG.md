@@ -1,3 +1,13 @@
+# Version 1.0.0-alpha46
+
+## Bugfixes
+
+* None
+
+## Features
+
+* Add new SendmailTransportMailerFactory for usage with SwiftMailer
+
 # Version 1.0.0-alpha45
 
 ## Bugfixes
