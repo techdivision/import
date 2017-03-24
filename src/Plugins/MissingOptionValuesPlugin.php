@@ -144,6 +144,13 @@ class MissingOptionValuesPlugin extends AbstractPlugin
         }
 
         // and and log a message that the missing option values has been exported
-        $this->getSystemLogger()->info(sprintf('Successfully exported missing option values to file %s!', $filename));
+        foreach ($this->getSystemLoggers() as $systemLogger) {
+            $systemLogger->error(
+                sprintf(
+                    'Exported missing option values to file %s!',
+                    $filename
+                )
+            );
+        }
     }
 }
