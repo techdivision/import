@@ -152,7 +152,7 @@ class RoboFile extends \Robo\Tasks
         // run the code sniffer
         $this->_exec(
             sprintf(
-                '%s/bin/phpcs -n --extensions=php --standard=psr2 --report-full --report-checkstyle=%s/reports/phpcs.xml %s',
+                '%s/bin/phpcs -n --report-full --extensions=php --standard=phpcs.xml --report-checkstyle=%s/reports/phpcs.xml %s',
                 $this->properties['vendor.dir'],
                 $this->properties['target.dir'],
                 $this->properties['src.dir']

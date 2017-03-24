@@ -118,4 +118,11 @@ class SwiftMailerKeys
      * @var string
      */
     const SMTP_AUTH_MODE = 'smtp-auth-mode';
+
+    /**
+     * The key for param 'command'.
+     *
+     * @var string
+     */
+    const COMMAND = 'command';
 }
