@@ -47,6 +47,26 @@ abstract class AbstractRepository
     protected $connection;
 
     /**
+     * Initialize the repository with the passed connection and utility class name.
+     * .
+     * @param \PDO|null   $connection       The PDO connection instance
+     * @param string|null $utilityClassName The utility class name
+     */
+    public function __construct(\PDO $connection = null, $utilityClassName = null)
+    {
+
+        // if a connection has been passed, set it
+        if ($connection) {
+            $this->setConnection($connection);
+        }
+
+        // it a utility class name has been passed, set it
+        if ($utilityClassName) {
+            $this->setUtilityClassName($utilityClassName);
+        }
+    }
+
+    /**
      * Set's the passed utility class with the SQL statements to use.
      *
      * @param string $utilityClassName The utility class name

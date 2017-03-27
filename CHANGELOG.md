@@ -1,3 +1,13 @@
+# Version 1.0.0-alpha47
+
+## Bugfixes
+
+* None
+
+## Features
+
+* Add constructor injection to ImportProcessor and Repository instances
+
 # Version 1.0.0-alpha46
 
 ## Bugfixes

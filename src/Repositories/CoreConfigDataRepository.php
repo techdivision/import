@@ -49,12 +49,19 @@ class CoreConfigDataRepository extends AbstractRepository
     protected $coreConfigDataStmt;
 
     /**
-     * Initialize the subject instance.
+     * Initialize the repository with the passed connection and utility class name.
+     * .
      *
      * @param \TechDivision\Import\Utils\Generators\GeneratorInterface $coreConfigDataUidGenerator The UID generator for the core config data
+     * @param \PDO|null                                                $connection                 The PDO connection instance
+     * @param string|null                                              $utilityClassName           The utility class name
      */
-    public function __construct(GeneratorInterface $coreConfigDataUidGenerator)
-    {
+    public function __construct(
+        GeneratorInterface $coreConfigDataUidGenerator,
+        \PDO $connection = null,
+        $utilityClassName = null
+    ) {
+        parent::__construct($connection, $utilityClassName)
         $this->coreConfigDataUidGenerator = $coreConfigDataUidGenerator;
     }
 
