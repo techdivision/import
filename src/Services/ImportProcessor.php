@@ -127,6 +127,53 @@ class ImportProcessor implements ImportProcessorInterface
     protected $coreConfigDataRepository;
 
     /**
+     * Initialize the processor with the necessary assembler and repository instances.
+     *
+     * @param \PDO                                                        $connection                The PDO connection to use
+     * @param \TechDivision\Import\Assembler\CategoryAssembler            $categoryAssembler         The category assembler instance
+     * @param \TechDivision\Import\Repositories\CategoryRepository        $categoryRepository        The repository to access categories
+     * @param \TechDivision\Import\Repositories\CategoryVarcharRepository $categoryVarcharRepository The repository to access category varchar values
+     * @param \TechDivision\Import\Repositories\EavAttributeRepository    $eavAttributeRepository    The repository to access EAV attributes
+     * @param \TechDivision\Import\Repositories\EavAttributeSetRepository $eavAttributeSetRepository The repository to access EAV attribute set
+     * @param \TechDivision\Import\Repositories\EavEntityTypeRepository   $eavEntityTypeRepository   The repository to access EAV entity types
+     * @param \TechDivision\Import\Repositories\StoreRepository           $storeRepository           The repository to access stores
+     * @param \TechDivision\Import\Repositories\StoreWebsiteRepository    $storeWebsiteRepository    The repository to access store websites
+     * @param \TechDivision\Import\Repositories\TaxClassRepository        $taxClassRepository        The repository to access tax classes
+     * @param \TechDivision\Import\Repositories\LinkTypeRepository        $linkTypeRepository        The repository to access link types
+     * @param \TechDivision\Import\Repositories\LinkAttributeRepository   $linkAttributeRepository   The repository to access link attributes
+     * @param \TechDivision\Import\Repositories\CoreConfigDataRepository  $coreConfigDataRepository  The repository to access the configuration
+     */
+    public function __construct(
+        \PDO $connection,
+        CategoryAssembler $categoryAssembler,
+        CategoryRepository $categoryRepository,
+        CategoryVarcharRepository $categoryVarcharRepository,
+        EavAttributeRepository $eavAttributeRepository,
+        EavAttributeSetRepository $eavAttributeSetRepository,
+        EavEntityTypeRepository $eavEntityTypeRepository,
+        StoreRepository $storeRepository,
+        StoreWebsiteRepository $storeWebsiteRepository,
+        TaxClassRepository $taxClassRepository,
+        LinkTypeRepository $linkTypeRepository,
+        LinkAttributeRepository $linkAttributeRepository,
+        CoreConfigDataRepository $coreConfigDataRepository
+    ) {
+        $this->setConnection($connection);
+        $this->setCategoryAssembler($categoryAssembler);
+        $this->setCategoryRepository($categoryRepository);
+        $this->setCategoryVarcharRepository($categoryVarcharRepository);
+        $this->setEavAttributeRepository($eavAttributeRepository);
+        $this->setEavAttributeSetRepository($eavAttributeSetRepository);
+        $this->setEavEntityTypeRepository($eavEntityTypeRepository);
+        $this->setStoreRepository($storeRepository);
+        $this->setStoreWebsiteRepository($storeWebsiteRepository);
+        $this->setTaxClassRepository($taxClassRepository);
+        $this->setLinkTypeRepository($linkTypeRepository);
+        $this->setLinkAttributeRepository($linkAttributeRepository);
+        $this->setCoreConfigDataRepository($coreConfigDataRepository);
+    }
+
+    /**
      * Set's the passed connection.
      *
      * @param \PDO $connection The connection to set
