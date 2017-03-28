@@ -23,7 +23,6 @@ namespace TechDivision\Import\Callbacks;
 use TechDivision\Import\Utils\MemberNames;
 use TechDivision\Import\Utils\RegistryKeys;
 use TechDivision\Import\Utils\StoreViewCodes;
-use TechDivision\Import\Utils\FrontendInputTypes;
 
 /**
  * A callback implementation that converts the passed select value.
@@ -75,7 +74,7 @@ class SelectCallback extends AbstractCallback
                 array(
                     RegistryKeys::MISSING_OPTION_VALUES => array(
                         $attributeCode => array(
-                            $attributeValue => FrontendInputTypes::SELECT
+                            $attributeValue => $this->raiseCounter($attributeValue)
                         )
                     )
                 )

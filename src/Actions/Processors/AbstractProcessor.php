@@ -47,6 +47,23 @@ abstract class AbstractProcessor implements ProcessorInterface
     protected $connection;
 
     /**
+     * Initialize the processor with the passed connection and utility class name.
+     * .
+     * @param \PDO   $connection       The PDO connection instance
+     * @param string $utilityClassName The utility class name
+     */
+    public function __construct(\PDO $connection, $utilityClassName)
+    {
+
+        // set the passed instances
+        $this->setConnection($connection);
+        $this->setUtilityClassName($utilityClassName);
+
+        // initialize the instance
+        $this->init();
+    }
+
+    /**
      * Set's the passed utility class with the SQL statements to use.
      *
      * @param string $utilityClassName The utility class name

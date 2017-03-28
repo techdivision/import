@@ -132,4 +132,11 @@ class ColumnKeys
      * @var string
      */
     const SORT_ORDER = 'sort_order';
+
+    /**
+     * Name for the column 'counter'.
+     *
+     * @var string
+     */
+    const COUNTER = 'counter';
 }

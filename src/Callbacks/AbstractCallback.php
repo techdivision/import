@@ -130,6 +130,26 @@ abstract class AbstractCallback implements CallbackInterface
     }
 
     /**
+     * Raises the value for the counter with the passed key by one.
+     *
+     * @param mixed $counterName The name of the counter to raise
+     *
+     * @return integer The counter's new value
+     */
+    protected function raiseCounter($counterName)
+    {
+
+        // load the subject instance
+        $subject = $this->getSubject();
+
+        // raise the counter with the passed name
+        return $subject->getRegistryProcessor()->raiseCounter(
+            $subject->getSerial(),
+            $counterName
+        );
+    }
+
+    /**
      * Merge the passed array into the status of the actual import.
      *
      * @param array $status The status information to be merged

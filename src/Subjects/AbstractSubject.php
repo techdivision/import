@@ -715,7 +715,7 @@ abstract class AbstractSubject implements SubjectInterface
             $this->tearDown();
 
             // log a message that the file has successfully been imported
-            $systemLogger->debug(sprintf('Succesfully imported file %s in %f s', $filename, $endTime));
+            $systemLogger->debug(sprintf('Successfully imported file %s in %f s', $filename, $endTime));
 
             // rename flag file, because import has been successfull
             rename($inProgressFilename, $importedFilename);

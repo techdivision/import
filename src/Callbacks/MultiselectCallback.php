@@ -23,7 +23,6 @@ namespace TechDivision\Import\Callbacks;
 use TechDivision\Import\Utils\MemberNames;
 use TechDivision\Import\Utils\RegistryKeys;
 use TechDivision\Import\Utils\StoreViewCodes;
-use TechDivision\Import\Utils\FrontendInputTypes;
 
 /**
  * A callback implementation that converts the passed multiselect value.
@@ -84,7 +83,7 @@ class MultiselectCallback extends AbstractCallback
                     array(
                         RegistryKeys::MISSING_OPTION_VALUES => array(
                             $attributeCode => array(
-                                $val => FrontendInputTypes::MULTISELECT
+                                $val => $this->raiseCounter($val)
                             )
                         )
                     )

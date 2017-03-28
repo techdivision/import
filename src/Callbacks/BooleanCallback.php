@@ -21,7 +21,6 @@
 namespace TechDivision\Import\Callbacks;
 
 use TechDivision\Import\Utils\RegistryKeys;
-use TechDivision\Import\Utils\FrontendInputTypes;
 
 /**
  * A callback implementation that converts the passed boolean value.
@@ -84,7 +83,7 @@ class BooleanCallback extends AbstractCallback
                 array(
                     RegistryKeys::MISSING_OPTION_VALUES => array(
                         $attributeCode => array(
-                            $attributeValue => FrontendInputTypes::BOOLEAN
+                            $attributeValue => $this->raiseCounter($attributeValue)
                         )
                     )
                 )
