@@ -1,3 +1,13 @@
+# Version 1.0.0-alpha48
+
+## Bugfixes
+
+* Fixed initialization issues for ImportProcessor and CoreConfigDataRepository
+
+## Features
+
+* None
+
 # Version 1.0.0-alpha47
 
 ## Bugfixes

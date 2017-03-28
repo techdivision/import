@@ -61,7 +61,7 @@ class CoreConfigDataRepository extends AbstractRepository
         \PDO $connection = null,
         $utilityClassName = null
     ) {
-        parent::__construct($connection, $utilityClassName)
+        parent::__construct($connection, $utilityClassName);
         $this->coreConfigDataUidGenerator = $coreConfigDataUidGenerator;
     }
 

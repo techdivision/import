@@ -22,6 +22,18 @@ namespace TechDivision\Import\Services;
 
 use TechDivision\Import\Utils\RegistryKeys;
 use TechDivision\Import\Utils\MemberNames;
+use TechDivision\Import\Assembler\CategoryAssembler;
+use TechDivision\Import\Repositories\CategoryRepository;
+use TechDivision\Import\Repositories\CategoryVarcharRepository;
+use TechDivision\Import\Repositories\EavAttributeRepository;
+use TechDivision\Import\Repositories\EavAttributeSetRepository;
+use TechDivision\Import\Repositories\EavEntityTypeRepository;
+use TechDivision\Import\Repositories\StoreRepository;
+use TechDivision\Import\Repositories\StoreWebsiteRepository;
+use TechDivision\Import\Repositories\TaxClassRepository;
+use TechDivision\Import\Repositories\LinkTypeRepository;
+use TechDivision\Import\Repositories\LinkAttributeRepository;
+use TechDivision\Import\Repositories\CoreConfigDataRepository;
 
 /**
  * Processor implementation to load global data.
