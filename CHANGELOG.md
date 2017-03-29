@@ -1,3 +1,13 @@
+# Version 1.0.0-alpha50
+
+## Bugfixes
+
+* Remove FilesytemTrait use statement from FileUploadTrait to avoid PHP 5.6 PHPUnit error
+
+## Features
+
+* None
+
 # Version 1.0.0-alpha49
 
 ## Bugfixes
