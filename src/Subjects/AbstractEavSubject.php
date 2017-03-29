@@ -22,7 +22,6 @@ namespace TechDivision\Import\Subjects;
 
 use TechDivision\Import\Utils\MemberNames;
 use TechDivision\Import\Utils\RegistryKeys;
-use TechDivision\Import\Utils\FrontendInputTypes;
 
 /**
  * An abstract EAV subject implementation.

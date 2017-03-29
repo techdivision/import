@@ -33,13 +33,6 @@ trait FileUploadTrait
 {
 
     /**
-     * The trait that provides basic filesystem handling functionality.
-     *
-     * @var TechDivision\Import\Subjects\FilesystemTrait
-     */
-    use FilesystemTrait;
-
-    /**
      * The directory with the Magento media files => target directory for images (relative to the root directory).
      *
      * @var string

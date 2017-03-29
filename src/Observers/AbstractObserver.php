@@ -21,7 +21,6 @@
 namespace TechDivision\Import\Observers;
 
 use TechDivision\Import\Utils\ScopeKeys;
-use TechDivision\Import\Utils\ColumnKeys;
 use TechDivision\Import\Utils\LoggerKeys;
 use TechDivision\Import\Utils\EntityStatus;
 
