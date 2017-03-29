@@ -71,6 +71,16 @@ interface RegistryProcessorInterface
     public function removeAttribute($key);
 
     /**
+     * Raises the value for the attribute with the passed key by one.
+     *
+     * @param mixed $key         The key of the attribute to raise the value for
+     * @param mixed $counterName The name of the counter to raise
+     *
+     * @return integer The counter's new value
+     */
+    public function raiseCounter($key, $counterName);
+
+    /**
      * This method merges the passed attributes with an array that
      * has already been added under the passed key.
      *

@@ -101,6 +101,28 @@ class RegistryProcessor implements RegistryProcessorInterface
     }
 
     /**
+     * Raises the value for the attribute with the passed key by one.
+     *
+     * @param mixed $key         The key of the attribute to raise the value for
+     * @param mixed $counterName The name of the counter to raise
+     *
+     * @return integer The counter's new value
+     */
+    public function raiseCounter($key, $counterName)
+    {
+
+        // raise/initialize the value
+        if (isset($this->attributes[$key][$counterName])) {
+            $this->attributes[$key][$counterName]++;
+        } else {
+            $this->attributes[$key][$counterName] = 1;
+        }
+
+        // return the new value
+        return $this->attributes[$key][$counterName];
+    }
+
+    /**
      * This method merges the passed attributes with an array that
      * has already been added under the passed key.
      *

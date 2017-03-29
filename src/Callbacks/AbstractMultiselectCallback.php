@@ -1,7 +1,7 @@
 <?php
 
 /**
- * TechDivision\Import\Callbacks\MultiselectCallback
+ * TechDivision\Import\Callbacks\AbstractMultiselectCallback
  *
  * NOTICE OF LICENSE
  *
@@ -23,7 +23,6 @@ namespace TechDivision\Import\Callbacks;
 use TechDivision\Import\Utils\MemberNames;
 use TechDivision\Import\Utils\RegistryKeys;
 use TechDivision\Import\Utils\StoreViewCodes;
-use TechDivision\Import\Utils\FrontendInputTypes;
 
 /**
  * A callback implementation that converts the passed multiselect value.
@@ -34,7 +33,7 @@ use TechDivision\Import\Utils\FrontendInputTypes;
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
  */
-class MultiselectCallback extends AbstractCallback
+abstract class AbstractMultiselectCallback extends AbstractCallback
 {
 
     /**
@@ -84,7 +83,10 @@ class MultiselectCallback extends AbstractCallback
                     array(
                         RegistryKeys::MISSING_OPTION_VALUES => array(
                             $attributeCode => array(
-                                $val => FrontendInputTypes::MULTISELECT
+                                $val => array(
+                                    $this->raiseCounter($val),
+                                    array($this->getUniqueIdentifier() => true)
+                                )
                             )
                         )
                     )

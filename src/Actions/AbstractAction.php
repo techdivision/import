@@ -57,6 +57,35 @@ abstract class AbstractAction implements ActionInterface
     protected $updateProcessor;
 
     /**
+     * Initialize the instance with the passed processors.
+     *
+     * @param \TechDivision\Import\Actions\Processors\ProcessorInterface|null $createProcessor The create processor instance
+     * @param \TechDivision\Import\Actions\Processors\ProcessorInterface|null $updateProcessor The update processor instance
+     * @param \TechDivision\Import\Actions\Processors\ProcessorInterface|null $deleteProcessor The delete processor instance
+     */
+    public function __construct(
+        ProcessorInterface $createProcessor = null,
+        ProcessorInterface $updateProcessor = null,
+        ProcessorInterface $deleteProcessor = null
+    ) {
+
+        // query whether or not a create processor has been passed
+        if ($createProcessor instanceof ProcessorInterface) {
+            $this->setCreateProcessor($createProcessor);
+        }
+
+        // query whether or not a update processor has been passed
+        if ($updateProcessor instanceof ProcessorInterface) {
+            $this->setUpdateProcessor($updateProcessor);
+        }
+
+        // query whether or not a delete processor has been passed
+        if ($deleteProcessor instanceof ProcessorInterface) {
+            $this->setDeleteProcessor($deleteProcessor);
+        }
+    }
+
+    /**
      * Set's the create processor instance.
      *
      * @param \TechDivision\Import\Actions\Processors\ProcessorInterface $createProcessor The create processor instance to use

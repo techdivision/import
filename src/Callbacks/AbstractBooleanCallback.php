@@ -1,7 +1,7 @@
 <?php
 
 /**
- * TechDivision\Import\Callbacks\BooleanCallback
+ * TechDivision\Import\Callbacks\AbstractBooleanCallback
  *
  * NOTICE OF LICENSE
  *
@@ -21,7 +21,6 @@
 namespace TechDivision\Import\Callbacks;
 
 use TechDivision\Import\Utils\RegistryKeys;
-use TechDivision\Import\Utils\FrontendInputTypes;
 
 /**
  * A callback implementation that converts the passed boolean value.
@@ -32,7 +31,7 @@ use TechDivision\Import\Utils\FrontendInputTypes;
  * @link      https://github.com/techdivision/import-category
  * @link      http://www.techdivision.com
  */
-class BooleanCallback extends AbstractCallback
+abstract class AbstractBooleanCallback extends AbstractCallback
 {
 
     /**
@@ -84,7 +83,10 @@ class BooleanCallback extends AbstractCallback
                 array(
                     RegistryKeys::MISSING_OPTION_VALUES => array(
                         $attributeCode => array(
-                            $attributeValue => FrontendInputTypes::BOOLEAN
+                            $attributeValue => array(
+                                $this->raiseCounter($attributeValue),
+                                array($this->getUniqueIdentifier() => true)
+                            )
                         )
                     )
                 )

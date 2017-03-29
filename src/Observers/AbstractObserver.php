@@ -347,14 +347,7 @@ abstract class AbstractObserver implements ObserverInterface
      */
     protected function prepareStoreViewCode()
     {
-
-        // re-set the store view code
-        $this->setStoreViewCode(null);
-
-        // initialize the store view code
-        if ($storeViewCode = $this->getValue(ColumnKeys::STORE_VIEW_CODE)) {
-            $this->setStoreViewCode($storeViewCode);
-        }
+        $this->getSubject()->prepareStoreViewCode();
     }
 
     /**
@@ -367,14 +360,7 @@ abstract class AbstractObserver implements ObserverInterface
      */
     protected function formatDate($value)
     {
-
-        // create a DateTime instance from the passed value
-        if ($dateTime = \DateTime::createFromFormat($this->getSourceDateFormat(), $value)) {
-            return $dateTime->format('Y-m-d H:i:s');
-        }
-
-        // return NULL, if the passed value is NOT a valid date
-        return null;
+        return $this->getSubject()->formatDate($value);
     }
 
     /**
@@ -388,14 +374,7 @@ abstract class AbstractObserver implements ObserverInterface
      */
     protected function explode($value, $delimiter = null)
     {
-
-        // load the default multiple field delimiter
-        if ($delimiter === null) {
-            $delimiter = $this->getMultipleFieldDelimiter();
-        }
-
-        // explode and return the array with the values, by using the delimiter
-        return explode($delimiter, $value);
+        return $this->getSubject()->explode($value, $delimiter);
     }
 
     /**
