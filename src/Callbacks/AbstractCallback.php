@@ -138,15 +138,7 @@ abstract class AbstractCallback implements CallbackInterface
      */
     protected function raiseCounter($counterName)
     {
-
-        // load the subject instance
-        $subject = $this->getSubject();
-
-        // raise the counter with the passed name
-        return $subject->getRegistryProcessor()->raiseCounter(
-            $subject->getSerial(),
-            $counterName
-        );
+        return $this->getSubject()->raiseCounter($counterName);
     }
 
     /**
@@ -158,14 +150,29 @@ abstract class AbstractCallback implements CallbackInterface
      */
     protected function mergeAttributesRecursive(array $status)
     {
-
-        // load the subject instance
-        $subject = $this->getSubject();
-
-        // merge the passed status
-        $subject->getRegistryProcessor()->mergeAttributesRecursive(
-            $subject->getSerial(),
-            $status
-        );
+        $this->getSubject()->mergeAttributesRecursive($status);
     }
+
+    /**
+     * Resolve's the value with the passed colum name from the actual row. If a callback will
+     * be passed, the callback will be invoked with the found value as parameter. If
+     * the value is NULL or empty, the default value will be returned.
+     *
+     * @param string        $name     The name of the column to return the value for
+     * @param mixed|null    $default  The default value, that has to be returned, if the row's value is empty
+     * @param callable|null $callback The callback that has to be invoked on the value, e. g. to format it
+     *
+     * @return mixed|null The, almost formatted, value
+     */
+    protected function getValue($name, $default = null, callable $callback = null)
+    {
+        return $this->getSubject()->getValue($name, $default, $callback);
+    }
+
+    /**
+     * Return's the unique identifier of the actual row, e. g. a products SKU.
+     *
+     * @return mixed The row's unique identifier
+     */
+    abstract protected function getUniqueIdentifier();
 }

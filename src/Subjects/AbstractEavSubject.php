@@ -82,11 +82,7 @@ abstract class AbstractEavSubject extends AbstractSubject implements EavSubjectI
      *
      * @var array
      */
-    protected $defaultFrontendInputCallbackMappings = array(
-        FrontendInputTypes::SELECT      => 'TechDivision\\Import\\Callbacks\\SelectCallback',
-        FrontendInputTypes::MULTISELECT => 'TechDivision\\Import\\Callbacks\\MultiselectCallback',
-        FrontendInputTypes::BOOLEAN     => 'TechDivision\\Import\\Callbacks\\BooleanCallback'
-    );
+    protected $defaultFrontendInputCallbackMappings = array();
 
     /**
      * Return's the default callback frontend input mappings for the user defined attributes.

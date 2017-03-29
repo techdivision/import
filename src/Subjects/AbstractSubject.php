@@ -332,6 +332,124 @@ abstract class AbstractSubject implements SubjectInterface
     }
 
     /**
+     * Query whether or not a value for the column with the passed name exists.
+     *
+     * @param string $name The column name to query for a valid value
+     *
+     * @return boolean TRUE if the value is set, else FALSE
+     */
+    public function hasValue($name)
+    {
+
+        // query whether or not the header is available
+        if ($this->hasHeader($name)) {
+            // load the key for the row
+            $headerValue = $this->getHeader($name);
+
+            // query whether the rows column has a vaild value
+            return (isset($this->row[$headerValue]) && $this->row[$headerValue] != '');
+        }
+
+        // return FALSE if not
+        return false;
+    }
+
+    /**
+     * Set the value in the passed column name.
+     *
+     * @param string $name  The column name to set the value for
+     * @param mixed  $value The value to set
+     *
+     * @return void
+     */
+    public function setValue($name, $value)
+    {
+        $this->row[$this->getHeader($name)] = $value;
+    }
+
+    /**
+     * Resolve's the value with the passed colum name from the actual row. If a callback will
+     * be passed, the callback will be invoked with the found value as parameter. If
+     * the value is NULL or empty, the default value will be returned.
+     *
+     * @param string        $name     The name of the column to return the value for
+     * @param mixed|null    $default  The default value, that has to be returned, if the row's value is empty
+     * @param callable|null $callback The callback that has to be invoked on the value, e. g. to format it
+     *
+     * @return mixed|null The, almost formatted, value
+     */
+    public function getValue($name, $default = null, callable $callback = null)
+    {
+
+        // initialize the value
+        $value = null;
+
+        // query whether or not the header is available
+        if ($this->hasHeader($name)) {
+            // load the header value
+            $headerValue = $this->getHeader($name);
+            // query wheter or not, the value with the requested key is available
+            if ((isset($this->row[$headerValue]) && $this->row[$headerValue] != '')) {
+                $value = $this->row[$headerValue];
+            }
+        }
+
+        // query whether or not, a callback has been passed
+        if ($value != null && is_callable($callback)) {
+            $value = call_user_func($callback, $value);
+        }
+
+        // query whether or not
+        if ($value == null && $default !== null) {
+            $value = $default;
+        }
+
+        // return the value
+        return $value;
+    }
+
+    /**
+     * Tries to format the passed value to a valid date with format 'Y-m-d H:i:s'.
+     * If the passed value is NOT a valid date, NULL will be returned.
+     *
+     * @param string|null $value The value to format
+     *
+     * @return string The formatted date
+     */
+    public function formatDate($value)
+    {
+
+        // create a DateTime instance from the passed value
+        if ($dateTime = \DateTime::createFromFormat($this->getSourceDateFormat(), $value)) {
+            return $dateTime->format('Y-m-d H:i:s');
+        }
+
+        // return NULL, if the passed value is NOT a valid date
+        return null;
+    }
+
+    /**
+     * Extracts the elements of the passed value by exploding them
+     * with the also passed delimiter.
+     *
+     * @param string      $value     The value to extract
+     * @param string|null $delimiter The delimiter used to extrace the elements
+     *
+     * @return array The exploded values
+     */
+    public function explode($value, $delimiter = null)
+    {
+
+        // load the default multiple field delimiter
+        if ($delimiter === null) {
+            $delimiter = $this->getMultipleFieldDelimiter();
+        }
+
+        // explode and return the array with the values, by using the delimiter
+        return explode($delimiter, $value);
+    }
+
+    /**
      * Queries whether or not debug mode is enabled or not, default is TRUE.
      *
      * @return boolean TRUE if debug mode is enabled, else FALSE
@@ -922,6 +1040,23 @@ abstract class AbstractSubject implements SubjectInterface
     }
 
     /**
+     * Prepare's the store view code in the subject.
+     *
+     * @return void
+     */
+    public function prepareStoreViewCode()
+    {
+
+        // re-set the store view code
+        $this->setStoreViewCode(null);
+
+        // initialize the store view code
+        if ($storeViewCode = $this->getValue(ColumnKeys::STORE_VIEW_CODE)) {
+            $this->setStoreViewCode($storeViewCode);
+        }
+    }
+
+    /**
      * Return's the root category for the actual view store.
      *
      * @return array The store's root category
@@ -1177,5 +1312,39 @@ abstract class AbstractSubject implements SubjectInterface
 
         // concatenate the message with the suffix and return it
         return sprintf('%s in file %s on line %d', $message, $filename, $lineNumber);
+    }
+
+    /**
+     * Raises the value for the counter with the passed key by one.
+     *
+     * @param mixed $counterName The name of the counter to raise
+     *
+     * @return integer The counter's new value
+     */
+    public function raiseCounter($counterName)
+    {
+
+        // raise the counter with the passed name
+        return $this->getRegistryProcessor()->raiseCounter(
+            $this->getSerial(),
+            $counterName
+        );
+    }
+
+    /**
+     * Merge the passed array into the status of the actual import.
+     *
+     * @param array $status The status information to be merged
+     *
+     * @return void
+     */
+    public function mergeAttributesRecursive(array $status)
+    {
+
+        // merge the passed status
+        $this->getRegistryProcessor()->mergeAttributesRecursive(
+            $this->getSerial(),
+            $status
+        );
     }
 }

@@ -1,7 +1,7 @@
 <?php
 
 /**
- * TechDivision\Import\Callbacks\MultiselectCallback
+ * TechDivision\Import\Callbacks\SelectCallback
  *
  * NOTICE OF LICENSE
  *
@@ -25,7 +25,7 @@ use TechDivision\Import\Utils\RegistryKeys;
 use TechDivision\Import\Utils\StoreViewCodes;
 
 /**
- * A callback implementation that converts the passed multiselect value.
+ * A callback implementation that converts the passed select value.
  *
  * @author    Tim Wagner <t.wagner@techdivision.com>
  * @copyright 2016 TechDivision GmbH <info@techdivision.com>
@@ -33,7 +33,7 @@ use TechDivision\Import\Utils\StoreViewCodes;
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
  */
-class MultiselectCallback extends AbstractCallback
+abstract class AbstractSelectCallback extends AbstractCallback
 {
 
     /**
@@ -48,70 +48,56 @@ class MultiselectCallback extends AbstractCallback
     public function handle($attributeCode, $attributeValue)
     {
 
-        // explode the multiselect values
-        $vals = explode('|', $attributeValue);
+        // load the store ID
+        $storeId = $this->getRowStoreId(StoreViewCodes::ADMIN);
 
-        // initialize the array for the mapped values
-        $mappedValues = array();
+        // try to load the attribute option value and return the option ID
+        if ($eavAttributeOptionValue = $this->getEavAttributeOptionValueByOptionValueAndStoreId($attributeValue, $storeId)) {
+            return $eavAttributeOptionValue[MemberNames::OPTION_ID];
+        }
 
-        // convert the option values into option value ID's
-        foreach ($vals as $val) {
-            // load the ID of the actual store
-            $storeId = $this->getRowStoreId(StoreViewCodes::ADMIN);
-
-            // try to load the attribute option value and add the option ID
-            if ($eavAttributeOptionValue = $this->getEavAttributeOptionValueByOptionValueAndStoreId($val, $storeId)) {
-                $mappedValues[] = $eavAttributeOptionValue[MemberNames::OPTION_ID];
-                continue;
-            }
-
-            // query whether or not we're in debug mode
-            if ($this->isDebugMode()) {
-                // log a warning and continue with the next value
-                $this->getSystemLogger()->warning(
-                    $this->appendExceptionSuffix(
-                        sprintf(
-                            'Can\'t find multiselect option value "%s" for attribute %s',
-                            $val,
-                            $attributeCode
-                        )
-                    )
-                );
-
-                // add the missing option value to the registry
-                $this->mergeAttributesRecursive(
-                    array(
-                        RegistryKeys::MISSING_OPTION_VALUES => array(
-                            $attributeCode => array(
-                                $val => $this->raiseCounter($val)
-                            )
-                        )
-                    )
-                );
-
-                // continue with the next option value
-                continue;
-            }
-
-            // throw an exception if the attribute is not available
-            throw new \Exception(
+        // query whether or not we're in debug mode
+        if ($this->isDebugMode()) {
+            // log a warning and return immediately
+            $this->getSystemLogger()->warning(
                 $this->appendExceptionSuffix(
                     sprintf(
-                        'Can\'t find multiselect option value "%s" for attribute %s',
-                        $val,
+                        'Can\'t find select option value "%s" for attribute %s',
+                        $attributeValue,
                         $attributeCode
                     )
                 )
             );
-        }
 
-        // return NULL, if NO value can be mapped to an option
-        if (sizeof($mappedValues) === 0) {
+            // add the missing option value to the registry
+            $this->mergeAttributesRecursive(
+                array(
+                    RegistryKeys::MISSING_OPTION_VALUES => array(
+                        $attributeCode => array(
+                            $attributeValue => array(
+                                $this->raiseCounter($attributeValue),
+                                array($this->getUniqueIdentifier() => true)
+                            )
+                        )
+                    )
+                )
+            );
+
+            // return NULL, if the value can't be mapped to an option
             return;
         }
 
-        // re-concatenate and return the values
-        return implode(',', $mappedValues);
+        // throw an exception if the attribute is NOT
+        // available and we're not in debug mode
+        throw new \Exception(
+            $this->appendExceptionSuffix(
+                sprintf(
+                    'Can\'t find select option value "%s" for attribute %s',
+                    $attributeValue,
+                    $attributeCode
+                )
+            )
+        );
     }
 
     /**

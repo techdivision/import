@@ -1,7 +1,7 @@
 <?php
 
 /**
- * TechDivision\Import\Callbacks\BooleanCallback
+ * TechDivision\Import\Callbacks\AbstractBooleanCallback
  *
  * NOTICE OF LICENSE
  *
@@ -31,7 +31,7 @@ use TechDivision\Import\Utils\RegistryKeys;
  * @link      https://github.com/techdivision/import-category
  * @link      http://www.techdivision.com
  */
-class BooleanCallback extends AbstractCallback
+abstract class AbstractBooleanCallback extends AbstractCallback
 {
 
     /**
@@ -83,7 +83,10 @@ class BooleanCallback extends AbstractCallback
                 array(
                     RegistryKeys::MISSING_OPTION_VALUES => array(
                         $attributeCode => array(
-                            $attributeValue => $this->raiseCounter($attributeValue)
+                            $attributeValue => array(
+                                $this->raiseCounter($attributeValue),
+                                array($this->getUniqueIdentifier() => true)
+                            )
                         )
                     )
                 )

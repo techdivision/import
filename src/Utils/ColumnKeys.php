@@ -139,4 +139,11 @@ class ColumnKeys
      * @var string
      */
     const COUNTER = 'counter';
+
+    /**
+     * Name for the column 'uniqueIdentifier'.
+     *
+     * @var string
+     */
+    const UNIQUE_IDENTIFIER = 'uniqueIdentifier';
 }

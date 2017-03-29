@@ -6,6 +6,7 @@
 
 ## Features
 
+* Make select, multiselect + boolean callbacks abstract
 * Refactoring for DI integration
 
 # Version 1.0.0-alpha48

@@ -86,14 +86,16 @@ class MissingOptionValuesPlugin extends AbstractPlugin
                 ColumnKeys::ATTRIBUTE_CODE,
                 ColumnKeys::VALUE,
                 ColumnKeys::COUNTER,
+                ColumnKeys::UNIQUE_IDENTIFIER,
                 ColumnKeys::SORT_ORDER
             )
         );
 
         // append the missing option values to the array
         foreach ($missingOptions as $attributeCode => $options) {
-            foreach ($options as $value => $counter) {
-                $toBeCreated[] = array(null, $attributeCode, $value, $counter, null);
+            foreach ($options as $value => $data) {
+                list($counter, $skus) = $data;
+                $toBeCreated[] = array(null, $attributeCode, $value, $counter, implode(',', array_keys($skus)), null);
             }
         }
 
