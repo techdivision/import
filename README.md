@@ -64,7 +64,7 @@ using PHP 5.6 + MySQL 5.6.34 we actually achive these results
 Beside Performance, the Memory Usage will also be a topic in some cases. As well as the Performance
 topic, Memory Usage will be relevant in projects with more than 100.000 products.
 
-When importing the sample data, as described under [Performance](#performance--memory-comparison), M2IF has a memory peak of 38.1 MB
+When importing the sample data, as described under [Performance](#performance-memory-comparison), M2IF has a memory peak of 38.1 MB
 in contrast to Magento 2 standard import with 149.4 MB. For M2IF, it doesn't matter how big the CSV will be.
 
 > As already mentioned, please keep in mind, this comparison lacks of some functionality the Magento 2 standard 
@@ -113,6 +113,47 @@ Planned with future versions, are importer types for
 
 And finally the project will provide exporting functionality, but that has to be discussed.
 
+## Related Libraries
+
+As this is the main library that provides Magento 2 import core functionality, the specific
+functionality to import products, category etc. is part of additional libraries.
+
+### Applications
+
+Applications are importer implementations that uses the M2IF to make the import functionality
+available, e. g. on commanline.
+
+* [import-cli-simple](https://github.com/techdivision/import-cli-simple) - A simple console implementation that uses M2IF to provide Magento 2 CE/EE import functionality
+
+### Core Libraries CE
+
+These are the M2IF core libraries for the Magento 2 Communit Edition (CE).
+
+* [import-product](https://github.com/techdivision/import-product) - Provides product import functionality
+* [import-product-bundle](https://github.com/techdivision/import-product-bundle) - Provides bundle product import functionality
+* [import-product-link](https://github.com/techdivision/import-product-link) - Provides product relation import functionality
+* [import-product-media](https://github.com/techdivision/import-product-media) - Provides product image import functionality
+* [import-product-variant](https://github.com/techdivision/import-product-variant) - Provides configurable product import functionality
+* [import-category](https://github.com/techdivision/import-category) - Provides category import functionality
+
+### Core Libraries EE
+
+These are the M2IF core libraries for the Magento 2 Communit Edition (EE).
+
+* [import-ee](https://github.com/techdivision/import-ee) - Provides core import functionality for Magento 2 EE
+* [import-product-ee](https://github.com/techdivision/import-product-ee) - Provides product import functionality for Magento 2 EE
+* [import-product-bundle-ee](https://github.com/techdivision/import-product-bundle-ee) - Provides bundle product import functionality for Magento 2 EE
+* [import-product-link-ee](https://github.com/techdivision/import-product-link-ee) - Provides product import relation functionality for Magento 2 EE
+* [import-product-media-ee](https://github.com/techdivision/import-product-media-ee) - Provides product import image functionality for Magento 2 EE
+* [import-product-variant-ee](https://github.com/techdivision/import-product-variant-ee) - Provides configurable product import functionality for Magento 2 EE
+* [import-category-ee](https://github.com/techdivision/import-category-ee) - Provides category import functionality for Magento 2 EE
+
+### Libraries for 3rd Party Extensions CE/EE
+
+Finally we plan to support as many 3rd party extensions as possible.
+
+* [import-product-magic360](https://github.com/techdivision/import-cli-simple) - Provides import functionality for the [Magictoolbox Magic360 Extension](https://www.magictoolbox.com/magic360/)
+
 ## Basic Workflow
 
 The importer has a component based architecture and provides a plug-in mechanism to add new functionality.
@@ -136,6 +177,11 @@ The standard plugins are part of the M2IF core and can be used out-of-the box.
 
 ### Global Data
 
+Load's the global data, necessary for the import process from the database and add's it to the registry,
+so that every plugin can access it.
+
+The configuration has to be like
+
 ```json
 {
   "class-name": "TechDivision\\Import\\Plugins\\GlobalsPlugin"
@@ -143,14 +189,21 @@ The standard plugins are part of the M2IF core and can be used out-of-the box.
 
 ### Subject
 
+This the plugin that does the main work by invoking the subjects as well as their registered observers and
+callbacks.
+
+The plugin configuration is
+
 ```json
 {
   "class-name": "TechDivision\\Import\\Plugins\\SubjectPlugin",
   "subjects": [ ... ]
 }
-``
+```
 
 ### Archive
+
+The archive plugin zip's the import artefacts and moves them to the configured archive folder.
 
 ```json
 {
