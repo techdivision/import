@@ -22,6 +22,8 @@ namespace TechDivision\Import\Plugins;
 
 use TechDivision\Import\Utils\BunchKeys;
 use TechDivision\Import\Utils\RegistryKeys;
+use TechDivision\Import\Exceptions\LineNotFoundException;
+use TechDivision\Import\Exceptions\MissingOkFileException;
 use TechDivision\Import\Subjects\ExportableSubjectInterface;
 use TechDivision\Import\Configuration\SubjectConfigurationInterface;
 use TechDivision\Import\Utils\Generators\CoreConfigDataUidGenerator;
@@ -333,8 +335,10 @@ class SubjectPlugin extends AbstractPlugin
     {
 
         try {
-            // load the expected OK filenames
-            $okFilenames = $this->getOkFilenames();
+            // try to load the expected OK filenames
+            if (sizeof($okFilenames = $this->getOkFilenames()) === 0) {
+                throw new MissingOkFileException(sprintf('Can\'t find a OK filename for file %s', $filename));
+            }
 
             // iterate over the found OK filenames (should usually be only one, but could be more)
             foreach ($okFilenames as $okFilename) {
@@ -345,7 +349,15 @@ class SubjectPlugin extends AbstractPlugin
                 }
 
                 // else, remove the CSV filename from the OK file
-                $this->removeLineFromFile(basename($filename), $okFilename);
+                $this->removeLineFromFile(basename($filename), $fh = fopen($okFilename, 'r+'));
+                fclose($fh);
+
+                // if the OK file is empty, delete the file
+                if (filesize($okFilename) === 0) {
+                    unlink($okFilename);
+                }
+
+                // return immediately
                 return;
             }
 
@@ -359,7 +371,7 @@ class SubjectPlugin extends AbstractPlugin
                 )
             );
 
-        } catch (\Exception $e) {
+        } catch (LineNotFoundException $lne) {
             // wrap and re-throw the exception
             throw new \Exception(
                 sprintf(
@@ -368,7 +380,7 @@ class SubjectPlugin extends AbstractPlugin
                     $okFilename
                 ),
                 null,
-                $e
+                $lne
             );
         }
     }

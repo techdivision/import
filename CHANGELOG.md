@@ -1,3 +1,14 @@
+# Version 1.0.0-alpha51
+
+## Bugfixes
+
+* Fixed invalid OK file handling
+* Moved generic exceptions from techdivision/import-cli-simple to this library
+
+## Features
+
+* None
+
 # Version 1.0.0-alpha50
 
 ## Bugfixes
