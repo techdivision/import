@@ -22,6 +22,8 @@ namespace TechDivision\Import\Plugins;
 
 use TechDivision\Import\Utils\BunchKeys;
 use TechDivision\Import\Utils\RegistryKeys;
+use TechDivision\Import\Callbacks\CallbackVisitor;
+use TechDivision\Import\Observers\ObserverVisitor;
 use TechDivision\Import\Exceptions\LineNotFoundException;
 use TechDivision\Import\Exceptions\MissingOkFileException;
 use TechDivision\Import\Subjects\ExportableSubjectInterface;
@@ -53,6 +55,49 @@ class SubjectPlugin extends AbstractPlugin
      * @var integer
      */
     protected $bunches = 0;
+
+    /**
+     * The callback visitor instance.
+     *
+     * @var \TechDivision\Import\Callbacks\CallbackVisitor
+     */
+    protected $callbackVisitor;
+
+    /**
+     * The observer visitor instance.
+     *
+     * @var \TechDivision\Import\Observers\ObserverVisitor
+     */
+    protected $observerVisitor;
+
+    /**
+     * Initialize the subject instance.
+     *
+     * @param string                                                           $serial                     The serial of the actual import
+     * @param \TechDivision\Import\Configuration\SubjectConfigurationInterface $configuration              The subject configuration instance
+     * @param \TechDivision\Import\Services\RegistryProcessorInterface         $registryProcessor          The registry processor instance
+     * @param \TechDivision\Import\Utils\Generators\GeneratorInterface         $coreConfigDataUidGenerator The UID generator for the core config data
+     * @param \TechDivision\Import\Callbacks\CallbackVisitor                   $callbackVisitor            The callback visitor instance
+     * @param \TechDivision\Import\Observers\ObserverVisitor                   $observerVisitor            The observer visitor instance
+     * @param array                                                            $systemLoggers              The array with the system loggers instances
+     */
+    public function __construct(
+        $serial,
+        SubjectConfigurationInterface $configuration,
+        RegistryProcessorInterface $registryProcessor,
+        GeneratorInterface $coreConfigDataUidGenerator,
+        CallbackVisitor $callbackVisitor,
+        ObserverVisitor $observerVisitor,
+        array $systemLoggers
+    ) {
+
+        // invoke the parent constructor
+        parent::__construct($serial, $configuration, $registryProcessor, $coreConfigDataUidGenerator, $systemLoggers);
+
+        // initialize the callback/observer visitors
+        $this->callbackVisitor = $callbackVisitor;
+        $this->observerVisitor = $observerVisitor;
+    }
 
     /**
      * Process the plugin functionality.
@@ -163,28 +208,50 @@ class SubjectPlugin extends AbstractPlugin
         foreach ($files as $pathname) {
             // query whether or not that the file is part of the actual bunch
             if ($this->isPartOfBunch($subject->getPrefix(), $pathname)) {
-                // initialize the subject and import the bunch
-                $subjectInstance = $this->subjectFactory($subject);
+                try {
+                    // initialize the subject and import the bunch
+                    $subjectInstance = $this->subjectFactory($subject);
 
-                // query whether or not the subject needs an OK file,
-                // if yes remove the filename from the file
-                if ($subjectInstance->isOkFileNeeded()) {
-                    $this->removeFromOkFile($pathname);
+                    // setup the subject instance
+                    $subjectInstance->setUp();
+
+                    // initialize the callbacks/observers
+                    $this->callbackVisitor->visit($subjectInstance);
+                    $this->observerVisitor->visit($subjectInstance);
+
+                    // query whether or not the subject needs an OK file,
+                    // if yes remove the filename from the file
+                    if ($subjectInstance->isOkFileNeeded()) {
+                        $this->removeFromOkFile($pathname);
+                    }
+
+                    // finally import the CSV file
+                    $subjectInstance->import($pathname);
+
+                    // query whether or not, we've to export artefacts
+                    if ($subjectInstance instanceof ExportableSubjectInterface) {
+                        $subjectInstance->export(
+                            $this->matches[BunchKeys::FILENAME],
+                            $this->matches[BunchKeys::COUNTER]
+                        );
+                    }
+
+                    // raise the number of the imported bunches
+                    $bunches++;
+
+                    // tear down the subject instance
+                    $subjectInstance->tearDown();
+
+                } catch (\Exception $e) {
+                    // query whether or not, we've to export artefacts
+                    if ($subjectInstance instanceof ExportableSubjectInterface) {
+                        // tear down the subject instance
+                        $subjectInstance->tearDown();
+                    }
+
+                    // re-throw the exception
+                    throw $e;
                 }
-
-                // finally import the CSV file
-                $subjectInstance->import($serial, $pathname);
-
-                // query whether or not, we've to export artefacts
-                if ($subjectInstance instanceof ExportableSubjectInterface) {
-                    $subjectInstance->export(
-                        $this->matches[BunchKeys::FILENAME],
-                        $this->matches[BunchKeys::COUNTER]
-                    );
-                }
-
-                // raise the number of the imported bunches
-                $bunches++;
             }
         }
 
@@ -215,6 +282,7 @@ class SubjectPlugin extends AbstractPlugin
 
         // initialize the instances
         $processor = null;
+        $serial = $this->getSerial();
         $systemLoggers = $this->getSystemLoggers();
         $registryProcessor = $this->getRegistryProcessor();
         $coreConfigDataUidGenerator = new CoreConfigDataUidGenerator();
@@ -229,6 +297,7 @@ class SubjectPlugin extends AbstractPlugin
 
         // initialize a new handler with the passed class name
         return new $className(
+            $serial,
             $subjectConfiguration,
             $registryProcessor,
             $coreConfigDataUidGenerator,

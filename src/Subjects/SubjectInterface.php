@@ -111,12 +111,11 @@ interface SubjectInterface
     /**
      * Imports the content of the file with the passed filename.
      *
-     * @param string $serial   The unique process serial
      * @param string $filename The filename to process
      *
      * @return void
      */
-    public function import($serial, $filename);
+    public function import($filename);
 
     /**
      * Queries whether or not that the subject needs an OK file to be processed.

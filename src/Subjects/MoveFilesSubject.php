@@ -65,13 +65,12 @@ class MoveFilesSubject extends AbstractSubject
     /**
      * Imports the content of the file with the passed filename.
      *
-     * @param string $serial   The unique process serial
      * @param string $filename The filename to process
      *
      * @return void
      * @throws \Exception Is thrown, if the import can't be processed
      */
-    public function import($serial, $filename)
+    public function import($filename)
     {
 
         // only process the file, if the filename match
@@ -79,8 +78,7 @@ class MoveFilesSubject extends AbstractSubject
             // initialize the global global data to import a bunch
             $this->setUp();
 
-            // initialize serial and filename
-            $this->setSerial($serial);
+            // initialize the filename
             $this->setFilename($filename);
 
             // query whether the new source directory has to be created or not

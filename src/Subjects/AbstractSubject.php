@@ -31,9 +31,7 @@ use TechDivision\Import\Utils\MemberNames;
 use TechDivision\Import\Utils\RegistryKeys;
 use TechDivision\Import\Utils\Generators\GeneratorInterface;
 use TechDivision\Import\Services\RegistryProcessor;
-use TechDivision\Import\Callbacks\CallbackVisitor;
 use TechDivision\Import\Callbacks\CallbackInterface;
-use TechDivision\Import\Observers\ObserverVisitor;
 use TechDivision\Import\Observers\ObserverInterface;
 use TechDivision\Import\Services\RegistryProcessorInterface;
 use TechDivision\Import\Configuration\SubjectConfigurationInterface;
@@ -193,17 +191,20 @@ abstract class AbstractSubject implements SubjectInterface
     /**
      * Initialize the subject instance.
      *
+     * @param string                                                           $serial                     The serial of the actual import
      * @param \TechDivision\Import\Configuration\SubjectConfigurationInterface $configuration              The subject configuration instance
      * @param \TechDivision\Import\Services\RegistryProcessorInterface         $registryProcessor          The registry processor instance
      * @param \TechDivision\Import\Utils\Generators\GeneratorInterface         $coreConfigDataUidGenerator The UID generator for the core config data
      * @param array                                                            $systemLoggers              The array with the system loggers instances
      */
     public function __construct(
+        $serial,
         SubjectConfigurationInterface $configuration,
         RegistryProcessorInterface $registryProcessor,
         GeneratorInterface $coreConfigDataUidGenerator,
         array $systemLoggers
     ) {
+        $this->serial = $serial;
         $this->configuration = $configuration;
         $this->registryProcessor = $registryProcessor;
         $this->coreConfigDataUidGenerator = $coreConfigDataUidGenerator;
@@ -622,10 +623,6 @@ abstract class AbstractSubject implements SubjectInterface
                 $this->callbackMappings[$attributeCode] = $mappings;
             }
         }
-
-        // initialize the callbacks/observers
-        CallbackVisitor::get()->visit($this);
-        ObserverVisitor::get()->visit($this);
     }
 
     /**
@@ -759,13 +756,12 @@ abstract class AbstractSubject implements SubjectInterface
     /**
      * Imports the content of the file with the passed filename.
      *
-     * @param string $serial   The unique process serial
      * @param string $filename The filename to process
      *
      * @return void
      * @throws \Exception Is thrown, if the import can't be processed
      */
-    public function import($serial, $filename)
+    public function import($filename)
     {
 
         try {
@@ -798,15 +794,11 @@ abstract class AbstractSubject implements SubjectInterface
             // track the start time
             $startTime = microtime(true);
 
-            // initialize serial and filename
-            $this->setSerial($serial);
+            // initialize the filename
             $this->setFilename($filename);
 
             // load the system logger
             $systemLogger = $this->getSystemLogger();
-
-            // initialize the global global data to import a bunch
-            $this->setUp();
 
             // initialize the lexer instance itself
             $lexer = new Lexer($this->getLexerConfig());
@@ -829,9 +821,6 @@ abstract class AbstractSubject implements SubjectInterface
             // track the time needed for the import in seconds
             $endTime = microtime(true) - $startTime;
 
-            // clean up the data after importing the bunch
-            $this->tearDown();
-
             // log a message that the file has successfully been imported
             $systemLogger->debug(sprintf('Successfully imported file %s in %f s', $filename, $endTime));
 
@@ -842,9 +831,6 @@ abstract class AbstractSubject implements SubjectInterface
             // rename the flag file, because import failed and write the stack trace
             rename($inProgressFilename, $failedFilename);
             file_put_contents($failedFilename, $e->__toString());
-
-            // clean up the data after importing the bunch
-            $this->tearDown();
 
             // re-throw the exception
             throw $e;
