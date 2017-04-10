@@ -114,13 +114,6 @@ interface ConfigurationInterface
     public function getTargetDir();
 
     /**
-     * Return's the utility class with the SQL statements to use.
-     *
-     * @return string The utility class name
-     */
-    public function getUtilityClassName();
-
-    /**
      * Return's the Magento edition, EE or CE.
      *
      * @return string The Magento edition

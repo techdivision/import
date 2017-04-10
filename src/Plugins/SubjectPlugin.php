@@ -260,7 +260,7 @@ class SubjectPlugin extends AbstractPlugin
 
         // and and log a message that the subject has been processed
         $this->getSystemLogger()->debug(
-            sprintf('Successfully processed subject %s with %d bunch(es)!', $subject->getClassName(), $bunches)
+            sprintf('Successfully processed subject %s with %d bunch(es)!', $subject->getId(), $bunches)
         );
     }
 
@@ -273,8 +273,8 @@ class SubjectPlugin extends AbstractPlugin
      */
     protected function subjectFactory(SubjectConfigurationInterface $subjectConfiguration)
     {
-        $this->getApplication()->getContainer()->set(sprintf('configuration.%s', $subjectConfiguration->getClassName()), $subjectConfiguration);
-        return $this->getApplication()->getContainer()->get($subjectConfiguration->getClassName());
+        $this->getApplication()->getContainer()->set(sprintf('configuration.%s', $id = $subjectConfiguration->getId()), $subjectConfiguration);
+        return $this->getApplication()->getContainer()->get($id);
     }
 
     /**

@@ -251,30 +251,6 @@ abstract class AbstractPlugin implements PluginInterface
     }
 
     /**
-     * Return's the configured processor instance.
-     *
-     * @return object The processor instance
-     * @throws \Exception Is thrown, if no processor factory has been configured
-     */
-    protected function getProcessor()
-    {
-
-        // load the plugin configuration
-        $pluginConfiguration = $this->getPluginConfiguration();
-
-        // instanciate and set the processor processor, if specified
-        if ($processorFactory = $pluginConfiguration->getProcessorFactory()) {
-            return $processorFactory::factory(
-                $this->getImportProcessor()->getConnection(),
-                $pluginConfiguration
-            );
-        }
-
-        // throw an exception if no processor factory has been configured
-        throw new \Exception(sprintf('No processor factory has been specified for plugin %s', get_class($this)));
-    }
-
-    /**
      * Return's the configured swift mailer instance.
      *
      * @return \Swift_Mailer|null The mailer instance
