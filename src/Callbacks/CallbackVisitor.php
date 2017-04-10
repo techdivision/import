@@ -21,6 +21,7 @@
 namespace TechDivision\Import\Callbacks;
 
 use TechDivision\Import\Subjects\SubjectInterface;
+use Symfony\Component\DependencyInjection\TaggedContainerInterface;
 
 /**
  * Visitor implementation for a subject's callbacks.
@@ -35,13 +36,20 @@ class CallbackVisitor
 {
 
     /**
-     * Return's a new visitor instance.
+     * The DI container builder instance.
      *
-     * @return \TechDivision\Import\Cli\Callbacks\CallbackVisitor The visitor instance
+     * @var \Symfony\Component\DependencyInjection\TaggedContainerInterface
      */
-    public static function get()
+    protected $container;
+
+    /**
+     * The constructor to initialize the instance.
+     *
+     * @param \Symfony\Component\DependencyInjection\TaggedContainerInterface The container instance
+     */
+    public function __construct(TaggedContainerInterface $container)
     {
-        return new CallbackVisitor();
+        $this->container = $container;
     }
 
     /**
@@ -82,22 +90,10 @@ class CallbackVisitor
             if (is_array($callback)) {
                 $this->prepareCallbacks($subject, $callback, $type);
             } else {
-                $callbackInstance = $this->callbackFactory($subject, $callback);
+                $callbackInstance = $this->container->get($callback);
+                $callbackInstance->setSubject($subject);
                 $subject->registerCallback($callbackInstance, $type);
             }
         }
-    }
-
-    /**
-     * Initialize and return a new callback of the passed type.
-     *
-     * @param \TechDivision\Import\Subjects\SubjectInterface $subject   The subject to create the observer for
-     * @param string                                         $className The type of the callback to instanciate
-     *
-     * @return \TechDivision\Import\Callbacks\CallbackInterface The callback instance
-     */
-    public function callbackFactory(SubjectInterface $subject, $className)
-    {
-        return new $className($subject);
     }
 }

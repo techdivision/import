@@ -38,16 +38,18 @@ interface SubjectInterface
     /**
      * Intializes the previously loaded global data for exactly one bunch.
      *
+     * @param string $serial The serial of the actual import
+     *
      * @return void
      */
-    public function setUp();
+    public function setUp($serial);
 
     /**
      * Clean up the global data after importing the variants.
      *
      * @return void
      */
-    public function tearDown();
+    public function tearDown($serial);
 
     /**
      * Return's the system configuration.
@@ -111,11 +113,13 @@ interface SubjectInterface
     /**
      * Imports the content of the file with the passed filename.
      *
+     *
+     * @param string $serial   The serial of the actual import
      * @param string $filename The filename to process
      *
      * @return void
      */
-    public function import($filename);
+    public function import($serial, $filename);
 
     /**
      * Queries whether or not that the subject needs an OK file to be processed.

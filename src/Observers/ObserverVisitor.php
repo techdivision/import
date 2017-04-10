@@ -21,6 +21,7 @@
 namespace TechDivision\Import\Observers;
 
 use TechDivision\Import\Subjects\SubjectInterface;
+use Symfony\Component\DependencyInjection\TaggedContainerInterface;
 
 /**
  * Visitor implementation for a subject's observers.
@@ -35,13 +36,20 @@ class ObserverVisitor
 {
 
     /**
-     * Return's a new visitor instance.
+     * The DI container builder instance.
      *
-     * @return \TechDivision\Import\Cli\Observers\ObserverVisitor The visitor instance
+     * @var \Symfony\Component\DependencyInjection\TaggedContainerInterface
      */
-    public static function get()
+    protected $container;
+
+    /**
+     * The constructor to initialize the instance.
+     *
+     * @param \Symfony\Component\DependencyInjection\TaggedContainerInterface The container instance
+     */
+    public function __construct(TaggedContainerInterface $container)
     {
-        return new ObserverVisitor();
+        $this->container = $container;
     }
 
     /**
@@ -82,22 +90,10 @@ class ObserverVisitor
             if (is_array($observer)) {
                 $this->prepareObservers($subject, $observer, $type);
             } else {
-                $observerInstance = $this->observerFactory($subject, $observer);
+                $observerInstance = $this->container->get($observer);
+                $observerInstance->setSubject($subject);
                 $subject->registerObserver($observerInstance, $type);
             }
         }
-    }
-
-    /**
-     * Initialize and return a new observer of the passed type.
-     *
-     * @param \TechDivision\Import\Subjects\SubjectInterface $subject   The subject to create the observer for
-     * @param string                                         $className The type of the observer to instanciate
-     *
-     * @return \TechDivision\Import\Observers\ObserverInterface The observer instance
-     */
-    protected function observerFactory(SubjectInterface $subject, $className)
-    {
-        return new $className($subject);
     }
 }

@@ -29,6 +29,8 @@ use TechDivision\Import\Exceptions\MissingOkFileException;
 use TechDivision\Import\Subjects\ExportableSubjectInterface;
 use TechDivision\Import\Configuration\SubjectConfigurationInterface;
 use TechDivision\Import\Utils\Generators\CoreConfigDataUidGenerator;
+use TechDivision\Import\ApplicationInterface;
+use TechDivision\Import\Configuration\PluginConfigurationInterface;
 
 /**
  * Plugin that processes the subjects.
@@ -71,33 +73,28 @@ class SubjectPlugin extends AbstractPlugin
     protected $observerVisitor;
 
     /**
-     * Initialize the subject instance.
+     * Initializes the plugin with the application instance.
      *
-     * @param string                                                           $serial                     The serial of the actual import
-     * @param \TechDivision\Import\Configuration\SubjectConfigurationInterface $configuration              The subject configuration instance
-     * @param \TechDivision\Import\Services\RegistryProcessorInterface         $registryProcessor          The registry processor instance
-     * @param \TechDivision\Import\Utils\Generators\GeneratorInterface         $coreConfigDataUidGenerator The UID generator for the core config data
-     * @param \TechDivision\Import\Callbacks\CallbackVisitor                   $callbackVisitor            The callback visitor instance
-     * @param \TechDivision\Import\Observers\ObserverVisitor                   $observerVisitor            The observer visitor instance
-     * @param array                                                            $systemLoggers              The array with the system loggers instances
+     * @param \TechDivision\Import\ApplicationInterface                       $application         The application instance
+     * @param \TechDivision\Import\Configuration\PluginConfigurationInterface $pluginConfiguration The plugin configuration instance
+     * @param \TechDivision\Import\Callbacks\CallbackVisitor                  $callbackVisitor     The callback visitor instance
+     * @param \TechDivision\Import\Observers\ObserverVisitor                  $observerVisitor     The observer visitor instance
      */
     public function __construct(
-        $serial,
-        SubjectConfigurationInterface $configuration,
-        RegistryProcessorInterface $registryProcessor,
-        GeneratorInterface $coreConfigDataUidGenerator,
+        ApplicationInterface $application,
+        PluginConfigurationInterface $pluginConfiguration,
         CallbackVisitor $callbackVisitor,
-        ObserverVisitor $observerVisitor,
-        array $systemLoggers
+        ObserverVisitor $observerVisitor
     ) {
 
-        // invoke the parent constructor
-        parent::__construct($serial, $configuration, $registryProcessor, $coreConfigDataUidGenerator, $systemLoggers);
+        // call the parent constructor
+        parent::__construct($application, $pluginConfiguration);
 
         // initialize the callback/observer visitors
         $this->callbackVisitor = $callbackVisitor;
         $this->observerVisitor = $observerVisitor;
     }
+
 
     /**
      * Process the plugin functionality.
@@ -213,7 +210,7 @@ class SubjectPlugin extends AbstractPlugin
                     $subjectInstance = $this->subjectFactory($subject);
 
                     // setup the subject instance
-                    $subjectInstance->setUp();
+                    $subjectInstance->setUp($serial);
 
                     // initialize the callbacks/observers
                     $this->callbackVisitor->visit($subjectInstance);
@@ -226,7 +223,7 @@ class SubjectPlugin extends AbstractPlugin
                     }
 
                     // finally import the CSV file
-                    $subjectInstance->import($pathname);
+                    $subjectInstance->import($serial, $pathname);
 
                     // query whether or not, we've to export artefacts
                     if ($subjectInstance instanceof ExportableSubjectInterface) {
@@ -240,13 +237,13 @@ class SubjectPlugin extends AbstractPlugin
                     $bunches++;
 
                     // tear down the subject instance
-                    $subjectInstance->tearDown();
+                    $subjectInstance->tearDown($serial);
 
                 } catch (\Exception $e) {
                     // query whether or not, we've to export artefacts
                     if ($subjectInstance instanceof ExportableSubjectInterface) {
                         // tear down the subject instance
-                        $subjectInstance->tearDown();
+                        $subjectInstance->tearDown($serial);
                     }
 
                     // re-throw the exception
@@ -276,34 +273,8 @@ class SubjectPlugin extends AbstractPlugin
      */
     protected function subjectFactory(SubjectConfigurationInterface $subjectConfiguration)
     {
-
-        // load the subject class name
-        $className = $subjectConfiguration->getClassName();
-
-        // initialize the instances
-        $processor = null;
-        $serial = $this->getSerial();
-        $systemLoggers = $this->getSystemLoggers();
-        $registryProcessor = $this->getRegistryProcessor();
-        $coreConfigDataUidGenerator = new CoreConfigDataUidGenerator();
-
-        // instanciate and set the product processor, if specified
-        if ($processorFactory = $subjectConfiguration->getProcessorFactory()) {
-            $processor = $processorFactory::factory(
-                $this->getImportProcessor()->getConnection(),
-                $subjectConfiguration
-            );
-        }
-
-        // initialize a new handler with the passed class name
-        return new $className(
-            $serial,
-            $subjectConfiguration,
-            $registryProcessor,
-            $coreConfigDataUidGenerator,
-            $systemLoggers,
-            $processor
-        );
+        $this->getApplication()->getContainer()->set(sprintf('configuration.%s', $subjectConfiguration->getClassName()), $subjectConfiguration);
+        return $this->getApplication()->getContainer()->get($subjectConfiguration->getClassName());
     }
 
     /**
