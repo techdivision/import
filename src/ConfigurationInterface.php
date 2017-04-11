@@ -226,4 +226,11 @@ interface ConfigurationInterface
      * @return string The PID filename to use
      */
     public function getPidFilename();
+
+    /**
+     * Return's an array with the path to the extension libraries.
+     *
+     * @return array The path to the extension libraries
+     */
+    public function getLibraries();
 }
