@@ -237,7 +237,7 @@ interface ConfigurationInterface
     /**
      * Return's an array with the path to additional vendor directories.
      *
-     * @return array The paths to additional vendor directories
+     * @return \Doctrine\Common\Collections\ArrayCollection The paths to additional vendor directories
      */
     public function getVendorDirs();
 }
