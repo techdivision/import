@@ -18,7 +18,7 @@
  * @link      http://www.techdivision.com
  */
 
-namespace TechDivision\Import\Configuration\;
+namespace TechDivision\Import\Configuration;
 
 /**
  * The interface for the vendor directory configuration.
