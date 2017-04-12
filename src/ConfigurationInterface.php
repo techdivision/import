@@ -228,13 +228,6 @@ interface ConfigurationInterface
     public function getPidFilename();
 
     /**
-     * Return's an array with the path to additional extension libraries.
-     *
-     * @return array The paths to additional extension libraries
-     */
-    public function getLibraries();
-
-    /**
      * Return's an array with the path to additional vendor directories.
      *
      * @return \Doctrine\Common\Collections\ArrayCollection The paths to additional vendor directories
