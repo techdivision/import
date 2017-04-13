@@ -184,7 +184,7 @@ class SubjectPlugin extends AbstractPlugin
 
         // query whether or not the configured source directory is available
         if (!is_dir($sourceDir = $status[RegistryKeys::SOURCE_DIRECTORY])) {
-            throw new \Exception(sprintf('Source directory %s for subject %s is not available!', $sourceDir, $subject->getClassName()));
+            throw new \Exception(sprintf('Source directory %s for subject %s is not available!', $sourceDir, $subject->getId()));
         }
 
         // initialize the array with the CSV files found in the source directory
