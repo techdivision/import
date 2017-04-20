@@ -18,7 +18,7 @@
  * @link      http://www.techdivision.com
  */
 
-namespace namespace TechDivision\Import\Symfony\Bundle\DependencyInjection;
+namespace TechDivision\Import\Symfony\Bundle\DependencyInjection;
 
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\Config\Definition\Processor;
