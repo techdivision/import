@@ -8,6 +8,12 @@
     </parameters>
 
     <services>
+    
+        <service id="configuration.import.plugin.archive" synthetic="true" />
+        <service id="configuration.import.plugin.subject" synthetic="true" />
+        <service id="configuration.import.plugin.global.data" synthetic="true" />
+        <service id="configuration.import.plugin.missing.option.values" synthetic="true" />
+        <service id="configuration.import.subject.move.files" synthetic="true" />
 
         <service id="import.generator.core.config.data.uid" class="TechDivision\Import\Utils\Generators\CoreConfigDataUidGenerator"/>
 
@@ -136,7 +142,7 @@
             <argument type="service" id="import.generator.core.config.data.uid"/>
             <argument type="service" id="loggers"/>
         </service>
-        
+
         <service id="import.observer.additional.attribute" class="TechDivision\Import\Observers\AdditionalAttributeObserver"/>
         <service id="import.observer.attribute.set" class="TechDivision\Import\Observers\AttributeSetObserver"/>
 
