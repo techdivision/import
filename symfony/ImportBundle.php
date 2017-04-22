@@ -1,7 +1,7 @@
 <?php
 
 /**
- * TechDivision\Import\Symfony\Bundle\ImportBundle
+ * TechDivision\Import\ImportBundle
  *
  * NOTICE OF LICENSE
  *
@@ -18,12 +18,12 @@
  * @link      http://www.techdivision.com
  */
 
-namespace TechDivision\Import\Symfony\Bundle;
+namespace TechDivision\Import;
 
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
 /**
- * The bundle implementation for the M2IF import library.
+ * The symfony bundle implementation for the M2IF import library.
  *
  * @author    Tim Wagner <t.wagner@techdivision.com>
  * @copyright 2016 TechDivision GmbH <info@techdivision.com>

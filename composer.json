@@ -28,7 +28,8 @@
 		"psr-4" : {
 			"TechDivision\\Import\\" : [
 				"src/",
-				"tests/"
+				"tests/",
+				"symfony/"
 			]
 		}
 	}

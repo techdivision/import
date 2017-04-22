@@ -1,7 +1,7 @@
 <?php
 
 /**
- * TechDivision\Import\Symfony\Bundle\DependencyInjection\ImportExtension
+ * TechDivision\Import\DependencyInjection\ImportExtension
  *
  * NOTICE OF LICENSE
  *
@@ -18,7 +18,7 @@
  * @link      http://www.techdivision.com
  */
 
-namespace TechDivision\Import\Symfony\Bundle\DependencyInjection;
+namespace TechDivision\Import\DependencyInjection;
 
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
@@ -26,7 +26,7 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
 
 /**
- * The extension implementation for the M2IF import library.
+ * The symfony extension implementation for the M2IF import library.
  *
  * @author    Tim Wagner <t.wagner@techdivision.com>
  * @copyright 2016 TechDivision GmbH <info@techdivision.com>
