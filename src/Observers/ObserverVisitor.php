@@ -45,7 +45,7 @@ class ObserverVisitor
     /**
      * The constructor to initialize the instance.
      *
-     * @param \Symfony\Component\DependencyInjection\TaggedContainerInterface The container instance
+     * @param \Symfony\Component\DependencyInjection\TaggedContainerInterface $container The container instance
      */
     public function __construct(TaggedContainerInterface $container)
     {

@@ -47,6 +47,8 @@ interface SubjectInterface
     /**
      * Clean up the global data after importing the variants.
      *
+     * @param string $serial The serial of the actual import
+     *
      * @return void
      */
     public function tearDown($serial);
