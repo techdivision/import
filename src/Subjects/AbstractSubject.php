@@ -31,9 +31,7 @@ use TechDivision\Import\Utils\MemberNames;
 use TechDivision\Import\Utils\RegistryKeys;
 use TechDivision\Import\Utils\Generators\GeneratorInterface;
 use TechDivision\Import\Services\RegistryProcessor;
-use TechDivision\Import\Callbacks\CallbackVisitor;
 use TechDivision\Import\Callbacks\CallbackInterface;
-use TechDivision\Import\Observers\ObserverVisitor;
 use TechDivision\Import\Observers\ObserverInterface;
 use TechDivision\Import\Services\RegistryProcessorInterface;
 use TechDivision\Import\Configuration\SubjectConfigurationInterface;
@@ -586,14 +584,16 @@ abstract class AbstractSubject implements SubjectInterface
     /**
      * Intializes the previously loaded global data for exactly one bunch.
      *
+     * @param string $serial The serial of the actual import
+     *
      * @return void
      * @see \Importer\Csv\Actions\ProductImportAction::prepare()
      */
-    public function setUp()
+    public function setUp($serial)
     {
 
         // load the status of the actual import
-        $status = $this->getRegistryProcessor()->getAttribute($this->getSerial());
+        $status = $this->getRegistryProcessor()->getAttribute($serial);
 
         // load the global data we've prepared initially
         $this->stores = $status[RegistryKeys::GLOBAL_DATA][RegistryKeys::STORES];
@@ -622,18 +622,16 @@ abstract class AbstractSubject implements SubjectInterface
                 $this->callbackMappings[$attributeCode] = $mappings;
             }
         }
-
-        // initialize the callbacks/observers
-        CallbackVisitor::get()->visit($this);
-        ObserverVisitor::get()->visit($this);
     }
 
     /**
      * Clean up the global data after importing the variants.
      *
+     * @param string $serial The serial of the actual import
+     *
      * @return void
      */
-    public function tearDown()
+    public function tearDown($serial)
     {
 
         // load the registry processor
@@ -641,13 +639,13 @@ abstract class AbstractSubject implements SubjectInterface
 
         // update the source directory for the next subject
         $registryProcessor->mergeAttributesRecursive(
-            $this->getSerial(),
-            array(RegistryKeys::SOURCE_DIRECTORY => $this->getNewSourceDir())
+            $serial,
+            array(RegistryKeys::SOURCE_DIRECTORY => $this->getNewSourceDir($serial))
         );
 
         // log a debug message with the new source directory
         $this->getSystemLogger()->debug(
-            sprintf('Subject %s successfully updated source directory to %s', __CLASS__, $this->getNewSourceDir())
+            sprintf('Subject %s successfully updated source directory to %s', __CLASS__, $this->getNewSourceDir($serial))
         );
     }
 
@@ -655,11 +653,13 @@ abstract class AbstractSubject implements SubjectInterface
      * Return's the next source directory, which will be the target directory
      * of this subject, in most cases.
      *
+     * @param string $serial The serial of the actual import
+     *
      * @return string The new source directory
      */
-    protected function getNewSourceDir()
+    protected function getNewSourceDir($serial)
     {
-        return sprintf('%s/%s', $this->getConfiguration()->getTargetDir(), $this->getSerial());
+        return sprintf('%s/%s', $this->getConfiguration()->getTargetDir(), $serial);
     }
 
     /**
@@ -759,7 +759,8 @@ abstract class AbstractSubject implements SubjectInterface
     /**
      * Imports the content of the file with the passed filename.
      *
-     * @param string $serial   The unique process serial
+     *
+     * @param string $serial   The serial of the actual import
      * @param string $filename The filename to process
      *
      * @return void
@@ -798,15 +799,12 @@ abstract class AbstractSubject implements SubjectInterface
             // track the start time
             $startTime = microtime(true);
 
-            // initialize serial and filename
+            // initialize the serial/filename
             $this->setSerial($serial);
             $this->setFilename($filename);
 
             // load the system logger
             $systemLogger = $this->getSystemLogger();
-
-            // initialize the global global data to import a bunch
-            $this->setUp();
 
             // initialize the lexer instance itself
             $lexer = new Lexer($this->getLexerConfig());
@@ -829,9 +827,6 @@ abstract class AbstractSubject implements SubjectInterface
             // track the time needed for the import in seconds
             $endTime = microtime(true) - $startTime;
 
-            // clean up the data after importing the bunch
-            $this->tearDown();
-
             // log a message that the file has successfully been imported
             $systemLogger->debug(sprintf('Successfully imported file %s in %f s', $filename, $endTime));
 
@@ -842,9 +837,6 @@ abstract class AbstractSubject implements SubjectInterface
             // rename the flag file, because import failed and write the stack trace
             rename($inProgressFilename, $failedFilename);
             file_put_contents($failedFilename, $e->__toString());
-
-            // clean up the data after importing the bunch
-            $this->tearDown();
 
             // re-throw the exception
             throw $e;

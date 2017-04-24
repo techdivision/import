@@ -59,8 +59,20 @@ class SubjectPluginTest extends \PHPUnit_Framework_TestCase
                                         ->setMethods(get_class_methods('TechDivision\Import\Configuration\PluginConfigurationInterface'))
                                         ->getMock();
 
+        // create a mock callback visitor
+        $mockCallbackVisitor = $this->getMockBuilder('TechDivision\Import\Callbacks\CallbackVisitor')
+                                    ->disableOriginalConstructor()
+                                    ->setMethods(get_class_methods('TechDivision\Import\Callbacks\CallbackVisitor'))
+                                    ->getMock();
+
+        // create a mock observer visitor
+        $mockObserverVisitor = $this->getMockBuilder('TechDivision\Import\Observers\ObserverVisitor')
+                                    ->disableOriginalConstructor()
+                                    ->setMethods(get_class_methods('TechDivision\Import\Observers\ObserverVisitor'))
+                                    ->getMock();
+
         // initialize the subject instance
-        $this->subject = new SubjectPlugin($mockApplication, $mockPluginConfiguration);
+        $this->subject = new SubjectPlugin($mockApplication, $mockPluginConfiguration, $mockCallbackVisitor, $mockObserverVisitor);
     }
 
     /**

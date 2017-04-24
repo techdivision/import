@@ -1,7 +1,7 @@
 <?php
 
 /**
- * TechDivision\Import\Configuration\PluginConfigurationInterface
+ * TechDivision\Import\Utils\OperationKeys
  *
  * NOTICE OF LICENSE
  *
@@ -18,10 +18,10 @@
  * @link      http://www.techdivision.com
  */
 
-namespace TechDivision\Import\Configuration;
+namespace TechDivision\Import\Utils;
 
 /**
- * Interface for the plugin configuration implementation.
+ * A utility class for the available operations.
  *
  * @author    Tim Wagner <t.wagner@techdivision.com>
  * @copyright 2016 TechDivision GmbH <info@techdivision.com>
@@ -29,27 +29,44 @@ namespace TechDivision\Import\Configuration;
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
  */
-interface PluginConfigurationInterface
+class OperationKeys
 {
 
     /**
-     * Return's the subject's unique DI identifier.
-     *
-     * @return string The subject's unique DI identifier
+     * This is a utility class, so protect it against direct
+     * instantiation.
      */
-    public function getId();
+    private function __construct()
+    {
+    }
 
     /**
-     * Return's the ArrayCollection with the operation's subjects.
+     * This is a utility class, so protect it against cloning.
      *
-     * @return \Doctrine\Common\Collections\ArrayCollection The ArrayCollection with the operation's subjects
+     * @return void
      */
-    public function getSubjects();
+    private function __clone()
+    {
+    }
 
     /**
-     * Return's the reference to the configuration instance.
+     * The key for 'add-update' operation.
      *
-     * @return \TechDivision\Import\ConfigurationInterface The configuration instance
+     * @var string
      */
-    public function getConfiguration();
+    const ADD_UPDATE = 'add-update';
+
+    /**
+     * The key for 'replace' operation.
+     *
+     * @var string
+     */
+    const REPLACE = 'replace';
+
+    /**
+     * The key for 'delete' operation.
+     *
+     * @var string
+     */
+    const DELETE = 'delete';
 }

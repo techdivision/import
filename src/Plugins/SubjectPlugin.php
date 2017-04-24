@@ -22,11 +22,15 @@ namespace TechDivision\Import\Plugins;
 
 use TechDivision\Import\Utils\BunchKeys;
 use TechDivision\Import\Utils\RegistryKeys;
+use TechDivision\Import\Callbacks\CallbackVisitor;
+use TechDivision\Import\Observers\ObserverVisitor;
 use TechDivision\Import\Exceptions\LineNotFoundException;
 use TechDivision\Import\Exceptions\MissingOkFileException;
 use TechDivision\Import\Subjects\ExportableSubjectInterface;
 use TechDivision\Import\Configuration\SubjectConfigurationInterface;
 use TechDivision\Import\Utils\Generators\CoreConfigDataUidGenerator;
+use TechDivision\Import\ApplicationInterface;
+use TechDivision\Import\Configuration\PluginConfigurationInterface;
 
 /**
  * Plugin that processes the subjects.
@@ -53,6 +57,44 @@ class SubjectPlugin extends AbstractPlugin
      * @var integer
      */
     protected $bunches = 0;
+
+    /**
+     * The callback visitor instance.
+     *
+     * @var \TechDivision\Import\Callbacks\CallbackVisitor
+     */
+    protected $callbackVisitor;
+
+    /**
+     * The observer visitor instance.
+     *
+     * @var \TechDivision\Import\Observers\ObserverVisitor
+     */
+    protected $observerVisitor;
+
+    /**
+     * Initializes the plugin with the application instance.
+     *
+     * @param \TechDivision\Import\ApplicationInterface                       $application         The application instance
+     * @param \TechDivision\Import\Configuration\PluginConfigurationInterface $pluginConfiguration The plugin configuration instance
+     * @param \TechDivision\Import\Callbacks\CallbackVisitor                  $callbackVisitor     The callback visitor instance
+     * @param \TechDivision\Import\Observers\ObserverVisitor                  $observerVisitor     The observer visitor instance
+     */
+    public function __construct(
+        ApplicationInterface $application,
+        PluginConfigurationInterface $pluginConfiguration,
+        CallbackVisitor $callbackVisitor,
+        ObserverVisitor $observerVisitor
+    ) {
+
+        // call the parent constructor
+        parent::__construct($application, $pluginConfiguration);
+
+        // initialize the callback/observer visitors
+        $this->callbackVisitor = $callbackVisitor;
+        $this->observerVisitor = $observerVisitor;
+    }
+
 
     /**
      * Process the plugin functionality.
@@ -142,7 +184,7 @@ class SubjectPlugin extends AbstractPlugin
 
         // query whether or not the configured source directory is available
         if (!is_dir($sourceDir = $status[RegistryKeys::SOURCE_DIRECTORY])) {
-            throw new \Exception(sprintf('Source directory %s for subject %s is not available!', $sourceDir, $subject->getClassName()));
+            throw new \Exception(sprintf('Source directory %s for subject %s is not available!', $sourceDir, $subject->getId()));
         }
 
         // initialize the array with the CSV files found in the source directory
@@ -163,28 +205,50 @@ class SubjectPlugin extends AbstractPlugin
         foreach ($files as $pathname) {
             // query whether or not that the file is part of the actual bunch
             if ($this->isPartOfBunch($subject->getPrefix(), $pathname)) {
-                // initialize the subject and import the bunch
-                $subjectInstance = $this->subjectFactory($subject);
+                try {
+                    // initialize the subject and import the bunch
+                    $subjectInstance = $this->subjectFactory($subject);
 
-                // query whether or not the subject needs an OK file,
-                // if yes remove the filename from the file
-                if ($subjectInstance->isOkFileNeeded()) {
-                    $this->removeFromOkFile($pathname);
+                    // setup the subject instance
+                    $subjectInstance->setUp($serial);
+
+                    // initialize the callbacks/observers
+                    $this->callbackVisitor->visit($subjectInstance);
+                    $this->observerVisitor->visit($subjectInstance);
+
+                    // query whether or not the subject needs an OK file,
+                    // if yes remove the filename from the file
+                    if ($subjectInstance->isOkFileNeeded()) {
+                        $this->removeFromOkFile($pathname);
+                    }
+
+                    // finally import the CSV file
+                    $subjectInstance->import($serial, $pathname);
+
+                    // query whether or not, we've to export artefacts
+                    if ($subjectInstance instanceof ExportableSubjectInterface) {
+                        $subjectInstance->export(
+                            $this->matches[BunchKeys::FILENAME],
+                            $this->matches[BunchKeys::COUNTER]
+                        );
+                    }
+
+                    // raise the number of the imported bunches
+                    $bunches++;
+
+                    // tear down the subject instance
+                    $subjectInstance->tearDown($serial);
+
+                } catch (\Exception $e) {
+                    // query whether or not, we've to export artefacts
+                    if ($subjectInstance instanceof ExportableSubjectInterface) {
+                        // tear down the subject instance
+                        $subjectInstance->tearDown($serial);
+                    }
+
+                    // re-throw the exception
+                    throw $e;
                 }
-
-                // finally import the CSV file
-                $subjectInstance->import($serial, $pathname);
-
-                // query whether or not, we've to export artefacts
-                if ($subjectInstance instanceof ExportableSubjectInterface) {
-                    $subjectInstance->export(
-                        $this->matches[BunchKeys::FILENAME],
-                        $this->matches[BunchKeys::COUNTER]
-                    );
-                }
-
-                // raise the number of the imported bunches
-                $bunches++;
             }
         }
 
@@ -196,7 +260,7 @@ class SubjectPlugin extends AbstractPlugin
 
         // and and log a message that the subject has been processed
         $this->getSystemLogger()->debug(
-            sprintf('Successfully processed subject %s with %d bunch(es)!', $subject->getClassName(), $bunches)
+            sprintf('Successfully processed subject %s with %d bunch(es)!', $subject->getId(), $bunches)
         );
     }
 
@@ -209,32 +273,8 @@ class SubjectPlugin extends AbstractPlugin
      */
     protected function subjectFactory(SubjectConfigurationInterface $subjectConfiguration)
     {
-
-        // load the subject class name
-        $className = $subjectConfiguration->getClassName();
-
-        // initialize the instances
-        $processor = null;
-        $systemLoggers = $this->getSystemLoggers();
-        $registryProcessor = $this->getRegistryProcessor();
-        $coreConfigDataUidGenerator = new CoreConfigDataUidGenerator();
-
-        // instanciate and set the product processor, if specified
-        if ($processorFactory = $subjectConfiguration->getProcessorFactory()) {
-            $processor = $processorFactory::factory(
-                $this->getImportProcessor()->getConnection(),
-                $subjectConfiguration
-            );
-        }
-
-        // initialize a new handler with the passed class name
-        return new $className(
-            $subjectConfiguration,
-            $registryProcessor,
-            $coreConfigDataUidGenerator,
-            $systemLoggers,
-            $processor
-        );
+        $this->getApplication()->getContainer()->set(sprintf('configuration.%s', $id = $subjectConfiguration->getId()), $subjectConfiguration);
+        return $this->getApplication()->getContainer()->get($id);
     }
 
     /**

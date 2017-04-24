@@ -1,7 +1,7 @@
 <?php
 
 /**
- * TechDivision\Import\Configuration\PluginConfigurationInterface
+ * TechDivision\Import\ImportBundle
  *
  * NOTICE OF LICENSE
  *
@@ -18,10 +18,12 @@
  * @link      http://www.techdivision.com
  */
 
-namespace TechDivision\Import\Configuration;
+namespace TechDivision\Import;
+
+use Symfony\Component\HttpKernel\Bundle\Bundle;
 
 /**
- * Interface for the plugin configuration implementation.
+ * The symfony bundle implementation for the M2IF import library.
  *
  * @author    Tim Wagner <t.wagner@techdivision.com>
  * @copyright 2016 TechDivision GmbH <info@techdivision.com>
@@ -29,27 +31,6 @@ namespace TechDivision\Import\Configuration;
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
  */
-interface PluginConfigurationInterface
+class ImportBundle extends Bundle
 {
-
-    /**
-     * Return's the subject's unique DI identifier.
-     *
-     * @return string The subject's unique DI identifier
-     */
-    public function getId();
-
-    /**
-     * Return's the ArrayCollection with the operation's subjects.
-     *
-     * @return \Doctrine\Common\Collections\ArrayCollection The ArrayCollection with the operation's subjects
-     */
-    public function getSubjects();
-
-    /**
-     * Return's the reference to the configuration instance.
-     *
-     * @return \TechDivision\Import\ConfigurationInterface The configuration instance
-     */
-    public function getConfiguration();
 }

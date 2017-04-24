@@ -29,7 +29,7 @@ namespace TechDivision\Import\Configuration;
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
  */
-interface SubjectConfigurationInterface extends ProcessorConfigurationInterface
+interface SubjectConfigurationInterface
 {
 
     /**
@@ -82,11 +82,11 @@ interface SubjectConfigurationInterface extends ProcessorConfigurationInterface
     public function isStrictMode();
 
     /**
-     * Return's the subject's class name.
+     * Return's the subject's unique DI identifier
      *
-     * @return string The subject's class name
+     * @return string The subject's unique DI identifier
      */
-    public function getClassName();
+    public function getId();
 
     /**
      * Return's the reference to the configuration instance.

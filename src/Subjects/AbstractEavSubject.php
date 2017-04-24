@@ -96,14 +96,16 @@ abstract class AbstractEavSubject extends AbstractSubject implements EavSubjectI
     /**
      * Intializes the previously loaded global data for exactly one bunch.
      *
+     * @param string $serial The serial of the actual import
+     *
      * @return void
      * @see \Importer\Csv\Actions\ProductImportAction::prepare()
      */
-    public function setUp()
+    public function setUp($serial)
     {
 
         // load the status of the actual import
-        $status = $this->getRegistryProcessor()->getAttribute($this->getSerial());
+        $status = $this->getRegistryProcessor()->getAttribute($serial);
 
         // load the global data we've prepared initially
         $this->attributes = $status[RegistryKeys::GLOBAL_DATA][RegistryKeys::EAV_ATTRIBUTES];
@@ -131,7 +133,7 @@ abstract class AbstractEavSubject extends AbstractSubject implements EavSubjectI
         }
 
         // prepare the callbacks
-        parent::setUp();
+        parent::setUp($serial);
     }
 
     /**

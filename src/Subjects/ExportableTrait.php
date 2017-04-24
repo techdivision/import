@@ -168,6 +168,6 @@ trait ExportableTrait
      */
     protected function getTargetDir()
     {
-        return $this->getNewSourceDir();
+        return $this->getNewSourceDir($this->getSerial());
     }
 }

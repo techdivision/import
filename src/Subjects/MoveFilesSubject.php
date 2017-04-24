@@ -65,7 +65,7 @@ class MoveFilesSubject extends AbstractSubject
     /**
      * Imports the content of the file with the passed filename.
      *
-     * @param string $serial   The unique process serial
+     * @param string $serial   The serial of the actual import
      * @param string $filename The filename to process
      *
      * @return void
@@ -76,23 +76,13 @@ class MoveFilesSubject extends AbstractSubject
 
         // only process the file, if the filename match
         if ($this->match($filename)) {
-            // initialize the global global data to import a bunch
-            $this->setUp();
-
-            // initialize serial and filename
-            $this->setSerial($serial);
-            $this->setFilename($filename);
-
             // query whether the new source directory has to be created or not
-            if (!is_dir($newSourceDir = $this->getNewSourceDir())) {
+            if (!is_dir($newSourceDir = $this->getNewSourceDir($serial))) {
                 mkdir($newSourceDir);
             }
 
             // move the file to the new source directory
             rename($filename, sprintf('%s/%s', $newSourceDir, basename($filename)));
-
-            // clean up the data after importing the bunch
-            $this->tearDown();
         }
     }
 }

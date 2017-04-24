@@ -1,7 +1,7 @@
 <?php
 
 /**
- * TechDivision\Import\Configuration\PluginConfigurationInterface
+ * TechDivision\Import\Configuration\VendorDirConfigurationInterface
  *
  * NOTICE OF LICENSE
  *
@@ -21,7 +21,7 @@
 namespace TechDivision\Import\Configuration;
 
 /**
- * Interface for the plugin configuration implementation.
+ * The interface for the vendor directory configuration.
  *
  * @author    Tim Wagner <t.wagner@techdivision.com>
  * @copyright 2016 TechDivision GmbH <info@techdivision.com>
@@ -29,27 +29,20 @@ namespace TechDivision\Import\Configuration;
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
  */
-interface PluginConfigurationInterface
+interface VendorDirConfigurationInterface
 {
 
     /**
-     * Return's the subject's unique DI identifier.
+     * Return's the path to the additional vendor directory.
      *
-     * @return string The subject's unique DI identifier
+     * @return string The path to the additional vendor directorie
      */
-    public function getId();
+    public function getVendorDir();
 
     /**
-     * Return's the ArrayCollection with the operation's subjects.
+     * Return's an array with the path to additional extension libraries.
      *
-     * @return \Doctrine\Common\Collections\ArrayCollection The ArrayCollection with the operation's subjects
+     * @return array The paths to additional extension libraries
      */
-    public function getSubjects();
-
-    /**
-     * Return's the reference to the configuration instance.
-     *
-     * @return \TechDivision\Import\ConfigurationInterface The configuration instance
-     */
-    public function getConfiguration();
+    public function getLibraries();
 }

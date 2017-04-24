@@ -1,7 +1,7 @@
 <?php
 
 /**
- * TechDivision\Import\Configuration
+ * TechDivision\Import\ConfigurationInterface
  *
  * NOTICE OF LICENSE
  *
@@ -112,13 +112,6 @@ interface ConfigurationInterface
      * @return string The target dir
      */
     public function getTargetDir();
-
-    /**
-     * Return's the utility class with the SQL statements to use.
-     *
-     * @return string The utility class name
-     */
-    public function getUtilityClassName();
 
     /**
      * Return's the Magento edition, EE or CE.
@@ -233,4 +226,18 @@ interface ConfigurationInterface
      * @return string The PID filename to use
      */
     public function getPidFilename();
+
+    /**
+     * Return's a collection with the path to additional vendor directories.
+     *
+     * @return \Doctrine\Common\Collections\ArrayCollection The paths to additional vendor directories
+     */
+    public function getAdditionalVendorDirs();
+
+    /**
+     * Return's an array with the path of the Magento Edition specific extension libraries.
+     *
+     * @return array The paths of the Magento Edition specific extension libraries
+     */
+    public function getExtensionLibraries();
 }

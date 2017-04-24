@@ -1,7 +1,7 @@
 <?php
 
 /**
- * TechDivision\Import\Configuration\PluginConfigurationInterface
+ * TechDivision\Import\Configuration\DefaultLibrariesConfigurationInterface
  *
  * NOTICE OF LICENSE
  *
@@ -21,7 +21,7 @@
 namespace TechDivision\Import\Configuration;
 
 /**
- * Interface for the plugin configuration implementation.
+ * The interface for the default libraries configuration.
  *
  * @author    Tim Wagner <t.wagner@techdivision.com>
  * @copyright 2016 TechDivision GmbH <info@techdivision.com>
@@ -29,27 +29,13 @@ namespace TechDivision\Import\Configuration;
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
  */
-interface PluginConfigurationInterface
+interface DefaultLibrariesConfigurationInterface
 {
 
     /**
-     * Return's the subject's unique DI identifier.
+     * Return's an array with the path to the default libraries.
      *
-     * @return string The subject's unique DI identifier
+     * @return array The paths to the default libraries
      */
-    public function getId();
-
-    /**
-     * Return's the ArrayCollection with the operation's subjects.
-     *
-     * @return \Doctrine\Common\Collections\ArrayCollection The ArrayCollection with the operation's subjects
-     */
-    public function getSubjects();
-
-    /**
-     * Return's the reference to the configuration instance.
-     *
-     * @return \TechDivision\Import\ConfigurationInterface The configuration instance
-     */
-    public function getConfiguration();
+    public function getLibraries();
 }
