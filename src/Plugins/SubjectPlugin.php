@@ -22,14 +22,13 @@ namespace TechDivision\Import\Plugins;
 
 use TechDivision\Import\Utils\BunchKeys;
 use TechDivision\Import\Utils\RegistryKeys;
+use TechDivision\Import\ApplicationInterface;
 use TechDivision\Import\Callbacks\CallbackVisitor;
 use TechDivision\Import\Observers\ObserverVisitor;
 use TechDivision\Import\Exceptions\LineNotFoundException;
 use TechDivision\Import\Exceptions\MissingOkFileException;
 use TechDivision\Import\Subjects\ExportableSubjectInterface;
 use TechDivision\Import\Configuration\SubjectConfigurationInterface;
-use TechDivision\Import\Utils\Generators\CoreConfigDataUidGenerator;
-use TechDivision\Import\ApplicationInterface;
 use TechDivision\Import\Configuration\PluginConfigurationInterface;
 
 /**
