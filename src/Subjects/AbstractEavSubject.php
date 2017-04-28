@@ -22,6 +22,7 @@ namespace TechDivision\Import\Subjects;
 
 use TechDivision\Import\Utils\MemberNames;
 use TechDivision\Import\Utils\RegistryKeys;
+use TechDivision\Import\Utils\BackendTypeKeys;
 
 /**
  * An abstract EAV subject implementation.
@@ -69,11 +70,11 @@ abstract class AbstractEavSubject extends AbstractSubject implements EavSubjectI
      * @var array
      */
     protected $backendTypes = array(
-        'datetime' => array('persistDatetimeAttribute', 'loadDatetimeAttribute'),
-        'decimal'  => array('persistDecimalAttribute', 'loadDecimalAttribute'),
-        'int'      => array('persistIntAttribute', 'loadIntAttribute'),
-        'text'     => array('persistTextAttribute', 'loadTextAttribute'),
-        'varchar'  => array('persistVarcharAttribute', 'loadVarcharAttribute')
+        BackendTypeKeys::BACKEND_TYPE_DATETIME => array('persistDatetimeAttribute', 'loadDatetimeAttribute'),
+        BackendTypeKeys::BACKEND_TYPE_DECIMAL  => array('persistDecimalAttribute', 'loadDecimalAttribute'),
+        BackendTypeKeys::BACKEND_TYPE_INT      => array('persistIntAttribute', 'loadIntAttribute'),
+        BackendTypeKeys::BACKEND_TYPE_TEXT     => array('persistTextAttribute', 'loadTextAttribute'),
+        BackendTypeKeys::BACKEND_TYPE_VARCHAR  => array('persistVarcharAttribute', 'loadVarcharAttribute')
     );
 
     /**

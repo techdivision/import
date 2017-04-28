@@ -1,3 +1,15 @@
+# Version 1.0.0-beta3
+
+## Bugfixes
+
+* None
+
+## Features
+
+* Add EAV attribute entity type
+* Add utility class with available backend types
+* Refactor exception wrapper to also wrap unexpected exceptions
+
 # Version 1.0.0-beta2
 
 ## Bugfixes

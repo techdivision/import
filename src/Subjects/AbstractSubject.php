@@ -33,6 +33,7 @@ use TechDivision\Import\Utils\Generators\GeneratorInterface;
 use TechDivision\Import\Services\RegistryProcessor;
 use TechDivision\Import\Callbacks\CallbackInterface;
 use TechDivision\Import\Observers\ObserverInterface;
+use TechDivision\Import\Exceptions\WrappedColumnException;
 use TechDivision\Import\Services\RegistryProcessorInterface;
 use TechDivision\Import\Configuration\SubjectConfigurationInterface;
 
@@ -838,8 +839,13 @@ abstract class AbstractSubject implements SubjectInterface
             rename($inProgressFilename, $failedFilename);
             file_put_contents($failedFilename, $e->__toString());
 
-            // re-throw the exception
-            throw $e;
+            // do not wrap the exception if not already done
+            if ($e instanceof WrappedColumnException) {
+                throw $e;
+            }
+
+            // else wrap and throw the exception
+            throw $this->wrapException(array(), $e);
         }
     }
 
@@ -1180,6 +1186,9 @@ abstract class AbstractSubject implements SubjectInterface
                 return $originalData[ColumnKeys::ORIGINAL_COLUMN_NAMES]['*'];
             }
         }
+
+        // return the original column name
+        return $columnName;
     }
 
     /**
@@ -1225,23 +1234,37 @@ abstract class AbstractSubject implements SubjectInterface
      * @return \Exception the wrapped exception
      */
     public function wrapException(
-        array $columnNames,
+        array $columnNames = array(),
         \Exception $parent = null,
         $className = '\TechDivision\Import\Exceptions\WrappedColumnException'
     ) {
+
+        // initialize the message
+        $message = $parent->getMessage();
 
         // query whether or not has been a result of invalid data of a previous column of a CSV file
         if ($this->hasOriginalData()) {
             // load the original data
             $originalData = $this->getOriginalData();
 
-            // replace old filename and line number with original data
+            // replace old filename and line number of the original message
             $message = $this->appendExceptionSuffix(
-                $this->stripExceptionSuffix($parent->getMessage()),
+                $this->stripExceptionSuffix($message),
                 $originalData[ColumnKeys::ORIGINAL_FILENAME],
                 $originalData[ColumnKeys::ORIGINAL_LINE_NUMBER]
             );
 
+        } else {
+            // append filename and line number to the original message
+            $message = $this->appendExceptionSuffix(
+                $this->stripExceptionSuffix($message),
+                $this->filename,
+                $this->lineNumber
+            );
+        }
+
+        // query whether or not, column names has been passed
+        if (sizeof($columnNames) > 0) {
             // prepare the original column names
             $originalColumnNames = array();
             foreach ($columnNames as $columnName) {
@@ -1250,14 +1273,10 @@ abstract class AbstractSubject implements SubjectInterface
 
             // append the column information
             $message = sprintf('%s in column(s) %s', $message, implode(', ', $originalColumnNames));
-
-            // create a new exception and wrap the parent one
-            return new $className($message, null, $parent);
         }
 
-        // simply return the parent exception, because
-        // we can't find any original information
-        return $parent;
+        // create a new exception and wrap the parent one
+        return new $className($message, null, $parent);
     }
 
     /**

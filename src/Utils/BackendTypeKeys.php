@@ -1,7 +1,7 @@
 <?php
 
 /**
- * TechDivision\Import\Utils\EntityTypeCodes
+ * TechDivision\Import\UtilsBackendTypeKeys
  *
  * NOTICE OF LICENSE
  *
@@ -21,7 +21,7 @@
 namespace TechDivision\Import\Utils;
 
 /**
- * Utility class containing the available page layout keys.
+ * Utility class containing the available backend types.
  *
  * @author    Tim Wagner <t.wagner@techdivision.com>
  * @copyright 2016 TechDivision GmbH <info@techdivision.com>
@@ -29,7 +29,7 @@ namespace TechDivision\Import\Utils;
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
  */
-class EntityTypeCodes
+class BackendTypeKeys
 {
 
     /**
@@ -50,23 +50,44 @@ class EntityTypeCodes
     }
 
     /**
-     * Key for the product entity 'catalog_product'.
+     * Key for the backend type 'static'.
      *
-     * @var integer
+     * @var string
      */
-    const CATALOG_PRODUCT = 'catalog_product';
+    const BACKEND_TYPE_STATIC = 'static';
 
     /**
-     * Key for the category entity 'catalog_category'.
+     * Key for the backend type 'datetime'.
      *
-     * @var integer
+     * @var string
      */
-    const CATALOG_CATEGORY = 'catalog_category';
+    const BACKEND_TYPE_DATETIME = 'datetime';
 
     /**
-     * Key for the attribute entity 'eav_attribute'.
+     * Key for the backend type 'decimal'.
      *
-     * @var integer
+     * @var string
      */
-    const EAV_ATTRIBUTE = 'eav_attribute';
+    const BACKEND_TYPE_DECIMAL = 'decimal';
+
+    /**
+     * Key for the backend type 'int'.
+     *
+     * @var string
+     */
+    const BACKEND_TYPE_INT = 'int';
+
+    /**
+     * Key for the backend type 'text'.
+     *
+     * @var string
+     */
+    const TBACKEND_TYPE_EXT = 'text';
+
+    /**
+     * Key for the backend type 'varchar'.
+     *
+     * @var string
+     */
+    const BACKEND_TYPE_VARCHAR = 'varchar';
 }
