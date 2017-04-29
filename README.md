@@ -93,6 +93,7 @@ The following functionality is already available, for CE and EE
 
 This and many more is, what we're actually working on
 
+- [ ] Product Attributes
 - [ ] Downloadable Products
 - [ ] Grouped Products
 - [ ] Customizable Options
@@ -107,7 +108,6 @@ This and many more is, what we're actually working on
 
 Planned with future versions, are importer types for
 
-- [ ] Product Attributes
 - [ ] Customers
 - [ ] Advanced Pricing
 
@@ -124,6 +124,8 @@ Applications are importer implementations that uses the M2IF to make the import 
 available, e. g. on commanline.
 
 * [import-cli-simple](https://github.com/techdivision/import-cli-simple) - A simple console implementation that uses M2IF to provide Magento 2 CE/EE import functionality
+* [import-app-simple](https://github.com/techdivision/import-app-simple) - Application implementation that uses Symfony Console + DI as well as M2IF to provide Magento 2 CE/EE import functionality
+* [import-configuration-jms](https://github.com/techdivision/import-configuration-jms) - A [JMS](https://github.com/schmittjoh/serializer) based M2IF configuration implementation
 
 ### Core Libraries CE
 
@@ -135,6 +137,7 @@ These are the M2IF core libraries for the Magento 2 Communit Edition (CE).
 * [import-product-media](https://github.com/techdivision/import-product-media) - Provides product image import functionality
 * [import-product-variant](https://github.com/techdivision/import-product-variant) - Provides configurable product import functionality
 * [import-category](https://github.com/techdivision/import-category) - Provides category import functionality
+* [import-attribute](https://github.com/techdivision/import-attribute) - Provides attribute import functionality
 
 ### Core Libraries EE
 
