@@ -22,6 +22,7 @@ namespace TechDivision\Import\Observers;
 
 use TechDivision\Import\Utils\MemberNames;
 use TechDivision\Import\Utils\StoreViewCodes;
+use TechDivision\Import\Utils\BackendTypeKeys;
 
 /**
  * Observer that creates/updates the EAV attributes.
@@ -141,7 +142,7 @@ trait AttributeObserverTrait
             }
 
             // do nothing on static backend type
-            if ($backendType === 'static') {
+            if ($backendType === BackendTypeKeys::BACKEND_TYPE_STATIC) {
                 continue;
             }
 
