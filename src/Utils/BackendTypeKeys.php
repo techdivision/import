@@ -82,7 +82,7 @@ class BackendTypeKeys
      *
      * @var string
      */
-    const TBACKEND_TYPE_EXT = 'text';
+    const TBACKEND_TYPE_TEXT = 'text';
 
     /**
      * Key for the backend type 'varchar'.
