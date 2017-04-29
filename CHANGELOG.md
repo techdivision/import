@@ -1,3 +1,13 @@
+# Version 1.0.0-beta5
+
+## Bugfixes
+
+* Fixed typo on BackendTypeKeys
+
+## Features
+
+* None
+
 # Version 1.0.0-beta4
 
 ## Bugfixes
