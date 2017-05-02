@@ -135,6 +135,13 @@ interface ConfigurationInterface
     public function getMultipleFieldDelimiter();
 
     /**
+     * Return's the multiple value delimiter character to use, default value is comma (|).
+     *
+     * @return string The multiple value delimiter character
+     */
+    public function getMultipleValueDelimiter();
+
+    /**
      * Return's the delimiter character to use, default value is comma (,).
      *
      * @return string The delimiter character
