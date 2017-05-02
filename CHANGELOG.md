@@ -6,7 +6,7 @@
 
 ## Features
 
-* Add getMultipleValueDelimiter() method to ConfigurationInterface/AbstractSubject
+* Add getMultipleValueDelimiter() method to ConfigurationInterface/AbstractSubject/AbstractObserver
 
 # Version 1.0.0-beta5
 
