@@ -246,6 +246,16 @@ abstract class AbstractObserver implements ObserverInterface
     }
 
     /**
+     * Return's the multiple value delimiter character to use, default value is comma (|).
+     *
+     * @return string The multiple value delimiter character
+     */
+    protected function getMultipleValueDelimiter()
+    {
+        return $this->getSubject()->getMultipleValueDelimiter();
+    }
+
+    /**
      * Queries whether or not the header with the passed name is available.
      *
      * @param string $name The header name to query

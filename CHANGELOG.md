@@ -1,3 +1,13 @@
+# Version 1.0.0-beta6
+
+## Bugfixes
+
+* None
+
+## Features
+
+* Add getMultipleValueDelimiter() method to ConfigurationInterface/AbstractSubject/AbstractObserver
+
 # Version 1.0.0-beta5
 
 ## Bugfixes
