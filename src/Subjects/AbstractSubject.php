@@ -1048,6 +1048,43 @@ abstract class AbstractSubject implements SubjectInterface
     }
 
     /**
+     * Return's the store ID of the actual row, or of the default store
+     * if no store view code is set in the CSV file.
+     *
+     * @param string|null $default The default store view code to use, if no store view code is set in the CSV file
+     *
+     * @return integer The ID of the actual store
+     * @throws \Exception Is thrown, if the store with the actual code is not available
+     */
+    public function getRowStoreId($default = null)
+    {
+
+        // initialize the default store view code, if not passed
+        if ($default == null) {
+            $defaultStore = $this->getDefaultStore();
+            $default = $defaultStore[MemberNames::CODE];
+        }
+
+        // load the store view code the create the product/attributes for
+        $storeViewCode = $this->getStoreViewCode($default);
+
+        // query whether or not, the requested store is available
+        if (isset($this->stores[$storeViewCode])) {
+            return (integer) $this->stores[$storeViewCode][MemberNames::STORE_ID];
+        }
+
+        // throw an exception, if not
+        throw new \Exception(
+            sprintf(
+                'Found invalid store view code %s in file %s on line %d',
+                $storeViewCode,
+                $this->getFilename(),
+                $this->getLineNumber()
+            )
+        );
+    }
+
+    /**
      * Prepare's the store view code in the subject.
      *
      * @return void

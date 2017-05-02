@@ -291,18 +291,4 @@ trait AttributeObserverTrait
     {
         return $this->getSubject()->getAttributes();
     }
-
-    /**
-     * Return's the store ID of the actual row, or of the default store
-     * if no store view code is set in the CSV file.
-     *
-     * @param string|null $default The default store view code to use, if no store view code is set in the CSV file
-     *
-     * @return integer The ID of the actual store
-     * @throws \Exception Is thrown, if the store with the actual code is not available
-     */
-    protected function getRowStoreId($default = null)
-    {
-        return $this->getSubject()->getRowStoreId($default);
-    }
 }
