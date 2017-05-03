@@ -1,3 +1,13 @@
+# Version 1.0.0-beta8
+
+## Bugfixes
+
+* None
+
+## Features
+
+* Add getMultipleValueDelimiter() + getMultipleFieldDelimiter() method to SubjectConfigurationInterface
+
 # Version 1.0.0-beta7
 
 ## Bugfixes
