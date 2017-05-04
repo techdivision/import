@@ -1,3 +1,13 @@
+# Version 1.0.0-beta10
+
+## Bugfixes
+
+* None
+
+## Features
+
+* Add getSystemName() method to ConfigurationInterface
+
 # Version 1.0.0-beta9
 
 ## Bugfixes
