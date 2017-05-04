@@ -1,3 +1,13 @@
+# Version 1.0.0-beta11
+
+## Bugfixes
+
+* None
+
+## Features
+
+* Add getArtefactsByTypeAndEntityId method to ExportableTrait
+
 # Version 1.0.0-beta10
 
 ## Bugfixes

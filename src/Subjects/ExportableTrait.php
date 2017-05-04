@@ -89,6 +89,33 @@ trait ExportableTrait
     }
 
     /**
+     * Return the artefacts for the passed type and entity ID.
+     *
+     * @param string $type     The artefact type, e. g. configurable
+     * @param string $entityId The entity ID to return the artefacts for
+     *
+     * @return array The array with the artefacts
+     * @throws \Exception Is thrown, if no artefacts are available
+     */
+    public function getArtefactsByTypeAndEntityId($type, $entityId)
+    {
+
+        // query whether or not, artefacts for the passed params are available
+        if (isset($this->artefacs[$type][$entityId])) {
+            return $this->artefacs[$type][$entityId];
+        }
+
+        // throw an exception if not
+        throw new \Exception(
+            sprintf(
+                'Cant\'t load artefacts for type %s and entity ID %d',
+                $type,
+                $entityId
+            )
+        );
+    }
+
+    /**
      * Create's and return's a new empty artefact entity.
      *
      * @param array $columns             The array with the column data
