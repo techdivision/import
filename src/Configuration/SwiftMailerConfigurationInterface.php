@@ -29,7 +29,7 @@ namespace TechDivision\Import\Configuration;
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
  */
-interface SwiftMailerConfigurationInterface
+interface SwiftMailerConfigurationInterface extends ParamsConfigurationInterface
 {
 
     /**
