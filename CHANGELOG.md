@@ -1,3 +1,13 @@
+# Version 1.0.0-beta9
+
+## Bugfixes
+
+* None
+
+## Features
+
+* SubjectConfigurationInterface, SubjectConfigurationInterface + SwiftMailerConfigurationInterface now extend ParamsConfigurationInterface
+
 # Version 1.0.0-beta8
 
 ## Bugfixes

@@ -29,7 +29,7 @@ namespace TechDivision\Import\Configuration;
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
  */
-interface SubjectConfigurationInterface
+interface SubjectConfigurationInterface extends ParamsConfigurationInterface
 {
 
     /**
@@ -157,33 +157,6 @@ interface SubjectConfigurationInterface
      * @return array The subject's callbacks
      */
     public function getCallbacks();
-
-    /**
-     * Return's the array with the params.
-     *
-     * @return array The params
-     */
-    public function getParams();
-
-    /**
-     * Query whether or not the param with the passed name exists.
-     *
-     * @param string $name The name of the param to be queried
-     *
-     * @return boolean TRUE if the requested param exists, else FALSE
-     */
-    public function hasParam($name);
-
-    /**
-     * Return's the param with the passed name.
-     *
-     * @param string $name         The name of the param to return
-     * @param mixed  $defaultValue The default value if the param doesn't exists
-     *
-     * @return string The requested param
-     * @throws \Exception Is thrown, if the requested param is not available
-     */
-    public function getParam($name, $defaultValue = null);
 
     /**
      * Queries whether or not that the subject needs an OK file to be processed.
