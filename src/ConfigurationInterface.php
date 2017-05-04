@@ -35,6 +35,13 @@ interface ConfigurationInterface
 {
 
     /**
+     * Return's the systemm name to be used.
+     *
+     * @return string The system name to be used
+     */
+    public function getSystemName();
+
+    /**
      * Return's the entity type code to be used.
      *
      * @return string The entity type code to be used
