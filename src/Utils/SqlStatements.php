@@ -167,13 +167,22 @@ class SqlStatements
     const EAV_ENTITY_TYPES = 'SELECT t1.* FROM eav_entity_type AS t1';
 
     /**
-     * The SQL statement to load the attribute set.
+     * The SQL statement to load the EAV attribute set.
      *
      * @var string
      */
     const EAV_ATTRIBUTE_SET = 'SELECT t1.*
                                  FROM eav_attribute_set AS t1
                                 WHERE attribute_set_id = ?';
+
+    /**
+     * The SQL statement to load the EAV attribute group.
+     *
+     * @var string
+     */
+    const EAV_ATTRIBUTE_GROUP = 'SELECT t1.*
+                                   FROM eav_attribute_group AS t1
+                                  WHERE attribute_group_id = :attribute_group_id';
 
     /**
      * The SQL statement to load the attribute sets for a specific entity type.
@@ -183,6 +192,15 @@ class SqlStatements
     const EAV_ATTRIBUTE_SETS_BY_ENTITY_TYPE_ID = 'SELECT t1.*
                                                     FROM eav_attribute_set AS t1
                                                    WHERE entity_type_id = ?';
+
+    /**
+     * The SQL statement to load the EAV attribute groups for a specific attribute set ID.
+     *
+     * @var string
+     */
+    const EAV_ATTRIBUTE_GROUPS_BY_ATTRIBUTE_SET_ID = 'SELECT *
+                                                        FROM eav_attribute_group
+                                                       WHERE attribute_set_id = :attribute_set_id';
 
     /**
      * The SQL statement to load EAV attributes by entity type ID and attribute set name.

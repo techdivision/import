@@ -27,6 +27,7 @@ use TechDivision\Import\Repositories\CategoryRepository;
 use TechDivision\Import\Repositories\CategoryVarcharRepository;
 use TechDivision\Import\Repositories\EavAttributeRepository;
 use TechDivision\Import\Repositories\EavAttributeSetRepository;
+use TechDivision\Import\Repositories\EavAttributeGroupRepository;
 use TechDivision\Import\Repositories\EavEntityTypeRepository;
 use TechDivision\Import\Repositories\StoreRepository;
 use TechDivision\Import\Repositories\StoreWebsiteRepository;
@@ -83,11 +84,18 @@ class ImportProcessor implements ImportProcessorInterface
     protected $eavAttributeRepository;
 
     /**
-     * The repository to access EAV attribute set.
+     * The repository to access EAV attribute sets.
      *
      * @var \TechDivision\Import\Repositories\EavAttributeSetRepository
      */
     protected $eavAttributeSetRepository;
+
+    /**
+     * The repository to access EAV attribute groups.
+     *
+     * @var \TechDivision\Import\Repositories\EavAttributeGroupRepository
+     */
+    protected $eavAttributeGroupRepository;
 
     /**
      * The repository to access EAV entity types.
@@ -141,19 +149,20 @@ class ImportProcessor implements ImportProcessorInterface
     /**
      * Initialize the processor with the necessary assembler and repository instances.
      *
-     * @param \PDO                                                        $connection                The PDO connection to use
-     * @param \TechDivision\Import\Assembler\CategoryAssembler            $categoryAssembler         The category assembler instance
-     * @param \TechDivision\Import\Repositories\CategoryRepository        $categoryRepository        The repository to access categories
-     * @param \TechDivision\Import\Repositories\CategoryVarcharRepository $categoryVarcharRepository The repository to access category varchar values
-     * @param \TechDivision\Import\Repositories\EavAttributeRepository    $eavAttributeRepository    The repository to access EAV attributes
-     * @param \TechDivision\Import\Repositories\EavAttributeSetRepository $eavAttributeSetRepository The repository to access EAV attribute set
-     * @param \TechDivision\Import\Repositories\EavEntityTypeRepository   $eavEntityTypeRepository   The repository to access EAV entity types
-     * @param \TechDivision\Import\Repositories\StoreRepository           $storeRepository           The repository to access stores
-     * @param \TechDivision\Import\Repositories\StoreWebsiteRepository    $storeWebsiteRepository    The repository to access store websites
-     * @param \TechDivision\Import\Repositories\TaxClassRepository        $taxClassRepository        The repository to access tax classes
-     * @param \TechDivision\Import\Repositories\LinkTypeRepository        $linkTypeRepository        The repository to access link types
-     * @param \TechDivision\Import\Repositories\LinkAttributeRepository   $linkAttributeRepository   The repository to access link attributes
-     * @param \TechDivision\Import\Repositories\CoreConfigDataRepository  $coreConfigDataRepository  The repository to access the configuration
+     * @param \PDO                                                          $connection                  The PDO connection to use
+     * @param \TechDivision\Import\Assembler\CategoryAssembler              $categoryAssembler           The category assembler instance
+     * @param \TechDivision\Import\Repositories\CategoryRepository          $categoryRepository          The repository to access categories
+     * @param \TechDivision\Import\Repositories\CategoryVarcharRepository   $categoryVarcharRepository   The repository to access category varchar values
+     * @param \TechDivision\Import\Repositories\EavAttributeRepository      $eavAttributeRepository      The repository to access EAV attributes
+     * @param \TechDivision\Import\Repositories\EavAttributeSetRepository   $eavAttributeSetRepository   The repository to access EAV attribute sets
+     * @param \TechDivision\Import\Repositories\EavAttributeGroupRepository $eavAttributeGroupRepository The repository to access EAV attribute groups
+     * @param \TechDivision\Import\Repositories\EavEntityTypeRepository     $eavEntityTypeRepository     The repository to access EAV entity types
+     * @param \TechDivision\Import\Repositories\StoreRepository             $storeRepository             The repository to access stores
+     * @param \TechDivision\Import\Repositories\StoreWebsiteRepository      $storeWebsiteRepository      The repository to access store websites
+     * @param \TechDivision\Import\Repositories\TaxClassRepository          $taxClassRepository          The repository to access tax classes
+     * @param \TechDivision\Import\Repositories\LinkTypeRepository          $linkTypeRepository          The repository to access link types
+     * @param \TechDivision\Import\Repositories\LinkAttributeRepository     $linkAttributeRepository     The repository to access link attributes
+     * @param \TechDivision\Import\Repositories\CoreConfigDataRepository    $coreConfigDataRepository    The repository to access the configuration
      */
     public function __construct(
         \PDO $connection,
@@ -162,6 +171,7 @@ class ImportProcessor implements ImportProcessorInterface
         CategoryVarcharRepository $categoryVarcharRepository,
         EavAttributeRepository $eavAttributeRepository,
         EavAttributeSetRepository $eavAttributeSetRepository,
+        EavAttributeGroupRepository $eavAttributeGroupRepository,
         EavEntityTypeRepository $eavEntityTypeRepository,
         StoreRepository $storeRepository,
         StoreWebsiteRepository $storeWebsiteRepository,
@@ -176,6 +186,7 @@ class ImportProcessor implements ImportProcessorInterface
         $this->setCategoryVarcharRepository($categoryVarcharRepository);
         $this->setEavAttributeRepository($eavAttributeRepository);
         $this->setEavAttributeSetRepository($eavAttributeSetRepository);
+        $this->setEavAttributeGroupRepository($eavAttributeGroupRepository);
         $this->setEavEntityTypeRepository($eavEntityTypeRepository);
         $this->setStoreRepository($storeRepository);
         $this->setStoreWebsiteRepository($storeWebsiteRepository);
@@ -362,6 +373,28 @@ class ImportProcessor implements ImportProcessorInterface
     }
 
     /**
+     * Set's the repository to access EAV attribute groups.
+     *
+     * @param \TechDivision\Import\Repositories\EavAttributeGroupRepository $eavAttributeGroupRepository The repository the access EAV attribute groups
+     *
+     * @return void
+     */
+    public function setEavAttributeGroupRepository($eavAttributeGroupRepository)
+    {
+        $this->eavAttributeGroupRepository = $eavAttributeGroupRepository;
+    }
+
+    /**
+     * Return's the repository to access EAV attribute groups.
+     *
+     * @return \TechDivision\Import\Repositories\EavAttributeGroupRepository The repository instance
+     */
+    public function getEavAttributeGroupRepository()
+    {
+        return $this->eavAttributeGroupRepository;
+    }
+
+    /**
      * Return's the repository to access EAV entity types.
      *
      * @return \TechDivision\Import\Repositories\EavEntityTypeRepository The repository instance
@@ -537,6 +570,19 @@ class ImportProcessor implements ImportProcessorInterface
     public function getEavAttributeSetsByEntityTypeId($entityTypeId)
     {
         return $this->getEavAttributeSetRepository()->findAllByEntityTypeId($entityTypeId);
+    }
+
+    /**
+     * Return's the attribute groups for the passed attribute set ID, whereas the array
+     * is prepared with the attribute group names as keys.
+     *
+     * @param mixed $attributeSetId The EAV attribute set ID to return the attribute groups for
+     *
+     * @return array|boolean The EAV attribute groups for the passed attribute ID
+     */
+    public function getEavAttributeGroupsByAttributeSetId($attributeSetId)
+    {
+        return $this->getEavAttributeGroupRepository()->findAllByAttributeSetId($attributeSetId);
     }
 
     /**
@@ -743,6 +789,7 @@ class ImportProcessor implements ImportProcessorInterface
         // prepare the attribute sets
         $eavAttributes = array();
         $eavAttributeSets = array();
+        $eavAttributeGroups = array();
         foreach ($eavEntityTypes as $eavEntityTypeCode => $eavEntityType) {
             // load the attribute sets for the entity type
             $attributeSets = $this->getEavAttributeSetsByEntityTypeId($entityTypeId = $eavEntityType[MemberNames::ENTITY_TYPE_ID]);
@@ -753,10 +800,16 @@ class ImportProcessor implements ImportProcessorInterface
             foreach ($attributeSets as $attributeSet) {
                 // load the attribute set name
                 $eavAttributeSetName = $attributeSet[MemberNames::ATTRIBUTE_SET_NAME];
+
                 // load the attributes for the attribute set
                 $eavAttributes[$eavEntityTypeCode][$eavAttributeSetName] = $this->getEavAttributesByEntityTypeIdAndAttributeSetName(
                     $entityTypeId,
                     $eavAttributeSetName
+                );
+
+                // load the attribute group for the attribute set
+                $eavAttributeGroups[$eavEntityTypeCode][$eavAttributeSetName] = $this->getEavAttributeGroupsByAttributeSetId(
+                    $attributeSet[MemberNames::ATTRIBUTE_SET_ID]
                 );
             }
         }
@@ -770,9 +823,10 @@ class ImportProcessor implements ImportProcessorInterface
             );
         }
 
-        // initialize the arrays with the EAV attributes, EAV user defined attributes and attribute sets
+        // initialize the arrays with the EAV attributes, EAV user defined attributes and attribute sets/groups
         $globalData[RegistryKeys::EAV_ATTRIBUTES] = $eavAttributes;
         $globalData[RegistryKeys::ATTRIBUTE_SETS] = $eavAttributeSets;
+        $globalData[RegistryKeys::ATTRIBUTE_GROUPS] = $eavAttributeGroups;
         $globalData[RegistryKeys::EAV_USER_DEFINED_ATTRIBUTES] = $eavUserDefinedAttributes;
 
         // initialize the array with the avaliable categories

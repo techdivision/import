@@ -78,6 +78,13 @@ class MemberNames
     const ATTRIBUTE_SET_NAME = 'attribute_set_name';
 
     /**
+     * Name for the member 'attribute_group_name'.
+     *
+     * @var string
+     */
+    const ATTRIBUTE_GROUP_NAME = 'attribute_group_name';
+
+    /**
      * Name for the member 'attribute_id'.
      *
      * @var string

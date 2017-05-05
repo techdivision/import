@@ -96,7 +96,7 @@ class EavAttributeSetRepository extends AbstractRepository
         // load the attributes
         $this->eavAttributeSetsByEntityTypeIdStmt->execute(array($entityTypeId));
 
-        // prepare the array with the attribute set codes as keys
+        // prepare the array with the attribute set names as keys
         foreach ($this->eavAttributeSetsByEntityTypeIdStmt->fetchAll(\PDO::FETCH_ASSOC) as $eavAttributeSet) {
             $eavAttributeSets[$eavAttributeSet[MemberNames::ATTRIBUTE_SET_NAME]] = $eavAttributeSet;
         }
