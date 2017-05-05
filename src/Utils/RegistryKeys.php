@@ -113,6 +113,13 @@ class RegistryKeys
     const ATTRIBUTE_SETS = 'attributeSets';
 
     /**
+     * Key for the registry entry containing the attribute groups.
+     *
+     * @var string
+     */
+    const ATTRIBUTE_GROUPS = 'attributeGroups';
+
+    /**
      * Key for the registry entry containing the eav attributes.
      *
      * @var string

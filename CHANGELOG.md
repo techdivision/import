@@ -1,3 +1,15 @@
+# Version 1.0.0-beta11
+
+## Bugfixes
+
+* None
+
+## Features
+
+* Add repository to load EAV entity attribute data
+* Load EAV entity attribute data on system start up
+* Add getArtefactsByTypeAndEntityId() method to ExportableTrait
+
 # Version 1.0.0-beta10
 
 ## Bugfixes

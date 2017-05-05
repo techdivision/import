@@ -37,6 +37,10 @@
             <argument type="service" id="connection"/>
             <argument>%import.utility.class.name%</argument>
         </service>
+        <service id="import.repository.eav.attribute.group" class="TechDivision\Import\Repositories\EavAttributeGroupRepository">
+            <argument type="service" id="connection"/>
+            <argument>%import.utility.class.name%</argument>
+        </service>
         <service id="import.repository.eav.attribute.option.value" class="TechDivision\Import\Repositories\EavAttributeOptionValueRepository">
             <argument type="service" id="connection"/>
             <argument>%import.utility.class.name%</argument>
@@ -108,6 +112,7 @@
             <argument type="service" id="import.repository.category.varchar"/>
             <argument type="service" id="import.repository.eav.attribute"/>
             <argument type="service" id="import.repository.eav.attribute.set"/>
+            <argument type="service" id="import.repository.eav.attribute.group"/>
             <argument type="service" id="import.repository.eav.entity.type"/>
             <argument type="service" id="import.repository.store"/>
             <argument type="service" id="import.repository.store.website"/>

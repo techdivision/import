@@ -104,6 +104,13 @@ interface ImportProcessorInterface
     public function getEavAttributeSetRepository();
 
     /**
+     * Return's the repository to access EAV attribute groups.
+     *
+     * @return \TechDivision\Import\Repositories\EavAttributeGroupRepository The repository instance
+     */
+    public function getEavAttributeGroupRepository();
+
+    /**
      * Return's the repository to access EAV entity types.
      *
      * @return \TechDivision\Import\Repositories\EavEntityTypeRepository The repository instance
@@ -169,6 +176,16 @@ interface ImportProcessorInterface
      * @return array|boolean The attribute sets for the passed entity type ID
      */
     public function getEavAttributeSetsByEntityTypeId($entityTypeId);
+
+    /**
+     * Return's the attribute groups for the passed attribute set ID, whereas the array
+     * is prepared with the attribute group names as keys.
+     *
+     * @param mixed $attributeSetId The EAV attribute set ID to return the attribute groups for
+     *
+     * @return array|boolean The EAV attribute groups for the passed attribute ID
+     */
+    public function getEavAttributeGroupsByAttributeSetId($attributeSetId);
 
     /**
      * Return's an array with the EAV attributes for the passed entity type ID and attribute set name.
