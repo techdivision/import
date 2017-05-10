@@ -89,16 +89,6 @@ interface ApplicationInterface
     public function getConfiguration();
 
     /**
-     * Return's the Magento Edition specific default libraries. Supported Magento Editions are CE or EE.
-     *
-     * @param string $magentoEdition The Magento Edition to return the libraries for
-     *
-     * @return array The Magento Edition specific default libraries
-     * @throws \Exception Is thrown, if the passed Magento Edition is NOT available
-     */
-    public static function getDefaultLibraries($magentoEdition);
-
-    /**
      * Persist the UUID of the actual import process to the PID file.
      *
      * @return void

@@ -1,3 +1,14 @@
+# Version 1.0.0-beta12
+
+## Bugfixes
+
+* None
+
+## Features
+
+* Add countDatabases() method to ConfigurationInterface
+* Remove getDefaultLibraries() method from ApplicationInterface
+
 # Version 1.0.0-beta11
 
 ## Bugfixes
