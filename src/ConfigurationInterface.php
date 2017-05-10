@@ -219,6 +219,13 @@ interface ConfigurationInterface
     public function clearDatabases();
 
     /**
+     * Return's the number database configurations.
+     *
+     * @return integer The number of database configurations
+     */
+    public function countDatabases();
+
+    /**
      * Add's the passed database configuration.
      *
      * @param \TechDivision\Import\Configuration\DatabaseConfigurationInterface $database The database configuration
