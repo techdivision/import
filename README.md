@@ -90,13 +90,16 @@ The following functionality is already available, for CE and EE
 - [x] Url Rewrites
 - [x] Extended Logging
 - [x] Fine Grained Error Handling
+- [x] Product Attributes
 
 This and many more is, what we're actually working on
 
-- [ ] Product Attributes
+- [ ] Attribute Sets + Groups
 - [ ] Downloadable Products
 - [ ] Grouped Products
 - [ ] Customizable Options
+- [ ] Customers
+- [ ] Customer Attributes
 - [ ] Product Reviews
 - [ ] Valididation
 - [ ] Import Scheduled Product Updates
@@ -108,7 +111,6 @@ This and many more is, what we're actually working on
 
 Planned with future versions, are importer types for
 
-- [ ] Customers
 - [ ] Advanced Pricing
 
 And finally the project will provide exporting functionality, but that has to be discussed.
@@ -138,6 +140,8 @@ These are the M2IF core libraries for the Magento 2 Communit Edition (CE).
 * [import-product-variant](https://github.com/techdivision/import-product-variant) - Provides configurable product import functionality
 * [import-category](https://github.com/techdivision/import-category) - Provides category import functionality
 * [import-attribute](https://github.com/techdivision/import-attribute) - Provides attribute import functionality
+
+> Libraries like import-attribute will also work with the EE, so there is not separate implementation.
 
 ### Core Libraries EE
 
