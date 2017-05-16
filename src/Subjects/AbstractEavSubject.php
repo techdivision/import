@@ -233,11 +233,8 @@ abstract class AbstractEavSubject extends AbstractSubject implements EavSubjectI
 
         // throw an exception, if not
         throw new \Exception(
-            sprintf(
-                'Found invalid attribute set name %s in file %s on line %d',
-                $attributeSetName,
-                $this->getFilename(),
-                $this->getLineNumber()
+            $this->appendExceptionSuffix(
+                sprintf('Found invalid attribute set name "%s"', $attributeSetName)
             )
         );
     }
@@ -260,15 +257,19 @@ abstract class AbstractEavSubject extends AbstractSubject implements EavSubjectI
             if (isset($attributes[$attributeSetName = $this->attributeSet[MemberNames::ATTRIBUTE_SET_NAME]])) {
                 return $attributes[$attributeSetName];
             }
+
+            // throw an exception, if not
+            throw new \Exception(
+                $this->appendExceptionSuffix(
+                    sprintf('Found invalid attribute set name "%s"', $attributeSetName)
+                )
+            );
         }
 
         // throw an exception, if not
         throw new \Exception(
-            sprintf(
-                'Found invalid attribute set name "%s" in file %s on line %d',
-                $attributeSetName,
-                $this->getFilename(),
-                $this->getLineNumber()
+            $this->appendExceptionSuffix(
+                sprintf('Found invalid entity type code "%s"', $entityTypeCode)
             )
         );
     }
@@ -287,7 +288,11 @@ abstract class AbstractEavSubject extends AbstractSubject implements EavSubjectI
         }
 
         // throw an exception if an unknown entity type has been passed
-        throw new \Exception(sprintf('Unknown entity type code %s', $entityTypeCode));
+        throw new \Exception(
+            $this->appendExceptionSuffix(
+                sprintf('Unknown entity type code "%s"', $entityTypeCode)
+            )
+        );
     }
 
     /**
@@ -311,11 +316,8 @@ abstract class AbstractEavSubject extends AbstractSubject implements EavSubjectI
 
         // throw an exception if the requested attribute is not available
         throw new \Exception(
-            sprintf(
-                'Can\'t load attribute with code "%s" in file %s and line %d',
-                $attributeCode,
-                $this->getFilename(),
-                $this->getLineNumber()
+            $this->appendExceptionSuffix(
+                sprintf('Can\'t load attribute with code "%s"', $attributeCode)
             )
         );
     }
