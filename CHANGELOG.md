@@ -1,3 +1,13 @@
+# Version 1.0.0-beta13
+
+## Bugfixes
+
+* None
+
+## Features
+
+* Optimize exception creation in AbstractEavSubject
+
 # Version 1.0.0-beta12
 
 ## Bugfixes
