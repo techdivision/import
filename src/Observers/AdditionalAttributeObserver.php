@@ -21,6 +21,7 @@
 namespace TechDivision\Import\Observers;
 
 use TechDivision\Import\Utils\ColumnKeys;
+use Doctrine\Common\Annotations\Annotation\Attributes;
 
 /**
  * Observer that prepares the additional product attribues found in the CSV file
@@ -66,18 +67,13 @@ class AdditionalAttributeObserver extends AbstractObserver
 
         // query whether or not the row has additional attributes
         if ($additionalAttributes = $this->getValue(ColumnKeys::ADDITIONAL_ATTRIBUTES)) {
-            // query if the additional attributes have a value, at least
-            if (strstr($additionalAttributes, '=') === false) {
-                return;
-            }
-
             // explode the additional attributes
-            $additionalAttributes = explode(',', $additionalAttributes);
+            $additionalAttributes = $this->parseAdditionaAttributes($additionalAttributes);
 
             // iterate over the attributes and append them to the row
             foreach ($additionalAttributes as $additionalAttribute) {
                 // explode attribute code/option value from the attribute
-                list ($attributeCode, $optionValue) = explode('=', $additionalAttribute);
+                list ($attributeCode, $optionValue) = $this->explode($additionalAttribute, '=');
 
                 // try to load the appropriate key for the value
                 if (!$this->hasHeader($attributeCode)) {
@@ -102,5 +98,28 @@ class AdditionalAttributeObserver extends AbstractObserver
                 }
             }
         }
+    }
+
+    /**
+     * Parses the string with the additional attributes as CSV and returns an array.
+     *
+     * @param string $additionalAttributes The string with the additional attributes
+     *
+     * @return array The array with the parsed
+     * @link http://php.net/manual/de/function.str-getcsv.php
+     */
+    protected function parseAdditionaAttributes($additionalAttributes)
+    {
+
+        // load the global configuration
+        $configuration = $this->getSubject()->getConfiguration()->getConfiguration();
+
+        // initializet delimiter, enclosure and escape char
+        $delimiter = $configuration->getDelimiter();
+        $enclosure = $configuration->getEnclosure();
+        $escape = $configuration->getEscape();
+
+        // parse and return the found data as array
+        return str_getcsv($additionalAttributes, $delimiter, $enclosure, $escape);
     }
 }
