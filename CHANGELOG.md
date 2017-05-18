@@ -1,13 +1,23 @@
+# Version 1.0.0-beta15
+
+## Bugfixes
+
+* Replace method to load attribute option values
+
+## Features
+
+* None
+
 # Version 1.0.0-beta14
 
 ## Bugfixes
 
-* None
+* Fixed issue when additional attributes contain a comma (,)
+* Fixed issue when store view option values are missing
 
 ## Features
 
-* Fixed issue when additional attributes contain a comma (,)
-* Fixed issue when store view option values are missing
+* None
 
 # Version 1.0.0-beta13
 
