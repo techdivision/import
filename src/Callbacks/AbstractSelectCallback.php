@@ -49,7 +49,7 @@ abstract class AbstractSelectCallback extends AbstractCallback
     {
 
         // load the store ID
-        $storeId = $this->getRowStoreId(StoreViewCodes::ADMIN);
+        $storeId = $this->getStoreId(StoreViewCodes::ADMIN);
 
         // try to load the attribute option value and return the option ID
         if ($eavAttributeOptionValue = $this->getEavAttributeOptionValueByOptionValueAndStoreId($attributeValue, $storeId)) {
@@ -98,20 +98,6 @@ abstract class AbstractSelectCallback extends AbstractCallback
                 )
             )
         );
-    }
-
-    /**
-     * Return's the store ID of the actual row, or of the default store
-     * if no store view code is set in the CSV file.
-     *
-     * @param string|null $default The default store view code to use, if no store view code is set in the CSV file
-     *
-     * @return integer The ID of the actual store
-     * @throws \Exception Is thrown, if the store with the actual code is not available
-     */
-    protected function getRowStoreId($default = null)
-    {
-        return $this->getSubject()->getRowStoreId($default);
     }
 
     /**

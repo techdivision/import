@@ -1048,6 +1048,33 @@ abstract class AbstractSubject implements SubjectInterface
     }
 
     /**
+     * Return's the store ID of the store with the passed store view code
+     *
+     * @param string $storeViewCode The store view code to return the store ID for
+     *
+     * @return integer The ID of the store with the passed ID
+     * @throws \Exception Is thrown, if the store with the actual code is not available
+     */
+    public function getStoreId($storeViewCode)
+    {
+
+        // query whether or not, the requested store is available
+        if (isset($this->stores[$storeViewCode])) {
+            return (integer) $this->stores[$storeViewCode][MemberNames::STORE_ID];
+        }
+
+        // throw an exception, if not
+        throw new \Exception(
+            sprintf(
+                'Found invalid store view code %s in file %s on line %d',
+                $storeViewCode,
+                $this->getFilename(),
+                $this->getLineNumber()
+            )
+        );
+    }
+
+    /**
      * Return's the store ID of the actual row, or of the default store
      * if no store view code is set in the CSV file.
      *
@@ -1066,22 +1093,7 @@ abstract class AbstractSubject implements SubjectInterface
         }
 
         // load the store view code the create the product/attributes for
-        $storeViewCode = $this->getStoreViewCode($default);
-
-        // query whether or not, the requested store is available
-        if (isset($this->stores[$storeViewCode])) {
-            return (integer) $this->stores[$storeViewCode][MemberNames::STORE_ID];
-        }
-
-        // throw an exception, if not
-        throw new \Exception(
-            sprintf(
-                'Found invalid store view code %s in file %s on line %d',
-                $storeViewCode,
-                $this->getFilename(),
-                $this->getLineNumber()
-            )
-        );
+        return $this->getStoreId($this->getStoreViewCode($default));
     }
 
     /**

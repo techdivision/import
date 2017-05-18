@@ -360,6 +360,19 @@ abstract class AbstractObserver implements ObserverInterface
     }
 
     /**
+     * Return's the store ID of the store with the passed store view code
+     *
+     * @param string $storeViewCode The store view code to return the store ID for
+     *
+     * @return integer The ID of the store with the passed ID
+     * @throws \Exception Is thrown, if the store with the actual code is not available
+     */
+    protected function getStoreId($storeViewCode)
+    {
+        return $this->getSubject()->getStoreId($storeViewCode);
+    }
+
+    /**
      * Return's the store ID of the actual row, or of the default store
      * if no store view code is set in the CSV file.
      *

@@ -1,3 +1,14 @@
+# Version 1.0.0-beta14
+
+## Bugfixes
+
+* None
+
+## Features
+
+* Fixed issue when additional attributes contain a comma (,)
+* Fixed issue when store view option values are missing
+
 # Version 1.0.0-beta13
 
 ## Bugfixes
