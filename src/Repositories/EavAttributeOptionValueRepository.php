@@ -20,6 +20,8 @@
 
 namespace TechDivision\Import\Repositories;
 
+use TechDivision\Import\Utils\MemberNames;
+
 /**
  * Repository implementation to load EAV attribute option value data.
  *
@@ -40,11 +42,11 @@ class EavAttributeOptionValueRepository extends AbstractRepository
     protected $cache = array();
 
     /**
-     * The prepared statement to load the attribute option value by its value and store ID.
+     * The prepared statement to load an existing EAV attribute option value by its attribute code, store ID and value.
      *
      * @var \PDOStatement
      */
-    protected $eavAttributeOptionValueStmt;
+    protected $eavAttributeOptionValueByAttributeCodeAndStoreIdAndValueStmt;
 
     /**
      * Initializes the repository's prepared statements.
@@ -58,28 +60,30 @@ class EavAttributeOptionValueRepository extends AbstractRepository
         $utilityClassName = $this->getUtilityClassName();
 
         // initialize the prepared statements
-        $this->eavAttributeOptionValueStmt = $this->getConnection()->prepare($utilityClassName::EAV_ATTRIBUTE_OPTION_VALUE);
+        $this->eavAttributeOptionValueByAttributeCodeAndStoreIdAndValueStmt = $this->getConnection()->prepare($utilityClassName::EAV_ATTRIBUTE_OPTION_VALUE_BY_ATTRIBUTE_CODE_AND_STORE_ID_AND_VALUE);
     }
 
     /**
-     * Return's the attribute option value with the passed value and store ID.
+     * Load's and return's the EAV attribute option value with the passed code, store ID and value.
      *
-     * @param mixed   $value   The option value
-     * @param integer $storeId The ID of the store
+     * @param string  $attributeCode The code of the EAV attribute option to load
+     * @param integer $storeId       The store ID of the attribute option to load
+     * @param string  $value         The value of the attribute option to load
      *
-     * @return array|boolean The attribute option value instance or FALSE if the value is NOT available
+     * @return array The EAV attribute option value
      */
-    public function findEavAttributeOptionValueByOptionValueAndStoreId($value, $storeId)
+    public function findOneByAttributeCodeAndStoreIdAndValue($attributeCode, $storeId, $value)
     {
 
-        // query whether or not we've already loaded the value
-        if (!isset($this->cache[$value][$storeId])) {
-            // try to load the attribute option value
-            $this->eavAttributeOptionValueStmt->execute(array($value, $storeId));
-            $this->cache[$value][$storeId] = $this->eavAttributeOptionValueStmt->fetch();
-        }
+        // the parameters of the EAV attribute option to load
+        $params = array(
+            MemberNames::ATTRIBUTE_CODE => $attributeCode,
+            MemberNames::STORE_ID       => $storeId,
+            MemberNames::VALUE          => $value
+        );
 
-        // return the value from the cache
-        return $this->cache[$value][$storeId];
+        // load and return the EAV attribute option value with the passed parameters
+        $this->eavAttributeOptionValueByAttributeCodeAndStoreIdAndValueStmt->execute($params);
+        return $this->eavAttributeOptionValueByAttributeCodeAndStoreIdAndValueStmt->fetch(\PDO::FETCH_ASSOC);
     }
 }

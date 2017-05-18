@@ -52,7 +52,7 @@ abstract class AbstractSelectCallback extends AbstractCallback
         $storeId = $this->getStoreId(StoreViewCodes::ADMIN);
 
         // try to load the attribute option value and return the option ID
-        if ($eavAttributeOptionValue = $this->getEavAttributeOptionValueByOptionValueAndStoreId($attributeValue, $storeId)) {
+        if ($eavAttributeOptionValue = $this->loadEavAttributeOptionValueByAttributeCodeAndStoreIdAndValue($attributeCode, $storeId, $attributeValue)) {
             return $eavAttributeOptionValue[MemberNames::OPTION_ID];
         }
 
@@ -101,15 +101,16 @@ abstract class AbstractSelectCallback extends AbstractCallback
     }
 
     /**
-     * Return's the attribute option value with the passed value and store ID.
+     * Load's and return's the EAV attribute option value with the passed code, store ID and value.
      *
-     * @param mixed   $value   The option value
-     * @param integer $storeId The ID of the store
+     * @param string  $attributeCode The code of the EAV attribute option to load
+     * @param integer $storeId       The store ID of the attribute option to load
+     * @param string  $value         The value of the attribute option to load
      *
-     * @return array|boolean The attribute option value instance
+     * @return array The EAV attribute option value
      */
-    protected function getEavAttributeOptionValueByOptionValueAndStoreId($value, $storeId)
+    protected function loadEavAttributeOptionValueByAttributeCodeAndStoreIdAndValue($attributeCode, $storeId, $value)
     {
-        return $this->getSubject()->getEavAttributeOptionValueByOptionValueAndStoreId($value, $storeId);
+        return $this->getSubject()->loadEavAttributeOptionValueByAttributeCodeAndStoreIdAndValue($attributeCode, $storeId, $value);
     }
 }

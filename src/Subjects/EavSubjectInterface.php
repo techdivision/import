@@ -117,12 +117,13 @@ interface EavSubjectInterface
     public function getEavAttributeByAttributeCode($attributeCode);
 
     /**
-     * Return's the attribute option value with the passed value and store ID.
+     * Load's and return's the EAV attribute option value with the passed code, store ID and value.
      *
-     * @param mixed   $value   The option value
-     * @param integer $storeId The ID of the store
+     * @param string  $attributeCode The code of the EAV attribute option to load
+     * @param integer $storeId       The store ID of the attribute option to load
+     * @param string  $value         The value of the attribute option to load
      *
-     * @return array|boolean The attribute option value instance
+     * @return array The EAV attribute option value
      */
-    public function getEavAttributeOptionValueByOptionValueAndStoreId($value, $storeId);
+    public function loadEavAttributeOptionValueByAttributeCodeAndStoreIdAndValue($attributeCode, $storeId, $value);
 }
