@@ -65,6 +65,26 @@ trait AttributeObserverTrait
     protected $attributeValue;
 
     /**
+     * The attribute code that has to be processed.
+     *
+     * @return string The attribute code
+     */
+    public function getAttributeCode()
+    {
+        return $this->attributeCode;
+    }
+
+    /**
+     * The attribute value that has to be processed.
+     *
+     * @return string The attribute value
+     */
+    public function getAttributeValue()
+    {
+        return $this->attributeValue;
+    }
+
+    /**
      * Process the observer's business logic.
      *
      * @return void
@@ -195,8 +215,9 @@ trait AttributeObserverTrait
         $callbacks = $this->getCallbacksByType($this->attributeCode);
 
         // invoke the pre-cast callbacks
+        /** @var \TechDivision\Import\Callbacks\CallbackInterface $callback */
         foreach ($callbacks as $callback) {
-            $this->attributeValue = $callback->handle($this->attributeCode, $this->attributeValue);
+            $this->attributeValue = $callback->handle($this);
         }
 
         // query whether or not the attribute has been be processed by the callbacks

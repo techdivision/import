@@ -90,9 +90,7 @@ class CallbackVisitor
             if (is_array($callback)) {
                 $this->prepareCallbacks($subject, $callback, $type);
             } else {
-                $callbackInstance = $this->container->get($callback);
-                $callbackInstance->setSubject($subject);
-                $subject->registerCallback($callbackInstance, $type);
+                $subject->registerCallback($this->container->get($callback), $type);
             }
         }
     }

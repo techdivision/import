@@ -1,7 +1,7 @@
 <?php
 
 /**
- * TechDivision\Import\Callbacks\CallbackInterface
+ * TechDivision\Import\Observers\AttributeCodeAndValueAwareObserverInterface
  *
  * NOTICE OF LICENSE
  *
@@ -18,13 +18,10 @@
  * @link      http://www.techdivision.com
  */
 
-namespace TechDivision\Import\Callbacks;
-
-use TechDivision\Import\Observers\ObserverInterface;
-use TechDivision\Import\Observers\AttributeCodeAndValueAwareObserverInterface;
+namespace TechDivision\Import\Observers;
 
 /**
- * interface for all callback implementations.
+ * Interface for all attribute code and value aware observer implementations.
  *
  * @author    Tim Wagner <t.wagner@techdivision.com>
  * @copyright 2016 TechDivision GmbH <info@techdivision.com>
@@ -32,15 +29,20 @@ use TechDivision\Import\Observers\AttributeCodeAndValueAwareObserverInterface;
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
  */
-interface CallbackInterface
+interface AttributeCodeAndValueAwareObserverInterface extends ObserverInterface
 {
 
     /**
-     * Will be invoked by a observer it has been registered for.
+     * The attribute code that has to be processed.
      *
-     * @param \TechDivision\Import\Observers\ObserverInterface $observer The observer
-     *
-     * @return mixed The modified value
+     * @return string The attribute code
      */
-    public function handle(AttributeCodeAndValueAwareObserverInterface $observer);
+    public function getAttributeCode();
+
+    /**
+     * The attribute value that has to be processed.
+     *
+     * @return string The attribute value
+     */
+    public function getAttributeValue();
 }

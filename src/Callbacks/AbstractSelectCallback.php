@@ -23,6 +23,7 @@ namespace TechDivision\Import\Callbacks;
 use TechDivision\Import\Utils\MemberNames;
 use TechDivision\Import\Utils\RegistryKeys;
 use TechDivision\Import\Utils\StoreViewCodes;
+use TechDivision\Import\Observers\AttributeCodeAndValueAwareObserverInterface;
 
 /**
  * A callback implementation that converts the passed select value.
@@ -39,14 +40,19 @@ abstract class AbstractSelectCallback extends AbstractCallback
     /**
      * Will be invoked by a observer it has been registered for.
      *
-     * @param string $attributeCode  The code of the attribute the passed value is for
-     * @param mixed  $attributeValue The value to handle
+     * @param \TechDivision\Import\Observers\ObserverInterface $observer The observer
      *
-     * @return mixed|null The modified value
-     * @see \TechDivision\Import\Callbacks\CallbackInterface::handle()
+     * @return mixed The modified value
      */
-    public function handle($attributeCode, $attributeValue)
+    public function handle(AttributeCodeAndValueAwareObserverInterface $observer)
     {
+
+        // set the observer
+        $this->setObserver($observer);
+
+        // load the attribute code and value
+        $attributeCode = $observer->getAttributeCode();
+        $attributeValue = $observer->getAttributeValue();
 
         // load the store ID
         $storeId = $this->getStoreId(StoreViewCodes::ADMIN);

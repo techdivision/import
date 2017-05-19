@@ -23,6 +23,7 @@ namespace TechDivision\Import\Observers;
 use TechDivision\Import\Utils\ScopeKeys;
 use TechDivision\Import\Utils\LoggerKeys;
 use TechDivision\Import\Utils\EntityStatus;
+use TechDivision\Import\Subjects\SubjectInterface;
 
 /**
  * An abstract observer implementation.
@@ -46,21 +47,9 @@ abstract class AbstractObserver implements ObserverInterface
     /**
      * The obeserver's subject instance.
      *
-     * @var object
+     * @var \TechDivision\Import\Subjects\SubjectInterface
      */
     protected $subject;
-
-    /**
-     * Initializes the observer with the passed subject instance.
-     *
-     * @param object|null $subject The observer's subject instance
-     */
-    public function __construct($subject = null)
-    {
-        if ($subject != null) {
-            $this->setSubject($subject);
-        }
-    }
 
     /**
      * Set's the obeserver's subject instance to initialize the observer with.

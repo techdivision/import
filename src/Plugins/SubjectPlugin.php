@@ -23,6 +23,7 @@ namespace TechDivision\Import\Plugins;
 use TechDivision\Import\Utils\BunchKeys;
 use TechDivision\Import\Utils\RegistryKeys;
 use TechDivision\Import\ApplicationInterface;
+use TechDivision\Import\App\Utils\SynteticServiceKeys;
 use TechDivision\Import\Callbacks\CallbackVisitor;
 use TechDivision\Import\Observers\ObserverVisitor;
 use TechDivision\Import\Exceptions\LineNotFoundException;
@@ -30,6 +31,7 @@ use TechDivision\Import\Exceptions\MissingOkFileException;
 use TechDivision\Import\Subjects\ExportableSubjectInterface;
 use TechDivision\Import\Configuration\SubjectConfigurationInterface;
 use TechDivision\Import\Configuration\PluginConfigurationInterface;
+use TechDivision\Import\Subjects\SubjectInterface;
 
 /**
  * Plugin that processes the subjects.
@@ -200,6 +202,9 @@ class SubjectPlugin extends AbstractPlugin
         // initialize the bunch number
         $bunches = 0;
 
+        // load the container instance from the application
+        $container = $this->getApplication()->getContainer();
+
         // iterate through all CSV files and process the subjects
         foreach ($files as $pathname) {
             // query whether or not that the file is part of the actual bunch
@@ -264,16 +269,30 @@ class SubjectPlugin extends AbstractPlugin
     }
 
     /**
-     * Factory method to create new handler instances.
+     * Factory method to create new subject instance.
      *
      * @param \TechDivision\Import\Configuration\SubjectConfigurationInterface $subjectConfiguration The subject configuration
      *
-     * @return object The handler instance
+     * @return \ TechDivision\Import\Subjects\SubjectInterface The subject instance
      */
     protected function subjectFactory(SubjectConfigurationInterface $subjectConfiguration)
     {
-        $this->getApplication()->getContainer()->set(sprintf('configuration.%s', $id = $subjectConfiguration->getId()), $subjectConfiguration);
-        return $this->getApplication()->getContainer()->get($id);
+
+        // load the DI container instance
+        $container = $this->getApplication()->getContainer();
+
+        // set the configuration
+        $container->set(
+            sprintf(
+                '%s.%s',
+                SynteticServiceKeys::CONFIGURATION,
+                $id = $subjectConfiguration->getId()
+            ),
+            $subjectConfiguration
+        );
+
+        // return the subject instance
+        return $container->get($id);
     }
 
     /**

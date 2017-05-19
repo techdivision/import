@@ -90,9 +90,7 @@ class ObserverVisitor
             if (is_array($observer)) {
                 $this->prepareObservers($subject, $observer, $type);
             } else {
-                $observerInstance = $this->container->get($observer);
-                $observerInstance->setSubject($subject);
-                $subject->registerObserver($observerInstance, $type);
+                $subject->registerObserver($this->container->get($observer), $type);
             }
         }
     }

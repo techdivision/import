@@ -21,6 +21,7 @@
 namespace TechDivision\Import\Callbacks;
 
 use TechDivision\Import\Utils\RegistryKeys;
+use TechDivision\Import\Observers\AttributeCodeAndValueAwareObserverInterface;
 
 /**
  * A callback implementation that converts the passed boolean value.
@@ -51,14 +52,19 @@ abstract class AbstractBooleanCallback extends AbstractCallback
     /**
      * Will be invoked by a observer it has been registered for.
      *
-     * @param string $attributeCode  The code of the attribute the passed value is for
-     * @param mixed  $attributeValue The value to handle
+     * @param \TechDivision\Import\Observers\ObserverInterface $observer The observer
      *
      * @return mixed The modified value
-     * @see \TechDivision\Import\Callbacks\CallbackInterface::handle()
      */
-    public function handle($attributeCode, $attributeValue)
+    public function handle(AttributeCodeAndValueAwareObserverInterface $observer)
     {
+
+        // set the observer
+        $this->setObserver($observer);
+
+        // load the attribute code and value
+        $attributeCode = $observer->getAttributeCode();
+        $attributeValue = $observer->getAttributeValue();
 
         // query whether or not, the passed value can be mapped to a boolean representation
         if (isset($this->booleanValues[strtolower($attributeValue)])) {
