@@ -952,9 +952,9 @@ abstract class AbstractSubject implements SubjectInterface
                     break;
                 }
 
-                // if not, process the next observer
+                // if not, set the subject and process the observer
                 if ($observer instanceof ObserverInterface) {
-                    $this->row = $observer->handle($this->row);
+                    $this->row = $observer->handle($this);
                 }
             }
         }

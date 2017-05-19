@@ -20,6 +20,8 @@
 
 namespace TechDivision\Import\Observers;
 
+use TechDivision\Import\Subjects\SubjectInterface;
+
 /**
  * Observer that creates/updates the EAV attributes.
  *
@@ -29,7 +31,7 @@ namespace TechDivision\Import\Observers;
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
  */
-abstract class AbstractAttributeObserver extends AbstractObserver
+abstract class AbstractAttributeObserver extends AbstractObserver implements AttributeCodeAndValueAwareObserverInterface
 {
 
     /**
@@ -42,16 +44,17 @@ abstract class AbstractAttributeObserver extends AbstractObserver
     /**
      * Will be invoked by the action on the events the listener has been registered for.
      *
-     * @param array $row The row to handle
+     * @param \TechDivision\Import\Subjects\SubjectInterface $subject The subject instance
      *
      * @return array The modified row
-     * @see \TechDivision\Import\Observers\ObserverInterface::handle()
+     * @see \TechDivision\Import\Product\Observers\ImportObserverInterface::handle()
      */
-    public function handle(array $row)
+    public function handle(SubjectInterface $subject)
     {
 
         // initialize the row
-        $this->setRow($row);
+        $this->setSubject($subject);
+        $this->setRow($subject->getRow());
 
         // process the functionality and return the row
         $this->process();

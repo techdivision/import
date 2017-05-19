@@ -20,6 +20,8 @@
 
 namespace TechDivision\Import\Observers;
 
+use TechDivision\Import\Subjects\SubjectInterface;
+
 /**
  * interface for all observer implementations.
  *
@@ -33,11 +35,28 @@ interface ObserverInterface
 {
 
     /**
+     * Will be invoked by the action on the events the listener has been registered for.
+     *
+     * @param \TechDivision\Import\Subjects\SubjectInterface $subject The subject instance
+     *
+     * @return array The modified row
+     * @see \TechDivision\Import\Product\Observers\ImportObserverInterface::handle()
+     */
+    public function handle(SubjectInterface $subject);
+
+    /**
      * Set's the obeserver's subject instance to initialize the observer with.
      *
-     * @param object $subject The observer's subject
+     * @param \TechDivision\Import\Subjects\SubjectInterface $subject The observer's subject
      *
      * @return void
      */
     public function setSubject($subject);
+
+    /**
+     * Return's the observer's subject instance.
+     *
+     * @return \TechDivision\Import\Subjects\SubjectInterface The observer's subject instance
+     */
+    public function getSubject();
 }
