@@ -21,6 +21,8 @@
 namespace TechDivision\Import\Assembler;
 
 use TechDivision\Import\Utils\MemberNames;
+use TechDivision\Import\Repositories\CategoryRepository;
+use TechDivision\Import\Repositories\CategoryVarcharRepository;
 
 /**
  * Repository implementation to assemble category data.
@@ -54,8 +56,10 @@ class CategoryAssembler
      * @param \TechDivision\Import\Repositories\CategoryRepository        $categoryRepository        The repository to access categories
      * @param \TechDivision\Import\Repositories\CategoryVarcharRepository $categoryVarcharRepository The repository instance
      */
-    public function __construct($categoryRepository, $categoryVarcharRepository)
-    {
+    public function __construct(
+        CategoryRepository $categoryRepository,
+        CategoryVarcharRepository $categoryVarcharRepository
+    ) {
         $this->categoryRepository = $categoryRepository;
         $this->categoryVarcharRepository = $categoryVarcharRepository;
     }
