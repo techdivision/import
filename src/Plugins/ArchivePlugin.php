@@ -75,12 +75,31 @@ class ArchivePlugin extends AbstractPlugin
         // log the number of files that has to be archived
         $this->getSystemLogger()->info(sprintf('Found %d files to archive in directory %s', $bunches, $sourceDir));
 
-        // initialize the directory to create the archive in
-        $archiveDir = sprintf('%s/%s', $this->getConfiguration()->getTargetDir(), $this->getConfiguration()->getArchiveDir());
+        // try to load the archive directory
+        $archiveDir = $this->getConfiguration()->getArchiveDir();
 
-        // query whether or not the directory already exists
+        // query whether or not the specified archive directory already exists
+        if ($archiveDir === null) {
+            // try to initialize a default archive directory by concatenating 'archive' to the target directory
+            $archiveDir = sprintf('%s/archive', $this->getConfiguration()->getTargetDir());
+        }
+
+        // query whether or not the archive directory already exists
         if (!is_dir($archiveDir)) {
-            mkdir($archiveDir);
+            // create the archive directory if possible
+            if (mkdir($archiveDir, 0755, true)) {
+                $this->getSystemLogger()->info(sprintf('Successfully created archived archive directory %s', $archiveDir));
+            } else {
+                // initialize the message that the archive directory can not be created
+                $message = sprintf('Can\'t create archive directory %s', $archiveDir);
+
+                // log a message if we're in debug mode, else throw an exception
+                if ($this->getConfiguration()->isDebugMode()) {
+                    $this->getSystemLogger()->error($message);
+                } else {
+                    throw new \Exception($message);
+                }
+            }
         }
 
         // create the ZIP archive

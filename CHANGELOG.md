@@ -1,3 +1,13 @@
+# Version 1.0.0-beta18
+
+## Bugfixes
+
+* None
+
+## Features
+
+* Refactor ArchivePlugin to also support specify an absolut path for the archive directory
+
 # Version 1.0.0-beta17
 
 ## Bugfixes
