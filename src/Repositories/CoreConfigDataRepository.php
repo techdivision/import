@@ -20,7 +20,9 @@
 
 namespace TechDivision\Import\Repositories;
 
+use TechDivision\Import\Utils\SqlStatementsInterface;
 use TechDivision\Import\Utils\Generators\GeneratorInterface;
+use TechDivision\Import\Connection\ConnectionInterface;
 
 /**
  * Repository implementation to load the Magento 2 configuration data.
@@ -53,15 +55,15 @@ class CoreConfigDataRepository extends AbstractRepository
      * .
      *
      * @param \TechDivision\Import\Utils\Generators\GeneratorInterface $coreConfigDataUidGenerator The UID generator for the core config data
-     * @param \PDO|null                                                $connection                 The PDO connection instance
-     * @param string|null                                              $utilityClassName           The utility class name
+     * @param \TechDivision\Import\Connection\ConnectionInterface      $connection                 The connection instance
+     * @param \TechDivision\Import\Utils\SqlStatementsInterface        $utilityClass               The utility class instance
      */
     public function __construct(
         GeneratorInterface $coreConfigDataUidGenerator,
-        \PDO $connection = null,
-        $utilityClassName = null
+        ConnectionInterface $connection,
+        SqlStatementsInterface $utilityClass
     ) {
-        parent::__construct($connection, $utilityClassName);
+        parent::__construct($connection, $utilityClass);
         $this->coreConfigDataUidGenerator = $coreConfigDataUidGenerator;
     }
 
@@ -77,7 +79,8 @@ class CoreConfigDataRepository extends AbstractRepository
         $utilityClassName = $this->getUtilityClassName();
 
         // initialize the prepared statements
-        $this->coreConfigDataStmt = $this->getConnection()->prepare($utilityClassName::CORE_CONFIG_DATA);
+        $this->coreConfigDataStmt =
+            $this->getConnection()->prepare($this->getUtilityClass()->find($utilityClassName::CORE_CONFIG_DATA));
     }
 
     /**

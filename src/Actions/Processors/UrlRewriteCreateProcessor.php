@@ -48,7 +48,7 @@ class UrlRewriteCreateProcessor extends AbstractCreateProcessor
 
         // return the array with the SQL statements that has to be prepared
         return array(
-            $utilityClassName::CREATE_URL_REWRITE => $utilityClassName::CREATE_URL_REWRITE
+            $utilityClassName::CREATE_URL_REWRITE => $this->getUtilityClass()->find($utilityClassName::CREATE_URL_REWRITE)
         );
     }
 

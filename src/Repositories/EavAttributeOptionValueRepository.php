@@ -60,7 +60,8 @@ class EavAttributeOptionValueRepository extends AbstractRepository
         $utilityClassName = $this->getUtilityClassName();
 
         // initialize the prepared statements
-        $this->eavAttributeOptionValueByAttributeCodeAndStoreIdAndValueStmt = $this->getConnection()->prepare($utilityClassName::EAV_ATTRIBUTE_OPTION_VALUE_BY_ATTRIBUTE_CODE_AND_STORE_ID_AND_VALUE);
+        $this->eavAttributeOptionValueByAttributeCodeAndStoreIdAndValueStmt =
+            $this->getConnection()->prepare($this->getUtilityClass()->find($utilityClassName::EAV_ATTRIBUTE_OPTION_VALUE_BY_ATTRIBUTE_CODE_AND_STORE_ID_AND_VALUE));
     }
 
     /**

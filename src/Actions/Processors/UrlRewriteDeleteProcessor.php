@@ -48,9 +48,9 @@ class UrlRewriteDeleteProcessor extends AbstractDeleteProcessor
 
         // return the array with the SQL statements that has to be prepared
         return array(
-            $utilityClassName::DELETE_URL_REWRITE => $utilityClassName::DELETE_URL_REWRITE,
-            $utilityClassName::DELETE_URL_REWRITE_BY_SKU => $utilityClassName::DELETE_URL_REWRITE_BY_SKU,
-            $utilityClassName::DELETE_URL_REWRITE_BY_PATH => $utilityClassName::DELETE_URL_REWRITE_BY_PATH
+            $utilityClassName::DELETE_URL_REWRITE => $this->getUtilityClass()->find($utilityClassName::DELETE_URL_REWRITE),
+            $utilityClassName::DELETE_URL_REWRITE_BY_SKU => $this->getUtilityClass()->find($utilityClassName::DELETE_URL_REWRITE_BY_SKU),
+            $utilityClassName::DELETE_URL_REWRITE_BY_PATH => $this->getUtilityClass()->find($utilityClassName::DELETE_URL_REWRITE_BY_PATH)
         );
     }
 }

@@ -60,7 +60,8 @@ class EavEntityTypeRepository extends AbstractRepository
         $utilityClassName = $this->getUtilityClassName();
 
         // initialize the prepared statements
-        $this->eavEntityTypeStmt = $this->getConnection()->prepare($utilityClassName::EAV_ENTITY_TYPES);
+        $this->eavEntityTypeStmt =
+            $this->getConnection()->prepare($this->getUtilityClass()->find($utilityClassName::EAV_ENTITY_TYPES));
     }
 
     /**

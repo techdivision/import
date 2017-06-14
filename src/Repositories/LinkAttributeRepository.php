@@ -51,7 +51,8 @@ class LinkAttributeRepository extends AbstractRepository
         $utilityClassName = $this->getUtilityClassName();
 
         // initialize the prepared statements
-        $this->linkAttributesStmt = $this->getConnection()->prepare($utilityClassName::LINK_ATTRIBUTES);
+        $this->linkAttributesStmt =
+            $this->getConnection()->prepare($this->getUtilityClass()->find($utilityClassName::LINK_ATTRIBUTES));
     }
 
     /**

@@ -20,6 +20,9 @@
 
 namespace TechDivision\Import\Actions\Processors;
 
+use TechDivision\Import\Utils\SqlStatementsInterface;
+use TechDivision\Import\Connection\ConnectionInterface;
+
 /**
  * An abstract CRUD processor implementation.
  *
@@ -33,46 +36,80 @@ abstract class AbstractProcessor implements ProcessorInterface
 {
 
     /**
-     * The utility class name with the SQL statements to use.
-     *
-     * @var string
-     */
-    protected $utilityClassName;
-
-    /**
-     * The PDO connection instance.
-     *
-     * @var \PDO
+     * The connection instance.
+     * .
+     * @var \TechDivision\Import\Connection\ConnectionInterface;
      */
     protected $connection;
 
     /**
+     * The utility class instance with the SQL statements to use.
+     *
+     * @var \TechDivision\Import\Utils\SqlStatementsInterface
+     */
+    protected $utilityClass;
+
+    /**
      * Initialize the processor with the passed connection and utility class name.
      * .
-     * @param \PDO   $connection       The PDO connection instance
-     * @param string $utilityClassName The utility class name
+     * @param \TechDivision\Import\Connection\ConnectionInterface $connection   The connection instance
+     * @param \TechDivision\Import\Utils\SqlStatementsInterface   $utilityClass The utility class instance
      */
-    public function __construct(\PDO $connection, $utilityClassName)
-    {
+    public function __construct(
+        ConnectionInterface $connection,
+        SqlStatementsInterface $utilityClass
+    ) {
 
         // set the passed instances
         $this->setConnection($connection);
-        $this->setUtilityClassName($utilityClassName);
+        $this->setUtilityClass($utilityClass);
 
         // initialize the instance
         $this->init();
     }
 
     /**
-     * Set's the passed utility class with the SQL statements to use.
-     *
-     * @param string $utilityClassName The utility class name
+     * Set's the connection to use.
+     * .
+     * @param \TechDivision\Import\Connection\ConnectionInterface $connection The connection instance
      *
      * @return void
      */
-    public function setUtilityClassName($utilityClassName)
+    public function setConnection(ConnectionInterface $connection)
     {
-        $this->utilityClassName = $utilityClassName;
+        $this->connection = $connection;
+    }
+
+    /**
+     * Return's the connection to use.
+     *
+     * @return \TechDivision\Import\Connection\ConnectionInterface The connection instance
+     */
+    public function getConnection()
+    {
+        return $this->connection;
+    }
+
+    /**
+     * Set's the utility class instance with the SQL statements to use.
+     *
+     * @param \TechDivision\Import\Utils\SqlStatementsInterface $utilityClass The utility class instance
+     *
+     * @return void
+     */
+    public function setUtilityClass(SqlStatementsInterface $utilityClass)
+    {
+        $this->utilityClass = $utilityClass;
+    }
+
+    /**
+     * Return's the utility class instance with the SQL statements to use.
+     *
+     * @return \TechDivision\Import\Utils\SqlStatementsInterface The utility class instance
+     */
+    public function getUtilityClass()
+    {
+        return $this->utilityClass;
     }
 
     /**
@@ -82,28 +119,6 @@ abstract class AbstractProcessor implements ProcessorInterface
      */
     public function getUtilityClassName()
     {
-        return $this->utilityClassName;
-    }
-
-    /**
-     * Sets's the initialized PDO connection.
-     *
-     * @param \PDO $connection The initialized PDO connection
-     *
-     * @return void
-     */
-    public function setConnection(\PDO $connection)
-    {
-        $this->connection = $connection;
-    }
-
-    /**
-     * Return's the initialized PDO connection.
-     *
-     * @return \PDO The initialized PDO connection
-     */
-    public function getConnection()
-    {
-        return $this->connection;
+        return get_class($this->getUtilityClass());
     }
 }

@@ -33,18 +33,25 @@ interface ProcessorInterface
 {
 
     /**
+     * Return's the connection to use.
+     *
+     * @return \TechDivision\Import\Connection\ConnectionInterface The connection instance
+     */
+    public function getConnection();
+
+    /**
+     * Return's the utility class instance with the SQL statements to use.
+     *
+     * @return \TechDivision\Import\Utils\SqlStatementsInterface The utility class instance
+     */
+    public function getUtilityClass();
+
+    /**
      * Return's the utility class with the SQL statements to use.
      *
      * @return string The utility class name
      */
     public function getUtilityClassName();
-
-    /**
-     * Return's the initialized PDO connection.
-     *
-     * @return \PDO The initialized PDO connection
-     */
-    public function getConnection();
 
     /**
      * Initializes the proceessor with the prepared statements.

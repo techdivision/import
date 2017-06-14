@@ -74,10 +74,14 @@ class EavAttributeRepository extends AbstractRepository
         $utilityClassName = $this->getUtilityClassName();
 
         // initialize the prepared statements
-        $this->eavAttributesByUserDefinedStmt = $this->getConnection()->prepare($utilityClassName::EAV_ATTRIBUTES_BY_IS_USER_DEFINED);
-        $this->eavAttributesByOptionValueAndStoreIdStmt = $this->getConnection()->prepare($utilityClassName::EAV_ATTRIBUTES_BY_OPTION_VALUE_AND_STORE_ID);
-        $this->eavAttributesByEntityTypeIdAndUserDefinedStmt = $this->getConnection()->prepare($utilityClassName::EAV_ATTRIBUTES_BY_ENTITY_TYPE_ID_AND_IS_USER_DEFINED);
-        $this->eavAttributesByEntityTypeIdAndAttributeSetNameStmt = $this->getConnection()->prepare($utilityClassName::EAV_ATTRIBUTES_BY_ENTITY_TYPE_ID_AND_ATTRIBUTE_SET_NAME);
+        $this->eavAttributesByUserDefinedStmt =
+            $this->getConnection()->prepare($this->getUtilityClass()->find($utilityClassName::EAV_ATTRIBUTES_BY_IS_USER_DEFINED));
+        $this->eavAttributesByOptionValueAndStoreIdStmt =
+            $this->getConnection()->prepare($this->getUtilityClass()->find($utilityClassName::EAV_ATTRIBUTES_BY_OPTION_VALUE_AND_STORE_ID));
+        $this->eavAttributesByEntityTypeIdAndUserDefinedStmt =
+            $this->getConnection()->prepare($this->getUtilityClass()->find($utilityClassName::EAV_ATTRIBUTES_BY_ENTITY_TYPE_ID_AND_IS_USER_DEFINED));
+        $this->eavAttributesByEntityTypeIdAndAttributeSetNameStmt =
+            $this->getConnection()->prepare($this->getUtilityClass()->find($utilityClassName::EAV_ATTRIBUTES_BY_ENTITY_TYPE_ID_AND_ATTRIBUTE_SET_NAME));
     }
 
     /**

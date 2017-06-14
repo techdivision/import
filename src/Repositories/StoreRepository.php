@@ -60,8 +60,10 @@ class StoreRepository extends AbstractRepository
         $utilityClassName = $this->getUtilityClassName();
 
         // initialize the prepared statements
-        $this->storesStmt = $this->getConnection()->prepare($utilityClassName::STORES);
-        $this->storeDefaultStmt = $this->getConnection()->prepare($utilityClassName::STORE_DEFAULT);
+        $this->storesStmt =
+            $this->getConnection()->prepare($this->getUtilityClass()->find($utilityClassName::STORES));
+        $this->storeDefaultStmt =
+            $this->getConnection()->prepare($this->getUtilityClass()->find($utilityClassName::STORE_DEFAULT));
     }
 
     /**
