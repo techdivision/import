@@ -1,3 +1,15 @@
+# Version 1.0.0-beta19
+
+## Bugfixes
+
+* None
+
+## Features
+
+* Use Robo for Travis-CI build process 
+* Add SqlStatementsInterface + ConnectionInterface to optimize DI
+* Add and integrate SqlStatements class + PDOConnectionWrapper class 
+
 # Version 1.0.0-beta18
 
 ## Bugfixes

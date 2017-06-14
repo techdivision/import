@@ -49,7 +49,7 @@ class UrlRewriteUpdateProcessor extends AbstractUpdateProcessor
 
         // return the array with the SQL statements that has to be prepared
         return array(
-            $utilityClassName::UPDATE_URL_REWRITE => $utilityClassName::UPDATE_URL_REWRITE
+            $utilityClassName::UPDATE_URL_REWRITE => $this->getUtilityClass()->find($utilityClassName::UPDATE_URL_REWRITE)
         );
     }
 

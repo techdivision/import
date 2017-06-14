@@ -54,8 +54,8 @@ class UrlRewriteRepository extends AbstractRepository
         $utilityClassName = $this->getUtilityClassName();
 
         // initialize the prepared statements
-        $this->urlRewritesStmt = $this->getConnection()
-                                      ->prepare($utilityClassName::URL_REWRITES_BY_ENTITY_TYPE_AND_ENTITY_ID);
+        $this->urlRewritesStmt =
+            $this->getConnection()->prepare($this->getUtilityClass()->find($utilityClassName::URL_REWRITES_BY_ENTITY_TYPE_AND_ENTITY_ID));
     }
 
     /**

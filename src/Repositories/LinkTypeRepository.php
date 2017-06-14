@@ -60,7 +60,8 @@ class LinkTypeRepository extends AbstractRepository
         $utilityClassName = $this->getUtilityClassName();
 
         // initialize the prepared statements
-        $this->linkTypeStmt = $this->getConnection()->prepare($utilityClassName::LINK_TYPES);
+        $this->linkTypeStmt =
+            $this->getConnection()->prepare($this->getUtilityClass()->find($utilityClassName::LINK_TYPES));
     }
 
     /**

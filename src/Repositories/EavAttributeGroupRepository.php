@@ -60,8 +60,10 @@ class EavAttributeGroupRepository extends AbstractRepository
         $utilityClassName = $this->getUtilityClassName();
 
         // initialize the prepared statements
-        $this->eavAttributeGroupStmt = $this->getConnection()->prepare($utilityClassName::EAV_ATTRIBUTE_GROUP);
-        $this->eavAttributeGroupsByAttributeSetIdStmt = $this->getConnection()->prepare($utilityClassName::EAV_ATTRIBUTE_GROUPS_BY_ATTRIBUTE_SET_ID);
+        $this->eavAttributeGroupStmt =
+            $this->getConnection()->prepare($this->getUtilityClass()->find($utilityClassName::EAV_ATTRIBUTE_GROUP));
+        $this->eavAttributeGroupsByAttributeSetIdStmt =
+            $this->getConnection()->prepare($this->getUtilityClass()->find($utilityClassName::EAV_ATTRIBUTE_GROUPS_BY_ATTRIBUTE_SET_ID));
     }
 
     /**

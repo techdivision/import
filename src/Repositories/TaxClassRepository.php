@@ -46,7 +46,8 @@ class TaxClassRepository extends AbstractRepository
         $utilityClassName = $this->getUtilityClassName();
 
         // initialize the prepared statements
-        $this->taxClassesStmt = $this->getConnection()->prepare($utilityClassName::TAX_CLASSES);
+        $this->taxClassesStmt =
+            $this->getConnection()->prepare($this->getUtilityClass()->find($utilityClassName::TAX_CLASSES));
     }
 
     /**

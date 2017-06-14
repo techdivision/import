@@ -22,6 +22,7 @@ namespace TechDivision\Import\Services;
 
 use TechDivision\Import\Utils\RegistryKeys;
 use TechDivision\Import\Utils\MemberNames;
+use TechDivision\Import\Connection\ConnectionInterface;
 use TechDivision\Import\Assembler\CategoryAssembler;
 use TechDivision\Import\Repositories\CategoryRepository;
 use TechDivision\Import\Repositories\CategoryVarcharRepository;
@@ -49,9 +50,9 @@ class ImportProcessor implements ImportProcessorInterface
 {
 
     /**
-     * A PDO connection initialized with the values from the Doctrine EntityManager.
+     * A connection to use.
      *
-     * @var \PDO
+     * @var \TechDivision\Import\Connection\ConnectionInterface
      */
     protected $connection;
 
@@ -149,7 +150,7 @@ class ImportProcessor implements ImportProcessorInterface
     /**
      * Initialize the processor with the necessary assembler and repository instances.
      *
-     * @param \PDO                                                          $connection                  The PDO connection to use
+     * @param \TechDivision\Import\Connection\ConnectionInterface           $connection                  The connection to use
      * @param \TechDivision\Import\Assembler\CategoryAssembler              $categoryAssembler           The category assembler instance
      * @param \TechDivision\Import\Repositories\CategoryRepository          $categoryRepository          The repository to access categories
      * @param \TechDivision\Import\Repositories\CategoryVarcharRepository   $categoryVarcharRepository   The repository to access category varchar values
@@ -165,7 +166,7 @@ class ImportProcessor implements ImportProcessorInterface
      * @param \TechDivision\Import\Repositories\CoreConfigDataRepository    $coreConfigDataRepository    The repository to access the configuration
      */
     public function __construct(
-        \PDO $connection,
+        ConnectionInterface $connection,
         CategoryAssembler $categoryAssembler,
         CategoryRepository $categoryRepository,
         CategoryVarcharRepository $categoryVarcharRepository,
@@ -199,11 +200,11 @@ class ImportProcessor implements ImportProcessorInterface
     /**
      * Set's the passed connection.
      *
-     * @param \PDO $connection The connection to set
+     * @param \TechDivision\Import\Connection\ConnectionInterface $connection The connection to set
      *
      * @return void
      */
-    public function setConnection(\PDO $connection)
+    public function setConnection(ConnectionInterface $connection)
     {
         $this->connection = $connection;
     }
@@ -211,7 +212,7 @@ class ImportProcessor implements ImportProcessorInterface
     /**
      * Return's the connection.
      *
-     * @return \PDO The connection instance
+     * @return \TechDivision\Import\Connection\ConnectionInterface The connection instance
      */
     public function getConnection()
     {

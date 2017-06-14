@@ -14,10 +14,7 @@ before_script:
 
 script:
   - composer install
-  - vendor/bin/phpunit -c phpunit.xml
-  - vendor/bin/phpcs -n --report-full --extensions=php --standard=phpcs.xml src
-  - vendor/bin/phpcpd src
-  - vendor/bin/phpmd src text phpmd.xml --ignore-violations-on-exit
+  - vendor/bin/robo build
   - php ocular.phar code-coverage:upload --format=php-clover $TRAVIS_BUILD_DIR/target/reports/unit/clover.xml
 
 notifications:

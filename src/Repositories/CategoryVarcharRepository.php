@@ -57,7 +57,7 @@ class CategoryVarcharRepository extends AbstractRepository
 
         // prepare the cache key
         $vals = implode(',', $entityIds);
-        $sql = str_replace('?', $vals, $utilityClassName::CATEGORY_VARCHARS_BY_ENTITY_IDS);
+        $sql = str_replace('?', $vals, $this->getUtilityClass()->find($utilityClassName::CATEGORY_VARCHARS_BY_ENTITY_IDS));
 
         // load the categories with the passed values and return them
         if ($stmt = $this->getConnection()->query($sql)) {

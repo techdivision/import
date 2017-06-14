@@ -60,8 +60,10 @@ class EavAttributeSetRepository extends AbstractRepository
         $utilityClassName = $this->getUtilityClassName();
 
         // initialize the prepared statements
-        $this->eavAttributeSetStmt = $this->getConnection()->prepare($utilityClassName::EAV_ATTRIBUTE_SET);
-        $this->eavAttributeSetsByEntityTypeIdStmt = $this->getConnection()->prepare($utilityClassName::EAV_ATTRIBUTE_SETS_BY_ENTITY_TYPE_ID);
+        $this->eavAttributeSetStmt =
+            $this->getConnection()->prepare($this->getUtilityClass()->find($utilityClassName::EAV_ATTRIBUTE_SET));
+        $this->eavAttributeSetsByEntityTypeIdStmt =
+            $this->getConnection()->prepare($this->getUtilityClass()->find($utilityClassName::EAV_ATTRIBUTE_SETS_BY_ENTITY_TYPE_ID));
     }
 
     /**
