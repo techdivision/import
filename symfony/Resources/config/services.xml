@@ -120,21 +120,21 @@
         </service>
 
         <service id="import.plugin.archive" class="TechDivision\Import\Plugins\ArchivePlugin">
-            <argument type="service" id="simple"/>
+            <argument type="service" id="import_app_simple.simple"/>
             <argument type="service" id="configuration.import.plugin.archive"/>
         </service>
         <service id="import.plugin.subject" class="TechDivision\Import\Plugins\SubjectPlugin">
-            <argument type="service" id="simple"/>
+            <argument type="service" id="import_app_simple.simple"/>
             <argument type="service" id="configuration.import.plugin.subject"/>
             <argument type="service" id="import.visitor.callback"/>
             <argument type="service" id="import.visitor.observer"/>
         </service>
         <service id="import.plugin.global.data" class="TechDivision\Import\Plugins\GlobalDataPlugin">
-            <argument type="service" id="simple"/>
+            <argument type="service" id="import_app_simple.simple"/>
             <argument type="service" id="configuration.import.plugin.global.data"/>
         </service>
         <service id="import.plugin.missing.option.values" class="TechDivision\Import\Plugins\MissingOptionValuesPlugin">
-            <argument type="service" id="simple"/>
+            <argument type="service" id="import_app_simple.simple"/>
             <argument type="service" id="configuration.import.plugin.missing.option.values"/>
         </service>
 

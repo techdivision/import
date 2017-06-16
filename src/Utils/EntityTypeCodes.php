@@ -21,7 +21,7 @@
 namespace TechDivision\Import\Utils;
 
 /**
- * Utility class containing the available page layout keys.
+ * Utility class containing the available entity type codes.
  *
  * @author    Tim Wagner <t.wagner@techdivision.com>
  * @copyright 2016 TechDivision GmbH <info@techdivision.com>
@@ -29,25 +29,15 @@ namespace TechDivision\Import\Utils;
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
  */
-class EntityTypeCodes
+class EntityTypeCodes extends \ArrayObject
 {
 
     /**
-     * This is a utility class, so protect it against direct
-     * instantiation.
-     */
-    private function __construct()
-    {
-    }
-
-    /**
-     * This is a utility class, so protect it against cloning.
+     * Key for the imports without entity.
      *
-     * @return void
+     * @var integer
      */
-    private function __clone()
-    {
-    }
+    const NONE = 'none';
 
     /**
      * Key for the product entity 'catalog_product'.
@@ -69,4 +59,28 @@ class EntityTypeCodes
      * @var integer
      */
     const EAV_ATTRIBUTE = 'eav_attribute';
+
+    /**
+     * Construct a new entity type codes instance.
+     *
+     * @param array $entityTypeCodes The array with the additional entity type codes
+     * @link http://www.php.net/manual/en/arrayobject.construct.php
+     */
+    public function __construct(array $entityTypeCodes = array())
+    {
+
+        // merge the entity type codes with the passed ones
+        $mergedEntityTypeCodes = array_merge(
+            array(
+                EntityTypeCodes::NONE,
+                EntityTypeCodes::CATALOG_PRODUCT,
+                EntityTypeCodes::CATALOG_CATEGORY,
+                EntityTypeCodes::EAV_ATTRIBUTE
+            ),
+            $entityTypeCodes
+        );
+
+        // initialize the parent class with the merged entity type codes
+        parent::__construct($mergedEntityTypes);
+    }
 }
