@@ -23,7 +23,7 @@ namespace TechDivision\Import\Plugins;
 use TechDivision\Import\Utils\BunchKeys;
 use TechDivision\Import\Utils\RegistryKeys;
 use TechDivision\Import\ApplicationInterface;
-use TechDivision\Import\App\Utils\SynteticServiceKeys;
+use TechDivision\Import\Utils\DependencyInjectionKeys;
 use TechDivision\Import\Callbacks\CallbackVisitor;
 use TechDivision\Import\Observers\ObserverVisitor;
 use TechDivision\Import\Exceptions\LineNotFoundException;
@@ -285,7 +285,7 @@ class SubjectPlugin extends AbstractPlugin
         $container->set(
             sprintf(
                 '%s.%s',
-                SynteticServiceKeys::CONFIGURATION,
+                DependencyInjectionKeys::CONFIGURATION,
                 $id = $subjectConfiguration->getId()
             ),
             $subjectConfiguration

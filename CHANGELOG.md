@@ -1,3 +1,16 @@
+# Version 1.0.0-beta20
+
+## Bugfixes
+
+* None
+
+## Features
+
+* Add ConfigurationFactoryInterface for all configuration factories
+* Add utility class CommandNames that contains all available commands
+* Add utility class DependencyInjectionKeys containing basic DI keys
+* Add utility class CommandNameToEntityTypeCode for mappings from command name to entity type code
+
 # Version 1.0.0-beta19
 
 ## Bugfixes
