@@ -438,14 +438,16 @@ abstract class AbstractSubject implements SubjectInterface
      */
     public function explode($value, $delimiter = null)
     {
+        // load the global configuration
+        $configuration = $this->getConfiguration();
 
-        // load the default multiple field delimiter
-        if ($delimiter === null) {
-            $delimiter = $this->getMultipleFieldDelimiter();
-        }
+        // initializet delimiter, enclosure and escape char
+        $delimiter = $delimiter ? $delimiter : $configuration->getDelimiter();
+        $enclosure = $configuration->getEnclosure();
+        $escape = $configuration->getEscape();
 
-        // explode and return the array with the values, by using the delimiter
-        return explode($delimiter, $value);
+        // parse and return the found data as array
+        return str_getcsv($value, $delimiter, $enclosure, $escape);
     }
 
     /**
