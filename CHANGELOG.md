@@ -1,3 +1,13 @@
+# Version 1.0.0-beta26
+
+## Bugfixes
+
+* Add missing psr/container library
+
+## Features
+
+* None
+
 # Version 1.0.0-beta25
 
 ## Bugfixes
