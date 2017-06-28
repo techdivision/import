@@ -1,7 +1,7 @@
 <?php
 
 /**
- * TechDivision\Import\Plugins\PluginInterface
+ * TechDivision\Import\Configuration\Subject\ExportAdapterConfigurationInterface
  *
  * NOTICE OF LICENSE
  *
@@ -18,12 +18,10 @@
  * @link      http://www.techdivision.com
  */
 
-namespace TechDivision\Import\Plugins;
-
-use TechDivision\Import\Configuration\PluginConfigurationInterface;
+namespace TechDivision\Import\Configuration\Subject;
 
 /**
- * The interface for all plugins.
+ * The interface for an export adapter's configuration.
  *
  * @author    Tim Wagner <t.wagner@techdivision.com>
  * @copyright 2016 TechDivision GmbH <info@techdivision.com>
@@ -31,23 +29,13 @@ use TechDivision\Import\Configuration\PluginConfigurationInterface;
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
  */
-interface PluginInterface
+interface ExportAdapterConfigurationInterface
 {
 
     /**
-     * Process the plugin functionality.
+     * Return's the export adapter's unique DI identifier
      *
-     * @return void
-     * @throws \Exception Is thrown, if the plugin can not be processed
+     * @return string The export adapter's unique DI identifier
      */
-    public function process();
-
-    /**
-     *  Set's the plugin configuration instance.
-     *
-     * @param \TechDivision\Import\Configuration\PluginConfigurationInterface $pluginConfiguration The plugin configuration instance
-     *
-     * @return void
-     */
-    public function setPluginConfiguration(PluginConfigurationInterface $pluginConfiguration);
+    public function getId();
 }

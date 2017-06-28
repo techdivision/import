@@ -1,3 +1,14 @@
+# Version 1.0.0-beta21
+
+## Bugfixes
+
+* None
+
+## Features
+
+* Add CSV import + export adapter
+* Add plugin + subject factory
+ 
 # Version 1.0.0-beta20
 
 ## Bugfixes

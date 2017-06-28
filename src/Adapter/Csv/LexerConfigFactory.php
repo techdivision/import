@@ -1,7 +1,7 @@
 <?php
 
 /**
- * TechDivision\Import\Utils\ExporterTrait
+ * TechDivision\Import\Adapter\Csv\LexerConfigFactory
  *
  * NOTICE OF LICENSE
  *
@@ -18,13 +18,13 @@
  * @link      http://www.techdivision.com
  */
 
-namespace TechDivision\Import\Utils;
+namespace TechDivision\Import\Adapter\Csv;
 
-use Goodby\CSV\Export\Standard\Exporter;
-use Goodby\CSV\Export\Standard\ExporterConfig;
+use Goodby\CSV\Import\Standard\LexerConfig;
+use TechDivision\Import\ConfigurationInterface;
 
 /**
- * The trait implementation for the exporter initialization functionality.
+ * Factory implementation for a CSV lexer configuration.
  *
  * @author    Tim Wagner <t.wagner@techdivision.com>
  * @copyright 2016 TechDivision GmbH <info@techdivision.com>
@@ -32,58 +32,60 @@ use Goodby\CSV\Export\Standard\ExporterConfig;
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
  */
-trait ExporterTrait
+class LexerConfigFactory implements LexerConfigFactoryInterface
 {
 
     /**
-     * Initialize and return a new exporter instance.
+     * The configuration instance.
      *
-     * @return \Goodby\CSV\Export\Standard\Exporter The exporter instance
+     * @var \TechDivision\Import\Configuration\ConfigurationInterface
      */
-    protected function getExporterInstance()
+    protected $configuration;
+
+    /**
+     * Initialize the adapter with the configuration.
+     *
+     * @param \TechDivision\Import\Configuration\ConfigurationInterface $configuration The configuration instance
+     */
+    public function __construct(ConfigurationInterface $configuration)
     {
-        return new Exporter($this->getExportConfig());
+        $this->configuration = $configuration;
     }
 
     /**
-     * Initialize and return the exporter configuration.
+     * Factory method to create a new lexer configuration instance.
      *
-     * @return \Goodby\CSV\Export\Standard\ExporterConfig The exporter configuration
+     * @return \Goodby\CSV\Import\Standard\LexerConfig The lexer configuration
      */
-    protected function getExportConfig()
+    public function createLexerConfig()
     {
 
         // initialize the lexer configuration
-        $config = new ExporterConfig();
+        $config = new LexerConfig();
 
         // query whether or not a delimiter character has been configured
-        if ($delimiter = $this->getConfiguration()->getDelimiter()) {
+        if ($delimiter = $this->configuration->getDelimiter()) {
             $config->setDelimiter($delimiter);
         }
 
         // query whether or not a custom escape character has been configured
-        if ($escape = $this->getConfiguration()->getEscape()) {
+        if ($escape = $this->configuration->getEscape()) {
             $config->setEscape($escape);
         }
 
         // query whether or not a custom enclosure character has been configured
-        if ($enclosure = $this->getConfiguration()->getEnclosure()) {
+        if ($enclosure = $this->configuration->getEnclosure()) {
             $config->setEnclosure($enclosure);
         }
 
         // query whether or not a custom source charset has been configured
-        if ($fromCharset = $this->getConfiguration()->getFromCharset()) {
+        if ($fromCharset = $this->configuration->getFromCharset()) {
             $config->setFromCharset($fromCharset);
         }
 
         // query whether or not a custom target charset has been configured
-        if ($toCharset = $this->getConfiguration()->getToCharset()) {
+        if ($toCharset = $this->configuration->getToCharset()) {
             $config->setToCharset($toCharset);
-        }
-
-        // query whether or not a custom file mode has been configured
-        if ($fileMode = $this->getConfiguration()->getFileMode()) {
-            $config->setFileMode($fileMode);
         }
 
         // return the lexer configuratio

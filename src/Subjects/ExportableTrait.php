@@ -21,7 +21,7 @@
 namespace TechDivision\Import\Subjects;
 
 use TechDivision\Import\Utils\ColumnKeys;
-use TechDivision\Import\Utils\ExporterTrait;
+use TechDivision\Import\Adapter\ExportAdapterInterface;
 
 /**
  * The trait implementation for the artefact export functionality.
@@ -36,18 +36,18 @@ trait ExportableTrait
 {
 
     /**
-     * The exporter trait implementation.
-     *
-     * @var \TechDivision\Import\Utils\ExporterTrait
-     */
-    use ExporterTrait;
-
-    /**
      * The array containing the data for product type configuration (configurables, bundles, etc).
      *
      * @var array
      */
     protected $artefacs = array();
+
+    /**
+     * The export adapter instance.
+     *
+     * @var \TechDivision\Import\Adapter\ExportAdapterInterface
+     */
+    protected $exportAdapter;
 
     /**
      * Return's the artefacts for post-processing.
@@ -150,42 +150,29 @@ trait ExportableTrait
      */
     public function export($timestamp, $counter)
     {
+        $this->getExportAdapter()->export($this->getArtefacts(), $this->getTargetDir(), $timestamp, $counter);
+    }
 
-        // load the target directory and the actual timestamp
-        $targetDir = $this->getTargetDir();
+    /**
+     * Set's the exporter adapter instance.
+     *
+     * @param \TechDivision\Import\Adapter\ExportAdapterInterface $exportAdapter The exporter adapter instance
+     *
+     * @return void
+     */
+    public function setExportAdapter(ExportAdapterInterface $exportAdapter)
+    {
+        $this->exportAdapter = $exportAdapter;
+    }
 
-        // iterate over the artefacts and export them
-        foreach ($this->getArtefacts() as $artefactType => $artefacts) {
-            // initialize the bunch and the exporter
-            $bunch = array();
-
-            // iterate over the artefact types artefacts
-            foreach ($artefacts as $entityArtefacts) {
-                // set the bunch header and append the artefact data
-                if (sizeof($bunch) === 0) {
-                    $first = reset($entityArtefacts);
-                    $second = reset($first);
-                    $bunch[] = array_keys($second);
-                }
-
-                // export the artefacts
-                foreach ($entityArtefacts as $entityArtefact) {
-                    $bunch = array_merge($bunch, $entityArtefact);
-                }
-            }
-
-            // export the artefact (bunch)
-            $this->getExporterInstance()->export(
-                sprintf(
-                    '%s/%s_%s_%s.csv',
-                    $targetDir,
-                    $artefactType,
-                    $timestamp,
-                    $counter
-                ),
-                $bunch
-            );
-        }
+    /**
+     * Return's the exporter adapter instance.
+     *
+     * @return \TechDivision\Import\Adapter\ExportAdapterInterface The exporter adapter instance
+     */
+    public function getExportAdapter()
+    {
+        return $this->exportAdapter;
     }
 
     /**

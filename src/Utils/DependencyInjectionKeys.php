@@ -50,9 +50,30 @@ class DependencyInjectionKeys
     }
 
     /**
+     * The key for the application instance.
+     *
+     * @var string
+     */
+    const APPLICATION = 'application';
+
+    /**
      * The key for the configuration service.
      *
      * @var string
      */
     const CONFIGURATION = 'configuration';
+
+    /**
+     * The key for the CSV import adapter service.
+     *
+     * @var string
+     */
+    const IMPORT_ADAPTER_IMPORT_CSV = 'import.adapter.import.csv';
+
+    /**
+     * The key for the CSV export adapter service.
+     *
+     * @var string
+     */
+    const IMPORT_ADAPTER_EXPORT_CSV = 'import.adapter.export.csv';
 }

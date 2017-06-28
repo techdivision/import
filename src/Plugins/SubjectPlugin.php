@@ -23,15 +23,13 @@ namespace TechDivision\Import\Plugins;
 use TechDivision\Import\Utils\BunchKeys;
 use TechDivision\Import\Utils\RegistryKeys;
 use TechDivision\Import\ApplicationInterface;
-use TechDivision\Import\Utils\DependencyInjectionKeys;
 use TechDivision\Import\Callbacks\CallbackVisitor;
 use TechDivision\Import\Observers\ObserverVisitor;
+use TechDivision\Import\Subjects\SubjectFactoryInterface;
 use TechDivision\Import\Exceptions\LineNotFoundException;
 use TechDivision\Import\Exceptions\MissingOkFileException;
 use TechDivision\Import\Subjects\ExportableSubjectInterface;
 use TechDivision\Import\Configuration\SubjectConfigurationInterface;
-use TechDivision\Import\Configuration\PluginConfigurationInterface;
-use TechDivision\Import\Subjects\SubjectInterface;
 
 /**
  * Plugin that processes the subjects.
@@ -74,26 +72,34 @@ class SubjectPlugin extends AbstractPlugin
     protected $observerVisitor;
 
     /**
+     * The subject factory instance.
+     *
+     * @var \TechDivision\Import\Subjects\SubjectFactoryInterface
+     */
+    protected $subjectFactory;
+
+    /**
      * Initializes the plugin with the application instance.
      *
-     * @param \TechDivision\Import\ApplicationInterface                       $application         The application instance
-     * @param \TechDivision\Import\Configuration\PluginConfigurationInterface $pluginConfiguration The plugin configuration instance
-     * @param \TechDivision\Import\Callbacks\CallbackVisitor                  $callbackVisitor     The callback visitor instance
-     * @param \TechDivision\Import\Observers\ObserverVisitor                  $observerVisitor     The observer visitor instance
+     * @param \TechDivision\Import\ApplicationInterface             $application     The application instance
+     * @param \TechDivision\Import\Callbacks\CallbackVisitor        $callbackVisitor The callback visitor instance
+     * @param \TechDivision\Import\Observers\ObserverVisitor        $observerVisitor The observer visitor instance
+     * @param \TechDivision\Import\Subjects\SubjectFactoryInterface $subjectFactory  The subject factory instance
      */
     public function __construct(
         ApplicationInterface $application,
-        PluginConfigurationInterface $pluginConfiguration,
         CallbackVisitor $callbackVisitor,
-        ObserverVisitor $observerVisitor
+        ObserverVisitor $observerVisitor,
+        SubjectFactoryInterface $subjectFactory
     ) {
 
         // call the parent constructor
-        parent::__construct($application, $pluginConfiguration);
+        parent::__construct($application);
 
         // initialize the callback/observer visitors
         $this->callbackVisitor = $callbackVisitor;
         $this->observerVisitor = $observerVisitor;
+        $this->subjectFactory = $subjectFactory;
     }
 
 
@@ -211,7 +217,7 @@ class SubjectPlugin extends AbstractPlugin
             if ($this->isPartOfBunch($subject->getPrefix(), $pathname)) {
                 try {
                     // initialize the subject and import the bunch
-                    $subjectInstance = $this->subjectFactory($subject);
+                    $subjectInstance = $this->subjectFactory->createSubject($subject);
 
                     // setup the subject instance
                     $subjectInstance->setUp($serial);
@@ -266,33 +272,6 @@ class SubjectPlugin extends AbstractPlugin
         $this->getSystemLogger()->debug(
             sprintf('Successfully processed subject %s with %d bunch(es)!', $subject->getId(), $bunches)
         );
-    }
-
-    /**
-     * Factory method to create new subject instance.
-     *
-     * @param \TechDivision\Import\Configuration\SubjectConfigurationInterface $subjectConfiguration The subject configuration
-     *
-     * @return \ TechDivision\Import\Subjects\SubjectInterface The subject instance
-     */
-    protected function subjectFactory(SubjectConfigurationInterface $subjectConfiguration)
-    {
-
-        // load the DI container instance
-        $container = $this->getApplication()->getContainer();
-
-        // set the configuration
-        $container->set(
-            sprintf(
-                '%s.%s',
-                DependencyInjectionKeys::CONFIGURATION,
-                $id = $subjectConfiguration->getId()
-            ),
-            $subjectConfiguration
-        );
-
-        // return the subject instance
-        return $container->get($id);
     }
 
     /**

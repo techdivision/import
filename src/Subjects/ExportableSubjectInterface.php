@@ -20,6 +20,8 @@
 
 namespace TechDivision\Import\Subjects;
 
+use TechDivision\Import\Adapter\ExportAdapterInterface;
+
 /**
  * The interface for all subject implementations that supports an artefact export.
  *
@@ -31,6 +33,22 @@ namespace TechDivision\Import\Subjects;
  */
 interface ExportableSubjectInterface
 {
+
+    /**
+     * Set's the exporter adapter instance.
+     *
+     * @param \TechDivision\Import\Adapter\ExportAdapterInterface $exportAdapter The exporter adapter instance
+     *
+     * @return void
+     */
+    public function setExportAdapter(ExportAdapterInterface $exportAdapter);
+
+    /**
+     * Return's the exporter adapter instance.
+     *
+     * @return \TechDivision\Import\Adapter\ExportAdapterInterface The exporter adapter instance
+     */
+    public function getExportAdapter();
 
     /**
      * Export's the artefacts to CSV files.
