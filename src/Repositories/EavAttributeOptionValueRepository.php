@@ -49,6 +49,13 @@ class EavAttributeOptionValueRepository extends AbstractRepository
     protected $eavAttributeOptionValueByAttributeCodeAndStoreIdAndValueStmt;
 
     /**
+     * The prepared statement to load an existing EAV attribute option value by its option id and store ID
+     *
+     * @var \PDOStatement
+     */
+    protected $eavAttributeOptionValueByOptionIdAndStoreIdStmt;
+
+    /**
      * Initializes the repository's prepared statements.
      *
      * @return void
@@ -62,6 +69,10 @@ class EavAttributeOptionValueRepository extends AbstractRepository
         // initialize the prepared statements
         $this->eavAttributeOptionValueByAttributeCodeAndStoreIdAndValueStmt =
             $this->getConnection()->prepare($this->getUtilityClass()->find($utilityClassName::EAV_ATTRIBUTE_OPTION_VALUE_BY_ATTRIBUTE_CODE_AND_STORE_ID_AND_VALUE));
+
+        // initialize the prepared statements
+        $this->eavAttributeOptionValueByOptionIdAndStoreIdStmt =
+            $this->getConnection()->prepare($this->getUtilityClass()->find($utilityClassName::EAV_ATTRIBUTE_OPTION_VALUE_BY_OPTION_ID_AND_STORE_ID));
     }
 
     /**
@@ -86,5 +97,27 @@ class EavAttributeOptionValueRepository extends AbstractRepository
         // load and return the EAV attribute option value with the passed parameters
         $this->eavAttributeOptionValueByAttributeCodeAndStoreIdAndValueStmt->execute($params);
         return $this->eavAttributeOptionValueByAttributeCodeAndStoreIdAndValueStmt->fetch(\PDO::FETCH_ASSOC);
+    }
+
+    /**
+     * Load's and return's the EAV attribute option value with the passed option ID and store ID
+     *
+     * @param string  $optionId The option ID of the attribute option
+     * @param integer $storeId  The store ID of the attribute option to load
+     *
+     * @return array The EAV attribute option value
+     */
+    public function findOneByOptionIdAndStoreId($optionId, $storeId)
+    {
+
+        // the parameters of the EAV attribute option to load
+        $params = array(
+            MemberNames::OPTION_ID => $optionId,
+            MemberNames::STORE_ID  => $storeId,
+        );
+
+        // load and return the EAV attribute option value with the passed parameters
+        $this->eavAttributeOptionValueByOptionIdAndStoreIdStmt->execute($params);
+        return $this->eavAttributeOptionValueByOptionIdAndStoreIdStmt->fetch(\PDO::FETCH_ASSOC);
     }
 }

@@ -1,3 +1,44 @@
+# Version 1.0.0-beta23patch1
+
+## Bugfixes
+
+* Fix issue which caused multiple attribute option values for same option_id and store_id
+
+## Features
+
+* None
+
+# Version 1.0.0-beta23
+
+## Bugfixes
+
+* None
+
+## Features
+
+* Add command name to create a new configuration file
+
+# Version 1.0.0-beta22
+
+## Bugfixes
+
+* None
+
+## Features
+
+* Add CSV import + export adapter
+* Add plugin + subject factory
+
+# Version 1.0.0-beta21
+
+## Bugfixes
+
+* Use str_getcsv for explode in AbstractSubject
+
+## Features
+
+* None
+ 
 # Version 1.0.0-beta20
 
 ## Bugfixes
