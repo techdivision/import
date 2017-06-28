@@ -1,3 +1,13 @@
+# Version 1.0.0-beta24
+
+## Bugfixes
+
+* None
+
+## Features
+
+* Add mapping for command import:create:configuration-file to entity type
+
 # Version 1.0.0-beta23
 
 ## Bugfixes
