@@ -1,4 +1,4 @@
-# Version 1.0.0-beta21
+# Version 1.0.0-beta22
 
 ## Bugfixes
 
@@ -8,6 +8,16 @@
 
 * Add CSV import + export adapter
 * Add plugin + subject factory
+
+# Version 1.0.0-beta21
+
+## Bugfixes
+
+* Use str_getcsv for explode in AbstractSubject
+
+## Features
+
+* None
  
 # Version 1.0.0-beta20
 
