@@ -1,3 +1,13 @@
+# Version 1.0.0-beta24
+
+## Bugfixes
+
+* Fix issue which caused multiple attribute option values for same option_id and store_id
+
+## Features
+
+* None
+
 # Version 1.0.0-beta23
 
 ## Bugfixes
