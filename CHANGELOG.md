@@ -1,3 +1,13 @@
+# Version 1.0.0-beta23
+
+## Bugfixes
+
+* None
+
+## Features
+
+* Add command name to create a new configuration file
+
 # Version 1.0.0-beta22
 
 ## Bugfixes
