@@ -61,6 +61,13 @@ class CommandNames extends \ArrayObject
     const IMPORT_CREATE_OK_FILE = 'import:create:ok-file';
 
     /**
+     * The command name for the command that creates an configuration file.
+     *
+     * @var string
+     */
+    const IMPORT_CREATE_CONFIGURATION_FILE = 'import:create:configuration-file';
+
+    /**
      * The command name for the command that clears the PID file.
      *
      * @var string
@@ -83,6 +90,7 @@ class CommandNames extends \ArrayObject
                 CommandNames::IMPORT_CATEGORIES,
                 CommandNames::IMPORT_PRODUCTS,
                 CommandNames::IMPORT_CREATE_OK_FILE,
+                CommandNames::IMPORT_CREATE_CONFIGURATION_FILE,
                 CommandNames::IMPORT_CLEAR_PID_FILE
             ),
             $commandNames
