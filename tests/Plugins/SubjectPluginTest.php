@@ -54,11 +54,6 @@ class SubjectPluginTest extends \PHPUnit_Framework_TestCase
                                 ->setMethods(get_class_methods('TechDivision\Import\ApplicationInterface'))
                                 ->getMock();
 
-        // create a mock plugin configuration
-        $mockPluginConfiguration = $this->getMockBuilder('TechDivision\Import\Configuration\PluginConfigurationInterface')
-                                        ->setMethods(get_class_methods('TechDivision\Import\Configuration\PluginConfigurationInterface'))
-                                        ->getMock();
-
         // create a mock callback visitor
         $mockCallbackVisitor = $this->getMockBuilder('TechDivision\Import\Callbacks\CallbackVisitor')
                                     ->disableOriginalConstructor()
@@ -71,8 +66,13 @@ class SubjectPluginTest extends \PHPUnit_Framework_TestCase
                                     ->setMethods(get_class_methods('TechDivision\Import\Observers\ObserverVisitor'))
                                     ->getMock();
 
+        // create a mock subject factory
+        $mockSubjectFactory = $this->getMockBuilder('TechDivision\Import\Subjects\SubjectFactoryInterface')
+                                   ->setMethods(get_class_methods('TechDivision\Import\Subjects\SubjectFactoryInterface'))
+                                   ->getMock();
+
         // initialize the subject instance
-        $this->subject = new SubjectPlugin($mockApplication, $mockPluginConfiguration, $mockCallbackVisitor, $mockObserverVisitor);
+        $this->subject = new SubjectPlugin($mockApplication, $mockCallbackVisitor, $mockObserverVisitor, $mockSubjectFactory);
     }
 
     /**
@@ -98,6 +98,15 @@ class SubjectPluginTest extends \PHPUnit_Framework_TestCase
         $reflectionObject = new \ReflectionObject($this->subject);
         $reflectionMethod = $reflectionObject->getMethod('isPartOfBunch');
         $reflectionMethod->setAccessible(true);
+
+
+        // create a mock plugin configuration
+        $mockPluginConfiguration = $this->getMockBuilder('TechDivision\Import\Configuration\PluginConfigurationInterface')
+                                        ->setMethods(get_class_methods('TechDivision\Import\Configuration\PluginConfigurationInterface'))
+                                        ->getMock();
+
+        // set the plugin configuration
+        $this->subject->setPluginConfiguration($mockPluginConfiguration);
 
         // make sure, that only the FIRST file is part of the bunch
         foreach ($data as $row) {
@@ -129,6 +138,15 @@ class SubjectPluginTest extends \PHPUnit_Framework_TestCase
         $reflectionObject = new \ReflectionObject($this->subject);
         $reflectionMethod = $reflectionObject->getMethod('isPartOfBunch');
         $reflectionMethod->setAccessible(true);
+
+
+        // create a mock plugin configuration
+        $mockPluginConfiguration = $this->getMockBuilder('TechDivision\Import\Configuration\PluginConfigurationInterface')
+                                        ->setMethods(get_class_methods('TechDivision\Import\Configuration\PluginConfigurationInterface'))
+                                        ->getMock();
+
+        // set the plugin configuration
+        $this->subject->setPluginConfiguration($mockPluginConfiguration);
 
         // make sure, that the file IS part of the bunch
         foreach ($data as $row) {

@@ -117,6 +117,13 @@ interface SubjectConfigurationInterface extends ParamsConfigurationInterface
     public function getPrefix();
 
     /**
+     * Return's the suffix for the import files.
+     *
+     * @return string The suffix
+     */
+    public function getSuffix();
+
+    /**
      * Return's the subject's source date format to use.
      *
      * @return string The source date format
@@ -164,4 +171,18 @@ interface SubjectConfigurationInterface extends ParamsConfigurationInterface
      * @return boolean TRUE if the subject needs an OK file, else FALSE
      */
     public function isOkFileNeeded();
+
+    /**
+     * Return's the import adapter configuration instance.
+     *
+     * @return \TechDivision\Import\Configuration\Subject\ImportAdapterConfigurationInterface The import adapter configuration instance
+     */
+    public function getImportAdapter();
+
+    /**
+     * Return's the export adapter configuration instance.
+     *
+     * @return \TechDivision\Import\Configuration\Subject\ExportAdapterConfigurationInterface The export adapter configuration instance
+     */
+    public function getExportAdapter();
 }

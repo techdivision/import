@@ -20,6 +20,7 @@
 
 namespace TechDivision\Import;
 
+use Psr\Container\ContainerInterface;
 use TechDivision\Import\Utils\LoggerKeys;
 
 /**
@@ -31,7 +32,7 @@ use TechDivision\Import\Utils\LoggerKeys;
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
  */
-interface ApplicationInterface
+interface ApplicationInterface extends ContainerInterface
 {
 
     /**
@@ -87,6 +88,13 @@ interface ApplicationInterface
      * @return \TechDivision\Import\ConfigurationInterface The system configuration
      */
     public function getConfiguration();
+
+    /**
+     * Return's the container instance.
+     *
+     * @return \Symfony\Component\DependencyInjection\TaggedContainerInterface The container instance
+     */
+    public function getContainer();
 
     /**
      * Persist the UUID of the actual import process to the PID file.

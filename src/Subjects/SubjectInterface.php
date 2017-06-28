@@ -22,6 +22,8 @@ namespace TechDivision\Import\Subjects;
 
 use TechDivision\Import\Utils\ScopeKeys;
 use TechDivision\Import\Utils\LoggerKeys;
+use TechDivision\Import\Adapter\ImportAdapterInterface;
+use TechDivision\Import\Configuration\SubjectConfigurationInterface;
 
 /**
  * The interface for all subject implementations.
@@ -52,13 +54,6 @@ interface SubjectInterface
      * @return void
      */
     public function tearDown($serial);
-
-    /**
-     * Return's the system configuration.
-     *
-     * @return \TechDivision\Import\Configuration\SubjectInterface The system configuration
-     */
-    public function getConfiguration();
 
     /**
      * Return's the logger with the passed name, by default the system logger.
@@ -149,4 +144,43 @@ interface SubjectInterface
      * @throws \Exception Is thrown, if nor a value can be found or a default value has been passed
      */
     public function getCoreConfigData($path, $default = null, $scope = ScopeKeys::SCOPE_DEFAULT, $scopeId = 0);
+
+    /**
+     * Return's the name of the file to import.
+     *
+     * @return string The filename
+     */
+    public function getFilename();
+
+    /**
+     * Set's the subject configuration.
+     *
+     * @param \TechDivision\Import\Configuration\SubjectConfigurationInterface $configuration The subject configuration
+     *
+     * @return void
+     */
+    public function setConfiguration(SubjectConfigurationInterface $configuration);
+
+    /**
+     * Return's the system configuration.
+     *
+     * @return \TechDivision\Import\Configuration\SubjectInterface The system configuration
+     */
+    public function getConfiguration();
+
+    /**
+     * Set's the import adapter instance.
+     *
+     * @param \TechDivision\Import\Adapter\ImportAdapterInterface $importAdapter The import adapter instance
+     *
+     * @return void
+     */
+    public function setImportAdapter(ImportAdapterInterface $importAdapter);
+
+    /**
+     * Return's the import adapter instance.
+     *
+     * @return \TechDivision\Import\Adapter\ImportAdapterInterface The import adapter instance
+     */
+    public function getImportAdapter();
 }

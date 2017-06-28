@@ -53,25 +53,23 @@ abstract class AbstractPlugin implements PluginInterface
     /**
      * Initializes the plugin with the application instance.
      *
-     * @param \TechDivision\Import\ApplicationInterface                       $application         The application instance
-     * @param \TechDivision\Import\Configuration\PluginConfigurationInterface $pluginConfiguration The plugin configuration instance
+     * @param \TechDivision\Import\ApplicationInterface $application The application instance
      */
-    public function __construct(
-        ApplicationInterface $application,
-        PluginConfigurationInterface $pluginConfiguration
-    ) {
+    public function __construct(ApplicationInterface $application)
+    {
         $this->application = $application;
-        $this->pluginConfiguration = $pluginConfiguration;
     }
 
     /**
-     * Return's the application instance.
+     *  Set's the plugin configuration instance.
      *
-     * @return \TechDivision\Import\ApplicationInterface The application instance
+     * @param \TechDivision\Import\Configuration\PluginConfigurationInterface $pluginConfiguration The plugin configuration instance
+     *
+     * @return void
      */
-    protected function getApplication()
+    public function setPluginConfiguration(PluginConfigurationInterface $pluginConfiguration)
     {
-        return $this->application;
+        $this->pluginConfiguration = $pluginConfiguration;
     }
 
     /**
@@ -82,6 +80,16 @@ abstract class AbstractPlugin implements PluginInterface
     protected function getPluginConfiguration()
     {
         return $this->pluginConfiguration;
+    }
+
+    /**
+     * Return's the application instance.
+     *
+     * @return \TechDivision\Import\ApplicationInterface The application instance
+     */
+    protected function getApplication()
+    {
+        return $this->application;
     }
 
     /**

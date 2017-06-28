@@ -119,27 +119,77 @@
             <argument type="service" id="import.repository.core.config.data"/>
         </service>
 
+        <!--
+         | The DI configuration for the subject factory
+         |-->
+        <service id="import.subject.factory" class="TechDivision\Import\Subjects\SubjectFactory">
+            <argument type="service" id="service_container"/>
+        </service>
+
+        <!--
+         | The DI configuration for the plugin factory
+         |-->
+        <service id="import.plugin.factory" class="TechDivision\Import\Plugins\PluginFactory">
+            <argument type="service" id="service_container"/>
+        </service>
+
+        <!--
+         | The DI configuration for the plugins
+         |-->
         <service id="import.plugin.archive" class="TechDivision\Import\Plugins\ArchivePlugin">
             <argument type="service" id="import_app_simple.simple"/>
-            <argument type="service" id="configuration.import.plugin.archive"/>
         </service>
         <service id="import.plugin.subject" class="TechDivision\Import\Plugins\SubjectPlugin">
             <argument type="service" id="import_app_simple.simple"/>
-            <argument type="service" id="configuration.import.plugin.subject"/>
             <argument type="service" id="import.visitor.callback"/>
             <argument type="service" id="import.visitor.observer"/>
+            <argument type="service" id="import.subject.factory"/>
         </service>
         <service id="import.plugin.global.data" class="TechDivision\Import\Plugins\GlobalDataPlugin">
             <argument type="service" id="import_app_simple.simple"/>
-            <argument type="service" id="configuration.import.plugin.global.data"/>
         </service>
         <service id="import.plugin.missing.option.values" class="TechDivision\Import\Plugins\MissingOptionValuesPlugin">
             <argument type="service" id="import_app_simple.simple"/>
-            <argument type="service" id="configuration.import.plugin.missing.option.values"/>
         </service>
 
-        <service id="import.subject.move.files" class="TechDivision\Import\Subjects\MoveFilesSubject">
-            <argument type="service" id="configuration.import.subject.move.files"/>
+        <!--
+         | The DI configuration for the import adapter
+         |-->
+        <service id="import.adapter.interpreter" class="TechDivision\Import\Adapter\Goodby\Interpreter"/>
+        <service id="import.adapter.lexer.config.factory" class="TechDivision\Import\Adapter\Csv\LexerConfigFactory">
+            <argument type="service" id="configuration"/>
+        </service>
+        <service id="import.adapter.lexer.config" class="Goodby\CSV\Import\Standard\LexerConfig">
+            <factory service="import.adapter.lexer.config.factory" method="createLexerConfig"/>
+        </service>
+        <service id="import.adapter.lexer" class="TechDivision\Import\Adapter\Goodby\Lexer">
+            <argument type="service" id="import.adapter.lexer.config"/>
+        </service>
+        <service id="import.adapter.import.csv" class="TechDivision\Import\Adapter\CsvImportAdapter">
+            <argument type="service" id="import.adapter.lexer"/>
+            <argument type="service" id="import.adapter.interpreter"/>
+        </service>
+
+        <!--
+         | The DI configuration for the export adapter
+         |-->
+        <service id="import.adapter.export.config.factory" class="TechDivision\Import\Adapter\Csv\ExportConfigFactory">
+            <argument type="service" id="configuration"/>
+        </service>
+        <service id="import.adapter.export.config" class="Goodby\CSV\Export\Standard\ExportConfig">
+            <factory service="import.adapter.export.config.factory" method="createExportConfig"/>
+        </service>
+        <service id="import.adapter.export" class="TechDivision\Import\Adapter\Goodby\Exporter">
+            <argument type="service" id="import.adapter.export.config"/>
+        </service>
+        <service id="import.adapter.export.csv" class="TechDivision\Import\Adapter\CsvExportAdapter">
+            <argument type="service" id="import.adapter.export"/>
+        </service>
+
+        <!--
+         | The DI configuration for the subjects provided by this library
+         |-->
+        <service id="import.subject.move.files" class="TechDivision\Import\Subjects\MoveFilesSubject" shared="false">
             <argument type="service" id="import.processor.registry"/>
             <argument type="service" id="import.generator.core.config.data.uid"/>
             <argument type="service" id="loggers"/>

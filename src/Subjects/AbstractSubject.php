@@ -21,9 +21,6 @@
 namespace TechDivision\Import\Subjects;
 
 use Psr\Log\LoggerInterface;
-use Goodby\CSV\Import\Standard\Lexer;
-use Goodby\CSV\Import\Standard\LexerConfig;
-use Goodby\CSV\Import\Standard\Interpreter;
 use TechDivision\Import\Utils\ScopeKeys;
 use TechDivision\Import\Utils\LoggerKeys;
 use TechDivision\Import\Utils\ColumnKeys;
@@ -33,6 +30,7 @@ use TechDivision\Import\Utils\Generators\GeneratorInterface;
 use TechDivision\Import\Services\RegistryProcessor;
 use TechDivision\Import\Callbacks\CallbackInterface;
 use TechDivision\Import\Observers\ObserverInterface;
+use TechDivision\Import\Adapter\ImportAdapterInterface;
 use TechDivision\Import\Exceptions\WrappedColumnException;
 use TechDivision\Import\Services\RegistryProcessorInterface;
 use TechDivision\Import\Configuration\SubjectConfigurationInterface;
@@ -55,6 +53,13 @@ abstract class AbstractSubject implements SubjectInterface
      * @var TechDivision\Import\Subjects\FilesystemTrait
      */
     use FilesystemTrait;
+
+    /**
+     * The import adapter instance.
+     *
+     * @var \TechDivision\Import\Adapter\AdapterInterface
+     */
+    protected $importAdapter;
 
     /**
      * The system configuration.
@@ -192,21 +197,18 @@ abstract class AbstractSubject implements SubjectInterface
     /**
      * Initialize the subject instance.
      *
-     * @param \TechDivision\Import\Configuration\SubjectConfigurationInterface $configuration              The subject configuration instance
-     * @param \TechDivision\Import\Services\RegistryProcessorInterface         $registryProcessor          The registry processor instance
-     * @param \TechDivision\Import\Utils\Generators\GeneratorInterface         $coreConfigDataUidGenerator The UID generator for the core config data
-     * @param array                                                            $systemLoggers              The array with the system loggers instances
+     * @param \TechDivision\Import\Services\RegistryProcessorInterface $registryProcessor          The registry processor instance
+     * @param \TechDivision\Import\Utils\Generators\GeneratorInterface $coreConfigDataUidGenerator The UID generator for the core config data
+     * @param array                                                    $systemLoggers              The array with the system loggers instances
      */
     public function __construct(
-        SubjectConfigurationInterface $configuration,
         RegistryProcessorInterface $registryProcessor,
         GeneratorInterface $coreConfigDataUidGenerator,
         array $systemLoggers
     ) {
-        $this->configuration = $configuration;
+        $this->systemLoggers = $systemLoggers;
         $this->registryProcessor = $registryProcessor;
         $this->coreConfigDataUidGenerator = $coreConfigDataUidGenerator;
-        $this->systemLoggers = $systemLoggers;
     }
 
     /**
@@ -461,9 +463,21 @@ abstract class AbstractSubject implements SubjectInterface
     }
 
     /**
-     * Return's the system configuration.
+     * Set's the subject configuration.
      *
-     * @return \TechDivision\Import\Configuration\SubjectConfigurationInterface The system configuration
+     * @param \TechDivision\Import\Configuration\SubjectConfigurationInterface $configuration The subject configuration
+     *
+     * @return void
+     */
+    public function setConfiguration(SubjectConfigurationInterface $configuration)
+    {
+        $this->configuration = $configuration;
+    }
+
+    /**
+     * Return's the subject configuration.
+     *
+     * @return \TechDivision\Import\Configuration\SubjectConfigurationInterface The subject configuration
      */
     public function getConfiguration()
     {
@@ -488,6 +502,28 @@ abstract class AbstractSubject implements SubjectInterface
 
         // throw an exception if the requested logger is NOT available
         throw new \Exception(sprintf('The requested logger \'%s\' is not available', $name));
+    }
+
+    /**
+     * Set's the import adapter instance.
+     *
+     * @param \TechDivision\Import\Adapter\ImportAdapterInterface $importAdapter The import adapter instance
+     *
+     * @return void
+     */
+    public function setImportAdapter(ImportAdapterInterface $importAdapter)
+    {
+        $this->importAdapter = $importAdapter;
+    }
+
+    /**
+     * Return's the import adapter instance.
+     *
+     * @return \TechDivision\Import\Adapter\ImportAdapterInterface The import adapter instance
+     */
+    public function getImportAdapter()
+    {
+        return $this->importAdapter;
     }
 
     /**
@@ -816,26 +852,11 @@ abstract class AbstractSubject implements SubjectInterface
             $this->setSerial($serial);
             $this->setFilename($filename);
 
-            // load the system logger
-            $systemLogger = $this->getSystemLogger();
-
-            // initialize the lexer instance itself
-            $lexer = new Lexer($this->getLexerConfig());
-
-            // initialize the interpreter
-            $interpreter = new Interpreter();
-            $interpreter->addObserver(array($this, 'importRow'));
-
-            // query whether or not we want to use the strict mode
-            if (!$this->getConfiguration()->isStrictMode()) {
-                $interpreter->unstrict();
-            }
-
             // log a message that the file has to be imported
             $systemLogger->debug(sprintf('Now start importing file %s', $filename));
 
-            // parse the CSV file to be imported
-            $lexer->parse($filename, $interpreter);
+            // let the adapter process the file
+            $this->getImportAdapter()->import(array($this, 'importRow'), $filename);
 
             // track the time needed for the import in seconds
             $endTime = microtime(true) - $startTime;
@@ -877,46 +898,6 @@ abstract class AbstractSubject implements SubjectInterface
 
         // stop processing, if the filename doesn't match
         return (boolean) preg_match($pattern, $filename);
-    }
-
-    /**
-     * Initialize and return the lexer configuration.
-     *
-     * @return \Goodby\CSV\Import\Standard\LexerConfig The lexer configuration
-     */
-    protected function getLexerConfig()
-    {
-
-        // initialize the lexer configuration
-        $config = new LexerConfig();
-
-        // query whether or not a delimiter character has been configured
-        if ($delimiter = $this->getConfiguration()->getDelimiter()) {
-            $config->setDelimiter($delimiter);
-        }
-
-        // query whether or not a custom escape character has been configured
-        if ($escape = $this->getConfiguration()->getEscape()) {
-            $config->setEscape($escape);
-        }
-
-        // query whether or not a custom enclosure character has been configured
-        if ($enclosure = $this->getConfiguration()->getEnclosure()) {
-            $config->setEnclosure($enclosure);
-        }
-
-        // query whether or not a custom source charset has been configured
-        if ($fromCharset = $this->getConfiguration()->getFromCharset()) {
-            $config->setFromCharset($fromCharset);
-        }
-
-        // query whether or not a custom target charset has been configured
-        if ($toCharset = $this->getConfiguration()->getToCharset()) {
-            $config->setToCharset($toCharset);
-        }
-
-        // return the lexer configuratio
-        return $config;
     }
 
     /**

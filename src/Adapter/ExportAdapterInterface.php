@@ -1,7 +1,7 @@
 <?php
 
 /**
- * TechDivision\Import\Plugins\PluginInterface
+ * TechDivision\Import\Adapter\ExportAdapterInterface
  *
  * NOTICE OF LICENSE
  *
@@ -18,12 +18,10 @@
  * @link      http://www.techdivision.com
  */
 
-namespace TechDivision\Import\Plugins;
-
-use TechDivision\Import\Configuration\PluginConfigurationInterface;
+namespace TechDivision\Import\Adapter;
 
 /**
- * The interface for all plugins.
+ * Interface for all export adapter implementations.
  *
  * @author    Tim Wagner <t.wagner@techdivision.com>
  * @copyright 2016 TechDivision GmbH <info@techdivision.com>
@@ -31,23 +29,18 @@ use TechDivision\Import\Configuration\PluginConfigurationInterface;
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
  */
-interface PluginInterface
+interface ExportAdapterInterface
 {
 
     /**
-     * Process the plugin functionality.
+     * Imports the content of the CSV file with the passed filename.
      *
-     * @return void
-     * @throws \Exception Is thrown, if the plugin can not be processed
-     */
-    public function process();
-
-    /**
-     *  Set's the plugin configuration instance.
-     *
-     * @param \TechDivision\Import\Configuration\PluginConfigurationInterface $pluginConfiguration The plugin configuration instance
+     * @param array   $artefacts The artefacts to be exported
+     * @param string  $targetDir The target dir to export the artefacts to
+     * @param integer $timestamp The timestamp part of the original import file
+     * @param string  $counter   The counter part of the origin import file
      *
      * @return void
      */
-    public function setPluginConfiguration(PluginConfigurationInterface $pluginConfiguration);
+    public function export(array $artefacts, $targetDir, $timestamp, $counter);
 }

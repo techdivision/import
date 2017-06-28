@@ -1,7 +1,7 @@
 <?php
 
 /**
- * TechDivision\Import\Plugins\PluginInterface
+ * TechDivision\Import\Plugins\PluginFactoryInterface
  *
  * NOTICE OF LICENSE
  *
@@ -23,7 +23,7 @@ namespace TechDivision\Import\Plugins;
 use TechDivision\Import\Configuration\PluginConfigurationInterface;
 
 /**
- * The interface for all plugins.
+ * The interface for all plugin factory implementations.
  *
  * @author    Tim Wagner <t.wagner@techdivision.com>
  * @copyright 2016 TechDivision GmbH <info@techdivision.com>
@@ -31,23 +31,15 @@ use TechDivision\Import\Configuration\PluginConfigurationInterface;
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
  */
-interface PluginInterface
+interface PluginFactoryInterface
 {
 
     /**
-     * Process the plugin functionality.
+     * Factory method to create new plugin instance.
      *
-     * @return void
-     * @throws \Exception Is thrown, if the plugin can not be processed
+     * @param \TechDivision\Import\Configuration\PluginConfigurationInterface $pluginConfiguration The plugin configuration
+     *
+     * @return \TechDivision\Import\Plugins\PluginInterface The plugin instance
      */
-    public function process();
-
-    /**
-     *  Set's the plugin configuration instance.
-     *
-     * @param \TechDivision\Import\Configuration\PluginConfigurationInterface $pluginConfiguration The plugin configuration instance
-     *
-     * @return void
-     */
-    public function setPluginConfiguration(PluginConfigurationInterface $pluginConfiguration);
+    public function createPlugin(PluginConfigurationInterface $pluginConfiguration);
 }
