@@ -13,7 +13,7 @@ with a 100 % CSV file compatibility. In contrast to other approaches, the framew
 extension, although it has no dependencies to other frameworks like Symfony, Laravel or others. Instead, it 
 provides independent components, that can be tied together as needed, by adding them as composer dependency.
 
-A simple command line implementation should give a brief overiew of how a simple import application could look
+A simple command line implementation should give a brief overview of how a simple import application could look
 like. For more information, have a look at the [M2IF - Simple Console Tool](https://github.com/techdivision/import-cli-simple) 
 repository
 
@@ -22,14 +22,14 @@ repository
 Import performance is one of the main topics, as in many, especially the bigger projects with more than 100.000
 products, the necessary time to keep the catalog up to date, may always be a bottleneck or an issue.
 
-This performance comparison below, will actually **NOT** be a the real source of truth, as M2IF doesn't yet provide 
+This performance comparison below, will actually **NOT** be a real source of truth, as M2IF doesn't yet provide 
 the complete functionality the Magento 2 standard import does. But as M2IF meanwhile will provide the most common 
 features, it would give you a nice impression about what will be possible.
 
 ### Preparation
 
 For the comparison, we used a standard Magento 2 CE v2.1.2 with sample data. As M2IF actually doesn't support
-Downloadable und Grouped Products, we removed these from the CSV file(s). This finally results in
+Downloadable and Grouped Products, we removed these from the CSV file(s). This finally results in
 
 * 23 custom attributes
 * 1 bundle product
@@ -53,7 +53,7 @@ On a MacBook Pro (Retina, Mid 2012) with the following configuration
 * 8 GB RAM
 * 256 GB HDD
 
-using PHP 5.6 + MySQL 5.6.34 we actually achive these results
+using PHP 5.6 + MySQL 5.6.34 we actually achieve these results
 
 | Operation            | M2 Standard  |       M2IF |    Improvement |
 |:---------------------|:-------------|:-----------|:---------------|
@@ -68,8 +68,8 @@ When importing the sample data, as described under [Performance](#performance-me
 in contrast to Magento 2 standard import with 149.4 MB. For M2IF, it doesn't matter how big the CSV will be.
 
 > As already mentioned, please keep in mind, this comparison lacks of some functionality the Magento 2 standard 
-> import provides and and exectutes when running it. Especially the data validation will took some time and M2IF 
-> acutally lacks of any validation functionality!
+> import provides and and executes when running it. Especially the data validation will take some time and M2IF 
+> actually lacks of any validation functionality!
 
 ## Status
 
@@ -101,7 +101,7 @@ This and many more is, what we're actually working on
 - [ ] Customers
 - [ ] Customer Attributes
 - [ ] Product Reviews
-- [ ] Valididation
+- [ ] Validation
 - [ ] Import Scheduled Product Updates
 - [ ] RESTFul Webservice
 - [ ] Archiving (equivalent to Magento Standard Functionality)
@@ -123,7 +123,7 @@ functionality to import products, category etc. is part of additional libraries.
 ### Applications
 
 Applications are importer implementations that uses the M2IF to make the import functionality
-available, e. g. on commanline.
+available, e. g. on command line.
 
 * [import-cli-simple](https://github.com/techdivision/import-cli-simple) - A simple console implementation that uses M2IF to provide Magento 2 CE/EE import functionality
 * [import-app-simple](https://github.com/techdivision/import-app-simple) - Application implementation that uses Symfony Console + DI as well as M2IF to provide Magento 2 CE/EE import functionality
@@ -131,7 +131,7 @@ available, e. g. on commanline.
 
 ### Core Libraries CE
 
-These are the M2IF core libraries for the Magento 2 Communit Edition (CE).
+These are the M2IF core libraries for the Magento 2 Community Edition (CE).
 
 * [import-product](https://github.com/techdivision/import-product) - Provides product import functionality
 * [import-product-bundle](https://github.com/techdivision/import-product-bundle) - Provides bundle product import functionality
@@ -224,7 +224,7 @@ This plugin provides the extended functionality to track whether an attribute op
 in a CSV import file, is available or not, depending on `debug mode` enabled or not. If the `debug mode` 
 is **NOT** enabled, an exception will be thrown immediately, else each missing attribute option value 
 will be written to the CSV file `missing-option-values.csv` that'll stored in the temporary import 
-directory and optionally sent to the specified mail receipients.
+directory and optionally sent to the specified mail recipients.
 
 The configuration of the plugin can look like
 
