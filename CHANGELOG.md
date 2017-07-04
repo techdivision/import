@@ -1,3 +1,13 @@
+# Version 1.0.0-beta27
+
+## Bugfixes
+
+* Refactor to optimize DI integration
+
+## Features
+
+* None
+
 # Version 1.0.0-beta26
 
 ## Bugfixes

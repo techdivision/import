@@ -115,15 +115,4 @@ interface EavSubjectInterface
      * @throws \Exception Is thrown if the attribute with the passed code is not available
      */
     public function getEavAttributeByAttributeCode($attributeCode);
-
-    /**
-     * Load's and return's the EAV attribute option value with the passed code, store ID and value.
-     *
-     * @param string  $attributeCode The code of the EAV attribute option to load
-     * @param integer $storeId       The store ID of the attribute option to load
-     * @param string  $value         The value of the attribute option to load
-     *
-     * @return array The EAV attribute option value
-     */
-    public function loadEavAttributeOptionValueByAttributeCodeAndStoreIdAndValue($attributeCode, $storeId, $value);
 }
