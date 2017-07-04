@@ -33,13 +33,20 @@ trait UrlKeyFilterTrait
 {
 
     /**
+     * The URL filter instance.
+     *
+     * @var \Zend\Filter\FilterInterface
+     */
+    protected $convertLiteralUrlFilter;
+
+    /**
      * Initialize's and return's the URL key filter.
      *
      * @return \TechDivision\Import\Product\Utils\ConvertLiteralUrl The URL key filter
      */
-    protected function getUrlKeyFilter()
+    protected function getConvertLiteralUrlFilter()
     {
-        return new ConvertLiteralUrl();
+        return $this->convertLiteralUrlFilter;
     }
 
     /**
@@ -51,6 +58,6 @@ trait UrlKeyFilterTrait
      */
     protected function convertNameToUrlKey($string)
     {
-        return $this->getUrlKeyFilter()->filter($string);
+        return $this->getConvertLiteralUrlFilter()->filter($string);
     }
 }
