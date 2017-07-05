@@ -282,17 +282,16 @@ abstract class AbstractEavSubject extends AbstractSubject implements EavSubjectI
     public function getEavUserDefinedAttributes()
     {
 
-        // query whether or not user defined attributes for the actualy entity type are available
+        // initialize the array with the user defined EAV attributes
+        $eavUserDefinedAttributes = array();
+
+        // query whether or not user defined EAV attributes for the actualy entity type are available
         if (isset($this->userDefinedAttributes[$entityTypeCode = $this->getEntityTypeCode()])) {
-            return $this->userDefinedAttributes[$entityTypeCode];
+            $eavUserDefinedAttributes = $this->userDefinedAttributes[$entityTypeCode];
         }
 
-        // throw an exception if an unknown entity type has been passed
-        throw new \Exception(
-            $this->appendExceptionSuffix(
-                sprintf('Unknown entity type code "%s"', $entityTypeCode)
-            )
-        );
+        // return the array with the user defined EAV attributes
+        return $eavUserDefinedAttributes;
     }
 
     /**

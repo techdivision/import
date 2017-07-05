@@ -1,3 +1,13 @@
+# Version 1.0.0-beta28
+
+## Bugfixes
+
+* Don't throw exception when no user defined EAV attributes for a given entity type code are available
+
+## Features
+
+* None
+
 # Version 1.0.0-beta27
 
 ## Bugfixes
