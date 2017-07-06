@@ -119,4 +119,56 @@ trait FilesystemTrait
             sprintf('Directory %s doesn\'t exist', $path)
         );
     }
+
+    /**
+     * Query whether or not the passed filename exists.
+     *
+     * @param string $filename The filename to query
+     *
+     * @return boolean TRUE if the passed filename exists, else FALSE
+     */
+    public function isFile($filename)
+    {
+        return is_file($filename);
+    }
+
+    /**
+     * Creates an empty file with the passed filename.
+     *
+     * @param string $filename The name of the file to create
+     *
+     * @return boolean TRUE if the file can be created, else FALSE
+     */
+    public function touch($filename)
+    {
+        return touch($filename);
+    }
+
+    /**
+     * Renames a file or directory.
+     *
+     * @param string $oldname The old name
+     * @param string $newname The new name
+     *
+     * @return boolean TRUE on success, else FALSE
+     * @link http://php.net/rename
+     */
+    public function rename($oldname, $newname)
+    {
+        return rename($oldname, $newname);
+    }
+
+    /**
+     * Writes the passed data to file with the passed name.
+     *
+     * @param string $filename The name of the file to write the data to
+     * @param string $data     The data to write to the file
+     *
+     * @return number The number of bytes written to the file
+     * @link http://php.net/file_put_contents
+     */
+    public function write($filename, $data)
+    {
+        return file_put_contents($filename, $data);
+    }
 }

@@ -413,9 +413,9 @@ abstract class AbstractSubject implements SubjectInterface
      * Tries to format the passed value to a valid date with format 'Y-m-d H:i:s'.
      * If the passed value is NOT a valid date, NULL will be returned.
      *
-     * @param string|null $value The value to format
+     * @param string $value The value to format
      *
-     * @return string The formatted date
+     * @return string|null The formatted date or NULL if the date is not valid
      */
     public function formatDate($value)
     {
@@ -833,9 +833,9 @@ abstract class AbstractSubject implements SubjectInterface
             $failedFilename = sprintf('%s.failed', $filename);
 
             // query whether or not the file has already been imported
-            if (is_file($failedFilename) ||
-                is_file($importedFilename) ||
-                is_file($inProgressFilename)
+            if ($this->isFile($failedFilename) ||
+                $this->isFile($importedFilename) ||
+                $this->isFile($inProgressFilename)
             ) {
                 // log a debug message and exit
                 $systemLogger->debug(sprintf('Import running, found inProgress file %s', $inProgressFilename));
@@ -843,7 +843,7 @@ abstract class AbstractSubject implements SubjectInterface
             }
 
             // flag file as in progress
-            touch($inProgressFilename);
+            $this->touch($inProgressFilename);
 
             // track the start time
             $startTime = microtime(true);
@@ -865,12 +865,12 @@ abstract class AbstractSubject implements SubjectInterface
             $systemLogger->debug(sprintf('Successfully imported file %s in %f s', $filename, $endTime));
 
             // rename flag file, because import has been successfull
-            rename($inProgressFilename, $importedFilename);
+            $this->rename($inProgressFilename, $importedFilename);
 
         } catch (\Exception $e) {
             // rename the flag file, because import failed and write the stack trace
-            rename($inProgressFilename, $failedFilename);
-            file_put_contents($failedFilename, $e->__toString());
+            $this->rename($inProgressFilename, $failedFilename);
+            $this->write($failedFilename, $e->__toString());
 
             // do not wrap the exception if not already done
             if ($e instanceof WrappedColumnException) {
@@ -894,7 +894,11 @@ abstract class AbstractSubject implements SubjectInterface
     {
 
         // prepare the pattern to query whether the file has to be processed or not
-        $pattern = sprintf('/^.*\/%s.*\\.csv$/', $this->getConfiguration()->getPrefix());
+        $pattern = sprintf(
+            '/^.*\/%s.*\\.%s$/',
+            $this->getConfiguration()->getPrefix(),
+            $this->getConfiguration()->getSuffix()
+        );
 
         // stop processing, if the filename doesn't match
         return (boolean) preg_match($pattern, $filename);
