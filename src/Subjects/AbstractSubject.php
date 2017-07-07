@@ -167,6 +167,13 @@ abstract class AbstractSubject implements SubjectInterface
     protected $stores = array();
 
     /**
+     * The available websites.
+     *
+     * @var array
+     */
+    protected $storeWebsites = array();
+
+    /**
      * The default store.
      *
      * @var array
@@ -647,6 +654,7 @@ abstract class AbstractSubject implements SubjectInterface
         // load the global data we've prepared initially
         $this->stores = $status[RegistryKeys::GLOBAL_DATA][RegistryKeys::STORES];
         $this->defaultStore = $status[RegistryKeys::GLOBAL_DATA][RegistryKeys::DEFAULT_STORE];
+        $this->storeWebsites  = $status[RegistryKeys::GLOBAL_DATA][RegistryKeys::STORE_WEBSITES];
         $this->rootCategories = $status[RegistryKeys::GLOBAL_DATA][RegistryKeys::ROOT_CATEGORIES];
         $this->coreConfigData = $status[RegistryKeys::GLOBAL_DATA][RegistryKeys::CORE_CONFIG_DATA];
 
@@ -1154,22 +1162,27 @@ abstract class AbstractSubject implements SubjectInterface
         }
 
         // query whether or not we've to query for the configuration value on fallback level 'websites' also
-        if ($scope === ScopeKeys::SCOPE_STORES && isset($this->stores[$scopeId])) {
-            // replace scope with 'websites' and website ID
-            $coreConfigData = array_merge(
-                $coreConfigData,
-                array(
-                    MemberNames::SCOPE    => ScopeKeys::SCOPE_WEBSITES,
-                    MemberNames::SCOPE_ID => $this->stores[$scopeId][MemberNames::WEBSITE_ID]
-                )
-            );
+        if ($scope === ScopeKeys::SCOPE_STORES) {
+            // query whether or not the website with the passed ID is available
+            foreach ($this->storeWebsites as $storeWebsite) {
+                if ($storeWebsite[MemberNames::WEBSITE_ID] === $scopeId) {
+                    // replace scope with 'websites' and website ID
+                    $coreConfigData = array_merge(
+                        $coreConfigData,
+                        array(
+                            MemberNames::SCOPE    => ScopeKeys::SCOPE_WEBSITES,
+                            MemberNames::SCOPE_ID => $storeWebsite[MemberNames::WEBSITE_ID]
+                        )
+                    );
 
-            // generate the UID from the passed data, merged with the 'websites' scope and ID
-            $uniqueIdentifier = $this->coreConfigDataUidGenerator->generate($coreConfigData);
+                    // generate the UID from the passed data, merged with the 'websites' scope and ID
+                    $uniqueIdentifier = $this->coreConfigDataUidGenerator->generate($coreConfigData);
 
-            // query whether or not, the configuration value on 'websites' level
-            if (isset($this->coreConfigData[$uniqueIdentifier][MemberNames::VALUE])) {
-                return $this->coreConfigData[$uniqueIdentifier][MemberNames::VALUE];
+                    // query whether or not, the configuration value on 'websites' level
+                    if (isset($this->coreConfigData[$uniqueIdentifier][MemberNames::VALUE])) {
+                        return $this->coreConfigData[$uniqueIdentifier][MemberNames::VALUE];
+                    }
+                }
             }
         }
 
@@ -1314,7 +1327,7 @@ abstract class AbstractSubject implements SubjectInterface
             // prepare the original column names
             $originalColumnNames = array();
             foreach ($columnNames as $columnName) {
-                $originalColumnNames = $this->resolveOriginalColumnName($columnName);
+                $originalColumnNames[] = $this->resolveOriginalColumnName($columnName);
             }
 
             // append the column information

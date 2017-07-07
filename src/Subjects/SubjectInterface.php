@@ -183,4 +183,11 @@ interface SubjectInterface
      * @return \TechDivision\Import\Adapter\ImportAdapterInterface The import adapter instance
      */
     public function getImportAdapter();
+
+    /**
+     * Stop's observer execution on the actual row.
+     *
+     * @return void
+     */
+    public function skipRow();
 }
