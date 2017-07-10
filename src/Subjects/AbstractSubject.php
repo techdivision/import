@@ -628,16 +628,6 @@ abstract class AbstractSubject implements SubjectInterface
     }
 
     /**
-     * Return's the initialized PDO connection.
-     *
-     * @return \PDO The initialized PDO connection
-     */
-    public function getConnection()
-    {
-        return $this->getProductProcessor()->getConnection();
-    }
-
-    /**
      * Intializes the previously loaded global data for exactly one bunch.
      *
      * @param string $serial The serial of the actual import

@@ -57,17 +57,27 @@ class AbstractSubjectTest extends \PHPUnit_Framework_TestCase
     protected $serial;
 
     /**
-     * Sets up the fixture, for example, open a network connection.
-     * This method is called before a test is executed.
+     * Mock the system loggers.
      *
-     * @return void
-     * @see \PHPUnit_Framework_TestCase::setUp()
+     * @return array The array with the system loggers
      */
-    protected function setUp()
+    protected function getMockLoggers()
     {
+        return array(
+            LoggerKeys::SYSTEM => $this->getMockBuilder('Psr\Log\LoggerInterface')
+                                       ->setMethods(get_class_methods('Psr\Log\LoggerInterface'))
+                                       ->getMock()
+        );
+    }
 
-        // prepare the global data
-        $globalData = array(
+    /**
+     * Mock the global data.
+     *
+     * @return array The array with the global data
+     */
+    protected function getMockGlobalData()
+    {
+        return array(
             RegistryKeys::GLOBAL_DATA => array(
                 RegistryKeys::LINK_TYPES => array(),
                 RegistryKeys::CATEGORIES => array(),
@@ -184,60 +194,169 @@ class AbstractSubjectTest extends \PHPUnit_Framework_TestCase
                 )
             )
         );
+    }
 
-        // mock the loggers
-        $mockLoggers = array(
-            LoggerKeys::SYSTEM => $this->getMockBuilder('Psr\Log\LoggerInterface')
-                                       ->setMethods(get_class_methods('Psr\Log\LoggerInterface'))
-                                       ->getMock()
-        );
+    /**
+     * Mock the registry processor.
+     *
+     * @return PHPUnit_Framework_MockObject_MockObject The registry processor mock
+     */
+    protected function getMockRegistryProcessor()
+    {
+        return $this->getMockBuilder('TechDivision\Import\Services\RegistryProcessorInterface')
+                    ->setMethods(get_class_methods('TechDivision\Import\Services\RegistryProcessorInterface'))
+                    ->getMock();
+    }
+
+    /**
+     * Mock the configuration.
+     *
+     * @return PHPUnit_Framework_MockObject_MockObject The mock configuration
+     */
+    protected function getMockConfiguration()
+    {
+
+        return $this->getMockBuilder('TechDivision\Import\ConfigurationInterface')
+                    ->setMethods(get_class_methods('TechDivision\Import\ConfigurationInterface'))
+                    ->getMock();
+    }
+
+    /**
+     * Mock the subject configuration.
+     *
+     * @return PHPUnit_Framework_MockObject_MockObject The mock subject configuration
+     */
+    protected function getMockSubjectConfiguration()
+    {
+        return $this->getMockBuilder('TechDivision\Import\Configuration\SubjectConfigurationInterface')
+                    ->setMethods(get_class_methods('TechDivision\Import\Configuration\SubjectConfigurationInterface'))
+                    ->getMock();
+    }
+
+    /**
+     * Mock the subject constructor args.
+     *
+     * @return array The subject constructor args
+     */
+    protected function getMockSubjectConstructorArgs()
+    {
 
         // mock the registry processor
-        $mockRegistryProcessor = $this->getMockBuilder('TechDivision\Import\Services\RegistryProcessorInterface')
-                                      ->setMethods(get_class_methods('TechDivision\Import\Services\RegistryProcessorInterface'))
-                                      ->getMock();
-        $mockRegistryProcessor->expects($this->once())
-                              ->method('getAttribute')
-                              ->willReturn($globalData);
+        $mockRegistryProcessor = $this->getMockRegistryProcessor();
 
         // mock the generator
         $mockGenerator = new CoreConfigDataUidGenerator();
 
+        // mock the loggers
+        $mockLoggers = $this->getMockLoggers();
+
         // prepare the constructor arguments
-        $args = array(
+        return array(
             $mockRegistryProcessor,
             $mockGenerator,
             $mockLoggers
         );
+    }
+
+    /**
+     * Sets up the fixture, for example, open a network connection.
+     * This method is called before a test is executed.
+     *
+     * @return void
+     * @see \PHPUnit_Framework_TestCase::setUp()
+     */
+    protected function setUp()
+    {
+
+        // initialize the default callback mappings
+        $defaultCallbacks = array(
+            'attributeCode' => array('import.test.callback-00.id')
+        );
+
+        // initialize the callback mappings
+        $callbacks = array(
+            array(
+                'attributeCode'        => array('import.test.callback-01.id'),
+                'anotherAttributecode' => array('import.test.callback-02.id')
+            )
+        );
 
         // create a mock configuration
-        $mockConfiguration = $this->getMockBuilder('TechDivision\Import\ConfigurationInterface')
-                                  ->setMethods(get_class_methods('TechDivision\Import\ConfigurationInterface'))
-                                  ->getMock();
+        $mockConfiguration = $this->getMockConfiguration();
         $mockConfiguration->expects($this->any())
                           ->method('getOperationName')
                           ->willReturn('add-update');
 
         // create a mock subject configuration
-        $mockSubjectConfiguration = $this->getMockBuilder('TechDivision\Import\Configuration\SubjectConfigurationInterface')
-                                         ->setMethods(get_class_methods('TechDivision\Import\Configuration\SubjectConfigurationInterface'))
-                                         ->getMock();
+        $mockSubjectConfiguration = $this->getMockSubjectConfiguration();
         $mockSubjectConfiguration->expects($this->any())
                                  ->method('getConfiguration')
                                  ->willReturn($mockConfiguration);
         $mockSubjectConfiguration->expects($this->any())
                                  ->method('getCallbacks')
-                                 ->willReturn(array());
+                                 ->willReturn($callbacks);
 
         // initialize the abstract subject that has to be tested
         $this->abstractSubject = $this->getMockBuilder('TechDivision\Import\Subjects\AbstractSubject')
-                                      ->setConstructorArgs($args)
-                                      ->setMethods(array('isFile', 'touch', 'rename', 'write', 'getHeaderMappings'))
+                                      ->setConstructorArgs($this->getMockSubjectConstructorArgs())
+                                      ->setMethods(
+                                          array(
+                                              'touch',
+                                              'write',
+                                              'rename',
+                                              'isFile',
+                                              'getHeaderMappings',
+                                              'getDefaultCallbackMappings'
+                                          )
+                                      )
                                       ->getMockForAbstractClass();
+
+       // mock the getDefaultCallbackMappings() method
+       $this->abstractSubject
+            ->expects($this->any())
+            ->method('getDefaultCallbackMappings')
+            ->willReturn($defaultCallbacks);
+
+       // mock the getAttribute() method
+       $this->abstractSubject
+            ->getRegistryProcessor()
+            ->expects($this->once())
+            ->method('getAttribute')
+            ->willReturn($this->getMockGlobalData());
 
         // set the mock configuration instance
         $this->abstractSubject->setConfiguration($mockSubjectConfiguration);
-        $this->abstractSubject->setUp($this->serial, uniqid());
+        $this->abstractSubject->setUp($this->serial = uniqid());
+    }
+
+    /**
+     * The the tearDown() method.
+     *
+     * @return void
+     */
+    public function testTearDown()
+    {
+
+        // mock the target configuration value
+        $this->abstractSubject
+             ->getConfiguration()
+             ->expects($this->exactly(2))
+             ->method('getTargetDir')
+             ->willReturn($targetDir = 'var/importexport');
+
+        // mock the attribute merging
+        $this->abstractSubject
+             ->getRegistryProcessor()
+             ->expects($this->once())
+             ->method('mergeAttributesRecursive')
+             ->with(
+                 $this->serial,
+                 array(RegistryKeys::SOURCE_DIRECTORY => sprintf('%s/%s', $targetDir, $this->serial))
+             )
+             ->willReturn(null);
+
+        // invoke the tear down and make sure no value will be returned
+        $this->assertNull($this->abstractSubject->tearDown($this->serial));
     }
 
     /**
@@ -245,9 +364,28 @@ class AbstractSubjectTest extends \PHPUnit_Framework_TestCase
      *
      * @return void
      */
-    public function testGetSerial()
+    public function testSetGetSerial()
     {
+        $this->abstractSubject->setSerial($this->serial);
         $this->assertSame($this->serial, $this->abstractSubject->getSerial());
+    }
+
+    /**
+     * The the getCallbackMappings() method with overwritten callbacks.
+     *
+     * @return void
+     */
+    public function testGetCallbackMappings()
+    {
+
+        // load the callback mappings
+        $callbackMappings = $this->abstractSubject->getCallbackMappings();
+
+        // make sure callback mapping have been overwritten
+        $this->assertSame(
+            array('import.test.callback-01.id'),
+            $callbackMappings['attributeCode']
+        );
     }
 
     /**
@@ -1217,6 +1355,9 @@ class AbstractSubjectTest extends \PHPUnit_Framework_TestCase
              ->with($this->serial, $counterName = 'testCounter')
              ->willReturn($newCounterValue = 1);
 
+        // set the serial first
+        $this->abstractSubject->setSerial($this->serial);
+
         // raise the counter and test the result
         $this->assertSame($newCounterValue, $this->abstractSubject->raiseCounter($counterName));
     }
@@ -1236,6 +1377,9 @@ class AbstractSubjectTest extends \PHPUnit_Framework_TestCase
              ->method('mergeAttributesRecursive')
              ->with($this->serial, $status = array('test' => 'test'))
              ->willReturn(null);
+
+        // set the serial first
+        $this->abstractSubject->setSerial($this->serial);
 
         // merge the attributes recursively
         $this->assertNull($this->abstractSubject->mergeAttributesRecursive($status));
@@ -1373,5 +1517,78 @@ class AbstractSubjectTest extends \PHPUnit_Framework_TestCase
 
         // query whether or not an OK file is needed
         $this->assertTrue($this->abstractSubject->isOkFileNeeded());
+    }
+
+    /**
+     * Query the getOperationName() method.
+     *
+     * @return void
+     */
+    public function testGetOperationName()
+    {
+        $this->assertSame('add-update', $this->abstractSubject->getOperationName());
+    }
+
+    /**
+     * Test the getCallbacks() method.
+     *
+     * @return void
+     */
+    public function testGetCallbacks()
+    {
+
+        // create a mock callback
+        $mockCallback = $this->getMockBuilder('TechDivision\Import\Callbacks\CallbackInterface')
+                             ->setMethods(get_class_methods('TechDivision\Import\Callbacks\CallbackInterface'))
+                             ->getMock();
+
+        // register a mock callback
+        $this->abstractSubject->registerCallback($mockCallback, $type = 'import');
+
+        // assert that the callbacks have been registered
+        $this->assertSame(
+            array($type => array($mockCallback)),
+            $this->abstractSubject->getCallbacks()
+        );
+    }
+
+    /**
+     * Test the getCallbacksByType() method.
+     *
+     * @return void
+     */
+    public function testGetCallbacksByType()
+    {
+
+        // create a mock callback
+        $mockCallback = $this->getMockBuilder('TechDivision\Import\Callbacks\CallbackInterface')
+                             ->setMethods(get_class_methods('TechDivision\Import\Callbacks\CallbackInterface'))
+                             ->getMock();
+
+        // register a mock callback
+        $this->abstractSubject->registerCallback($mockCallback, $type = 'import');
+
+        // assert that the callbacks have been registered
+        $this->assertSame(
+            array($mockCallback),
+            $this->abstractSubject->getCallbacksByType($type)
+        );
+    }
+
+    /**
+     * Test the getDefaultCallbackMappings() method.
+     *
+     * @return void
+     */
+    public function testGetDefaultCallbackMappings()
+    {
+
+        // initialize the abstract subject that has to be tested
+        $abstractSubject = $this->getMockBuilder('TechDivision\Import\Subjects\AbstractSubject')
+                                ->setConstructorArgs($this->getMockSubjectConstructorArgs())
+                                ->getMockForAbstractClass();
+
+        // make sure the default callback mappings are an empty array
+        $this->assertCount(0, $abstractSubject->getDefaultCallbackMappings());
     }
 }
