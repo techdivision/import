@@ -71,6 +71,13 @@ class BackendTypeKeys
     const BACKEND_TYPE_DECIMAL = 'decimal';
 
     /**
+     * Key for the backend type 'float'.
+     *
+     * @var string
+     */
+    const BACKEND_TYPE_FLOAT = 'float';
+
+    /**
      * Key for the backend type 'int'.
      *
      * @var string

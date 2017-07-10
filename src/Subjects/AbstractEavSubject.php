@@ -181,17 +181,17 @@ abstract class AbstractEavSubject extends AbstractSubject implements EavSubjectI
     {
 
         // cast the value to a valid timestamp
-        if ($backendType === 'datetime') {
+        if ($backendType === BackendTypeKeys::BACKEND_TYPE_DATETIME) {
             return \DateTime::createFromFormat($this->getSourceDateFormat(), $value)->format('Y-m-d H:i:s');
         }
 
         // cast the value to a float value
-        if ($backendType === 'float') {
+        if ($backendType === BackendTypeKeys::BACKEND_TYPE_FLOAT) {
             return (float) $value;
         }
 
         // cast the value to an integer
-        if ($backendType === 'int') {
+        if ($backendType === BackendTypeKeys::BACKEND_TYPE_INT) {
             return (int) $value;
         }
 
@@ -215,7 +215,7 @@ abstract class AbstractEavSubject extends AbstractSubject implements EavSubjectI
      * @param string $attributeSetName The name of the requested attribute set
      *
      * @return array The attribute set data
-     * @throws \Exception Is thrown, if the attribute set with the passed name is not available
+     * @throws \Exception Is thrown, if the attribute set or the given entity type with the passed name is not available
      */
     public function getAttributeSetByAttributeSetName($attributeSetName)
     {
@@ -229,12 +229,19 @@ abstract class AbstractEavSubject extends AbstractSubject implements EavSubjectI
             if (isset($attributSets[$attributeSetName])) {
                 return $attributSets[$attributeSetName];
             }
+
+            // throw an exception, if not
+            throw new \Exception(
+                $this->appendExceptionSuffix(
+                    sprintf('Found invalid attribute set name "%s"', $attributeSetName)
+                    )
+            );
         }
 
         // throw an exception, if not
         throw new \Exception(
             $this->appendExceptionSuffix(
-                sprintf('Found invalid attribute set name "%s"', $attributeSetName)
+                sprintf('Found invalid entity type code "%s"', $entityTypeCode)
             )
         );
     }
@@ -243,7 +250,7 @@ abstract class AbstractEavSubject extends AbstractSubject implements EavSubjectI
      * Return's the attributes for the attribute set of the product that has to be created.
      *
      * @return array The attributes
-     * @throws \Exception Is thrown if the attributes for the actual attribute set are not available
+     * @throws \Exception Is thrown, if the attribute set or the given entity type with the passed name is not available
      */
     public function getAttributes()
     {
