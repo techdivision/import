@@ -200,10 +200,12 @@ trait FileUploadTrait
 
         // trim the leading /, if available
         $trimmedFilename = ltrim($filename, '/');
+        $mediaDir = ltrim($this->getMediaDir(), '/');
+        $imagesFileDir = ltrim($this->getImagesFileDir(), '/');
 
         // prepare source/target filename
-        $sourceFilename = sprintf('%s/%s', $this->getImagesFileDir(), $trimmedFilename);
-        $targetFilename = sprintf('%s/%s', $this->getMediaDir(), $trimmedFilename);
+        $sourceFilename = sprintf('%s/%s', $imagesFileDir, $trimmedFilename);
+        $targetFilename = sprintf('%s/%s', $mediaDir, $trimmedFilename);
 
         // query whether or not the image file to be imported is available
         if (!$this->getFilesystem()->has($sourceFilename)) {
@@ -218,6 +220,6 @@ trait FileUploadTrait
         $this->getFilesystem()->copy($sourceFilename, $targetFilename);
 
         // return the new target filename
-        return str_replace($this->getMediaDir(), '', $targetFilename);
+        return str_replace($mediaDir, '', $targetFilename);
     }
 }
