@@ -64,4 +64,26 @@ class CategoryVarcharRepository extends AbstractRepository
             return $stmt->fetchAll();
         }
     }
+
+    /**
+     * Returns the category varchar values for the categories with
+     * the passed with the passed entity ID.
+     *
+     * @param int $entityId The category ID
+     *
+     * @return array The category varchar values
+     */
+    public function findByEntityId($entityId)
+    {
+        // load the utility class name
+        $utilityClassName = $this->getUtilityClassName();
+
+        // prepare the cache key
+        $sql = str_replace('?', $entityId, $this->getUtilityClass()->find($utilityClassName::CATEGORY_VARCHARS_BY_ENTITY_IDS));
+
+        // load the categories with the passed values and return them
+        if ($stmt = $this->getConnection()->query($sql)) {
+            return $stmt->fetch();
+        }
+    }
 }

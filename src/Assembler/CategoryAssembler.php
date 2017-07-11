@@ -91,7 +91,8 @@ class CategoryAssembler
 
             // initialize the array for the path elements
             $path = array();
-            foreach ($this->categoryVarcharRepository->findAllByEntityIds($entityIds) as $cat) {
+            foreach ($entityIds as $entityId) {
+                $cat = $this->categoryVarcharRepository->findByEntityId($entityId);
                 $path[] = $cat[MemberNames::VALUE];
             }
 
