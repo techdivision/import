@@ -1,3 +1,13 @@
+# Version 1.0.0-beta29
+
+## Bugfixes
+
+* Fix issue which caused ID sorted category paths
+
+## Features
+
+* None
+
 # Version 1.0.0-beta28
 
 ## Bugfixes
