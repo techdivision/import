@@ -102,7 +102,7 @@ trait ExportableTrait
 
         // query whether or not, artefacts for the passed params are available
         if (isset($this->artefacs[$type][$entityId])) {
-            return $this->artefacs[$type][$entityId];
+            return reset($this->artefacs[$type][$entityId]);
         }
 
         // throw an exception if not

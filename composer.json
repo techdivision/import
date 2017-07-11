@@ -18,7 +18,8 @@
         "sebastian/phpcpd": "2.0.*",
         "squizlabs/php_codesniffer": "2.2.*",
         "phpdocumentor/phpdocumentor": "2.8.*",
-        "consolidation/robo": "~1.0"
+        "consolidation/robo": "~1.0",
+        "mikey179/vfsStream": "~1.0"
     },
     "authors": [
         {

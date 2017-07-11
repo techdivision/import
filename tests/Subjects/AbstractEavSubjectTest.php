@@ -27,7 +27,7 @@ use TechDivision\Import\Utils\BackendTypeKeys;
 use TechDivision\Import\Utils\FrontendInputTypes;
 
 /**
- * Test class for the SQL statement implementation.
+ * Test class for the abstract EAV subject implementation.
  *
  * @author    Tim Wagner <t.wagner@techdivision.com>
  * @copyright 2016 TechDivision GmbH <info@techdivision.com>

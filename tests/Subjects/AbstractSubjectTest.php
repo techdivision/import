@@ -29,7 +29,7 @@ use TechDivision\Import\Utils\StoreViewCodes;
 use TechDivision\Import\Exceptions\WrappedColumnException;
 
 /**
- * Test class for the SQL statement implementation.
+ * Test class for the abstract subject implementation.
  *
  * @author    Tim Wagner <t.wagner@techdivision.com>
  * @copyright 2016 TechDivision GmbH <info@techdivision.com>

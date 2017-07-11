@@ -234,7 +234,7 @@ abstract class AbstractEavSubject extends AbstractSubject implements EavSubjectI
             throw new \Exception(
                 $this->appendExceptionSuffix(
                     sprintf('Found invalid attribute set name "%s"', $attributeSetName)
-                    )
+                )
             );
         }
 
