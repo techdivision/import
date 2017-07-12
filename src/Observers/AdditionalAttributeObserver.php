@@ -71,30 +71,31 @@ class AdditionalAttributeObserver extends AbstractObserver
         if ($additionalAttributes = $this->getValue(ColumnKeys::ADDITIONAL_ATTRIBUTES)) {
             // explode the additional attributes
             $additionalAttributes = $this->parseAdditionaAttributes($additionalAttributes);
-
+            // load the subject instance
+            $subject = $this->getSubject();
             // iterate over the attributes and append them to the row
             foreach ($additionalAttributes as $additionalAttribute) {
                 // explode attribute code/option value from the attribute
-                list ($attributeCode, $optionValue) = $this->explode($additionalAttribute, '=');
+                list ($attributeCode, $optionValue) = $subject->explode($additionalAttribute, '=');
 
                 // try to load the appropriate key for the value
-                if (!$this->hasHeader($attributeCode)) {
-                    $this->addHeader($attributeCode);
+                if (!$subject->hasHeader($attributeCode)) {
+                    $subject->addHeader($attributeCode);
                 }
 
                 // append/replace the attribute value
                 $this->setValue($attributeCode, $optionValue);
 
                 // add a log message in debug mod
-                if ($this->isDebugMode()) {
-                    $this->getSystemLogger()->debug(
+                if ($subject->isDebugMode()) {
+                    $subject->getSystemLogger()->debug(
                         sprintf(
                             'Extract new column "%s" with value "%s" from column "%s" in file %s on line %d',
                             $attributeCode,
                             $optionValue,
                             ColumnKeys::ADDITIONAL_ATTRIBUTES,
-                            $this->getFilename(),
-                            $this->getLineNumber()
+                            $subject->getFilename(),
+                            $subject->getLineNumber()
                         )
                     );
                 }

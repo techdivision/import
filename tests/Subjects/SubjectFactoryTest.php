@@ -81,8 +81,8 @@ class SubjectFactoryTest extends \PHPUnit_Framework_TestCase
                                   ->getMock();
 
         // mock the subject
-        $mockSubject = $this->getMockBuilder('TechDivision\Import\Subjects\MockForExportableSubject')
-                            ->setMethods(get_class_methods('TechDivision\Import\Subjects\MockForExportableSubject'))
+        $mockSubject = $this->getMockBuilder('TechDivision\Import\Subjects\ExportableTraitImpl')
+                            ->setMethods(get_class_methods('TechDivision\Import\Subjects\ExportableTraitImpl'))
                             ->getMockForAbstractClass();
         $mockSubject->expects($this->once())
                     ->method('setConfiguration')

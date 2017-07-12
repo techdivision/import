@@ -35,7 +35,7 @@ class FileUploadTraitTest extends \PHPUnit_Framework_TestCase
     /**
      * The file upload trait that has to be tested.
      *
-     * @var \TechDivision\Import\Subjects\MockForFileUploadTrait
+     * @var \TechDivision\Import\Subjects\FileUploadTraitImpl
      */
     protected $fileUploadTrait;
 
@@ -48,7 +48,7 @@ class FileUploadTraitTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->fileUploadTrait = new MockForFileUploadTrait();
+        $this->fileUploadTrait = new FileUploadTraitImpl();
     }
 
     /**

@@ -1,7 +1,7 @@
 <?php
 
 /**
- * TechDivision\Import\Observers\ObserverInterface
+ * TechDivision\Import\Subjects\ExportableTraitImpl
  *
  * NOTICE OF LICENSE
  *
@@ -18,12 +18,10 @@
  * @link      http://www.techdivision.com
  */
 
-namespace TechDivision\Import\Observers;
-
-use TechDivision\Import\Subjects\SubjectInterface;
+namespace TechDivision\Import\Subjects;
 
 /**
- * interface for all observer implementations.
+ * Wrapper for a subject that uses the exportable trait implementation.
  *
  * @author    Tim Wagner <t.wagner@techdivision.com>
  * @copyright 2016 TechDivision GmbH <info@techdivision.com>
@@ -31,23 +29,13 @@ use TechDivision\Import\Subjects\SubjectInterface;
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
  */
-interface ObserverInterface
+abstract class ExportableTraitImpl implements SubjectInterface, ExportableSubjectInterface
 {
 
     /**
-     * Will be invoked by the action on the events the listener has been registered for.
+     * The trait that implements the export functionality.
      *
-     * @param \TechDivision\Import\Subjects\SubjectInterface $subject The subject instance
-     *
-     * @return array The modified row
-     * @see \TechDivision\Import\Product\Observers\ImportObserverInterface::handle()
+     * @var \TechDivision\Import\Subjects\ExportableTrait
      */
-    public function handle(SubjectInterface $subject);
-
-    /**
-     * Return's the observer's subject instance.
-     *
-     * @return \TechDivision\Import\Subjects\SubjectInterface The observer's subject instance
-     */
-    public function getSubject();
+    use ExportableTrait;
 }

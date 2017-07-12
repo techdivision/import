@@ -1,7 +1,7 @@
 <?php
 
 /**
- * TechDivision\Import\Observers\ObserverInterface
+ * TechDivision\Import\AbstractRowTraitImpl
  *
  * NOTICE OF LICENSE
  *
@@ -18,12 +18,12 @@
  * @link      http://www.techdivision.com
  */
 
-namespace TechDivision\Import\Observers;
+namespace TechDivision\Import;
 
 use TechDivision\Import\Subjects\SubjectInterface;
 
 /**
- * interface for all observer implementations.
+ * Wrapper for a subject that uses the row trait implementation.
  *
  * @author    Tim Wagner <t.wagner@techdivision.com>
  * @copyright 2016 TechDivision GmbH <info@techdivision.com>
@@ -31,23 +31,20 @@ use TechDivision\Import\Subjects\SubjectInterface;
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
  */
-interface ObserverInterface
+abstract class AbstractRowTraitImpl implements SubjectInterface
 {
 
     /**
-     * Will be invoked by the action on the events the listener has been registered for.
+     * The trait that provides header handling functionality.
      *
-     * @param \TechDivision\Import\Subjects\SubjectInterface $subject The subject instance
-     *
-     * @return array The modified row
-     * @see \TechDivision\Import\Product\Observers\ImportObserverInterface::handle()
+     * @var TechDivision\Import\HeaderTrait
      */
-    public function handle(SubjectInterface $subject);
+    use HeaderTrait;
 
     /**
-     * Return's the observer's subject instance.
+     * The trait that provides row handling functionality.
      *
-     * @return \TechDivision\Import\Subjects\SubjectInterface The observer's subject instance
+     * @var TechDivision\Import\RowTrait
      */
-    public function getSubject();
+    use RowTrait;
 }

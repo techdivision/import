@@ -50,7 +50,7 @@ class ExportableTraitTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->exportableTrait = new MockForExportableTrait();
+        $this->exportableTrait = $this->getMockForAbstractClass('TechDivision\Import\Subjects\ExportableTraitImpl');
     }
 
     /**
@@ -140,19 +140,13 @@ class ExportableTraitTest extends \PHPUnit_Framework_TestCase
     public function testExport()
     {
 
-        // set serial, filename, linenumber and last entity ID
-        $this->exportableTrait->setSerial($serial = uniqid());
-        $this->exportableTrait->setFilename($filename = 'product-import_20170101123000_01.csv');
-        $this->exportableTrait->setLineNumber($lineNumber = 2);
-        $this->exportableTrait->setLastEntityId($lastEntityId = 1000);
+        // set the last entity ID
+        $this->exportableTrait->setLastEntityId($lastEntityId = 100);
 
-        // initialize a mock configuration
-        $mockConfiguration = $this->getMockBuilder('TechDivision\Import\ConfigurationInterface')
-                                  ->setMethods(get_class_methods('TechDivision\Import\ConfigurationInterface'))
-                                  ->getMock();
-        $mockConfiguration->expects($this->once())
-                          ->method('getTargetDir')
-                          ->willReturn($targetDir = 'var/importexport');
+        // mock the trait methods
+        $this->exportableTrait->expects($this->once())
+                              ->method('getTargetDir')
+                              ->willReturn($targetDir = 'var/importexport');
 
         // initialize the artefact type
         $type = 'product-variants';
@@ -178,15 +172,14 @@ class ExportableTraitTest extends \PHPUnit_Framework_TestCase
                           ->method('export')
                           ->with(
                               $artfactsToCompare,
-                              $newSourceDir = sprintf('%s/%s', $targetDir, $serial),
+                              $targetDir,
                               $timestamp = time(),
                               $counter = 1
                           )
                           ->willReturn(null);
 
-        // set the mock export adapter and configuration
+        // set the mock export adapter
         $this->exportableTrait->setExportAdapter($mockExportAdapter);
-        $this->exportableTrait->setConfiguration($mockConfiguration);
 
         // add the artefacts
         $this->exportableTrait->addArtefacts($type, $artfacts);
@@ -231,9 +224,13 @@ class ExportableTraitTest extends \PHPUnit_Framework_TestCase
     public function testNewArtefact()
     {
 
-        // set filename + linenumber
-        $this->exportableTrait->setFilename($filename = 'product-import_20170101123000_01.csv');
-        $this->exportableTrait->setLineNumber($lineNumber = 2);
+        // mock the trait methods
+        $this->exportableTrait->expects($this->once())
+                              ->method('getFilename')
+                              ->willReturn($filename = 'product-import_20170101123000_01.csv');
+        $this->exportableTrait->expects($this->once())
+                              ->method('getLineNumber')
+                              ->willReturn($lineNumber = 2);
 
         // prepare the original data
         $originalData = array(

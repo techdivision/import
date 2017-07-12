@@ -60,7 +60,7 @@ class FilesystemTraitTest extends \PHPUnit_Framework_TestCase
     {
 
         // initialize the trait we want to test
-        $this->filesystemTrait = new MockForFilesystemTrait();
+        $this->filesystemTrait = new FilesystemTraitImpl();
 
         // setup the filesystem
         $this->root = vfsStream::setup('/var/www/html');

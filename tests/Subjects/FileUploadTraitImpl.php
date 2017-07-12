@@ -1,7 +1,7 @@
 <?php
 
 /**
- * TechDivision\Import\Subjects\MockForFilesystemTrait
+ * TechDivision\Import\Subjects\FileUploadTraitImpl
 *
 * NOTICE OF LICENSE
 *
@@ -21,7 +21,7 @@
 namespace TechDivision\Import\Subjects;
 
 /**
- * Test class for the filesystem trait implementation.
+ * Test class for the file upload trait implementation.
  *
  * @author    Tim Wagner <t.wagner@techdivision.com>
  * @copyright 2016 TechDivision GmbH <info@techdivision.com>
@@ -29,7 +29,7 @@ namespace TechDivision\Import\Subjects;
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
  */
-class MockForFilesystemTrait
+class FileUploadTraitImpl
 {
 
     /**
@@ -38,4 +38,11 @@ class MockForFilesystemTrait
      * @var \TechDivision\Import\Subjects\FilesystemTrait
      */
     use FilesystemTrait;
+
+    /**
+     * The file upload trait we want to test.
+     *
+     * @var \TechDivision\Import\Subjects\FileUploadTrait
+     */
+    use FileUploadTrait;
 }

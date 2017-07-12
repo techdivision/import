@@ -1,7 +1,7 @@
 <?php
 
 /**
- * TechDivision\Import\Subjects\MockPrepareStoreViewCodeObserver
+ * TechDivision\Import\Subjects\SkipObserverImpl
 *
 * NOTICE OF LICENSE
 *
@@ -23,7 +23,7 @@ namespace TechDivision\Import\Subjects;
 use TechDivision\Import\Observers\ObserverInterface;
 
 /**
- * Mock observer that invokes a subject's prepareStoreViewCode() method.
+ * Mock observer that invokes a subject's skip() method.
  *
  * @author    Tim Wagner <t.wagner@techdivision.com>
  * @copyright 2016 TechDivision GmbH <info@techdivision.com>
@@ -31,7 +31,7 @@ use TechDivision\Import\Observers\ObserverInterface;
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
  */
-class MockPrepareStoreViewCodeObserver implements ObserverInterface
+class SkipObserverImpl implements ObserverInterface
 {
 
     /**
@@ -44,7 +44,7 @@ class MockPrepareStoreViewCodeObserver implements ObserverInterface
      */
     public function handle(SubjectInterface $subject)
     {
-        $subject->prepareStoreViewCode();
+        $subject->skipRow();
         return $subject->getRow();
     }
 

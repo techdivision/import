@@ -1,7 +1,7 @@
 <?php
 
 /**
- * TechDivision\Import\Subjects\MockForExportableSubject
+ * TechDivision\Import\Subjects\FilesystemTraitImpl
 *
 * NOTICE OF LICENSE
 *
@@ -21,7 +21,7 @@
 namespace TechDivision\Import\Subjects;
 
 /**
- * Test class for the exportable subject implementation.
+ * Test class for the filesystem trait implementation.
  *
  * @author    Tim Wagner <t.wagner@techdivision.com>
  * @copyright 2016 TechDivision GmbH <info@techdivision.com>
@@ -29,6 +29,13 @@ namespace TechDivision\Import\Subjects;
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
  */
-abstract class MockForExportableSubject implements SubjectInterface, ExportableSubjectInterface
+class FilesystemTraitImpl
 {
+
+    /**
+     * The filesystem trait.
+     *
+     * @var \TechDivision\Import\Subjects\FilesystemTrait
+     */
+    use FilesystemTrait;
 }

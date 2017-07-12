@@ -63,7 +63,7 @@ class MoveFilesSubjectTest extends AbstractTest
      */
     protected function getSubjectMethodsToMock()
     {
-        return array('match', 'rename', 'mkdir', 'isDir', 'getNewSourceDir');
+        return array('match', 'rename', 'mkdir', 'isDir');
     }
 
     /**
@@ -107,25 +107,25 @@ class MoveFilesSubjectTest extends AbstractTest
     public function testImportWithMatchingFileAndExistingSourceDir()
     {
 
+        // mock the method returning the new source directory
+        $this->moveFilesSubject
+             ->getConfiguration()
+             ->expects($this->once())
+             ->method('getTargetDir')
+             ->willReturn($targetDir = 'var/importexport');
+
         // mock the match() method
         $this->moveFilesSubject
              ->expects($this->once())
              ->method('match')
-             ->with($filename = sprintf('%s/product-import_20170711-110012_01.csv', $sourceDir = 'var/importexport'))
+             ->with($filename = sprintf('%s/product-import_20170711-110012_01.csv', $targetDir))
              ->willReturn(true);
-
-        // mock the getter for the new source directory
-        $this->moveFilesSubject
-             ->expects($this->once())
-             ->method('getNewSourceDir')
-             ->with($this->serial)
-             ->willReturn($newSourceDir = sprintf('%s/%s', $sourceDir, $this->serial));
 
         // mock the isDir() method
         $this->moveFilesSubject
              ->expects($this->once())
              ->method('isDir')
-             ->with($newSourceDir)
+             ->with($newSourceDir = sprintf('%s/%s', $targetDir, $this->serial))
              ->willReturn(true);
 
         // mock the rename() method
@@ -134,6 +134,9 @@ class MoveFilesSubjectTest extends AbstractTest
              ->method('rename')
              ->with($filename, sprintf('%s/%s', $newSourceDir, basename($filename)))
              ->willReturn(true);
+
+        // set the serial
+        $this->moveFilesSubject->setSerial($this->serial);
 
         // invoke the import method
         $this->assertNull($this->moveFilesSubject->import($this->serial, $filename));
@@ -147,25 +150,25 @@ class MoveFilesSubjectTest extends AbstractTest
     public function testImportWithMatchingFileAndNotExistingSourceDir()
     {
 
+        // mock the getter for the new source directory
+        $this->moveFilesSubject
+             ->getConfiguration()
+             ->expects($this->once())
+             ->method('getTargetDir')
+             ->willReturn($targetDir= 'var/importexport');
+
         // mock the match() method
         $this->moveFilesSubject
              ->expects($this->once())
              ->method('match')
-             ->with($filename = sprintf('%s/product-import_20170711-110012_01.csv', $sourceDir = 'var/importexport'))
+             ->with($filename = sprintf('%s/product-import_20170711-110012_01.csv', $targetDir= 'var/importexport'))
              ->willReturn(true);
-
-        // mock the getter for the new source directory
-        $this->moveFilesSubject
-             ->expects($this->once())
-             ->method('getNewSourceDir')
-             ->with($this->serial)
-             ->willReturn($newSourceDir = sprintf('%s/%s', $sourceDir, $this->serial));
 
         // mock the isDir() method
         $this->moveFilesSubject
              ->expects($this->once())
              ->method('isDir')
-             ->with($newSourceDir)
+             ->with($newSourceDir = sprintf('%s/%s', $targetDir, $this->serial))
              ->willReturn(false);
 
         // mock the mkdir() method
@@ -181,6 +184,9 @@ class MoveFilesSubjectTest extends AbstractTest
              ->method('rename')
              ->with($filename, sprintf('%s/%s', $newSourceDir, basename($filename)))
              ->willReturn(true);
+
+        // set the serial
+        $this->moveFilesSubject->setSerial($this->serial);
 
         // invoke the import method
         $this->assertNull($this->moveFilesSubject->import($this->serial, $filename));
