@@ -223,6 +223,13 @@ interface SubjectInterface
     public function addHeader($name);
 
     /**
+     * Return's the array containing header row.
+     *
+     * @return array The array with the header row
+     */
+    public function getHeaders();
+
+    /**
      * Stop's observer execution on the actual row.
      *
      * @return void
@@ -301,4 +308,11 @@ interface SubjectInterface
      * @return integer The line number
      */
     public function getLineNumber();
+
+    /**
+     * Prepare's the store view code in the subject.
+     *
+     * @return void
+     */
+    public function prepareStoreViewCode();
 }

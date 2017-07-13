@@ -1369,4 +1369,26 @@ class AbstractSubjectTest extends AbstractTest
         // make sure the default callback mappings are an empty array
         $this->assertCount(0, $abstractSubject->getDefaultCallbackMappings());
     }
+
+    /**
+     * Test the getTarget() method.
+     *
+     * @return void
+     */
+    public function testGetTarget()
+    {
+
+        // mock the target directory configuration value
+        $this->abstractSubject
+             ->getConfiguration()
+             ->expects($this->once())
+             ->method('getTargetDir')
+             ->willReturn($targetDir = 'var/importexport');
+
+        // set the serial
+        $this->abstractSubject->setSerial($this->serial);
+
+        // query whether or not the expected target directory is returned
+        $this->assertSame(sprintf('%s/%s', $targetDir, $this->serial), $this->abstractSubject->getTargetDir());
+    }
 }
