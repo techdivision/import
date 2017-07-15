@@ -315,4 +315,13 @@ interface SubjectInterface
      * @return void
      */
     public function prepareStoreViewCode();
+
+    /**
+     * Return's the array with callbacks for the passed type.
+     *
+     * @param string $type The type of the callbacks to return
+     *
+     * @return array The callbacks
+     */
+    public function getCallbacksByType($type);
 }

@@ -1,7 +1,7 @@
 <?php
 
 /**
- * TechDivision\Import\Observers\EavSubjectImpl
+ * TechDivision\Import\Observers\EntitySubjectImpl
 *
 * NOTICE OF LICENSE
 *
@@ -22,9 +22,10 @@ namespace TechDivision\Import\Observers;
 
 use TechDivision\Import\Subjects\SubjectInterface;
 use TechDivision\Import\Subjects\EavSubjectInterface;
+use TechDivision\Import\Subjects\EntitySubjectInterface;
 
 /**
- * Test class for the EAV subject implementation.
+ * Test class for a entity subject implementation.
  *
  * @author    Tim Wagner <t.wagner@techdivision.com>
  * @copyright 2016 TechDivision GmbH <info@techdivision.com>
@@ -32,6 +33,6 @@ use TechDivision\Import\Subjects\EavSubjectInterface;
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
  */
-abstract class EavSubjectImpl implements SubjectInterface, EavSubjectInterface
+abstract class EntitySubjectImpl implements SubjectInterface, EavSubjectInterface, EntitySubjectInterface
 {
 }
