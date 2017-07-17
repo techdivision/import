@@ -51,7 +51,7 @@ interface HandlerConfigurationInterface extends ParamsConfigurationInterface
     /**
      * Return's the swift mailer configuration to use.
      *
-     * @return TechDivision\Import\Cli\Configuration\SwiftMailer The swift mailer configuration to use
+     * @return \TechDivision\Import\Configuration\SwiftMailerConfigurationInterface The swift mailer configuration to use
      */
     public function getSwiftMailer();
 }

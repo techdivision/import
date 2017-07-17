@@ -181,7 +181,7 @@ abstract class AbstractTest extends \PHPUnit_Framework_TestCase
     /**
      * Mock the registry processor.
      *
-     * @return PHPUnit_Framework_MockObject_MockObject The registry processor mock
+     * @return \PHPUnit_Framework_MockObject_MockObject The registry processor mock
      */
     protected function getMockRegistryProcessor()
     {
@@ -193,7 +193,7 @@ abstract class AbstractTest extends \PHPUnit_Framework_TestCase
     /**
      * Mock the configuration.
      *
-     * @return PHPUnit_Framework_MockObject_MockObject The mock configuration
+     * @return \PHPUnit_Framework_MockObject_MockObject The mock configuration
      */
     protected function getMockConfiguration()
     {
@@ -206,7 +206,7 @@ abstract class AbstractTest extends \PHPUnit_Framework_TestCase
     /**
      * Mock the subject configuration.
      *
-     * @return PHPUnit_Framework_MockObject_MockObject The mock subject configuration
+     * @return \PHPUnit_Framework_MockObject_MockObject The mock subject configuration
      */
     protected function getMockSubjectConfiguration()
     {

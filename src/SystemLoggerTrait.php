@@ -20,7 +20,6 @@
 
 namespace TechDivision\Import;
 
-use Psr\Log\LoggerInterface;
 use TechDivision\Import\Utils\LoggerKeys;
 
 /**

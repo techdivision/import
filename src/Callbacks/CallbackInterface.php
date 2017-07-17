@@ -20,7 +20,6 @@
 
 namespace TechDivision\Import\Callbacks;
 
-use TechDivision\Import\Observers\ObserverInterface;
 use TechDivision\Import\Observers\AttributeCodeAndValueAwareObserverInterface;
 
 /**

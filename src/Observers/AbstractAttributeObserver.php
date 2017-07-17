@@ -47,7 +47,7 @@ abstract class AbstractAttributeObserver extends AbstractObserver implements Att
      * @param \TechDivision\Import\Subjects\SubjectInterface $subject The subject instance
      *
      * @return array The modified row
-     * @see \TechDivision\Import\Product\Observers\ImportObserverInterface::handle()
+     * @see \TechDivision\Import\Observers\ObserverInterface::handle()
      */
     public function handle(SubjectInterface $subject)
     {

@@ -38,14 +38,14 @@ class ExportConfigFactory implements ExportConfigFactoryInterface
     /**
      * The configuration instance.
      *
-     * @var \TechDivision\Import\Configuration\ConfigurationInterface
+     * @var \TechDivision\Import\ConfigurationInterface
      */
     protected $configuration;
 
     /**
      * Initialize the adapter with the configuration.
      *
-     * @param \TechDivision\Import\Configuration\ConfigurationInterface $configuration The configuration instance
+     * @param \TechDivision\Import\ConfigurationInterface $configuration The configuration instance
      */
     public function __construct(ConfigurationInterface $configuration)
     {
@@ -55,7 +55,7 @@ class ExportConfigFactory implements ExportConfigFactoryInterface
     /**
      * Factory method to create a new export configuration instance.
      *
-     * @return \Goodby\CSV\Export\Standard\ExportConfig The export configuration
+     * @return \Goodby\CSV\Export\Standard\ExporterConfig The export configuration
      */
     public function createExportConfig()
     {

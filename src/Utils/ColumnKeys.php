@@ -50,6 +50,13 @@ class ColumnKeys
     }
 
     /**
+     * Name for the column 'admin_store_value'.
+     *
+     * @var string
+     */
+    const ADMIN_STORE_VALUE = 'admin_store_value';
+
+    /**
      * Name for the column 'original_data'.
      *
      * @var string

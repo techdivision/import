@@ -18,7 +18,7 @@
  * @link      http://www.techdivision.com
  */
 
-namespace TechDivision\Import\Cli\Configuration\Logger;
+namespace TechDivision\Import\Configuration\Logger;
 
 use TechDivision\Import\Configuration\ParamsConfigurationInterface;
 

@@ -28,7 +28,6 @@ use TechDivision\Import\Utils\ColumnKeys;
 use TechDivision\Import\Utils\MemberNames;
 use TechDivision\Import\Utils\RegistryKeys;
 use TechDivision\Import\Utils\Generators\GeneratorInterface;
-use TechDivision\Import\Services\RegistryProcessor;
 use TechDivision\Import\Callbacks\CallbackInterface;
 use TechDivision\Import\Observers\ObserverInterface;
 use TechDivision\Import\Adapter\ImportAdapterInterface;
@@ -107,7 +106,7 @@ abstract class AbstractSubject implements SubjectInterface
     /**
      * The import adapter instance.
      *
-     * @var \TechDivision\Import\Adapter\AdapterInterface
+     * @var \TechDivision\Import\Adapter\ImportAdapterInterface
      */
     protected $importAdapter;
 
@@ -470,7 +469,6 @@ abstract class AbstractSubject implements SubjectInterface
      * @param string $serial The serial of the actual import
      *
      * @return void
-     * @see \Importer\Csv\Actions\ProductImportAction::prepare()
      */
     public function setUp($serial)
     {

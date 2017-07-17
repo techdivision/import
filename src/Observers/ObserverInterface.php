@@ -40,7 +40,6 @@ interface ObserverInterface
      * @param \TechDivision\Import\Subjects\SubjectInterface $subject The subject instance
      *
      * @return array The modified row
-     * @see \TechDivision\Import\Product\Observers\ImportObserverInterface::handle()
      */
     public function handle(SubjectInterface $subject);
 

@@ -20,8 +20,6 @@
 
 namespace TechDivision\Import\Actions\Processors;
 
-use TechDivision\Import\Actions\Processors\AbstractDeleteProcessor;
-
 /**
  * The URL rewrite delete processor implementation.
  *

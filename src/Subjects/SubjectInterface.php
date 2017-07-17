@@ -22,6 +22,8 @@ namespace TechDivision\Import\Subjects;
 
 use TechDivision\Import\Utils\ScopeKeys;
 use TechDivision\Import\Utils\LoggerKeys;
+use TechDivision\Import\Observers\ObserverInterface;
+use TechDivision\Import\Callbacks\CallbackInterface;
 use TechDivision\Import\Adapter\ImportAdapterInterface;
 use TechDivision\Import\Configuration\SubjectConfigurationInterface;
 
@@ -155,9 +157,9 @@ interface SubjectInterface
     public function setConfiguration(SubjectConfigurationInterface $configuration);
 
     /**
-     * Return's the system configuration.
+     * Return's the subject configuration.
      *
-     * @return \TechDivision\Import\Configuration\SubjectInterface The system configuration
+     * @return \TechDivision\Import\Configuration\SubjectConfigurationInterface The subject configuration
      */
     public function getConfiguration();
 
@@ -324,4 +326,24 @@ interface SubjectInterface
      * @return array The callbacks
      */
     public function getCallbacksByType($type);
+
+    /**
+     * Register the passed observer with the specific type.
+     *
+     * @param \TechDivision\Import\Observers\ObserverInterface $observer The observer to register
+     * @param string                                           $type     The type to register the observer with
+     *
+     * @return void
+     */
+    public function registerObserver(ObserverInterface $observer, $type);
+
+    /**
+     * Register the passed callback with the specific type.
+     *
+     * @param \TechDivision\Import\Callbacks\CallbackInterface $callback The subject to register the callbacks for
+     * @param string                                           $type     The type to register the callback with
+     *
+     * @return void
+     */
+    public function registerCallback(CallbackInterface $callback, $type);
 }

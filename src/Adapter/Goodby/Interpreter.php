@@ -21,7 +21,6 @@
 namespace TechDivision\Import\Adapter\Goodby;
 
 use Goodby\CSV\Import\Protocol\InterpreterInterface;
-use Goodby\CSV\Import\Protocol\Exception\InvalidLexicalException;
 use Goodby\CSV\Import\Standard\Exception\StrictViolationException;
 
 /**

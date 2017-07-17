@@ -85,6 +85,24 @@ trait AttributeObserverTrait
     }
 
     /**
+     * Remove all the empty values from the row and return the cleared row.
+     *
+     * @return array The cleared row
+     */
+    protected function clearRow()
+    {
+
+        // remove all the empty values from the row
+        return array_filter(
+            $this->row,
+            function ($value, $key) {
+                return ($value !== null && $value !== '');
+            },
+            ARRAY_FILTER_USE_BOTH
+        );
+    }
+
+    /**
      * Process the observer's business logic.
      *
      * @return void
@@ -99,17 +117,11 @@ trait AttributeObserverTrait
         $attributes = $this->getAttributes();
         $backendTypes = $this->getBackendTypes();
 
-        // remove all the empty values from the row
-        $row = array_filter(
-            $this->row,
-            function ($value, $key) {
-                return ($value !== null && $value !== '');
-            },
-            ARRAY_FILTER_USE_BOTH
-        );
-
         // load the header keys
         $headers = array_flip($this->getHeaders());
+
+        // remove all the empty values from the row
+        $row = $this->clearRow();
 
         // iterate over the attributes and append them to the row
         foreach ($row as $key => $attributeValue) {
@@ -194,8 +206,8 @@ trait AttributeObserverTrait
             $this->getSystemLogger()->debug(
                 sprintf(
                     'Found invalid backend type %s for attribute %s in file %s on line %s',
-                    $this->backendType,
-                    $this->attributeCode,
+                    $backendType,
+                    $attributeCode,
                     $this->getFilename(),
                     $this->getLineNumber()
                 )
@@ -265,19 +277,6 @@ trait AttributeObserverTrait
     protected function getPrimaryKey()
     {
         return $this->getLastEntityId();
-    }
-
-    /**
-     * Map the passed attribute code, if a header mapping exists and return the
-     * mapped mapping.
-     *
-     * @param string $attributeCode The attribute code to map
-     *
-     * @return string The mapped attribute code, or the original one
-     */
-    protected function mapAttributeCodeByHeaderMapping($attributeCode)
-    {
-        return $this->getSubject()->mapAttributeCodeByHeaderMapping($attributeCode);
     }
 
     /**

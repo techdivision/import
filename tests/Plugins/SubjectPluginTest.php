@@ -35,7 +35,7 @@ class SubjectPluginTest extends \PHPUnit_Framework_TestCase
     /**
      * The subject we want to test.
      *
-     * @var \TechDivision\Import\Product\Subjects\BunchSubject
+     * @var \TechDivision\Import\Plugins\SubjectPlugin
      */
     protected $subject;
 
