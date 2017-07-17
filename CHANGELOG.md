@@ -1,3 +1,14 @@
+# Version 1.0.0-beta30
+
+## Bugfixes
+
+* None
+
+## Features
+
+* Add PHPUnit tests for subjects, observers + plugins
+* Add EntitySubjectInterface for entity related subjects
+
 # Version 1.0.0-beta29
 
 ## Bugfixes
