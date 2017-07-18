@@ -20,7 +20,6 @@
 
 namespace TechDivision\Import\Repositories;
 
-use TechDivision\Import\Repositories\AbstractRepository;
 use TechDivision\Import\Utils\MemberNames;
 
 /**

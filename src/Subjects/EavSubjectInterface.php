@@ -75,6 +75,15 @@ interface EavSubjectInterface
     public function castValueByBackendType($backendType, $value);
 
     /**
+     * Set's the attribute set of the product that has to be created.
+     *
+     * @param array $attributeSet The attribute set
+     *
+     * @return void
+     */
+    public function setAttributeSet(array $attributeSet);
+
+    /**
      * Return's the attribute set of the product that has to be created.
      *
      * @return array The attribute set

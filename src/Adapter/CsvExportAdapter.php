@@ -42,6 +42,13 @@ class CsvExportAdapter implements ExportAdapterInterface
     protected $exporter;
 
     /**
+     * The array with the names of the exported files.
+     *
+     * @var array
+     */
+    protected $exportedFilenames = array();
+
+    /**
      * Initialize the adapter with the configuration.
      *
      * @param \Goodby\CSV\Export\Protocol\ExporterInterface $exporter The exporter instance
@@ -64,6 +71,9 @@ class CsvExportAdapter implements ExportAdapterInterface
     public function export(array $artefacts, $targetDir, $timestamp, $counter)
     {
 
+        // reset the array with the exported filename
+        $this->exportedFilenames = array();
+
         // iterate over the artefacts and export them
         foreach ($artefacts as $artefactType => $artefacts) {
             // initialize the bunch and the exporter
@@ -84,17 +94,30 @@ class CsvExportAdapter implements ExportAdapterInterface
                 }
             }
 
-            // export the artefact (bunch)
-            $this->exporter->export(
-                sprintf(
-                    '%s/%s_%s_%s.csv',
-                    $targetDir,
-                    $artefactType,
-                    $timestamp,
-                    $counter
-                ),
-                $bunch
+            // prepare the name of the export file
+            $filename = sprintf(
+                '%s/%s_%s_%s.csv',
+                $targetDir,
+                $artefactType,
+                $timestamp,
+                $counter
             );
+
+            // export the artefact (bunch)
+            $this->exporter->export($filename, $bunch);
+
+            // add the filename to the array with the exported filenames
+            $this->exportedFilenames[] = $filename;
         }
+    }
+
+    /**
+     * Return's the array with the names of the exported files.
+     *
+     * @return array The array with the exported filenames
+     */
+    public function getExportedFilenames()
+    {
+        return $this->exportedFilenames;
     }
 }

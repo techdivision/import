@@ -38,14 +38,14 @@ class LexerConfigFactory implements LexerConfigFactoryInterface
     /**
      * The configuration instance.
      *
-     * @var \TechDivision\Import\Configuration\ConfigurationInterface
+     * @var \TechDivision\Import\ConfigurationInterface
      */
     protected $configuration;
 
     /**
      * Initialize the adapter with the configuration.
      *
-     * @param \TechDivision\Import\Configuration\ConfigurationInterface $configuration The configuration instance
+     * @param \TechDivision\Import\ConfigurationInterface $configuration The configuration instance
      */
     public function __construct(ConfigurationInterface $configuration)
     {

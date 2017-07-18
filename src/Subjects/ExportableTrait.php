@@ -50,6 +50,13 @@ trait ExportableTrait
     protected $exportAdapter;
 
     /**
+     * The ID of the product that has been created recently.
+     *
+     * @var string
+     */
+    protected $lastEntityId;
+
+    /**
      * Return's the artefacts for post-processing.
      *
      * @return array The artefacts
@@ -102,7 +109,7 @@ trait ExportableTrait
 
         // query whether or not, artefacts for the passed params are available
         if (isset($this->artefacs[$type][$entityId])) {
-            return $this->artefacs[$type][$entityId];
+            return reset($this->artefacs[$type][$entityId]);
         }
 
         // throw an exception if not
@@ -176,12 +183,24 @@ trait ExportableTrait
     }
 
     /**
-     * Return's the target directory for the artefact export.
+     * Set's the ID of the product that has been created recently.
      *
-     * @return string The target directory for the artefact export
+     * @param string $lastEntityId The entity ID
+     *
+     * @return void
      */
-    protected function getTargetDir()
+    public function setLastEntityId($lastEntityId)
     {
-        return $this->getNewSourceDir($this->getSerial());
+        $this->lastEntityId = $lastEntityId;
+    }
+
+    /**
+     * Return's the ID of the product that has been created recently.
+     *
+     * @return string The entity Id
+     */
+    public function getLastEntityId()
+    {
+        return $this->lastEntityId;
     }
 }

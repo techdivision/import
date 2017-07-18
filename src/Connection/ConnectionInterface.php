@@ -126,5 +126,5 @@ interface ConnectionInterface
      * @return string|boolean Returns a quoted string that is theoretically safe to pass into an SQL statement or FALSE if the driver does not support quoting in this way
      * @link http://php.net/manual/en/pdo.quote.php
      */
-    public function quote($string, $parameterType = PDO::PARAM_STR);
+    public function quote($string, $parameterType = \PDO::PARAM_STR);
 }

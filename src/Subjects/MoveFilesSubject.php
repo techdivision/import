@@ -77,12 +77,12 @@ class MoveFilesSubject extends AbstractSubject
         // only process the file, if the filename match
         if ($this->match($filename)) {
             // query whether the new source directory has to be created or not
-            if (!is_dir($newSourceDir = $this->getNewSourceDir($serial))) {
-                mkdir($newSourceDir);
+            if (!$this->isDir($newSourceDir = $this->getNewSourceDir($serial))) {
+                $this->mkdir($newSourceDir);
             }
 
             // move the file to the new source directory
-            rename($filename, sprintf('%s/%s', $newSourceDir, basename($filename)));
+            $this->rename($filename, sprintf('%s/%s', $newSourceDir, basename($filename)));
         }
     }
 }

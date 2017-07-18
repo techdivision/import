@@ -49,7 +49,7 @@ interface SwiftMailerConfigurationInterface extends ParamsConfigurationInterface
     /**
      * Return's the swift mailer transport configuration to use.
      *
-     * @return TechDivision\Import\Configuration\SwiftMailer\TransportConfigurationInterface The transport configuration to use
+     * @return \TechDivision\Import\Configuration\SwiftMailer\TransportConfigurationInterface The transport configuration to use
      */
     public function getTransport();
 }

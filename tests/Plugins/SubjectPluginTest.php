@@ -20,6 +20,8 @@
 
 namespace TechDivision\Import\Plugins;
 
+use TechDivision\Import\Utils\RegistryKeys;
+
 /**
  * Test class for the subject plugin implementation.
  *
@@ -33,9 +35,16 @@ class SubjectPluginTest extends \PHPUnit_Framework_TestCase
 {
 
     /**
+     * The mock appliction instance.
+     *
+     * @var \PHPUnit_Framework_MockObject_MockObject
+     */
+    protected $mockApplication;
+
+    /**
      * The subject we want to test.
      *
-     * @var \TechDivision\Import\Product\Subjects\BunchSubject
+     * @var \TechDivision\Import\Plugins\SubjectPlugin
      */
     protected $subject;
 
@@ -50,9 +59,9 @@ class SubjectPluginTest extends \PHPUnit_Framework_TestCase
     {
 
         // create a mock application
-        $mockApplication = $this->getMockBuilder('TechDivision\Import\ApplicationInterface')
-                                ->setMethods(get_class_methods('TechDivision\Import\ApplicationInterface'))
-                                ->getMock();
+        $this->mockApplication = $this->getMockBuilder('TechDivision\Import\ApplicationInterface')
+                                      ->setMethods(get_class_methods('TechDivision\Import\ApplicationInterface'))
+                                      ->getMock();
 
         // create a mock callback visitor
         $mockCallbackVisitor = $this->getMockBuilder('TechDivision\Import\Callbacks\CallbackVisitor')
@@ -72,7 +81,72 @@ class SubjectPluginTest extends \PHPUnit_Framework_TestCase
                                    ->getMock();
 
         // initialize the subject instance
-        $this->subject = new SubjectPlugin($mockApplication, $mockCallbackVisitor, $mockObserverVisitor, $mockSubjectFactory);
+        $this->subject = new SubjectPlugin($this->mockApplication, $mockCallbackVisitor, $mockObserverVisitor, $mockSubjectFactory);
+    }
+
+    /**
+     * Tests's the plugin's process method.
+     *
+     * @return void
+     */
+    public function testProcessWithoutSubjects()
+    {
+
+        // mock tha basic data
+        $bunches = 0;
+        $status = array();
+        $serial = uniqid();
+
+        // mock the registry processor
+        $mockRegistryProcessor = $this->getMockBuilder('TechDivision\Import\Services\RegistryProcessorInterface')
+                                      ->setMethods(get_class_methods('TechDivision\Import\Services\RegistryProcessorInterface'))
+                                      ->getMock();
+        $mockRegistryProcessor->expects($this->exactly(2))
+                              ->method('mergeAttributesRecursive')
+                              ->withConsecutive(
+                                  array($serial, $status),
+                                  array($serial, array(RegistryKeys::BUNCHES => $bunches))
+                              )
+                              ->willReturn(null);
+
+        // mock the configuration
+        $mockConfiguration = $this->getMockBuilder('TechDivision\Import\ConfigurationInterface')
+                                  ->setMethods(get_class_methods('TechDivision\Import\ConfigurationInterface'))
+                                  ->getMock();
+        $mockConfiguration->expects($this->once())
+                                  ->method('getOperationName')
+                                  ->willReturn('add-update');
+        $mockConfiguration->expects($this->once())
+                                  ->method('getSourceDir')
+                                  ->willReturn('var/importexport');
+
+
+        // mock the application methods
+        $this->mockApplication->expects($this->exactly(2))
+                              ->method('getRegistryProcessor')
+                              ->willReturn($mockRegistryProcessor);
+        $this->mockApplication->expects($this->exactly(2))
+                              ->method('getSerial')
+                              ->willReturn($serial);
+        $this->mockApplication->expects($this->once())
+                              ->method('stop')
+                              ->willReturn(null);
+        $this->mockApplication->expects($this->any())
+                              ->method('getConfiguration')
+                              ->willReturn($mockConfiguration);
+
+        // create a mock plugin configuration
+        $mockPluginConfiguration = $this->getMockBuilder('TechDivision\Import\Configuration\PluginConfigurationInterface')
+                                        ->setMethods(get_class_methods('TechDivision\Import\Configuration\PluginConfigurationInterface'))
+                                        ->getMock();
+        $mockPluginConfiguration->expects($this->once())
+                                ->method('getSubjects')
+                                ->willReturn(array());
+        // set the plugin configuration
+        $this->subject->setPluginConfiguration($mockPluginConfiguration);
+
+        // invoke the process() method
+        $this->subject->process();
     }
 
     /**

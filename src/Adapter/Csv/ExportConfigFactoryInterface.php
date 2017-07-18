@@ -35,7 +35,7 @@ interface ExportConfigFactoryInterface
     /**
      * Factory method to create a new export configuration instance.
      *
-     * @return \Goodby\CSV\Export\Standard\ExportConfig The export configuration
+     * @return \Goodby\CSV\Export\Standard\ExporterConfig The export configuration
      */
     public function createExportConfig();
 }

@@ -21,7 +21,6 @@
 namespace TechDivision\Import\Observers;
 
 use TechDivision\Import\Subjects\SubjectInterface;
-use TechDivision\Import\Observers\AbstractObserver;
 
 /**
  * Abstract observer that uploads the file specified in a CSV file's column
@@ -42,7 +41,7 @@ abstract class AbstractFileUploadObserver extends AbstractObserver
      * @param \TechDivision\Import\Subjects\SubjectInterface $subject The subject instance
      *
      * @return array The modified row
-     * @see \TechDivision\Import\Product\Observers\ImportObserverInterface::handle()
+     * @see \TechDivision\Import\Observers\ObserverInterface::handle()
      */
     public function handle(SubjectInterface $subject)
     {
@@ -57,20 +56,6 @@ abstract class AbstractFileUploadObserver extends AbstractObserver
         // return the processed row
         return $this->getRow();
     }
-
-    /**
-     * Return's the name of the source column with the image path.
-     *
-     * @return string The image path
-     */
-    abstract protected function getSourceColumn();
-
-    /**
-     * Return's the target column with the path of the copied image.
-     *
-     * @return string The path to the copied image
-     */
-    abstract protected function getTargetColumn();
 
     /**
      * Process the observer's business logic.
@@ -88,18 +73,17 @@ abstract class AbstractFileUploadObserver extends AbstractObserver
         // initialize the image path
         $imagePath = $this->getValue($this->getSourceColumn());
 
+        // load the subjet
+        $subject = $this->getSubject();
+
         // query whether or not we've to upload the image files
-        if ($this->hasCopyImages()) {
+        if ($subject->hasCopyImages()) {
             // upload the file and set the new image path
-            $imagePath = $this->uploadFile($image);
+            $imagePath = $subject->uploadFile($image);
 
             // log a message that the image has been copied
-            $this->getSystemLogger()->debug(
-                sprintf(
-                    'Successfully copied image %s => %s',
-                    $image,
-                    $imagePath
-                )
+            $subject->getSystemLogger()->debug(
+                sprintf('Successfully copied image %s => %s', $image, $imagePath)
             );
         }
 
@@ -116,40 +100,20 @@ abstract class AbstractFileUploadObserver extends AbstractObserver
      */
     protected function isParentImage($image)
     {
-        return $this->getParentImage() === $image;
+        return $this->getSubject()->getParentImage() === $image;
     }
 
     /**
-     * Upload's the file with the passed name to the Magento
-     * media directory. If the file already exists, the will
-     * be given a new name that will be returned.
+     * Return's the name of the source column with the image path.
      *
-     * @param string $filename The name of the file to be uploaded
-     *
-     * @return string The name of the uploaded file
+     * @return string The image path
      */
-    protected function uploadFile($filename)
-    {
-        return $this->getSubject()->uploadFile($filename);
-    }
+    abstract protected function getSourceColumn();
 
     /**
-     * Return's the name of the created image.
+     * Return's the target column with the path of the copied image.
      *
-     * @return string The name of the created image
+     * @return string The path to the copied image
      */
-    protected function getParentImage()
-    {
-        return $this->getSubject()->getParentImage();
-    }
-
-    /**
-     * Return's the flag to copy images or not.
-     *
-     * @return booleas The flag
-     */
-    protected function hasCopyImages()
-    {
-        return $this->getSubject()->hasCopyImages();
-    }
+    abstract protected function getTargetColumn();
 }

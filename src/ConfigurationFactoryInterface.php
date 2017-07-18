@@ -38,7 +38,7 @@ interface ConfigurationFactoryInterface
      * @param string $filename The configuration filename
      * @param string $type     The format of the configuration file, either one of json, yaml or xml
      *
-     * @return \TechDivision\Import\Configuration\Jms\Configuration The configuration instance
+     * @return \TechDivision\Import\ConfigurationInterface The configuration instance
      * @throws \Exception Is thrown, if the specified configuration file doesn't exist
      */
     public function factory($filename, $type = 'json');

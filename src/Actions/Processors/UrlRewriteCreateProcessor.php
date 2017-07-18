@@ -20,8 +20,6 @@
 
 namespace TechDivision\Import\Actions\Processors;
 
-use TechDivision\Import\Actions\Processors\AbstractCreateProcessor;
-
 /**
  * The URL rewrite create processor implementation.
  *

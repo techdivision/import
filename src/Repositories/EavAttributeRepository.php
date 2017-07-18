@@ -200,7 +200,6 @@ class EavAttributeRepository extends AbstractRepository
      * @param string $storeId     The store ID of the EAV attribues
      *
      * @return array The array with the EAV attribute
-     * @see \Importer\Csv\Repositories\Pdo\EavAttributeRepository::findAllByOptionValueAndStoreId()
      */
     public function findOneByOptionValueAndStoreId($optionValue, $storeId)
     {

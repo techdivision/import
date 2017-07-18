@@ -22,8 +22,10 @@ namespace TechDivision\Import\Plugins;
 
 use TechDivision\Import\Utils\ColumnKeys;
 use TechDivision\Import\Utils\RegistryKeys;
-use TechDivision\Import\Utils\ExporterTrait;
 use TechDivision\Import\Utils\SwiftMailerKeys;
+use TechDivision\Import\ApplicationInterface;
+use TechDivision\Import\Subjects\ExportableTrait;
+use TechDivision\Import\Adapter\ExportAdapterInterface;
 
 /**
  * Plugin that exports the missing option values to a CSV file.
@@ -38,11 +40,34 @@ class MissingOptionValuesPlugin extends AbstractPlugin
 {
 
     /**
-     * The exporter trait implementation.
+     * The artefact type.
      *
-     * @var \TechDivision\Import\Utils\ExporterTrait
+     * @var string
      */
-    use ExporterTrait;
+    const ARTEFACT_TYPE = 'missing-option-values';
+
+    /**
+     * The trait providing the export functionality.
+     *
+     * @var \TechDivision\Import\Subjects\ExportableTrait
+     */
+    use ExportableTrait;
+
+    /**
+     * Initializes the plugin with the application instance.
+     *
+     * @param \TechDivision\Import\ApplicationInterface           $application   The application instance
+     * @param \TechDivision\Import\Adapter\ExportAdapterInterface $exportAdapter The export adapter instance
+     */
+    public function __construct(ApplicationInterface $application, ExportAdapterInterface $exportAdapter)
+    {
+
+        // pass the application to the parent constructor
+        parent::__construct($application);
+
+        // set the export adapter
+        $this->exportAdapter = $exportAdapter;
+    }
 
     /**
      * Process the plugin functionality.
@@ -79,29 +104,33 @@ class MissingOptionValuesPlugin extends AbstractPlugin
             return;
         }
 
-        // intialize array for the missing option values with the CSV headers
-        $toBeCreated = array(
-            array(
-                ColumnKeys::STORE_VIEW_CODE,
-                ColumnKeys::ATTRIBUTE_CODE,
-                ColumnKeys::VALUE,
-                ColumnKeys::COUNTER,
-                ColumnKeys::UNIQUE_IDENTIFIER,
-                ColumnKeys::SORT_ORDER
-            )
-        );
+        // initialize the array with the artefacts
+        $artefacts = array();
 
-        // append the missing option values to the array
+        // prepare the artefacts
         foreach ($missingOptions as $attributeCode => $options) {
             foreach ($options as $value => $data) {
                 list($counter, $skus) = $data;
-                $toBeCreated[] = array(null, $attributeCode, $value, $counter, implode(',', array_keys($skus)), null);
+                $artefacts[] = $this->newArtefact(
+                    array(
+                        ColumnKeys::STORE_VIEW_CODE   => null,
+                        ColumnKeys::ATTRIBUTE_CODE    => $attributeCode,
+                        ColumnKeys::ADMIN_STORE_VALUE => $value,
+                        ColumnKeys::VALUE             => $value,
+                        ColumnKeys::COUNTER           => $counter,
+                        ColumnKeys::UNIQUE_IDENTIFIER => implode(',', array_keys($skus)),
+                        ColumnKeys::SORT_ORDER        => null
+                    )
+                );
             }
         }
 
-        // prepare the filename and export the missing options as CSV file
-        $filename = sprintf('%s/missing-option-values.csv', $sourceDir);
-        $this->getExporterInstance()->export($filename, $toBeCreated);
+        // initialize a dummy last entity ID
+        $this->setLastEntityId(0);
+
+        // add the artefacts (missing option values) and export them as CSV file
+        $this->addArtefacts($artefactType = MissingOptionValuesPlugin::ARTEFACT_TYPE, $artefacts);
+        $this->export($timestamp = date('Ymd-His'), $counter = '01');
 
         // query whether or not a swift mailer has been registered
         if ($swiftMailer = $this->getSwiftMailer()) {
@@ -110,11 +139,15 @@ class MissingOptionValuesPlugin extends AbstractPlugin
 
             // create the message with the CSV with the missing option values
             $message = $swiftMailer->createMessage()
-                                   ->setSubject($swiftMailerConfiguration->getParam(SwiftMailerKeys::SUBJECT))
+                                   ->setSubject(sprintf('[%s] %s', $this->getSystemName(), $swiftMailerConfiguration->getParam(SwiftMailerKeys::SUBJECT)))
                                    ->setFrom($swiftMailerConfiguration->getParam(SwiftMailerKeys::FROM))
                                    ->setTo($to = $swiftMailerConfiguration->getParam(SwiftMailerKeys::TO))
-                                   ->setBody('The attached CSV file contains the missing attribute option values')
-                                   ->attach(\Swift_Attachment::fromPath($filename));
+                                   ->setBody('The attached CSV file(s) contains the missing attribute option values');
+
+            // attach the CSV files with the missing option values
+            foreach ($this->getExportAdapter()->getExportedFilenames() as $filename) {
+                $message->attach(\Swift_Attachment::fromPath($filename));
+            }
 
             // initialize the array with the failed recipients
             $failedRecipients = array();
@@ -155,5 +188,35 @@ class MissingOptionValuesPlugin extends AbstractPlugin
                 )
             );
         }
+    }
+
+    /**
+     * Return's the systemm name to be used.
+     *
+     * @return string The system name to be used
+     */
+    protected function getSystemName()
+    {
+        return $this->getConfiguration()->getSystemName();
+    }
+
+    /**
+     * Return's the target directory the CSV files has to be exported to.
+     *
+     * @return string The name of the target directory
+     */
+    protected function getTargetDir()
+    {
+
+        // load the actual status
+        $status = $this->getRegistryProcessor()->getAttribute($this->getSerial());
+
+        // query whether or not the configured source directory is available
+        if (!is_dir($sourceDir = $status[RegistryKeys::SOURCE_DIRECTORY])) {
+            throw new \Exception(sprintf('Configured source directory %s is not available!', $sourceDir));
+        }
+
+        // return the source directory where we want to export to
+        return $sourceDir;
     }
 }

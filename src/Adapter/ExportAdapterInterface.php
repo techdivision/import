@@ -43,4 +43,11 @@ interface ExportAdapterInterface
      * @return void
      */
     public function export(array $artefacts, $targetDir, $timestamp, $counter);
+
+    /**
+     * Return's the array with the names of the exported files.
+     *
+     * @return array The array with the exported filenames
+     */
+    public function getExportedFilenames();
 }

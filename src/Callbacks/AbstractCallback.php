@@ -44,7 +44,7 @@ abstract class AbstractCallback implements CallbackInterface
     /**
      * Set's the callback's observer instance.
      *
-     * @param \TechDivision\Import\Observers\ObserverInterfaceInterface $observer The callback's observer
+     * @param \TechDivision\Import\Observers\ObserverInterface $observer The callback's observer
      *
      * @return void
      */
@@ -56,7 +56,7 @@ abstract class AbstractCallback implements CallbackInterface
     /**
      * Return's the callback's observer instance.
      *
-     * @return \TechDivision\Import\Observers\ObserverInterfaceInterface The callback's observer
+     * @return \TechDivision\Import\Observers\ObserverInterface The callback's observer
      */
     protected function getObserver()
     {

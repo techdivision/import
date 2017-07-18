@@ -22,6 +22,8 @@ namespace TechDivision\Import\Subjects;
 
 use TechDivision\Import\Utils\ScopeKeys;
 use TechDivision\Import\Utils\LoggerKeys;
+use TechDivision\Import\Observers\ObserverInterface;
+use TechDivision\Import\Callbacks\CallbackInterface;
 use TechDivision\Import\Adapter\ImportAdapterInterface;
 use TechDivision\Import\Configuration\SubjectConfigurationInterface;
 
@@ -146,13 +148,6 @@ interface SubjectInterface
     public function getCoreConfigData($path, $default = null, $scope = ScopeKeys::SCOPE_DEFAULT, $scopeId = 0);
 
     /**
-     * Return's the name of the file to import.
-     *
-     * @return string The filename
-     */
-    public function getFilename();
-
-    /**
      * Set's the subject configuration.
      *
      * @param \TechDivision\Import\Configuration\SubjectConfigurationInterface $configuration The subject configuration
@@ -162,11 +157,28 @@ interface SubjectInterface
     public function setConfiguration(SubjectConfigurationInterface $configuration);
 
     /**
-     * Return's the system configuration.
+     * Return's the subject configuration.
      *
-     * @return \TechDivision\Import\Configuration\SubjectInterface The system configuration
+     * @return \TechDivision\Import\Configuration\SubjectConfigurationInterface The subject configuration
      */
     public function getConfiguration();
+
+    /**
+     * Return's the target directory for the artefact export.
+     *
+     * @return string The target directory for the artefact export
+     */
+    public function getTargetDir();
+
+    /**
+     * Return's the next source directory, which will be the target directory
+     * of this subject, in most cases.
+     *
+     * @param string $serial The serial of the actual import
+     *
+     * @return string The new source directory
+     */
+    public function getNewSourceDir($serial);
 
     /**
      * Set's the import adapter instance.
@@ -183,4 +195,155 @@ interface SubjectInterface
      * @return \TechDivision\Import\Adapter\ImportAdapterInterface The import adapter instance
      */
     public function getImportAdapter();
+
+    /**
+     * Queries whether or not the header with the passed name is available.
+     *
+     * @param string $name The header name to query
+     *
+     * @return boolean TRUE if the header is available, else FALSE
+     */
+    public function hasHeader($name);
+
+    /**
+     * Return's the header value for the passed name.
+     *
+     * @param string $name The name of the header to return the value for
+     *
+     * @return mixed The header value
+     * @throws \InvalidArgumentException Is thrown, if the header with the passed name is NOT available
+     */
+    public function getHeader($name);
+
+    /**
+     * Add's the header with the passed name and position, if not NULL.
+     *
+     * @param string $name The header name to add
+     *
+     * @return integer The new headers position
+     */
+    public function addHeader($name);
+
+    /**
+     * Return's the array containing header row.
+     *
+     * @return array The array with the header row
+     */
+    public function getHeaders();
+
+    /**
+     * Stop's observer execution on the actual row.
+     *
+     * @return void
+     */
+    public function skipRow();
+
+    /**
+     * Return's the actual row.
+     *
+     * @return array The actual row
+     */
+    public function getRow();
+
+    /**
+     * Extracts the elements of the passed value by exploding them
+     * with the also passed delimiter.
+     *
+     * @param string      $value     The value to extract
+     * @param string|null $delimiter The delimiter used to extrace the elements
+     *
+     * @return array The exploded values
+     */
+    public function explode($value, $delimiter = null);
+
+    /**
+     * Queries whether or not debug mode is enabled or not, default is TRUE.
+     *
+     * @return boolean TRUE if debug mode is enabled, else FALSE
+     */
+    public function isDebugMode();
+
+    /**
+     * Set's the unique serial for this import process.
+     *
+     * @param string $serial The unique serial
+     *
+     * @return void
+     */
+    public function setSerial($serial);
+
+    /**
+     * Return's the unique serial for this import process.
+     *
+     * @return string The unique serial
+     */
+    public function getSerial();
+
+    /**
+     * Set's the name of the file to import
+     *
+     * @param string $filename The filename
+     *
+     * @return void
+     */
+    public function setFilename($filename);
+
+    /**
+     * Return's the name of the file to import.
+     *
+     * @return string The filename
+     */
+    public function getFilename();
+
+    /**
+     * Set's the actual line number.
+     *
+     * @param integer $lineNumber The line number
+     *
+     * @return void
+     */
+    public function setLineNumber($lineNumber);
+
+    /**
+     * Return's the actual line number.
+     *
+     * @return integer The line number
+     */
+    public function getLineNumber();
+
+    /**
+     * Prepare's the store view code in the subject.
+     *
+     * @return void
+     */
+    public function prepareStoreViewCode();
+
+    /**
+     * Return's the array with callbacks for the passed type.
+     *
+     * @param string $type The type of the callbacks to return
+     *
+     * @return array The callbacks
+     */
+    public function getCallbacksByType($type);
+
+    /**
+     * Register the passed observer with the specific type.
+     *
+     * @param \TechDivision\Import\Observers\ObserverInterface $observer The observer to register
+     * @param string                                           $type     The type to register the observer with
+     *
+     * @return void
+     */
+    public function registerObserver(ObserverInterface $observer, $type);
+
+    /**
+     * Register the passed callback with the specific type.
+     *
+     * @param \TechDivision\Import\Callbacks\CallbackInterface $callback The subject to register the callbacks for
+     * @param string                                           $type     The type to register the callback with
+     *
+     * @return void
+     */
+    public function registerCallback(CallbackInterface $callback, $type);
 }

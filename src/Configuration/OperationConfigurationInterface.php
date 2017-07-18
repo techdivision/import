@@ -20,8 +20,6 @@
 
 namespace TechDivision\Import\Configuration;
 
-use TechDivision\Import\Configuration\OperationConfigurationInterface;
-
 /**
  * Interface for the operation configuration implementation.
  *

@@ -109,6 +109,9 @@ trait FilesystemTrait
             return $path;
         }
 
+        // temporarily save the path
+        $originalPath = $path;
+
         // try to prepend the actual working directory, assuming we've a relative path
         if ($this->getFilesystem()->has($path = getcwd() . DIRECTORY_SEPARATOR . $path)) {
             return $path;
@@ -116,7 +119,88 @@ trait FilesystemTrait
 
         // throw an exception if the passed directory doesn't exists
         throw new \InvalidArgumentException(
-            sprintf('Directory %s doesn\'t exist', $path)
+            sprintf('Directory %s doesn\'t exist', $originalPath)
         );
+    }
+
+    /**
+     * Creates a new directroy.
+     *
+     * @param string  $pathname  The directory path
+     * @param integer $mode      The mode is 0777 by default, which means the widest possible access
+     * @param string  $recursive Allows the creation of nested directories specified in the pathname
+     *
+     * @return boolean TRUE on success, else FALSE
+     * @link http://php.net/mkdir
+     */
+    public function mkdir($pathname, $mode = 0700, $recursive = false)
+    {
+        return mkdir($pathname, $mode, $recursive);
+    }
+
+    /**
+     * Query whether or not the passed filename exists.
+     *
+     * @param string $filename The filename to query
+     *
+     * @return boolean TRUE if the passed filename exists, else FALSE
+     * @link http://php.net/is_file
+     */
+    public function isFile($filename)
+    {
+        return is_file($filename);
+    }
+
+    /**
+     * Tells whether the filename is a directory.
+     *
+     * @param string $filename Path to the file
+     *
+     * @return TRUE if the filename exists and is a directory, else FALSE
+     * @link http://php.net/is_dir
+     */
+    public function isDir($filename)
+    {
+        return is_dir($filename);
+    }
+
+    /**
+     * Creates an empty file with the passed filename.
+     *
+     * @param string $filename The name of the file to create
+     *
+     * @return boolean TRUE if the file can be created, else FALSE
+     */
+    public function touch($filename)
+    {
+        return touch($filename);
+    }
+
+    /**
+     * Renames a file or directory.
+     *
+     * @param string $oldname The old name
+     * @param string $newname The new name
+     *
+     * @return boolean TRUE on success, else FALSE
+     * @link http://php.net/rename
+     */
+    public function rename($oldname, $newname)
+    {
+        return rename($oldname, $newname);
+    }
+
+    /**
+     * Writes the passed data to file with the passed name.
+     *
+     * @param string $filename The name of the file to write the data to
+     * @param string $data     The data to write to the file
+     *
+     * @return number The number of bytes written to the file
+     * @link http://php.net/file_put_contents
+     */
+    public function write($filename, $data)
+    {
+        return file_put_contents($filename, $data);
     }
 }

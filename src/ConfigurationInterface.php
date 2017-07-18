@@ -72,7 +72,7 @@ interface ConfigurationInterface
     /**
      * Return's the database configuration.
      *
-     * @return \TechDivision\Import\Cli\Configuration\Database The database configuration
+     * @return \TechDivision\Import\Configuration\DatabaseConfigurationInterface The database configuration
      * @throws \Exception Is thrown, if no database configuration is available
      */
     public function getDatabase();
