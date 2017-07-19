@@ -25,6 +25,7 @@ use TechDivision\Import\Utils\MemberNames;
 use TechDivision\Import\Utils\RegistryKeys;
 use TechDivision\Import\Utils\EntityTypeCodes;
 use TechDivision\Import\Utils\Generators\CoreConfigDataUidGenerator;
+use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * Abstract subject test class.
@@ -171,10 +172,12 @@ abstract class AbstractTest extends \PHPUnit_Framework_TestCase
      */
     protected function getMockLoggers()
     {
-        return array(
-            LoggerKeys::SYSTEM => $this->getMockBuilder('Psr\Log\LoggerInterface')
-                                       ->setMethods(get_class_methods('Psr\Log\LoggerInterface'))
-                                       ->getMock()
+        return new ArrayCollection(
+            array(
+                LoggerKeys::SYSTEM => $this->getMockBuilder('Psr\Log\LoggerInterface')
+                                           ->setMethods(get_class_methods('Psr\Log\LoggerInterface'))
+                                           ->getMock()
+            )
         );
     }
 

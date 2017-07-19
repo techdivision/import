@@ -20,6 +20,7 @@
 
 namespace TechDivision\Import\Subjects;
 
+use Doctrine\Common\Collections\Collection;
 use TechDivision\Import\RowTrait;
 use TechDivision\Import\HeaderTrait;
 use TechDivision\Import\SystemLoggerTrait;
@@ -206,12 +207,12 @@ abstract class AbstractSubject implements SubjectInterface
      *
      * @param \TechDivision\Import\Services\RegistryProcessorInterface $registryProcessor          The registry processor instance
      * @param \TechDivision\Import\Utils\Generators\GeneratorInterface $coreConfigDataUidGenerator The UID generator for the core config data
-     * @param array                                                    $systemLoggers              The array with the system loggers instances
+     * @param \Doctrine\Common\Collections\Collection                  $systemLoggers              The array with the system loggers instances
      */
     public function __construct(
         RegistryProcessorInterface $registryProcessor,
         GeneratorInterface $coreConfigDataUidGenerator,
-        array $systemLoggers
+        Collection $systemLoggers
     ) {
         $this->systemLoggers = $systemLoggers;
         $this->registryProcessor = $registryProcessor;
