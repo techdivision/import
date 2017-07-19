@@ -346,4 +346,17 @@ interface SubjectInterface
      * @return void
      */
     public function registerCallback(CallbackInterface $callback, $type);
+
+    /**
+     * Resolve's the value with the passed colum name from the actual row. If a callback will
+     * be passed, the callback will be invoked with the found value as parameter. If
+     * the value is NULL or empty, the default value will be returned.
+     *
+     * @param string        $name     The name of the column to return the value for
+     * @param mixed|null    $default  The default value, that has to be returned, if the row's value is empty
+     * @param callable|null $callback The callback that has to be invoked on the value, e. g. to format it
+     *
+     * @return mixed|null The, almost formatted, value
+     */
+    public function getValue($name, $default = null, callable $callback = null);
 }
