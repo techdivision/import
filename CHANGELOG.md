@@ -1,3 +1,13 @@
+# Version 1.0.0-beta31
+
+## Bugfixes
+
+* None
+
+## Features
+
+* Make RowTrait::getValue() method public
+
 # Version 1.0.0-beta30
 
 ## Bugfixes

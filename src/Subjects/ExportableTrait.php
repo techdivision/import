@@ -134,11 +134,12 @@ trait ExportableTrait
     {
 
         // initialize the original data
-        $originalData = array(
-            ColumnKeys::ORIGINAL_FILENAME     => $this->getFilename(),
-            ColumnKeys::ORIGINAL_LINE_NUMBER  => $this->getLineNumber(),
-            ColumnKeys::ORIGINAL_COLUMN_NAMES => $originalColumnNames
-        );
+        $originalData = array();
+        if (sizeof($originalColumnNames) > 0) {
+            $originalData[ColumnKeys::ORIGINAL_FILENAME] = $this->getFilename();
+            $originalData[ColumnKeys::ORIGINAL_LINE_NUMBER] = $this->getLineNumber();
+            $originalData[ColumnKeys::ORIGINAL_COLUMN_NAMES] =  $originalColumnNames;
+        }
 
         // prepare a new artefact entity
         $artefact = array(ColumnKeys::ORIGINAL_DATA => $originalData);
