@@ -1,3 +1,13 @@
+# Version 1.0.0-beta33
+
+## Bugfixes
+
+* None
+
+## Features
+
+* Add PHPUnit tests for SubjectPlugin
+
 # Version 1.0.0-beta32
 
 ## Bugfixes

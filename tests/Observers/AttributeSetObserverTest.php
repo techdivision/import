@@ -85,7 +85,7 @@ class AttributeSetObserverTest extends \PHPUnit_Framework_TestCase
                     ->willReturn($attributeSet);
         $mockSubject->expects($this->once())
                     ->method('hasHeader')
-                    ->willReturn($headerName = ColumnKeys::ATTRIBUTE_SET_CODE);
+                    ->willReturn(ColumnKeys::ATTRIBUTE_SET_CODE);
         $mockSubject->expects($this->once())
                     ->method('getHeader')
                     ->willReturn(0);

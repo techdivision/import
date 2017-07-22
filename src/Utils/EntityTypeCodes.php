@@ -81,6 +81,6 @@ class EntityTypeCodes extends \ArrayObject
         );
 
         // initialize the parent class with the merged entity type codes
-        parent::__construct($mergedEntityTypes);
+        parent::__construct($mergedEntityTypeCodes);
     }
 }

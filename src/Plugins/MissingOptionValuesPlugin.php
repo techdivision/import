@@ -129,8 +129,8 @@ class MissingOptionValuesPlugin extends AbstractPlugin
         $this->setLastEntityId(0);
 
         // add the artefacts (missing option values) and export them as CSV file
-        $this->addArtefacts($artefactType = MissingOptionValuesPlugin::ARTEFACT_TYPE, $artefacts);
-        $this->export($timestamp = date('Ymd-His'), $counter = '01');
+        $this->addArtefacts(MissingOptionValuesPlugin::ARTEFACT_TYPE, $artefacts);
+        $this->export(date('Ymd-His'), $counter = '01');
 
         // query whether or not a swift mailer has been registered
         if ($swiftMailer = $this->getSwiftMailer()) {

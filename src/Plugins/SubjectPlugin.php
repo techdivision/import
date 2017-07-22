@@ -169,6 +169,40 @@ class SubjectPlugin extends AbstractPlugin
     }
 
     /**
+     * Loads the files from the source directory and return's them sorted.
+     *
+     * @param \TechDivision\Import\Configuration\SubjectConfigurationInterface $subject The source directory to parse for files
+     *
+     * @return array The array with the files matching the subjects suffix
+     * @throws \Exception Is thrown, when the source directory is NOT available
+     */
+    protected function loadFiles(SubjectConfigurationInterface $subject)
+    {
+
+        // clear the filecache
+        clearstatcache();
+
+        // load the actual status
+        $status = $this->getRegistryProcessor()->getAttribute($this->getSerial());
+
+        // query whether or not the configured source directory is available
+        if (!is_dir($sourceDir = $status[RegistryKeys::SOURCE_DIRECTORY])) {
+            throw new \Exception(sprintf('Source directory %s for subject %s is not available!', $sourceDir, $subject->getId()));
+        }
+
+        // initialize the array with the files matching the suffix found in the source directory
+        $files = glob(sprintf('%s/*.%s', $sourceDir, $subject->getSuffix()));
+
+        // sort the files for the apropriate order
+        usort($files, function ($a, $b) {
+            return strcmp($a, $b);
+        });
+
+        // return the sorted files
+        return $files;
+    }
+
+    /**
      * Process the subject with the passed name/identifier.
      *
      * We create a new, fresh and separate subject for EVERY file here, because this would be
@@ -183,38 +217,17 @@ class SubjectPlugin extends AbstractPlugin
     protected function processSubject(SubjectConfigurationInterface $subject)
     {
 
-        // clear the filecache
-        clearstatcache();
-
-        // load the actual status
-        $status = $this->getRegistryProcessor()->getAttribute($serial = $this->getSerial());
-
-        // query whether or not the configured source directory is available
-        if (!is_dir($sourceDir = $status[RegistryKeys::SOURCE_DIRECTORY])) {
-            throw new \Exception(sprintf('Source directory %s for subject %s is not available!', $sourceDir, $subject->getId()));
-        }
-
-        // initialize the array with the CSV files found in the source directory
-        $files = glob(sprintf('%s/*.csv', $sourceDir));
-
-        // sorting the files for the apropriate order
-        usort($files, function ($a, $b) {
-            return strcmp($a, $b);
-        });
-
-        // log a debug message
-        $this->getSystemLogger()->debug(sprintf('Now checking directory %s for files to be imported', $sourceDir));
-
-        // initialize the bunch number
+        // initialize the bunch number and the serial
         $bunches = 0;
+        $serial = $this->getSerial();
 
-        // load the container instance from the application
-        $container = $this->getApplication()->getContainer();
+        // load the files
+        $files = $this->loadFiles($subject);
 
         // iterate through all CSV files and process the subjects
         foreach ($files as $pathname) {
             // query whether or not that the file is part of the actual bunch
-            if ($this->isPartOfBunch($subject->getPrefix(), $pathname)) {
+            if ($this->isPartOfBunch($subject->getPrefix(), $subject->getSuffix(), $pathname)) {
                 try {
                     // initialize the subject and import the bunch
                     $subjectInstance = $this->subjectFactory->createSubject($subject);
@@ -229,7 +242,7 @@ class SubjectPlugin extends AbstractPlugin
                     // query whether or not the subject needs an OK file,
                     // if yes remove the filename from the file
                     if ($subjectInstance->isOkFileNeeded()) {
-                        $this->removeFromOkFile($pathname);
+                        $this->removeFromOkFile($pathname, $subject->getSuffix());
                     }
 
                     // finally import the CSV file
@@ -278,11 +291,12 @@ class SubjectPlugin extends AbstractPlugin
      * Queries whether or not, the passed filename is part of a bunch or not.
      *
      * @param string $prefix   The prefix to query for
+     * @param string $suffix   The suffix to query for
      * @param string $filename The filename to query for
      *
      * @return boolean TRUE if the filename is part, else FALSE
      */
-    protected function isPartOfBunch($prefix, $filename)
+    protected function isPartOfBunch($prefix, $suffix, $filename)
     {
 
         // initialize the pattern
@@ -292,22 +306,24 @@ class SubjectPlugin extends AbstractPlugin
         if (sizeof($this->matches) === 0) {
             // initialize the pattern to query whether the FIRST file has to be processed or not
             $pattern = sprintf(
-                '/^.*\/(?<%s>%s)_(?<%s>.*)_(?<%s>\d+)\\.csv$/',
+                '/^.*\/(?<%s>%s)_(?<%s>.*)_(?<%s>\d+)\\.%s$/',
                 BunchKeys::PREFIX,
                 $prefix,
                 BunchKeys::FILENAME,
-                BunchKeys::COUNTER
+                BunchKeys::COUNTER,
+                $suffix
             );
 
         } else {
             // initialize the pattern to query whether the NEXT file is part of a bunch or not
             $pattern = sprintf(
-                '/^.*\/(?<%s>%s)_(?<%s>%s)_(?<%s>\d+)\\.csv$/',
+                '/^.*\/(?<%s>%s)_(?<%s>%s)_(?<%s>\d+)\\.%s$/',
                 BunchKeys::PREFIX,
                 $this->matches[BunchKeys::PREFIX],
                 BunchKeys::FILENAME,
                 $this->matches[BunchKeys::FILENAME],
-                BunchKeys::COUNTER
+                BunchKeys::COUNTER,
+                $suffix
             );
         }
 
@@ -364,11 +380,12 @@ class SubjectPlugin extends AbstractPlugin
      * imported/moved.
      *
      * @param string $filename The CSV filename to query for
+     * @param string $suffix   The CSF filename suffix, csv by default
      *
      * @return void
      * @throws \Exception Is thrown, if the passed filename is NOT in the OK file or it can NOT be removed from it
      */
-    protected function removeFromOkFile($filename)
+    protected function removeFromOkFile($filename, $suffix)
     {
 
         try {
@@ -380,7 +397,7 @@ class SubjectPlugin extends AbstractPlugin
             // iterate over the found OK filenames (should usually be only one, but could be more)
             foreach ($okFilenames as $okFilename) {
                 // if the OK filename matches the CSV filename AND the OK file is empty
-                if (basename($filename, '.csv') === basename($okFilename, '.ok') && filesize($okFilename) === 0) {
+                if (basename($filename, sprintf('.%s', $suffix)) === basename($okFilename, '.ok') && filesize($okFilename) === 0) {
                     unlink($okFilename);
                     return;
                 }
