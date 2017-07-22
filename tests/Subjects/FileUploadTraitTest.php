@@ -207,7 +207,7 @@ class FileUploadTraitTest extends \PHPUnit_Framework_TestCase
     {
 
         // set media + images file directory
-        $this->fileUploadTrait->setMediaDir($mediaDir = 'var/importexport/media');
+        $this->fileUploadTrait->setMediaDir('var/importexport/media');
         $this->fileUploadTrait->setImagesFileDir($imagesFileDir = 'pub/images');
 
         // prepare basename, filename and the name of the uploaded file

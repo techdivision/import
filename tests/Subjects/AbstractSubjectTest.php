@@ -387,7 +387,7 @@ class AbstractSubjectTest extends AbstractTest
              ->willReturn(true);
 
         // try to import the file with the passed name
-        $this->assertNull($this->abstractSubject->import($serial = uniqid(), $filename));
+        $this->assertNull($this->abstractSubject->import(uniqid(), $filename));
     }
 
     /**
@@ -448,7 +448,7 @@ class AbstractSubjectTest extends AbstractTest
              ->willReturn(true);
 
         // try to import the file with the passed name
-        $this->abstractSubject->import($serial = uniqid(), $filename);
+        $this->abstractSubject->import(uniqid(), $filename);
     }
 
     /**
@@ -509,7 +509,7 @@ class AbstractSubjectTest extends AbstractTest
              ->willReturn(true);
 
         // try to import the file with the passed name
-        $this->abstractSubject->import($serial = uniqid(), $filename);
+        $this->abstractSubject->import(uniqid(), $filename);
     }
 
     /**
@@ -553,7 +553,7 @@ class AbstractSubjectTest extends AbstractTest
              ->willReturn(null);
 
         // try to import the file with the passed name
-        $this->abstractSubject->import($serial = uniqid(), $filename);
+        $this->abstractSubject->import(uniqid(), $filename);
     }
 
     /**
@@ -594,7 +594,7 @@ class AbstractSubjectTest extends AbstractTest
                      ->willReturn($row = array(0 => 'value1', 1 => 100));
 
         // register a mock observer
-        $this->abstractSubject->registerObserver($mockObserver, $type = 'import');
+        $this->abstractSubject->registerObserver($mockObserver, 'import');
 
         // start importing the row
         $this->abstractSubject->importRow($row);
@@ -641,7 +641,7 @@ class AbstractSubjectTest extends AbstractTest
 
         // register the mock observers
         $this->abstractSubject->registerObserver(new SkipObserverImpl(), 'import');
-        $this->abstractSubject->registerObserver($mockObserver, $type = 'import');
+        $this->abstractSubject->registerObserver($mockObserver, 'import');
 
         // start importing the row
         $this->abstractSubject->importRow($row = array(0 => 'value1', 1 => 100));
@@ -706,7 +706,7 @@ class AbstractSubjectTest extends AbstractTest
      */
     public function testGetCoreConfigDataWithDefaultValue()
     {
-        $this->assertSame(1001, $this->abstractSubject->getCoreConfigData('unknown/config/value', $default = 1001));
+        $this->assertSame(1001, $this->abstractSubject->getCoreConfigData('unknown/config/value', 1001));
     }
 
     /**
@@ -836,7 +836,7 @@ class AbstractSubjectTest extends AbstractTest
                      );
 
         // register a mock observer
-        $this->abstractSubject->registerObserver($mockObserver, $type = 'import');
+        $this->abstractSubject->registerObserver($mockObserver, 'import');
 
         // start importing the row
         $this->abstractSubject->importRow($row);
@@ -892,9 +892,6 @@ class AbstractSubjectTest extends AbstractTest
      */
     public function testSetGetStoreViewCode()
     {
-
-        // initialize the default value
-        $default = 'test';
 
         // set a store view code and query if it will be returned
         $this->abstractSubject->setStoreViewCode(StoreViewCodes::ADMIN);
@@ -954,7 +951,7 @@ class AbstractSubjectTest extends AbstractTest
                      ->willReturn($row = array(0 => 'value1', 1 => 100, 2 => $storeViewCode = 'en_US'));
 
         // register the mock observers
-        $this->abstractSubject->registerObserver($mockObserver, $type = 'import');
+        $this->abstractSubject->registerObserver($mockObserver, 'import');
 
         // start importing the row
         $this->abstractSubject->importRow($row);
@@ -1012,10 +1009,10 @@ class AbstractSubjectTest extends AbstractTest
                              ->getMock();
         $mockObserver->expects($this->exactly(1))
                      ->method('handle')
-                     ->willReturn($row = array(0 => 'value1', 1 => 100, 2 => $storeViewCode = 'en_US'));
+                     ->willReturn($row = array(0 => 'value1', 1 => 100, 2 => 'en_US'));
 
         // register the mock observers
-        $this->abstractSubject->registerObserver($mockObserver, $type = 'import');
+        $this->abstractSubject->registerObserver($mockObserver, 'import');
 
         // start importing the row
         $this->abstractSubject->importRow($row);
@@ -1054,10 +1051,10 @@ class AbstractSubjectTest extends AbstractTest
              ->willReturn(null);
 
         // register the mock observers
-        $this->abstractSubject->registerObserver(new PrepareStoreViewCodeObserverImpl(), $type = 'import');
+        $this->abstractSubject->registerObserver(new PrepareStoreViewCodeObserverImpl(), 'import');
 
         // start importing the row
-        $this->abstractSubject->importRow(array(0 => 'value1', 1 => 100, 2 => $storeViewCode = 'en_US'));
+        $this->abstractSubject->importRow(array(0 => 'value1', 1 => 100, 2 => 'en_US'));
 
         // make sure the store view code related store ID has been returned
         $this->assertSame(2, $this->abstractSubject->getRowStoreId());

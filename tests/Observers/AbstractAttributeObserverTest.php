@@ -88,7 +88,7 @@ class AbstractAttributeObserverTest extends \PHPUnit_Framework_TestCase
 
         // prepare the row
         $row = array(
-            0 => $attributeValue = 'a-attribute-value'
+            0 => 'a-attribute-value'
         );
 
         // prepare the backend types
@@ -171,7 +171,7 @@ class AbstractAttributeObserverTest extends \PHPUnit_Framework_TestCase
 
         // prepare the row
         $row = array(
-            0 => $attributeValue = 'a-attribute-value'
+            0 => 'a-attribute-value'
         );
 
         // prepare the backend types
@@ -182,7 +182,7 @@ class AbstractAttributeObserverTest extends \PHPUnit_Framework_TestCase
         // prepare the attributes WHITHOUT backend type
         $attributes = array(
             $attributeCode => array(
-                MemberNames::ATTRIBUTE_ID   => $attributeId = 124,
+                MemberNames::ATTRIBUTE_ID   => 124,
                 MemberNames::ENTITY_TYPE_ID => 4,
                 MemberNames::ATTRIBUTE_CODE => $attributeCode,
                 MemberNames::BACKEND_TYPE   => null
@@ -384,10 +384,10 @@ class AbstractAttributeObserverTest extends \PHPUnit_Framework_TestCase
         // prepare the attributes
         $attributes = array(
             $attributeCode = 'url_key' => array(
-                MemberNames::ATTRIBUTE_ID => $attributeId = 124,
+                MemberNames::ATTRIBUTE_ID => 124,
                 MemberNames::ENTITY_TYPE_ID => 4,
                 MemberNames::ATTRIBUTE_CODE => $attributeCode,
-                MemberNames::BACKEND_TYPE => $backendType = BackendTypeKeys::BACKEND_TYPE_VARCHAR
+                MemberNames::BACKEND_TYPE => BackendTypeKeys::BACKEND_TYPE_VARCHAR
             )
         );
 
@@ -398,7 +398,7 @@ class AbstractAttributeObserverTest extends \PHPUnit_Framework_TestCase
 
         // prepare the row
         $row = array(
-            0 => $attributeValue = null
+            0 => null
         );
 
         // mock a subject
@@ -447,10 +447,10 @@ class AbstractAttributeObserverTest extends \PHPUnit_Framework_TestCase
         // prepare the attributes
         $attributes = array(
             $attributeCode = 'url_key' => array(
-                MemberNames::ATTRIBUTE_ID => $attributeId = 124,
+                MemberNames::ATTRIBUTE_ID => 124,
                 MemberNames::ENTITY_TYPE_ID => 4,
                 MemberNames::ATTRIBUTE_CODE => $attributeCode,
-                MemberNames::BACKEND_TYPE => $backendType = BackendTypeKeys::BACKEND_TYPE_VARCHAR
+                MemberNames::BACKEND_TYPE => BackendTypeKeys::BACKEND_TYPE_VARCHAR
             )
         );
 
@@ -461,7 +461,7 @@ class AbstractAttributeObserverTest extends \PHPUnit_Framework_TestCase
 
         // prepare the row
         $row = array(
-            0 => $attributeValue = 'test-url-key'
+            0 => 'test-url-key'
         );
 
         // mock the callbacks
@@ -531,7 +531,7 @@ class AbstractAttributeObserverTest extends \PHPUnit_Framework_TestCase
         // prepare the attributes
         $attributes = array(
             $attributeCode = 'url_key' => array(
-                MemberNames::ATTRIBUTE_ID => $attributeId = 124,
+                MemberNames::ATTRIBUTE_ID => 124,
                 MemberNames::ENTITY_TYPE_ID => 4,
                 MemberNames::ATTRIBUTE_CODE => $attributeCode,
                 MemberNames::BACKEND_TYPE => $backendType = 'unknown_backend_type'
@@ -545,7 +545,7 @@ class AbstractAttributeObserverTest extends \PHPUnit_Framework_TestCase
 
         // prepare the row
         $row = array(
-            0 => $attributeValue = 'test-url-key'
+            0 => 'test-url-key'
         );
 
         // mock a system logger
@@ -612,10 +612,10 @@ class AbstractAttributeObserverTest extends \PHPUnit_Framework_TestCase
         // prepare the attributes
         $attributes = array(
             $attributeCode = 'sku' => array(
-                MemberNames::ATTRIBUTE_ID => $attributeId = 124,
+                MemberNames::ATTRIBUTE_ID => 124,
                 MemberNames::ENTITY_TYPE_ID => 4,
                 MemberNames::ATTRIBUTE_CODE => $attributeCode,
-                MemberNames::BACKEND_TYPE => $backendType = BackendTypeKeys::BACKEND_TYPE_STATIC
+                MemberNames::BACKEND_TYPE => BackendTypeKeys::BACKEND_TYPE_STATIC
             )
         );
 
@@ -626,7 +626,7 @@ class AbstractAttributeObserverTest extends \PHPUnit_Framework_TestCase
 
         // prepare the row
         $row = array(
-            0 => $attributeValue = 'test-sku'
+            0 => 'test-sku'
         );
 
         // mock a subject

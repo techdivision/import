@@ -111,7 +111,8 @@ class Lexer implements LexerInterface
         }
 
         // reset locale
-        parse_str(str_replace(';', '&', $originalLocale), $locale_array);
-        setlocale(LC_ALL, $locale_array);
+        $localeArray = array();
+        parse_str(str_replace(';', '&', $originalLocale), $localeArray);
+        setlocale(LC_ALL, $localeArray);
     }
 }

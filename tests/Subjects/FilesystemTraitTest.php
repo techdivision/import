@@ -249,7 +249,7 @@ class FilesystemTraitTest extends \PHPUnit_Framework_TestCase
                        ->method('has')
                        ->withConsecutive(
                                array($filename = 'test.txt'),
-                               array($path = getcwd() . DIRECTORY_SEPARATOR . $filename)
+                               array(getcwd() . DIRECTORY_SEPARATOR . $filename)
                            )
                            ->willReturnOnConsecutiveCalls(false, false);
 

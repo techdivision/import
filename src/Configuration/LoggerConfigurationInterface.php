@@ -63,7 +63,7 @@ interface LoggerConfigurationInterface extends ParamsConfigurationInterface
     /**
      * Return's the array with the logger's handlers.
      *
-     * @return \Doctrine\Common\Collections\ArrayCollection The ArrayCollection with the handlers
+     * @return \Doctrine\Common\Collections\Collection The ArrayCollection with the handlers
      */
     public function getHandlers();
 }
