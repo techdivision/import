@@ -1,7 +1,7 @@
 <?php
 
 /**
- * TechDivision\Import\Subjects\FilesystemSubjectInterface
+ * TechDivision\Import\Subjects\PhpFilesystemAdapterFactory
  *
  * NOTICE OF LICENSE
  *
@@ -18,10 +18,12 @@
  * @link      http://www.techdivision.com
  */
 
-namespace TechDivision\Import\Subjects;
+namespace TechDivision\Import\Adapter;
+
+use TechDivision\Import\Configuration\SubjectConfigurationInterface;
 
 /**
- * The interface for all subject implementations that supports filesystem handling.
+ * A filesystem adapter factory implementation for filesystem implementation that uses plain PHP functions.
  *
  * @author    Tim Wagner <t.wagner@techdivision.com>
  * @copyright 2016 TechDivision GmbH <info@techdivision.com>
@@ -29,24 +31,18 @@ namespace TechDivision\Import\Subjects;
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
  */
-interface FilesystemSubjectInterface
+class PhpFilesystemAdapterFactory implements FilesystemAdapterFactoryInterface
 {
 
     /**
-     * Return's the filesystem adapater instance.
+     * Factory method to create new filesystem adapter instance.
+     *
+     * @param \TechDivision\Import\Configuration\SubjectConfigurationInterface $subjectConfiguration The subject configuration
      *
      * @return \TechDivision\Import\Adapter\FilesystemAdapterInterface The filesystem adapter instance
      */
-    public function getFilesystemAdapter();
-
-    /**
-     * This method tries to resolve the passed path and returns it. If the path
-     * is relative, the actual working directory will be prepended.
-     *
-     * @param string $path The path to be resolved
-     *
-     * @return string The resolved path
-     * @throws \InvalidArgumentException Is thrown, if the path can not be resolved
-     */
-    public function resolvePath($path);
+    public function createFilesystemAdapter(SubjectConfigurationInterface $subjectConfiguration)
+    {
+        return new PhpFilesystemAdapter();
+    }
 }

@@ -185,4 +185,11 @@ interface SubjectConfigurationInterface extends ParamsConfigurationInterface
      * @return \TechDivision\Import\Configuration\Subject\ExportAdapterConfigurationInterface The export adapter configuration instance
      */
     public function getExportAdapter();
+
+    /**
+     * Return's the filesystem adapter configuration instance.
+     *
+     * @return \TechDivision\Import\Configuration\Subject\FilesystemAdapterConfigurationInterface The filesystem adapter configuration instance
+     */
+    public function getFilesystemAdapter();
 }

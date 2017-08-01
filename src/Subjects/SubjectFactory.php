@@ -74,6 +74,10 @@ class SubjectFactory implements SubjectFactoryInterface
             $subjectInstance->setExportAdapter($this->container->get($subjectConfiguration->getExportAdapter()->getId()));
         }
 
+        // load the filesystem adapter instance from the DI container and set it non the subject instance
+        $filesystemAdapterFactory = $this->container->get($subjectConfiguration->getFilesystemAdapter()->getId());
+        $subjectInstance->setFilesystemAdapter($filesystemAdapterFactory->createFilesystemAdapter($subjectConfiguration));
+
         // return the initialized subject instance
         return $subjectInstance;
     }

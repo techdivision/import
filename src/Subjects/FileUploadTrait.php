@@ -162,13 +162,13 @@ trait FileUploadTrait
         $fileInfo = pathinfo($targetFilename);
 
         // query whether or not, the file exists
-        if ($this->getFilesystem()->has($targetFilename)) {
+        if ($this->getFilesystemAdapter()->isFile($targetFilename)) {
             // initialize the incex and the basename
             $index = 1;
             $baseName = $fileInfo['filename'] . '.' . $fileInfo['extension'];
 
             // prepare the new filename by raising the index
-            while ($this->getFilesystem()->has($fileInfo['dirname'] . '/' . $baseName)) {
+            while ($this->getFilesystemAdapter()->isFile($fileInfo['dirname'] . '/' . $baseName)) {
                 $baseName = $fileInfo['filename'] . '_' . $index . '.' . $fileInfo['extension'];
                 $index++;
             }
@@ -208,7 +208,7 @@ trait FileUploadTrait
         $targetFilename = sprintf('%s/%s', $mediaDir, $trimmedFilename);
 
         // query whether or not the image file to be imported is available
-        if (!$this->getFilesystem()->has($sourceFilename)) {
+        if (!$this->getFilesystemAdapter()->isFile($sourceFilename)) {
             throw new \Exception(sprintf('Media file %s not available', $sourceFilename));
         }
 
@@ -216,8 +216,13 @@ trait FileUploadTrait
         $newTargetFilename = $this->getNewFileName($targetFilename);
         $targetFilename = str_replace(basename($targetFilename), $newTargetFilename, $targetFilename);
 
+        // make sure, the target directory exists
+        if (!$this->getFilesystemAdapter()->isDir($targetDirectory = dirname($targetFilename))) {
+            $this->getFilesystemAdapter()->mkdir($targetDirectory, 0755);
+        }
+
         // copy the image to the target directory
-        $this->getFilesystem()->copy($sourceFilename, $targetFilename);
+        $this->getFilesystemAdapter()->copy($sourceFilename, $targetFilename);
 
         // return the new target filename
         return str_replace($mediaDir, '', $targetFilename);

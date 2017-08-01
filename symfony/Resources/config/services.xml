@@ -188,6 +188,12 @@
         </service>
 
         <!--
+         | The DI configuration for the filesystem adapter
+         |-->
+        <service id="import.adapter.filesystem.factory.php" class="TechDivision\Import\Adapter\PhpFilesystemAdapterFactory"/>
+        <service id="import.adapter.filesystem.factory.league" class="TechDivision\Import\Adapter\LeagueFilesystemAdapterFactory"/>
+
+        <!--
          | The DI configuration for the subjects provided by this library
          |-->
         <service id="import.subject.move.files" class="TechDivision\Import\Subjects\MoveFilesSubject" shared="false">

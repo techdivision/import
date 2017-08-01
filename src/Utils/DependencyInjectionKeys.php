@@ -76,4 +76,18 @@ class DependencyInjectionKeys
      * @var string
      */
     const IMPORT_ADAPTER_EXPORT_CSV = 'import.adapter.export.csv';
+
+    /**
+     * The key for the simple PHP filesystem adapter service.
+     *
+     * @var string
+     */
+    const IMPORT_ADAPTER_FILESYSTEM_FACTORY_PHP = 'import.adapter.filesystem.factory.php';
+
+    /**
+     * The key for the simple PHP filesystem adapter service.
+     *
+     * @var string
+     */
+    const IMPORT_ADAPTER_FILESYSTEM_FACTORY_LEAGUE = 'import.adapter.filesystem.factory.league';
 }

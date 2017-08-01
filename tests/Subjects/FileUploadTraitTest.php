@@ -108,16 +108,16 @@ class FileUploadTraitTest extends \PHPUnit_Framework_TestCase
         $expectedFilename = basename($targetFilename);
 
         // mock the filesystem
-        $mockFilesystem = $this->getMockBuilder('League\Flysystem\FilesystemInterface')
-                               ->setMethods(get_class_methods('League\Flysystem\FilesystemInterface'))
+        $mockFilesystem = $this->getMockBuilder('TechDivision\Import\Adapter\FilesystemAdapterInterface')
+                               ->setMethods(get_class_methods('TechDivision\Import\Adapter\FilesystemAdapterInterface'))
                                ->getMock();
         $mockFilesystem->expects($this->once())
-                       ->method('has')
+                       ->method('isFile')
                        ->with($targetFilename)
                        ->willReturn(false);
 
         // set the mock filesystem
-        $this->fileUploadTrait->setFilesystem($mockFilesystem);
+        $this->fileUploadTrait->setFilesystemAdapter($mockFilesystem);
 
         // query whether or not the new file name is the same as the passed one
         $this->assertSame($expectedFilename, $this->fileUploadTrait->getNewFileName($targetFilename));
@@ -136,11 +136,11 @@ class FileUploadTraitTest extends \PHPUnit_Framework_TestCase
         $expectedFilename = 'test_1.jpg';
 
         // mock the filesystem
-        $mockFilesystem = $this->getMockBuilder('League\Flysystem\FilesystemInterface')
-                               ->setMethods(get_class_methods('League\Flysystem\FilesystemInterface'))
+        $mockFilesystem = $this->getMockBuilder('TechDivision\Import\Adapter\FilesystemAdapterInterface')
+                               ->setMethods(get_class_methods('TechDivision\Import\Adapter\FilesystemAdapterInterface'))
                                ->getMock();
         $mockFilesystem->expects($this->exactly(3))
-                       ->method('has')
+                       ->method('isFile')
                        ->withConsecutive(
                            array($targetFilename),
                            array($targetFilename),
@@ -149,7 +149,7 @@ class FileUploadTraitTest extends \PHPUnit_Framework_TestCase
                        ->willReturnOnConsecutiveCalls(true, true, false);
 
         // set the mock filesystem
-        $this->fileUploadTrait->setFilesystem($mockFilesystem);
+        $this->fileUploadTrait->setFilesystemAdapter($mockFilesystem);
 
         // query whether or not the new file name is the same as the passed one
         $this->assertSame($expectedFilename, $this->fileUploadTrait->getNewFileName($targetFilename));
@@ -173,11 +173,11 @@ class FileUploadTraitTest extends \PHPUnit_Framework_TestCase
         $uploadedFilename = sprintf('%s%s', $mediaDir, $basename);
 
         // mock the filesystem and its methods
-        $mockFilesystem = $this->getMockBuilder('League\Flysystem\FilesystemInterface')
-                               ->setMethods(get_class_methods('League\Flysystem\FilesystemInterface'))
+        $mockFilesystem = $this->getMockBuilder('TechDivision\Import\Adapter\FilesystemAdapterInterface')
+                               ->setMethods(get_class_methods('TechDivision\Import\Adapter\FilesystemAdapterInterface'))
                                ->getMock();
         $mockFilesystem->expects($this->exactly(2))
-                        ->method('has')
+                        ->method('isFile')
                         ->withConsecutive(
                             array($filename),
                             array($uploadedFilename)
@@ -189,7 +189,7 @@ class FileUploadTraitTest extends \PHPUnit_Framework_TestCase
                        ->willReturn(null);
 
         // set the mock filesystem
-        $this->fileUploadTrait->setFilesystem($mockFilesystem);
+        $this->fileUploadTrait->setFilesystemAdapter($mockFilesystem);
 
         // query whether or not the uploaded file has the expected name
         $this->assertSame($basename, $this->fileUploadTrait->uploadFile($basename));
@@ -215,16 +215,16 @@ class FileUploadTraitTest extends \PHPUnit_Framework_TestCase
         $filename = sprintf('%s%s', $imagesFileDir, $basename);
 
         // mock the filesystem and its methods
-        $mockFilesystem = $this->getMockBuilder('League\Flysystem\FilesystemInterface')
-                               ->setMethods(get_class_methods('League\Flysystem\FilesystemInterface'))
+        $mockFilesystem = $this->getMockBuilder('TechDivision\Import\Adapter\FilesystemAdapterInterface')
+                               ->setMethods(get_class_methods('TechDivision\Import\Adapter\FilesystemAdapterInterface'))
                                ->getMock();
         $mockFilesystem->expects($this->once())
-                       ->method('has')
+                       ->method('isFile')
                        ->with($filename)
                        ->willReturn(false);
 
         // set the mock filesystem
-        $this->fileUploadTrait->setFilesystem($mockFilesystem);
+        $this->fileUploadTrait->setFilesystemAdapter($mockFilesystem);
 
         // query whether or not the uploaded file has the expected name
         $this->fileUploadTrait->uploadFile($basename);

@@ -20,7 +20,7 @@
 
 namespace TechDivision\Import\Subjects;
 
-use League\Flysystem\FilesystemInterface;
+use TechDivision\Import\Adapter\FilesystemAdapterInterface;
 
 /**
  * The trait implementation that provides filesystem handling functionality.
@@ -35,61 +35,32 @@ trait FilesystemTrait
 {
 
     /**
-     * The virtual filesystem instance.
-     *
-     * @var \League\Flysystem\FilesystemInterface
-     */
-    protected $filesystem;
-
-    /**
-     * The root directory for the virtual filesystem.
-     *
-     * @var string
-     */
-    protected $rootDir;
-
-    /**
-     * Set's root directory for the virtual filesystem.
-     *
-     * @param string $rootDir The root directory for the virtual filesystem
-     *
-     * @return void
-     */
-    public function setRootDir($rootDir)
-    {
-        $this->rootDir = $rootDir;
-    }
-
-    /**
      * Return's the root directory for the virtual filesystem.
      *
      * @return string The root directory for the virtual filesystem
      */
-    public function getRootDir()
-    {
-        return $this->rootDir;
-    }
+    protected $filesystemAdapater;
 
     /**
      * Set's the virtual filesystem instance.
      *
-     * @param \League\Flysystem\FilesystemInterface $filesystem The filesystem instance
+     * @param \TechDivision\Import\Adapter\FilesystemAdapterInterface $filesystemAdapter The filesystem adapter instance
      *
      * @return void
      */
-    public function setFilesystem(FilesystemInterface $filesystem)
+    public function setFilesystemAdapter(FilesystemAdapterInterface $filesystemAdapter)
     {
-        $this->filesystem = $filesystem;
+        $this->filesystemAdapater = $filesystemAdapter;
     }
 
     /**
-     * Return's the virtual filesystem instance.
+     * Return's the filesystem adapater instance.
      *
-     * @return \League\Flysystem\FilesystemInterface The filesystem instance
+     * @return \TechDivision\Import\Adapter\FilesystemAdapterInterface The filesystem adapter instance
      */
-    public function getFilesystem()
+    public function getFilesystemAdapter()
     {
-        return $this->filesystem;
+        return $this->filesystemAdapater;
     }
 
     /**
@@ -105,7 +76,7 @@ trait FilesystemTrait
     {
 
         // if we've an absolute path, return it immediately
-        if ($this->getFilesystem()->has($path)) {
+        if ($this->getFilesystemAdapter()->isDir($path)) {
             return $path;
         }
 
@@ -113,7 +84,7 @@ trait FilesystemTrait
         $originalPath = $path;
 
         // try to prepend the actual working directory, assuming we've a relative path
-        if ($this->getFilesystem()->has($path = getcwd() . DIRECTORY_SEPARATOR . $path)) {
+        if ($this->getFilesystemAdapter()->isDir($path = getcwd() . DIRECTORY_SEPARATOR . ltrim($path, '/'))) {
             return $path;
         }
 
@@ -135,7 +106,7 @@ trait FilesystemTrait
      */
     public function mkdir($pathname, $mode = 0700, $recursive = false)
     {
-        return mkdir($pathname, $mode, $recursive);
+        return $this->getFilesystemAdapter()->mkdir($pathname, $mode, $recursive);
     }
 
     /**
@@ -148,7 +119,7 @@ trait FilesystemTrait
      */
     public function isFile($filename)
     {
-        return is_file($filename);
+        return $this->getFilesystemAdapter()->isFile($filename);
     }
 
     /**
@@ -161,7 +132,7 @@ trait FilesystemTrait
      */
     public function isDir($filename)
     {
-        return is_dir($filename);
+        return $this->getFilesystemAdapter()->isDir($filename);
     }
 
     /**
@@ -173,7 +144,7 @@ trait FilesystemTrait
      */
     public function touch($filename)
     {
-        return touch($filename);
+        return $this->getFilesystemAdapter()->touch($filename);
     }
 
     /**
@@ -187,7 +158,7 @@ trait FilesystemTrait
      */
     public function rename($oldname, $newname)
     {
-        return rename($oldname, $newname);
+        return $this->getFilesystemAdapter()->rename($oldname, $newname);
     }
 
     /**
@@ -201,6 +172,6 @@ trait FilesystemTrait
      */
     public function write($filename, $data)
     {
-        return file_put_contents($filename, $data);
+        return $this->getFilesystemAdapter()->write($filename, $data);
     }
 }

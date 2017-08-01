@@ -56,6 +56,14 @@ class SubjectFactoryTest extends \PHPUnit_Framework_TestCase
                                        ->method('getId')
                                        ->willReturn($exportAdapterId = 'import.a.random.export.adapter.id');
 
+        // mock the filesystem adapter configuration
+        $mockFilesystemAdapterConfiguration = $this->getMockBuilder('TechDivision\Import\Configuration\Subject\FilesystemAdapterConfigurationInterface')
+                                                   ->setMethods(get_class_methods('TechDivision\Import\Configuration\Subject\FilesystemAdapterConfigurationInterface'))
+                                                   ->getMock();
+        $mockFilesystemAdapterConfiguration->expects($this->once())
+                                           ->method('getId')
+                                           ->willReturn($filesystemAdapterId = 'import.a.random.filesystem.adapter.id');
+
         // mock the subject configuration
         $mockSubjectConfiguration = $this->getMockBuilder('TechDivision\Import\Configuration\SubjectConfigurationInterface')
                                          ->setMethods(get_class_methods('TechDivision\Import\Configuration\SubjectConfigurationInterface'))
@@ -69,6 +77,9 @@ class SubjectFactoryTest extends \PHPUnit_Framework_TestCase
         $mockSubjectConfiguration->expects($this->once())
                                  ->method('getExportAdapter')
                                  ->willReturn($mockExportAdapterConfiguration);
+        $mockSubjectConfiguration->expects($this->once())
+                                 ->method('getFilesystemAdapter')
+                                 ->willReturn($mockFilesystemAdapterConfiguration);
 
         // mock the import adapter
         $mockImportAdapter = $this->getMockBuilder('TechDivision\Import\Adapter\ImportAdapterInterface')
@@ -79,6 +90,20 @@ class SubjectFactoryTest extends \PHPUnit_Framework_TestCase
         $mockExportAdapter = $this->getMockBuilder('TechDivision\Import\Adapter\ExportAdapterInterface')
                                   ->setMethods(get_class_methods('TechDivision\Import\Adapter\ExportAdapterInterface'))
                                   ->getMock();
+
+        // mock the filesystem adapter
+        $mockFilesystemAdapter = $this->getMockBuilder('TechDivision\Import\Adapter\FilesystemAdapterInterface')
+                                      ->setMethods(get_class_methods('TechDivision\Import\Adapter\FilesystemAdapterInterface'))
+                                      ->getMock();
+
+        // mock the filesystem adapter factory
+        $mockFilesystemAdapterFactory = $this->getMockBuilder('TechDivision\Import\Adapter\FilesystemAdapterFactoryInterface')
+                                             ->setMethods(get_class_methods('TechDivision\Import\Adapter\FilesystemAdapterFactoryInterface'))
+                                             ->getMock();
+        $mockFilesystemAdapterFactory->expects($this->once())
+                                     ->method('createFilesystemAdapter')
+                                     ->with($mockSubjectConfiguration)
+                                     ->willReturn($mockFilesystemAdapter);
 
         // mock the subject
         $mockSubject = $this->getMockBuilder('TechDivision\Import\Subjects\ExportableTraitImpl')
@@ -96,15 +121,19 @@ class SubjectFactoryTest extends \PHPUnit_Framework_TestCase
                     ->method('setExportAdapter')
                     ->with($mockExportAdapter)
                     ->willReturn(null);
+        $mockSubject->expects($this->once())
+                    ->method('setFilesystemAdapter')
+                    ->with($mockFilesystemAdapter)
+                    ->willReturn(null);
 
         // mock the container
         $mockContainer = $this->getMockBuilder('Symfony\Component\DependencyInjection\ContainerInterface')
                               ->setMethods(get_class_methods('Symfony\Component\DependencyInjection\ContainerInterface'))
                               ->getMock();
-        $mockContainer->expects($this->exactly(3))
+        $mockContainer->expects($this->exactly(4))
                       ->method('get')
-                      ->withConsecutive(array($subjectId), array($importAdapterId), array($exportAdapterId))
-                      ->willReturnOnConsecutiveCalls($mockSubject, $mockImportAdapter, $mockExportAdapter);
+                      ->withConsecutive(array($subjectId), array($importAdapterId), array($exportAdapterId), array($filesystemAdapterId))
+                      ->willReturnOnConsecutiveCalls($mockSubject, $mockImportAdapter, $mockExportAdapter, $mockFilesystemAdapterFactory);
 
         // create the factory and a new subject instance
         $subjectFactory = new SubjectFactory($mockContainer);

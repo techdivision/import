@@ -20,9 +20,6 @@
 
 namespace TechDivision\Import\Subjects;
 
-use org\bovigo\vfs\vfsStream;
-use org\bovigo\vfs\content\StringBasedFileContent;
-
 /**
  * Test class for the filesystem trait implementation.
  *
@@ -43,13 +40,6 @@ class FilesystemTraitTest extends \PHPUnit_Framework_TestCase
     protected $filesystemTrait;
 
     /**
-     * The virtual filesystem root.
-     *
-     * @var \org\bovigo\vfs\vfsStreamDirectory
-     */
-    protected $root;
-
-    /**
      * Sets up the fixture, for example, open a network connection.
      * This method is called before a test is executed.
      *
@@ -58,23 +48,7 @@ class FilesystemTraitTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-
-        // initialize the trait we want to test
         $this->filesystemTrait = new FilesystemTraitImpl();
-
-        // setup the filesystem
-        $this->root = vfsStream::setup('/var/www/html');
-    }
-
-    /**
-     * Test the set/getRootDir() methods.
-     *
-     * @return void
-     */
-    public function testSetGetRootDir()
-    {
-        $this->filesystemTrait->setRootDir($rootDir = '/var/www/html');
-        $this->assertSame($rootDir, $this->filesystemTrait->getRootDir());
     }
 
     /**
@@ -85,11 +59,20 @@ class FilesystemTraitTest extends \PHPUnit_Framework_TestCase
     public function testIsFile()
     {
 
-        // create a new file
-        $file = vfsStream::newFile('my-test.image.txt')->withContent(new StringBasedFileContent('test'))->at($this->root);
+        // mock the filesystem
+        $mockFilesystem = $this->getMockBuilder('TechDivision\Import\Adapter\FilesystemAdapterInterface')
+                               ->setMethods(get_class_methods('TechDivision\Import\Adapter\FilesystemAdapterInterface'))
+                               ->getMock();
+        $mockFilesystem->expects($this->once())
+                       ->method('isFile')
+                       ->with($url = '/var/www/my-test.image.txt')
+                       ->willReturn(true);
+
+        // set the mock filesystem
+        $this->filesystemTrait->setFilesystemAdapter($mockFilesystem);
 
         // query whether or not the file exists
-        $this->assertTrue($this->filesystemTrait->isFile($file->url()));
+        $this->assertTrue($this->filesystemTrait->isFile($url));
     }
 
     /**
@@ -100,11 +83,20 @@ class FilesystemTraitTest extends \PHPUnit_Framework_TestCase
     public function testIsDir()
     {
 
-        // create a new directory
-        $dir = vfsStream::newDirectory('test')->at($this->root);
+        // mock the filesystem
+        $mockFilesystem = $this->getMockBuilder('TechDivision\Import\Adapter\FilesystemAdapterInterface')
+                               ->setMethods(get_class_methods('TechDivision\Import\Adapter\FilesystemAdapterInterface'))
+                               ->getMock();
+        $mockFilesystem->expects($this->once())
+                       ->method('isDir')
+                       ->with($url = '/var/www/test')
+                       ->willReturn(true);
+
+        // set the mock filesystem
+        $this->filesystemTrait->setFilesystemAdapter($mockFilesystem);
 
         // query whether or not the directory exists
-        $this->assertTrue($this->filesystemTrait->isDir($dir->url()));
+        $this->assertTrue($this->filesystemTrait->isDir($url));
     }
 
     /**
@@ -116,7 +108,26 @@ class FilesystemTraitTest extends \PHPUnit_Framework_TestCase
     {
 
         // prepare the filename that has to be created
-        $filename = 'vfs://var/www/html/test.txt';
+        $filename = '/var/www/html/test.txt';
+
+        // mock the filesystem
+        $mockFilesystem = $this->getMockBuilder('TechDivision\Import\Adapter\FilesystemAdapterInterface')
+                               ->setMethods(get_class_methods('TechDivision\Import\Adapter\FilesystemAdapterInterface'))
+                               ->getMock();
+        $mockFilesystem->expects($this->once())
+                       ->method('touch')
+                       ->with($filename)
+                       ->willReturn(true);
+        $mockFilesystem->expects($this->exactly(2))
+                       ->method('isFile')
+                       ->withConsecutive(
+                           array($filename),
+                           array($filename)
+                       )
+                       ->willReturnOnConsecutiveCalls(false, true);
+
+        // set the mock filesystem
+        $this->filesystemTrait->setFilesystemAdapter($mockFilesystem);
 
         // assert that the file has been created
         $this->assertFalse($this->filesystemTrait->isFile($filename));
@@ -133,8 +144,29 @@ class FilesystemTraitTest extends \PHPUnit_Framework_TestCase
     {
 
         // prepare the old and the new filename
-        $oldname = vfsStream::newFile('my-test.image.txt')->withContent(new StringBasedFileContent('test'))->at($this->root)->url();
-        $newname = 'vfs://var/www/html/test-new.txt';
+        $oldname = '/var/www/my-test.image.txt';
+        $newname = '/var/www/html/test-new.txt';
+
+        // mock the filesystem
+        $mockFilesystem = $this->getMockBuilder('TechDivision\Import\Adapter\FilesystemAdapterInterface')
+                               ->setMethods(get_class_methods('TechDivision\Import\Adapter\FilesystemAdapterInterface'))
+                               ->getMock();
+        $mockFilesystem->expects($this->once())
+                       ->method('rename')
+                       ->with($oldname, $newname)
+                       ->willReturn(true);
+        $mockFilesystem->expects($this->exactly(4))
+                       ->method('isFile')
+                       ->withConsecutive(
+                           array($oldname),
+                           array($newname),
+                           array($oldname),
+                           array($newname)
+                       )
+                       ->willReturnOnConsecutiveCalls(true, false, false, true);
+
+        // set the mock filesystem
+        $this->filesystemTrait->setFilesystemAdapter($mockFilesystem);
 
         // assert that the file has been renamed
         $this->assertTrue($this->filesystemTrait->isFile($oldname));
@@ -153,7 +185,26 @@ class FilesystemTraitTest extends \PHPUnit_Framework_TestCase
     {
 
         // prepare the directory name that has to be created
-        $dirname = 'vfs://var/www/html/test';
+        $dirname = '/var/www/html/test';
+
+        // mock the filesystem
+        $mockFilesystem = $this->getMockBuilder('TechDivision\Import\Adapter\FilesystemAdapterInterface')
+                               ->setMethods(get_class_methods('TechDivision\Import\Adapter\FilesystemAdapterInterface'))
+                               ->getMock();
+        $mockFilesystem->expects($this->once())
+                       ->method('mkdir')
+                       ->with($dirname)
+                       ->willReturn(true);
+        $mockFilesystem->expects($this->exactly(2))
+                       ->method('isDir')
+                       ->withConsecutive(
+                           array($dirname),
+                           array($dirname)
+                       )
+                       ->willReturnOnConsecutiveCalls(false, true);
+
+        // set the mock filesystem
+        $this->filesystemTrait->setFilesystemAdapter($mockFilesystem);
 
         // assert that the directory has been created
         $this->assertFalse($this->filesystemTrait->isDir($dirname));
@@ -170,13 +221,31 @@ class FilesystemTraitTest extends \PHPUnit_Framework_TestCase
     {
 
         // prepare the filename that has to be created
-        $filename = 'vfs://var/www/html/test.txt';
+        $filename = '/var/www/html/test.txt';
+
+        // mock the filesystem
+        $mockFilesystem = $this->getMockBuilder('TechDivision\Import\Adapter\FilesystemAdapterInterface')
+                               ->setMethods(get_class_methods('TechDivision\Import\Adapter\FilesystemAdapterInterface'))
+                               ->getMock();
+        $mockFilesystem->expects($this->once())
+                       ->method('write')
+                       ->with($filename, $data = 'test test test')
+                       ->willReturn(14);
+        $mockFilesystem->expects($this->exactly(2))
+                       ->method('isFile')
+                       ->withConsecutive(
+                           array($filename),
+                           array($filename)
+                       )
+                       ->willReturnOnConsecutiveCalls(false, true);
+
+        // set the mock filesystem
+        $this->filesystemTrait->setFilesystemAdapter($mockFilesystem);
 
         // assert that the file has been created
         $this->assertFalse($this->filesystemTrait->isFile($filename));
-        $this->assertSame(14, $this->filesystemTrait->write($filename, $data = 'test test test'));
+        $this->assertSame(14, $this->filesystemTrait->write($filename, $data));
         $this->assertTrue($this->filesystemTrait->isFile($filename));
-        $this->assertSame($data, file_get_contents($filename));
     }
 
     /**
@@ -188,19 +257,22 @@ class FilesystemTraitTest extends \PHPUnit_Framework_TestCase
     {
 
         // mock the filesystem
-        $mockFilesystem = $this->getMockBuilder('League\Flysystem\FilesystemInterface')
-                               ->setMethods(get_class_methods('League\Flysystem\FilesystemInterface'))
+        $mockFilesystem = $this->getMockBuilder('TechDivision\Import\Adapter\FilesystemAdapterInterface')
+                               ->setMethods(get_class_methods('TechDivision\Import\Adapter\FilesystemAdapterInterface'))
                                ->getMock();
-        $mockFilesystem->expects($this->once())
-                       ->method('has')
-                       ->with($path = '/var/www/html/test.txt')
-                       ->willReturn(true);
+        $mockFilesystem->expects($this->exactly(2))
+                       ->method('isDir')
+                       ->withConsecutive(
+                           array($path0 = '/var/www/html/test.txt'),
+                           array($path1 = getcwd() . DIRECTORY_SEPARATOR . ltrim($path0, '/'))
+                       )
+                       ->willReturnOnConsecutiveCalls(false, true);
 
         // set the mock filesystem
-        $this->filesystemTrait->setFilesystem($mockFilesystem);
+        $this->filesystemTrait->setFilesystemAdapter($mockFilesystem);
 
         // query whether or not the path will be resolved
-        $this->assertSame($path, $this->filesystemTrait->resolvePath($path));
+        $this->assertSame($path1, $this->filesystemTrait->resolvePath($path0));
     }
 
     /**
@@ -212,11 +284,11 @@ class FilesystemTraitTest extends \PHPUnit_Framework_TestCase
     {
 
         // mock the filesystem
-        $mockFilesystem = $this->getMockBuilder('League\Flysystem\FilesystemInterface')
-                               ->setMethods(get_class_methods('League\Flysystem\FilesystemInterface'))
+        $mockFilesystem = $this->getMockBuilder('TechDivision\Import\Adapter\FilesystemAdapterInterface')
+                               ->setMethods(get_class_methods('TechDivision\Import\Adapter\FilesystemAdapterInterface'))
                                ->getMock();
         $mockFilesystem->expects($this->exactly(2))
-                       ->method('has')
+                       ->method('isDir')
                        ->withConsecutive(
                            array($filename = 'test.txt'),
                            array($path = getcwd() . DIRECTORY_SEPARATOR . $filename)
@@ -224,7 +296,7 @@ class FilesystemTraitTest extends \PHPUnit_Framework_TestCase
                        ->willReturnOnConsecutiveCalls(false, true);
 
         // set the mock filesystem
-        $this->filesystemTrait->setFilesystem($mockFilesystem);
+        $this->filesystemTrait->setFilesystemAdapter($mockFilesystem);
 
         // query whether or not the path will be resolved
         $this->assertSame($path, $this->filesystemTrait->resolvePath($filename));
@@ -242,11 +314,11 @@ class FilesystemTraitTest extends \PHPUnit_Framework_TestCase
     {
 
         // mock the filesystem
-        $mockFilesystem = $this->getMockBuilder('League\Flysystem\FilesystemInterface')
-                               ->setMethods(get_class_methods('League\Flysystem\FilesystemInterface'))
+        $mockFilesystem = $this->getMockBuilder('TechDivision\Import\Adapter\FilesystemAdapterInterface')
+                               ->setMethods(get_class_methods('TechDivision\Import\Adapter\FilesystemAdapterInterface'))
                                ->getMock();
         $mockFilesystem->expects($this->exactly(2))
-                       ->method('has')
+                       ->method('isDir')
                        ->withConsecutive(
                                array($filename = 'test.txt'),
                                array(getcwd() . DIRECTORY_SEPARATOR . $filename)
@@ -254,7 +326,7 @@ class FilesystemTraitTest extends \PHPUnit_Framework_TestCase
                            ->willReturnOnConsecutiveCalls(false, false);
 
         // set the mock filesystem
-        $this->filesystemTrait->setFilesystem($mockFilesystem);
+        $this->filesystemTrait->setFilesystemAdapter($mockFilesystem);
 
         // query whether or not the path will be resolved
         $this->filesystemTrait->resolvePath($filename);
