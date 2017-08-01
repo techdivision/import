@@ -25,6 +25,7 @@ use TechDivision\Import\Utils\LoggerKeys;
 use TechDivision\Import\Observers\ObserverInterface;
 use TechDivision\Import\Callbacks\CallbackInterface;
 use TechDivision\Import\Adapter\ImportAdapterInterface;
+use TechDivision\Import\Adapter\FilesystemAdapterInterface;
 use TechDivision\Import\Configuration\SubjectConfigurationInterface;
 
 /**
@@ -195,6 +196,22 @@ interface SubjectInterface
      * @return \TechDivision\Import\Adapter\ImportAdapterInterface The import adapter instance
      */
     public function getImportAdapter();
+
+    /**
+     * Set's the virtual filesystem instance.
+     *
+     * @param \TechDivision\Import\Adapter\FilesystemAdapterInterface $filesystemAdapter The filesystem adapter instance
+     *
+     * @return void
+     */
+    public function setFilesystemAdapter(FilesystemAdapterInterface $filesystemAdapter);
+
+    /**
+     * Return's the filesystem adapater instance.
+     *
+     * @return \TechDivision\Import\Adapter\FilesystemAdapterInterface The filesystem adapter instance
+     */
+    public function getFilesystemAdapter();
 
     /**
      * Queries whether or not the header with the passed name is available.

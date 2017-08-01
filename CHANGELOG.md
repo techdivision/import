@@ -1,3 +1,13 @@
+# Version 1.0.0-beta34
+
+## Bugfixes
+
+* None
+
+## Features
+
+* Refactoring for optimized filesystem handling
+
 # Version 1.0.0-beta33
 
 ## Bugfixes

@@ -54,5 +54,33 @@ class ConfigurationKeys
      *
      * @var string
      */
-    const ROOT_DIRECTORY = 'root-directory';
+    const ROOT = 'root';
+
+    /**
+     * Name for the column 'level'.
+     *
+     * @var string
+     */
+    const LEVEL = 'level';
+
+    /**
+     * Name for the column 'name'.
+     *
+     * @var string
+     */
+    const NAME = 'name';
+
+    /**
+     * Name for the column 'handlers'.
+     *
+     * @var string
+     */
+    const HANDLERS = 'handlers';
+
+    /**
+     * Name for the column 'processors'.
+     *
+     * @var string
+     */
+    const PROCESSORS = 'processors';
 }

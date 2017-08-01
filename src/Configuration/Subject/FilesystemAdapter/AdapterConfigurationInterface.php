@@ -1,7 +1,7 @@
 <?php
 
 /**
- * TechDivision\Import\Subjects\FilesystemSubjectInterface
+ * TechDivision\Import\Configuration\Subject\FilesystemAdapter\AdapterConfigurationInterface
  *
  * NOTICE OF LICENSE
  *
@@ -18,10 +18,12 @@
  * @link      http://www.techdivision.com
  */
 
-namespace TechDivision\Import\Subjects;
+namespace TechDivision\Import\Configuration\Subject\FilesystemAdapter;
+
+use TechDivision\Import\Configuration\ParamsConfigurationInterface;
 
 /**
- * The interface for all subject implementations that supports filesystem handling.
+ * The interface for a filesystem adapter's configuration.
  *
  * @author    Tim Wagner <t.wagner@techdivision.com>
  * @copyright 2016 TechDivision GmbH <info@techdivision.com>
@@ -29,24 +31,13 @@ namespace TechDivision\Import\Subjects;
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
  */
-interface FilesystemSubjectInterface
+interface AdapterConfigurationInterface extends ParamsConfigurationInterface
 {
 
     /**
-     * Return's the filesystem adapater instance.
+     * Return's the adapter's class name.
      *
-     * @return \TechDivision\Import\Adapter\FilesystemAdapterInterface The filesystem adapter instance
+     * @return string The adapter's class name
      */
-    public function getFilesystemAdapter();
-
-    /**
-     * This method tries to resolve the passed path and returns it. If the path
-     * is relative, the actual working directory will be prepended.
-     *
-     * @param string $path The path to be resolved
-     *
-     * @return string The resolved path
-     * @throws \InvalidArgumentException Is thrown, if the path can not be resolved
-     */
-    public function resolvePath($path);
+    public function getType();
 }
