@@ -97,4 +97,14 @@ interface FilesystemAdapterInterface
      * @return boolean TRUE on success, else FALSE
      */
     public function copy($src, $dest);
+
+    /**
+     * List the filenames of a directory.
+     *
+     * @param string  $directory The directory to list
+     * @param boolean $recursive Whether to list recursively
+     *
+     * @return array A list of filenames
+     */
+    public function listContents($directory = '', $recursive = false);
 }

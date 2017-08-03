@@ -1,3 +1,13 @@
+# Version 1.0.0-beta35
+
+## Bugfixes
+
+* None
+
+## Features
+
+* Add listContents() method to filesystem adapters
+
 # Version 1.0.0-beta34
 
 ## Bugfixes

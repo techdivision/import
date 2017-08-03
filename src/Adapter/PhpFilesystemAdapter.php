@@ -125,4 +125,29 @@ class PhpFilesystemAdapter implements FilesystemAdapterInterface
     {
         return copy($src, $dest);
     }
+
+    /**
+     * List the filenames of a directory.
+     *
+     * @param string  $directory The directory to list
+     * @param boolean $recursive Whether to list recursively
+     *
+     * @return array A list of filenames
+     */
+    public function listContents($directory = '', $recursive = false)
+    {
+
+        // parse the directory
+        $files = glob($pattern = sprintf('%s/*', $directory), 0);
+
+        // parse all subdirectories, if recursive parsing is wanted
+        if ($recursive !== false) {
+            foreach (glob(dirname($pattern). DIRECTORY_SEPARATOR . '*', GLOB_ONLYDIR|GLOB_NOSORT|GLOB_BRACE) as $dir) {
+                $files = array_merge($files, $this->listContents($dir . DIRECTORY_SEPARATOR . basename($pattern), $recursive));
+            }
+        }
+
+        // return the array with the files matching the glob pattern
+        return $files;
+    }
 }

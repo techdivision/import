@@ -139,4 +139,27 @@ class LeagueFilesystemAdapter implements FilesystemAdapterInterface
     {
         return $this->filesystem->copy($src, $dest);
     }
+
+    /**
+     * List the filenames of a directory.
+     *
+     * @param string  $directory The directory to list
+     * @param boolean $recursive Whether to list recursively
+     *
+     * @return array A list of filenames
+     */
+    public function listContents($directory = '', $recursive = false)
+    {
+
+        // initialize the array for the filenames
+        $files = array();
+
+        // load the filenames of the passed directory
+        foreach ($this->filesystem->listContents($directory, $recursive) as $key => $file) {
+            $files[$key] = $file['path'];
+        }
+
+        // return the filenames
+        return $files;
+    }
 }
