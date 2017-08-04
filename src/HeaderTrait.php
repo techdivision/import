@@ -40,6 +40,13 @@ trait HeaderTrait
     protected $headers = array();
 
     /**
+     * Mappings for attribute code => CSV column header.
+     *
+     * @var array
+     */
+    protected $headerMappings = array();
+
+    /**
      * Set's the array containing header row.
      *
      * @param array $headers The array with the header row
@@ -62,6 +69,16 @@ trait HeaderTrait
     }
 
     /**
+     * Return's the header mappings for the actual entity.
+     *
+     * @return array The header mappings
+     */
+    public function getHeaderMappings()
+    {
+        return $this->headerMappings;
+    }
+
+    /**
      * Queries whether or not the header with the passed name is available.
      *
      * @param string $name The header name to query
@@ -70,7 +87,7 @@ trait HeaderTrait
      */
     public function hasHeader($name)
     {
-        return isset($this->headers[$name]);
+        return isset($this->headers[$this->mapAttributeCodeByHeaderMapping($name)]);
     }
 
     /**
@@ -83,6 +100,9 @@ trait HeaderTrait
      */
     public function getHeader($name)
     {
+
+        // map column => attribute name
+        $name = $this->mapAttributeCodeByHeaderMapping($name);
 
         // query whether or not, the header is available
         if (isset($this->headers[$name])) {
@@ -108,5 +128,28 @@ trait HeaderTrait
 
         // return the new header's position
         return $position;
+    }
+
+    /**
+     * Map the passed attribute code, if a header mapping exists and return the
+     * mapped mapping.
+     *
+     * @param string $attributeCode The attribute code to map
+     *
+     * @return string The mapped attribute code, or the original one
+     */
+    public function mapAttributeCodeByHeaderMapping($attributeCode)
+    {
+
+        // load the header mappings
+        $headerMappings = $this->getHeaderMappings();
+
+        // query weather or not we've a mapping, if yes, map the attribute code
+        if (isset($headerMappings[$attributeCode])) {
+            $attributeCode = $headerMappings[$attributeCode];
+        }
+
+        // return the (mapped) attribute code
+        return $attributeCode;
     }
 }

@@ -802,29 +802,6 @@ abstract class AbstractSubject implements SubjectInterface
     }
 
     /**
-     * Map the passed attribute code, if a header mapping exists and return the
-     * mapped mapping.
-     *
-     * @param string $attributeCode The attribute code to map
-     *
-     * @return string The mapped attribute code, or the original one
-     */
-    public function mapAttributeCodeByHeaderMapping($attributeCode)
-    {
-
-        // load the header mappings
-        $headerMappings = $this->getHeaderMappings();
-
-        // query weather or not we've a mapping, if yes, map the attribute code
-        if (isset($headerMappings[$attributeCode])) {
-            $attributeCode = $headerMappings[$attributeCode];
-        }
-
-        // return the (mapped) attribute code
-        return $attributeCode;
-    }
-
-    /**
      * Queries whether or not that the subject needs an OK file to be processed.
      *
      * @return boolean TRUE if the subject needs an OK file, else FALSE
