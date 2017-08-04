@@ -1,3 +1,13 @@
+# Version 1.0.0-beta36
+
+## Bugfixes
+
+* Fixed critical issue because of not mapped column names when try to load a column's value
+
+## Features
+
+* None
+
 # Version 1.0.0-beta35
 
 ## Bugfixes
