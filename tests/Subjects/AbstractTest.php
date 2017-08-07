@@ -287,6 +287,9 @@ abstract class AbstractTest extends \PHPUnit_Framework_TestCase
         $mockSubjectConfiguration->expects($this->any())
                                  ->method('getCallbacks')
                                  ->willReturn($callbacks);
+        $mockSubjectConfiguration->expects($this->any())
+                                 ->method('getHeaderMappings')
+                                 ->willReturn(array());
 
         // initialize the abstract subject that has to be tested
         $abstractSubject = $this->getMockBuilder($this->getSubjectClassName())

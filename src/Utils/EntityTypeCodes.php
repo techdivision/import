@@ -47,6 +47,20 @@ class EntityTypeCodes extends \ArrayObject
     const CATALOG_PRODUCT = 'catalog_product';
 
     /**
+     * Key for the product entity 'catalog_product_price'.
+     *
+     * @var integer
+     */
+    const CATALOG_PRODUCT_PRICE = 'catalog_product_price';
+
+    /**
+     * Key for the product entity 'catalog_product_inventory'.
+     *
+     * @var integer
+     */
+    const CATALOG_PRODUCT_INVENTORY = 'catalog_product_inventory';
+
+    /**
      * Key for the category entity 'catalog_category'.
      *
      * @var integer
@@ -74,6 +88,8 @@ class EntityTypeCodes extends \ArrayObject
             array(
                 EntityTypeCodes::NONE,
                 EntityTypeCodes::CATALOG_PRODUCT,
+                EntityTypeCodes::CATALOG_PRODUCT_PRICE,
+                EntityTypeCodes::CATALOG_PRODUCT_INVENTORY,
                 EntityTypeCodes::CATALOG_CATEGORY,
                 EntityTypeCodes::EAV_ATTRIBUTE
             ),
