@@ -1,3 +1,15 @@
+# Version 1.0.0-beta37
+
+## Bugfixes
+
+* None
+
+## Features
+
+* Extends subject configuration with custom header mappings + image types
+* Initialize header mappings in AbstractSubject with values from subject configuration
+* Add constants in CommandName and EntityTypeCode classes for product price + inventory import
+
 # Version 1.0.0-beta36
 
 ## Bugfixes

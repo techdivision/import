@@ -23,6 +23,7 @@ namespace TechDivision\Import\Subjects;
 use TechDivision\Import\Utils\MemberNames;
 use TechDivision\Import\Utils\RegistryKeys;
 use TechDivision\Import\Utils\BackendTypeKeys;
+use TechDivision\Import\Utils\EntityTypeCodes;
 
 /**
  * An abstract EAV subject implementation.
@@ -75,6 +76,20 @@ abstract class AbstractEavSubject extends AbstractSubject implements EavSubjectI
         BackendTypeKeys::BACKEND_TYPE_INT      => array('persistIntAttribute', 'loadIntAttribute'),
         BackendTypeKeys::BACKEND_TYPE_TEXT     => array('persistTextAttribute', 'loadTextAttribute'),
         BackendTypeKeys::BACKEND_TYPE_VARCHAR  => array('persistVarcharAttribute', 'loadVarcharAttribute')
+    );
+
+    /**
+     * The mappings for the entity type code to attribute set.
+     *
+     * @var array
+     */
+    protected $entityTypeCodeToAttributeSetMappings = array(
+        EntityTypeCodes::CATALOG_PRODUCT           => EntityTypeCodes::CATALOG_PRODUCT,
+        EntityTypeCodes::CATALOG_PRODUCT_PRICE     => EntityTypeCodes::CATALOG_PRODUCT,
+        EntityTypeCodes::CATALOG_PRODUCT_INVENTORY => EntityTypeCodes::CATALOG_PRODUCT,
+        EntityTypeCodes::CATALOG_CATEGORY          => EntityTypeCodes::CATALOG_CATEGORY,
+        EntityTypeCodes::EAV_ATTRIBUTE             => EntityTypeCodes::EAV_ATTRIBUTE,
+        EntityTypeCodes::NONE                      => EntityTypeCodes::NONE
     );
 
     /**
@@ -205,7 +220,17 @@ abstract class AbstractEavSubject extends AbstractSubject implements EavSubjectI
      */
     public function getEntityTypeCode()
     {
-        return $this->getConfiguration()->getConfiguration()->getEntityTypeCode();
+
+        // load the entity type code from the configuration
+        $entityTypeCode = $this->getConfiguration()->getConfiguration()->getEntityTypeCode();
+
+        // try to map the entity type code
+        if (isset($this->entityTypeCodeToAttributeSetMappings[$entityTypeCode])) {
+            $entityTypeCode = $this->entityTypeCodeToAttributeSetMappings[$entityTypeCode];
+        }
+
+        // return the (mapped) entity type code
+        return $entityTypeCode;
     }
 
     /**

@@ -490,6 +490,9 @@ abstract class AbstractSubject implements SubjectInterface
         // merge the callback mappings with the mappings from the child instance
         $this->callbackMappings = array_merge($this->callbackMappings, $this->getDefaultCallbackMappings());
 
+        // merge the header mappings with the values found in the configuration
+        $this->headerMappings = array_merge($this->headerMappings, $this->getConfiguration()->getHeaderMappings());
+
         // merge the callback mappings the the one from the configuration file
         foreach ($this->getConfiguration()->getCallbacks() as $callbackMappings) {
             foreach ($callbackMappings as $attributeCode => $mappings) {

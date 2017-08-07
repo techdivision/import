@@ -54,6 +54,20 @@ class CommandNames extends \ArrayObject
     const IMPORT_PRODUCTS = 'import:products';
 
     /**
+     * The command name for the product inventory import.
+     *
+     * @var string
+     */
+    const IMPORT_PRODUCTS_INVENTORY = 'import:products:inventory';
+
+    /**
+     * The command name for the product price import.
+     *
+     * @var string
+     */
+    const IMPORT_PRODUCTS_PRICE = 'import:products:price';
+
+    /**
      * The command name for the command that creates an OK file.
      *
      * @var string
@@ -89,6 +103,8 @@ class CommandNames extends \ArrayObject
                 CommandNames::IMPORT_ATTRIBUTES,
                 CommandNames::IMPORT_CATEGORIES,
                 CommandNames::IMPORT_PRODUCTS,
+                CommandNames::IMPORT_PRODUCTS_PRICE,
+                CommandNames::IMPORT_PRODUCTS_INVENTORY,
                 CommandNames::IMPORT_CREATE_OK_FILE,
                 CommandNames::IMPORT_CREATE_CONFIGURATION_FILE,
                 CommandNames::IMPORT_CLEAR_PID_FILE

@@ -192,4 +192,18 @@ interface SubjectConfigurationInterface extends ParamsConfigurationInterface
      * @return \TechDivision\Import\Configuration\Subject\FilesystemAdapterConfigurationInterface The filesystem adapter configuration instance
      */
     public function getFilesystemAdapter();
+
+    /**
+     * The array with the subject's custom header mappings.
+     *
+     * @return array The custom header mappings
+     */
+    public function getHeaderMappings();
+
+    /**
+     * The array with the subject's custom image types.
+     *
+     * @return array The custom image types
+     */
+    public function getImageTypes();
 }
