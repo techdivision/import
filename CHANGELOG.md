@@ -1,3 +1,13 @@
+# Version 1.0.0-beta38
+
+## Bugfixes
+
+* None
+
+## Features
+
+* Extends configuration with custom header mappings + image types
+
 # Version 1.0.0-beta37
 
 ## Bugfixes
