@@ -104,6 +104,18 @@ abstract class AbstractBaseProcessor extends AbstractProcessor
     }
 
     /**
+     * Qeuery whether or not the prepared statement is available or not.
+     *
+     * @param string $name The nqme of the prepared statement
+     *
+     * @return boolean TRUE if the prepared statement is available, else FALSE
+     */
+    protected function hasPreparedStatement($name)
+    {
+        return isset($this->preparedStatements[$name]);
+    }
+
+    /**
      * The array with the prepared statements.
      *
      * @return array The prepared statments
