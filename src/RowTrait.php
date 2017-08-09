@@ -77,7 +77,7 @@ trait RowTrait
             $headerValue = $this->getHeader($name);
 
             // query whether the rows column has a vaild value
-            return (isset($this->row[$headerValue]) && $this->row[$headerValue] != '');
+            return (isset($this->row[$headerValue]) && $this->row[$headerValue] !== '');
         }
 
         // return FALSE if not
@@ -119,7 +119,7 @@ trait RowTrait
             // load the header value
             $headerValue = $this->getHeader($name);
             // query wheter or not, the value with the requested key is available
-            if ((isset($this->row[$headerValue]) && $this->row[$headerValue] != '')) {
+            if ((isset($this->row[$headerValue]) && $this->row[$headerValue] !== '')) {
                 $value = $this->row[$headerValue];
             }
         }

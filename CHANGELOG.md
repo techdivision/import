@@ -1,3 +1,13 @@
+# Version 1.0.0-beta39
+
+## Bugfixes
+
+* Fixed issue, that RowTrait::hasValue() + RowTrait::getValue() methods doesn't returen 0 values
+
+## Features
+
+* Add AbstractBaseProcessor::hasPreparedStatement() method to query for statement that has already been prepared
+
 # Version 1.0.0-beta38
 
 ## Bugfixes
