@@ -1,3 +1,14 @@
+# Version 1.0.0-beta40
+
+## Bugfixes
+
+* None
+
+## Features
+
+* Replace unncessary find() with load() method in UrlRewriteRepository
+* Refactored SQL statements for URL rewrite handling in class SqlStatements
+
 # Version 1.0.0-beta39
 
 ## Bugfixes
