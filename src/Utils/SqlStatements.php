@@ -194,6 +194,13 @@ class SqlStatements extends AbstractSqlStatements
     const URL_REWRITES_BY_ENTITY_TYPE_AND_ENTITY_ID = 'url_rewrites.by.entity_type.and.entity_id';
 
     /**
+     * The SQL statement to load the URL rewrites with the passed entity type, entity and store ID.
+     *
+     * @var string
+     */
+    const URL_REWRITES_BY_ENTITY_TYPE_AND_ENTITY_ID_AND_STORE_ID = 'url_rewrites.by.entity_type.and.entity_id.and.store_id';
+
+    /**
      * The SQL statement to remove a existing URL rewrite.
      *
      * @var string
@@ -256,7 +263,14 @@ class SqlStatements extends AbstractSqlStatements
                         AND t1.entity_type_id = 3
                         AND t2.attribute_id = t1.attribute_id
                         AND t2.store_id = 0
-                        AND t2.entity_id = t0.entity_id) AS url_path
+                        AND t2.entity_id = t0.entity_id) AS url_path,
+                    (SELECT `value`
+                       FROM eav_attribute t1, catalog_category_entity_int t2
+                      WHERE t1.attribute_code = \'is_anchor\'
+                        AND t1.entity_type_id = 3
+                        AND t2.attribute_id = t1.attribute_id
+                        AND t2.store_id = 0
+                        AND t2.entity_id = t0.entity_id) AS is_anchor
                FROM catalog_category_entity AS t0',
         SqlStatements::ROOT_CATEGORIES =>
             'SELECT t2.code, t0.*
@@ -368,6 +382,12 @@ class SqlStatements extends AbstractSqlStatements
                FROM url_rewrite
               WHERE entity_type = :entity_type
                 AND entity_id = :entity_id',
+        SqlStatements::URL_REWRITES_BY_ENTITY_TYPE_AND_ENTITY_ID_AND_STORE_ID =>
+            'SELECT *
+               FROM url_rewrite
+              WHERE entity_type = :entity_type
+                AND entity_id = :entity_id
+                AND store_id = :store_id',
         SqlStatements::DELETE_URL_REWRITE =>
             'DELETE
                FROM url_rewrite

@@ -35,11 +35,18 @@ class UrlRewriteRepository extends AbstractRepository
 {
 
     /**
-     * The prepared statement to load the existing URL rewrites.
+     * The prepared statement to load the existing URL rewrites by their entity type and ID.
      *
      * @var \PDOStatement
      */
-    protected $urlRewritesStmt;
+    protected $urlRewritesByEntityTypeAndEntityIdStmt;
+
+    /**
+     * The prepared statement to load the existing URL rewrites by their entity type, entity and store ID.
+     *
+     * @var \PDOStatement
+     */
+    protected $urlRewritesByEntityTypeAndEntityIdAndStoreIdStmt;
 
     /**
      * Initializes the repository's prepared statements.
@@ -53,8 +60,10 @@ class UrlRewriteRepository extends AbstractRepository
         $utilityClassName = $this->getUtilityClassName();
 
         // initialize the prepared statements
-        $this->urlRewritesStmt =
+        $this->urlRewritesByEntityTypeAndEntityIdStmt =
             $this->getConnection()->prepare($this->getUtilityClass()->find($utilityClassName::URL_REWRITES_BY_ENTITY_TYPE_AND_ENTITY_ID));
+        $this->urlRewritesByEntityTypeAndEntityIdAndStoreIdStmt =
+            $this->getConnection()->prepare($this->getUtilityClass()->find($utilityClassName::URL_REWRITES_BY_ENTITY_TYPE_AND_ENTITY_ID_AND_STORE_ID));
     }
 
     /**
@@ -75,7 +84,31 @@ class UrlRewriteRepository extends AbstractRepository
         );
 
         // load and return the URL rewrites
-        $this->urlRewritesStmt->execute($params);
-        return $this->urlRewritesStmt->fetchAll(\PDO::FETCH_ASSOC);
+        $this->urlRewritesByEntityTypeAndEntityIdStmt->execute($params);
+        return $this->urlRewritesByEntityTypeAndEntityIdStmt->fetchAll(\PDO::FETCH_ASSOC);
+    }
+
+    /**
+     * Return's an array with the URL rewrites for the passed entity type, entity and store ID.
+     *
+     * @param string  $entityType The entity type to load the URL rewrites for
+     * @param integer $entityId   The entity ID to load the URL rewrites for
+     * @param integer $storeId    The store ID to load the URL rewrites for
+     *
+     * @return array The URL rewrites
+     */
+    public function findAllByEntityTypeAndEntityIdAndStoreId($entityType, $entityId, $storeId)
+    {
+
+        // initialize the params
+        $params = array(
+            MemberNames::ENTITY_TYPE => $entityType,
+            MemberNames::ENTITY_ID   => $entityId,
+            MemberNames::STORE_ID    => $storeId
+        );
+
+        // load and return the URL rewrites
+        $this->urlRewritesByEntityTypeAndEntityIdAndStoreIdStmt->execute($params);
+        return $this->urlRewritesByEntityTypeAndEntityIdAndStoreIdStmt->fetchAll(\PDO::FETCH_ASSOC);
     }
 }
