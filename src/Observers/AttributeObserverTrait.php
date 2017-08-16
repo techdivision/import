@@ -23,6 +23,7 @@ namespace TechDivision\Import\Observers;
 use TechDivision\Import\Utils\MemberNames;
 use TechDivision\Import\Utils\StoreViewCodes;
 use TechDivision\Import\Utils\BackendTypeKeys;
+use TechDivision\Import\Utils\LoggerKeys;
 
 /**
  * Observer that creates/updates the EAV attributes.
@@ -112,6 +113,27 @@ trait AttributeObserverTrait
 
         // initialize the store view code
         $this->prepareStoreViewCode();
+
+        // load the SKU and the store view code
+        $sku = $this->getValue($this->getPrimaryKeyColumnName());
+        $storeViewCode = $this->getSubject()->getStoreViewCode();
+
+        // query whether or not the row has already been processed
+        if ($this->storeViewHasBeenProcessed($sku, $storeViewCode)) {
+            // log a message
+            $this->getSystemLogger()
+                 ->warning(
+                     sprintf(
+                         'Attributes for %s + store view code "%s" + "%s" has already been processed',
+                         $this->getPrimaryKeyColumnName(),
+                         $sku,
+                         $storeViewCode
+                     )
+                 );
+
+            // return immediately
+            return;
+        }
 
         // load the attributes by the found attribute set and the backend types
         $attributes = $this->getAttributes();
@@ -311,4 +333,31 @@ trait AttributeObserverTrait
     {
         return $this->getSubject()->getAttributes();
     }
+
+    /**
+     * Return's the logger with the passed name, by default the system logger.
+     *
+     * @param string $name The name of the requested system logger
+     *
+     * @return \Psr\Log\LoggerInterface The logger instance
+     * @throws \Exception Is thrown, if the requested logger is NOT available
+     */
+    abstract protected function getSystemLogger($name = LoggerKeys::SYSTEM);
+
+    /**
+     * Return's the column name that contains the primary key.
+     *
+     * @return string the column name that contains the primary key
+     */
+    abstract protected function getPrimaryKeyColumnName();
+
+    /**
+     * Queries whether or not the passed SKU and store view code has already been processed.
+     *
+     * @param string $sku           The SKU to check been processed
+     * @param string $storeViewCode The store view code to check been processed
+     *
+     * @return boolean TRUE if the SKU and store view code has been processed, else FALSE
+     */
+    abstract protected function storeViewHasBeenProcessed($sku, $storeViewCode);
 }

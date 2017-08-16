@@ -136,6 +136,13 @@ interface SubjectInterface
     public function getDefaultStore();
 
     /**
+     * Return's the default store view code.
+     *
+     * @return array The default store view code
+     */
+    public function getDefaultStoreViewCode();
+
+    /**
      * Return's the Magento configuration value.
      *
      * @param string  $path    The Magento path of the requested configuration value
@@ -376,4 +383,13 @@ interface SubjectInterface
      * @return mixed|null The, almost formatted, value
      */
     public function getValue($name, $default = null, callable $callback = null);
+
+    /**
+     * Return's the store view code the create the product/attributes for.
+     *
+     * @param string|null $default The default value to return, if the store view code has not been set
+     *
+     * @return string The store view code
+     */
+    public function getStoreViewCode($default = null);
 }
