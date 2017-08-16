@@ -240,7 +240,6 @@ abstract class AbstractObserver implements ObserverInterface
      *
      * @return \Psr\Log\LoggerInterface The logger instance
      * @throws \Exception Is thrown, if the requested logger is NOT available
-     * @deprecated Will be removed with version 1.0.0, use subject method instead
      *
      * @codeCoverageIgnore
      */

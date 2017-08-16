@@ -825,6 +825,16 @@ abstract class AbstractSubject implements SubjectInterface
     }
 
     /**
+     * Return's the default store view code.
+     *
+     * @return array The default store view code
+     */
+    public function getDefaultStoreViewCode()
+    {
+        return $this->defaultStore[MemberNames::CODE];
+    }
+
+    /**
      * Set's the store view code the create the product/attributes for.
      *
      * @param string $storeViewCode The store view code
@@ -847,14 +857,35 @@ abstract class AbstractSubject implements SubjectInterface
     {
 
         // return the store view code, if available
-        if ($this->storeViewCode != null) {
+        if ($this->storeViewCode !== null) {
             return $this->storeViewCode;
         }
 
         // if NOT and a default code is available
-        if ($default != null) {
+        if ($default !== null) {
             // return the default value
             return $default;
+        }
+
+        // return the default store view code
+        return $this->getDefaultStoreViewCode();
+    }
+
+    /**
+     * Prepare's the store view code in the subject. If the store_view_code row doesn't contain
+     * any value, the default code of the default store view will be set.
+     *
+     * @return void
+     */
+    public function prepareStoreViewCode()
+    {
+
+        // re-set the store view code
+        $this->setStoreViewCode(null);
+
+        // initialize the store view code
+        if ($storeViewCode = $this->getValue(ColumnKeys::STORE_VIEW_CODE)) {
+            $this->setStoreViewCode($storeViewCode);
         }
     }
 
@@ -898,30 +929,12 @@ abstract class AbstractSubject implements SubjectInterface
     {
 
         // initialize the default store view code, if not passed
-        if ($default == null) {
-            $defaultStore = $this->getDefaultStore();
-            $default = $defaultStore[MemberNames::CODE];
+        if ($default === null) {
+            $default = $this->getDefaultStoreViewCode();
         }
 
         // load the store view code the create the product/attributes for
         return $this->getStoreId($this->getStoreViewCode($default));
-    }
-
-    /**
-     * Prepare's the store view code in the subject.
-     *
-     * @return void
-     */
-    public function prepareStoreViewCode()
-    {
-
-        // re-set the store view code
-        $this->setStoreViewCode(null);
-
-        // initialize the store view code
-        if ($storeViewCode = $this->getValue(ColumnKeys::STORE_VIEW_CODE)) {
-            $this->setStoreViewCode($storeViewCode);
-        }
     }
 
     /**
@@ -933,11 +946,8 @@ abstract class AbstractSubject implements SubjectInterface
     public function getRootCategory()
     {
 
-        // load the default store
-        $defaultStore = $this->getDefaultStore();
-
         // load the actual store view code
-        $storeViewCode = $this->getStoreViewCode($defaultStore[MemberNames::CODE]);
+        $storeViewCode = $this->getStoreViewCode($this->getDefaultStoreViewCode());
 
         // query weather or not we've a root category or not
         if (isset($this->rootCategories[$storeViewCode])) {

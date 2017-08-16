@@ -882,7 +882,7 @@ class AbstractSubjectTest extends AbstractTest
      */
     public function testGetStoreViewCodeEmpty()
     {
-        $this->assertNull($this->abstractSubject->getStoreViewCode());
+        $this->assertSame('default', $this->abstractSubject->getStoreViewCode());
     }
 
     /**
