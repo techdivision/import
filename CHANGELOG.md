@@ -1,3 +1,13 @@
+# Version 1.0.0-beta42
+
+## Bugfixes
+
+* Use admin store view as default when no store view code has been set in CSV row
+
+## Features
+
+* None
+
 # Version 1.0.0-beta41
 
 ## Bugfixes
