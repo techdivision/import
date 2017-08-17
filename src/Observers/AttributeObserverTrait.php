@@ -114,9 +114,12 @@ trait AttributeObserverTrait
         // initialize the store view code
         $this->prepareStoreViewCode();
 
-        // load the PK and the store view code
+        // load the PK
         $pk = $this->getValue($this->getPrimaryKeyColumnName());
-        $storeViewCode = $this->getSubject()->getStoreViewCode();
+
+        // load the store view - if no store view has been set, we assume the admin
+        // store view, which will contain the default (fallback) attribute values
+        $storeViewCode = $this->getSubject()->getStoreViewCode(StoreViewCodes::ADMIN);
 
         // query whether or not the row has already been processed
         if ($this->storeViewHasBeenProcessed($pk, $storeViewCode)) {
@@ -124,7 +127,7 @@ trait AttributeObserverTrait
             $this->getSystemLogger()
                  ->warning(
                      sprintf(
-                         'Attributes for %s + store view code "%s" + "%s" has already been processed',
+                         'Attributes for %s "%s" + store view code "%s" has already been processed',
                          $this->getPrimaryKeyColumnName(),
                          $pk,
                          $storeViewCode
@@ -262,7 +265,7 @@ trait AttributeObserverTrait
         // load the ID of the product that has been created recently
         $lastEntityId = $this->getPrimaryKey();
 
-        // load the store ID
+        // load the store ID, use the admin store if NO store view code has been set
         $storeId = $this->getRowStoreId(StoreViewCodes::ADMIN);
 
         // cast the value based on the backend type
