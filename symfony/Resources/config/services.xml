@@ -88,11 +88,47 @@
             <argument type="service" id="connection"/>
             <argument type="service" id="import.utility.class.name"/>
         </service>
+        <service id="import.action.processor.store.create" class="TechDivision\Import\Actions\Processors\StoreCreateProcessor">
+            <argument type="service" id="connection"/>
+            <argument type="service" id="import.utility.class.name"/>
+        </service>
+        <service id="import.action.processor.store.update" class="TechDivision\Import\Actions\Processors\StoreUpdateProcessor">
+            <argument type="service" id="connection"/>
+            <argument type="service" id="import.utility.class.name"/>
+        </service>
+        <service id="import.action.processor.store.group.create" class="TechDivision\Import\Actions\Processors\StoreGroupCreateProcessor">
+            <argument type="service" id="connection"/>
+            <argument type="service" id="import.utility.class.name"/>
+        </service>
+        <service id="import.action.processor.store.group.update" class="TechDivision\Import\Actions\Processors\StoreGroupUpdateProcessor">
+            <argument type="service" id="connection"/>
+            <argument type="service" id="import.utility.class.name"/>
+        </service>
+        <service id="import.action.processor.store.website.create" class="TechDivision\Import\Actions\Processors\StoreWebsiteCreateProcessor">
+            <argument type="service" id="connection"/>
+            <argument type="service" id="import.utility.class.name"/>
+        </service>
+        <service id="import.action.processor.store.website.update" class="TechDivision\Import\Actions\Processors\StoreWebsiteUpdateProcessor">
+            <argument type="service" id="connection"/>
+            <argument type="service" id="import.utility.class.name"/>
+        </service>
 
         <service id="import.action.url.rewrite" class="TechDivision\Import\Actions\UrlRewriteAction">
             <argument type="service" id="import.action.processor.url.rewrite.product.create"/>
             <argument type="service" id="import.action.processor.url.rewrite.product.update"/>
             <argument type="service" id="import.action.processor.url.rewrite.product.delete"/>
+        </service>
+        <service id="import.action.store" class="TechDivision\Import\Actions\StoreAction">
+            <argument type="service" id="import.action.processor.store.create"/>
+            <argument type="service" id="import.action.processor.store.update"/>
+        </service>
+        <service id="import.action.store.group" class="TechDivision\Import\Actions\StoreGroupAction">
+            <argument type="service" id="import.action.processor.store.group.create"/>
+            <argument type="service" id="import.action.processor.store.group.update"/>
+        </service>
+        <service id="import.action.store.website" class="TechDivision\Import\Actions\StoreWebsiteAction">
+            <argument type="service" id="import.action.processor.store.website.create"/>
+            <argument type="service" id="import.action.processor.store.website.update"/>
         </service>
 
         <service id="import.assembler.category" class="TechDivision\Import\Assembler\CategoryAssembler">
@@ -117,6 +153,9 @@
             <argument type="service" id="import.repository.link.type"/>
             <argument type="service" id="import.repository.link.attribute"/>
             <argument type="service" id="import.repository.core.config.data"/>
+            <argument type="service" id="import.action.store"/>
+            <argument type="service" id="import.action.store.group"/>
+            <argument type="service" id="import.action.store.website"/>
         </service>
 
         <!--

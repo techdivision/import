@@ -64,6 +64,13 @@ class DependencyInjectionKeys
     const CONFIGURATION = 'configuration';
 
     /**
+     * The key for the goodby export adapter service.
+     *
+     * @var string
+     */
+    const IMPORT_ADAPTER_EXPORT = 'import.adapter.export';
+
+    /**
      * The key for the CSV import adapter service.
      *
      * @var string
@@ -90,4 +97,11 @@ class DependencyInjectionKeys
      * @var string
      */
     const IMPORT_ADAPTER_FILESYSTEM_FACTORY_LEAGUE = 'import.adapter.filesystem.factory.league';
+
+    /**
+     * The key for the import processor service.
+     *
+     * @var string
+     */
+    const IMPORT_PROCESSOR_IMPORT = 'import.processor.import';
 }

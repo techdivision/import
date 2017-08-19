@@ -1,3 +1,13 @@
+# Version 1.0.0-beta43
+
+## Bugfixes
+
+* None
+
+## Features
+
+* Add functionality to persist stores, store groups and store websites (for usage with integration tests)
+
 # Version 1.0.0-beta42
 
 ## Bugfixes

@@ -24,6 +24,9 @@ use TechDivision\Import\Utils\RegistryKeys;
 use TechDivision\Import\Utils\MemberNames;
 use TechDivision\Import\Connection\ConnectionInterface;
 use TechDivision\Import\Assembler\CategoryAssembler;
+use TechDivision\Import\Actions\StoreAction;
+use TechDivision\Import\Actions\StoreGroupAction;
+use TechDivision\Import\Actions\StoreWebsiteAction;
 use TechDivision\Import\Repositories\CategoryRepository;
 use TechDivision\Import\Repositories\CategoryVarcharRepository;
 use TechDivision\Import\Repositories\EavAttributeRepository;
@@ -148,6 +151,27 @@ class ImportProcessor implements ImportProcessorInterface
     protected $coreConfigDataRepository;
 
     /**
+     * The action for store CRUD methods.
+     *
+     * @var \TechDivision\Import\Actions\StoreAction
+     */
+    protected $storeAction;
+
+    /**
+     * The action for store group CRUD methods.
+     *
+     * @var \TechDivision\Import\Actions\StoreGroupAction
+     */
+    protected $storeGroupAction;
+
+    /**
+     * The action for store website CRUD methods.
+     *
+     * @var \TechDivision\Import\Actions\StoreWebsiteAction
+     */
+    protected $storeWebsiteAction;
+
+    /**
      * Initialize the processor with the necessary assembler and repository instances.
      *
      * @param \TechDivision\Import\Connection\ConnectionInterface           $connection                  The connection to use
@@ -164,6 +188,9 @@ class ImportProcessor implements ImportProcessorInterface
      * @param \TechDivision\Import\Repositories\LinkTypeRepository          $linkTypeRepository          The repository to access link types
      * @param \TechDivision\Import\Repositories\LinkAttributeRepository     $linkAttributeRepository     The repository to access link attributes
      * @param \TechDivision\Import\Repositories\CoreConfigDataRepository    $coreConfigDataRepository    The repository to access the configuration
+     * @param \TechDivision\Import\Actions\StoreAction                      $storeAction                 The action with the store CRUD methods
+     * @param \TechDivision\Import\Actions\StoreGroupAction                 $storeGroupAction            The action with the store group CRUD methods
+     * @param \TechDivision\Import\Actions\StoreWebsiteAction               $storeWebsiteAction          The action with the store website CRUD methods
      */
     public function __construct(
         ConnectionInterface $connection,
@@ -179,7 +206,10 @@ class ImportProcessor implements ImportProcessorInterface
         TaxClassRepository $taxClassRepository,
         LinkTypeRepository $linkTypeRepository,
         LinkAttributeRepository $linkAttributeRepository,
-        CoreConfigDataRepository $coreConfigDataRepository
+        CoreConfigDataRepository $coreConfigDataRepository,
+        StoreAction $storeAction,
+        StoreGroupAction $storeGroupAction,
+        StoreWebsiteAction $storeWebsiteAction
     ) {
         $this->setConnection($connection);
         $this->setCategoryAssembler($categoryAssembler);
@@ -195,6 +225,9 @@ class ImportProcessor implements ImportProcessorInterface
         $this->setLinkTypeRepository($linkTypeRepository);
         $this->setLinkAttributeRepository($linkAttributeRepository);
         $this->setCoreConfigDataRepository($coreConfigDataRepository);
+        $this->setStoreAction($storeAction);
+        $this->setStoreGroupAction($storeGroupAction);
+        $this->setStoreWebsiteAction($storeWebsiteAction);
     }
 
     /**
@@ -550,6 +583,72 @@ class ImportProcessor implements ImportProcessorInterface
     }
 
     /**
+     * Set's the action with the store CRUD methods.
+     *
+     * @param \TechDivision\Import\Actions\StoreAction $storeAction The action with the store CRUD methods
+     *
+     * @return void
+     */
+    public function setStoreAction($storeAction)
+    {
+        $this->storeAction = $storeAction;
+    }
+
+    /**
+     * Return's the action with the store CRUD methods.
+     *
+     * @return \TechDivision\Import\Actions\StoreAction The action instance
+     */
+    public function getStoreAction()
+    {
+        return $this->storeAction;
+    }
+
+    /**
+     * Set's the action with the store group CRUD methods.
+     *
+     * @param \TechDivision\Import\Actions\StoreGroupAction $storeGroupAction The action with the store group CRUD methods
+     *
+     * @return void
+     */
+    public function setStoreGroupAction($storeGroupAction)
+    {
+        $this->storeGroupAction = $storeGroupAction;
+    }
+
+    /**
+     * Return's the action with the store group CRUD methods.
+     *
+     * @return \TechDivision\Import\Actions\StoreGroupAction The action instance
+     */
+    public function getStoreGroupAction()
+    {
+        return $this->storeGroupAction;
+    }
+
+    /**
+     * Set's the action with the store website CRUD methods.
+     *
+     * @param \TechDivision\Import\Actions\StoreWebsiteAction $storeWebsiteAction The action with the store website CRUD methods
+     *
+     * @return void
+     */
+    public function setStoreWebsiteAction($storeWebsiteAction)
+    {
+        $this->storeWebsiteAction = $storeWebsiteAction;
+    }
+
+    /**
+     * Return's the action with the store website CRUD methods.
+     *
+     * @return \TechDivision\Import\Actions\StoreWebsiteAction The action instance
+     */
+    public function getStoreWebsiteAction()
+    {
+        return $this->storeWebsiteAction;
+    }
+
+    /**
      * Return's the EAV attribute set with the passed ID.
      *
      * @param integer $id The ID of the EAV attribute set to load
@@ -762,6 +861,42 @@ class ImportProcessor implements ImportProcessorInterface
     public function getCoreConfigData()
     {
         return $this->getCoreConfigDataRepository()->findAll();
+    }
+
+    /**
+     * Persist's the passed store.
+     *
+     * @param array $store The store to persist
+     *
+     * @return void
+     */
+    public function persistStore(array $store)
+    {
+        return $this->getStoreAction()->persist($store);
+    }
+
+    /**
+     * Persist's the passed store group.
+     *
+     * @param array $storeGroup The store group to persist
+     *
+     * @return void
+     */
+    public function persistStoreGroup(array $storeGroup)
+    {
+        return $this->getStoreGroupAction()->persist($storeGroup);
+    }
+
+    /**
+     * Persist's the passed store website.
+     *
+     * @param array $storeWebsite The store website to persist
+     *
+     * @return void
+     */
+    public function persistStoreWebsite(array $storeWebsite)
+    {
+        return $this->getStoreWebsiteAction()->persist($storeWebsite);
     }
 
     /**
