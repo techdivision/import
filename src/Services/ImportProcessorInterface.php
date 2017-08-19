@@ -309,7 +309,6 @@ interface ImportProcessorInterface
      * @return array The Magento 2 configuration
      */
     public function getCoreConfigData();
-
     /**
      * Returns the array with the global data necessary for the
      * import process.
@@ -317,4 +316,52 @@ interface ImportProcessorInterface
      * @return array The array with the global data
      */
     public function getGlobalData();
+
+    /**
+     * Return's the action with the store CRUD methods.
+     *
+     * @return \TechDivision\Import\Actions\StoreAction The action instance
+     */
+    public function getStoreAction();
+
+    /**
+     * Return's the action with the store group CRUD methods.
+     *
+     * @return \TechDivision\Import\Actions\StoreGroupAction The action instance
+     */
+    public function getStoreGroupAction();
+
+    /**
+     * Return's the action with the store website CRUD methods.
+     *
+     * @return \TechDivision\Import\Actions\StoreWebsiteAction The action instance
+     */
+    public function getStoreWebsiteAction();
+
+    /**
+     * Persist's the passed store.
+     *
+     * @param array $store The store to persist
+     *
+     * @return void
+     */
+    public function persistStore(array $store);
+
+    /**
+     * Persist's the passed store group.
+     *
+     * @param array $storeGroup The store group to persist
+     *
+     * @return void
+     */
+    public function persistStoreGroup(array $storeGroup);
+
+    /**
+     * Persist's the passed store website.
+     *
+     * @param array $storeWebsite The store website to persist
+     *
+     * @return void
+     */
+    public function persistStoreWebsite(array $storeWebsite);
 }

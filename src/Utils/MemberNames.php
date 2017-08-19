@@ -279,4 +279,53 @@ class MemberNames
      * @var string
      */
     const SCOPE_ID = 'scope_id';
+
+    /**
+     * Name for the member 'group_id'.
+     *
+     * @var string
+     */
+    const GROUP_ID = 'group_id';
+
+    /**
+     * Name for the member 'sort_order'.
+     *
+     * @var string
+     */
+    const SORT_ORDER = 'sort_order';
+
+    /**
+     * Name for the member 'is_active'.
+     *
+     * @var string
+     */
+    const IS_ACTIVE = 'is_active';
+
+    /**
+     * Name for the member 'default_group_id'.
+     *
+     * @var string
+     */
+    const DEFAULT_GROUP_ID = 'default_group_id';
+
+    /**
+     * Name for the member 'default_store_id'.
+     *
+     * @var string
+     */
+    const DEFAULT_STORE_ID = 'default_store_id';
+
+    /**
+     * Name for the member 'is_default'.
+     *
+     * @var string
+     */
+    const IS_DEFAULT = 'is_default';
+
+    /**
+     * Name for the member 'root_category_id'.
+     *
+     * @var string
+     */
+    const ROOT_CATEGORY_ID = 'root_category_id';
 }
