@@ -91,8 +91,15 @@ trait ExportableTrait
             }
         });
 
+        // initialize the artefacts for the passed type and entity ID
+        if (!isset($this->artefacs[$type][$this->getLastEntityId()])) {
+            $this->artefacs[$type][$this->getLastEntityId()] = array();
+        }
+
         // append the artefacts to the stack
-        $this->artefacs[$type][$this->getLastEntityId()][] = $artefacts;
+        foreach ($artefacts as $key => $artefact) {
+            $this->artefacs[$type][$this->getLastEntityId()][$key] = $artefact;
+        }
     }
 
     /**
@@ -109,7 +116,18 @@ trait ExportableTrait
 
         // query whether or not, artefacts for the passed params are available
         if (isset($this->artefacs[$type][$entityId])) {
-            return reset($this->artefacs[$type][$entityId]);
+            // load the artefacts
+            $artefacts = $this->artefacs[$type][$entityId];
+
+            // unserialize the original data
+            array_walk($artefacts, function(&$artefact) {
+                if (isset($artefact[ColumnKeys::ORIGINAL_DATA])) {
+                    $artefact[ColumnKeys::ORIGINAL_DATA] = unserialize($artefact[ColumnKeys::ORIGINAL_DATA]);
+                }
+            });
+
+            // return the artefacts
+            return $artefacts;
         }
 
         // throw an exception if not
@@ -120,6 +138,19 @@ trait ExportableTrait
                 $entityId
             )
         );
+    }
+
+    /**
+     * Queries whether or not artefacts for the passed type and entity ID are available.
+     *
+     * @param string $type     The artefact type, e. g. configurable
+     * @param string $entityId The entity ID to return the artefacts for
+     *
+     * @return boolean TRUE if artefacts are available, else FALSE
+     */
+    public function hasArtefactsByTypeAndEntityId($type, $entityId)
+    {
+        return isset($this->artefacs[$type][$entityId]);
     }
 
     /**

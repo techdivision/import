@@ -81,16 +81,14 @@ class CsvExportAdapter implements ExportAdapterInterface
 
             // iterate over the artefact types artefacts
             foreach ($artefacts as $entityArtefacts) {
-                // set the bunch header and append the artefact data
+                // prepend the bunch header first
                 if (sizeof($bunch) === 0) {
-                    $first = reset($entityArtefacts);
-                    $second = reset($first);
-                    $bunch[] = array_keys($second);
+                    $bunch[] = array_keys(reset($entityArtefacts));
                 }
 
                 // export the artefacts
                 foreach ($entityArtefacts as $entityArtefact) {
-                    $bunch = array_merge($bunch, $entityArtefact);
+                    array_push($bunch, $entityArtefact);
                 }
             }
 

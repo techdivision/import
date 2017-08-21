@@ -1,3 +1,13 @@
+# Version 1.0.0-beta44
+
+## Bugfixes
+
+* None
+
+## Features
+
+* Refactor artefact handling
+
 # Version 1.0.0-beta43
 
 ## Bugfixes

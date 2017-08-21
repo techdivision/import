@@ -123,7 +123,7 @@ class ExportableTraitTest extends \PHPUnit_Framework_TestCase
 
         // initialize the artefacts to import
         $artfactsToCompare = array(
-            $type => array($lastEntityId => array($expectedArtefacts))
+            $type => array($lastEntityId => $expectedArtefacts)
         );
 
         // assert that the original data has been serialized
@@ -161,7 +161,7 @@ class ExportableTraitTest extends \PHPUnit_Framework_TestCase
 
         // initialize the artefacts to import
         $artfactsToCompare = array(
-            $type => array($lastEntityId => array($artfacts))
+            $type => array($lastEntityId => $artfacts)
         );
 
         // mock the export adapter
