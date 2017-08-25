@@ -91,6 +91,7 @@ The following functionality is already available, for CE and EE
 - [x] Extended Logging
 - [x] Fine Grained Error Handling
 - [x] Product Attributes
+- [x] Archiving Import Artefacts
 
 This and many more is, what we're actually working on
 
@@ -104,7 +105,6 @@ This and many more is, what we're actually working on
 - [ ] Validation
 - [ ] Import Scheduled Product Updates
 - [ ] RESTFul Webservice
-- [ ] Archiving (equivalent to Magento Standard Functionality)
 - [ ] History (Append to Standard Magento Import History)
 - [ ] Seamless Magento 2 Backend Integration
 - [ ] Tier Prices
@@ -134,6 +134,7 @@ available, e. g. on command line.
 These are the M2IF core libraries for the Magento 2 Community Edition (CE).
 
 * [import-product](https://github.com/techdivision/import-product) - Provides product import functionality
+* [import-product-url-rewrite](https://github.com/techdivision/import-product-url-rewrite) - Provides product URL rewrite import functionality
 * [import-product-bundle](https://github.com/techdivision/import-product-bundle) - Provides bundle product import functionality
 * [import-product-link](https://github.com/techdivision/import-product-link) - Provides product relation import functionality
 * [import-product-media](https://github.com/techdivision/import-product-media) - Provides product image import functionality
