@@ -32,7 +32,7 @@ use TechDivision\Import\Connection\ConnectionInterface;
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
  */
-abstract class AbstractRepository
+abstract class AbstractRepository implements RepositoryInterface
 {
 
     /**

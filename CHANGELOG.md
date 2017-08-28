@@ -1,3 +1,15 @@
+# Version 1.0.0-beta45
+
+## Bugfixes
+
+* None
+
+## Features
+
+* Optimize log output
+* Add CacheWarmerPlugin
+* Add interfaces for all repositories
+
 # Version 1.0.0-beta44
 
 ## Bugfixes

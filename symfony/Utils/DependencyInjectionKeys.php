@@ -104,4 +104,11 @@ class DependencyInjectionKeys
      * @var string
      */
     const IMPORT_PROCESSOR_IMPORT = 'import.processor.import';
+
+    /**
+     * The key for the cache warmer or the EAV attribute option value repository.
+     *
+     * @var string
+     */
+    const IMPORT_CACHE_WARMER_EAV_ATTRIBUTE_OPTION_VALUE_REPOSITORY = 'import.repository.cache.warmer.eav.attribute.option.value';
 }

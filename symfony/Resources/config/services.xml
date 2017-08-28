@@ -76,6 +76,10 @@
             <argument type="service" id="import.utility.class.name"/>
         </service>
 
+        <service id="import.repository.cache.warmer.eav.attribute.option.value" class="TechDivision\Import\Repositories\CacheWarmer\EavAttributeOptionValueCacheWarmer">
+            <argument type="service" id="import.repository.eav.attribute.option.value"/>
+        </service>
+
         <service id="import.action.processor.url.rewrite.product.create" class="TechDivision\Import\Actions\Processors\UrlRewriteCreateProcessor">
             <argument type="service" id="connection"/>
             <argument type="service" id="import.utility.class.name"/>
@@ -185,6 +189,9 @@
             <argument type="service" id="import.subject.factory"/>
         </service>
         <service id="import.plugin.global.data" class="TechDivision\Import\Plugins\GlobalDataPlugin">
+            <argument type="service" id="import_app_simple.simple"/>
+        </service>
+        <service id="import.plugin.cache.warmer" class="TechDivision\Import\Plugins\CacheWarmerPlugin">
             <argument type="service" id="import_app_simple.simple"/>
         </service>
         <service id="import.plugin.missing.option.values" class="TechDivision\Import\Plugins\MissingOptionValuesPlugin">

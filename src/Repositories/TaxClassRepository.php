@@ -31,7 +31,7 @@ use TechDivision\Import\Utils\MemberNames;
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
  */
-class TaxClassRepository extends AbstractRepository
+class TaxClassRepository extends AbstractRepository implements TaxClassRepositoryInterface
 {
 
     /**

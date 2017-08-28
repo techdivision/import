@@ -29,7 +29,7 @@ namespace TechDivision\Import\Repositories;
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
  */
-class CategoryVarcharRepository extends AbstractRepository
+class CategoryVarcharRepository extends AbstractRepository implements CategoryVarcharRepositoryInterface
 {
 
     /**

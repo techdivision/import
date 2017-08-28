@@ -50,37 +50,44 @@ class ConfigurationKeys
     }
 
     /**
-     * Name for the column 'root-directory'.
+     * Name for the configuration key 'root'.
      *
      * @var string
      */
     const ROOT = 'root';
 
     /**
-     * Name for the column 'level'.
+     * Name for the configuration key 'level'.
      *
      * @var string
      */
     const LEVEL = 'level';
 
     /**
-     * Name for the column 'name'.
+     * Name for the configuration key 'name'.
      *
      * @var string
      */
     const NAME = 'name';
 
     /**
-     * Name for the column 'handlers'.
+     * Name for the configuration key 'handlers'.
      *
      * @var string
      */
     const HANDLERS = 'handlers';
 
     /**
-     * Name for the column 'processors'.
+     * Name for the configuration key 'processors'.
      *
      * @var string
      */
     const PROCESSORS = 'processors';
+
+    /**
+     * Name for the configuration key 'cache-warmers'.
+     *
+     * @var string
+     */
+    const CACHE_WARMERS = 'cache-warmers';
 }

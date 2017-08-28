@@ -31,7 +31,7 @@ use TechDivision\Import\Utils\MemberNames;
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
  */
-class EavAttributeRepository extends AbstractRepository
+class EavAttributeRepository extends AbstractRepository implements EavAttributeRepositoryInterface
 {
 
     /**

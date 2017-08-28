@@ -1,7 +1,7 @@
 <?php
 
 /**
- * TechDivision\Import\Repositories\LinkAttributeRepository
+ * TechDivision\Import\Repositories\LinkAttributeRepositoryInterface
  *
  * NOTICE OF LICENSE
  *
@@ -21,7 +21,7 @@
 namespace TechDivision\Import\Repositories;
 
 /**
- * Repository implementation to load link attribute data.
+ * Interface for a link attribute dat repository implementation.
  *
  * @author    Tim Wagner <t.wagner@techdivision.com>
  * @copyright 2016 TechDivision GmbH <info@techdivision.com>
@@ -29,40 +29,13 @@ namespace TechDivision\Import\Repositories;
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
  */
-class LinkAttributeRepository extends AbstractRepository implements LinkAttributeRepositoryInterface
+interface LinkAttributeRepositoryInterface extends RepositoryInterface
 {
-
-    /**
-     * The statement to load the available link attributes.
-     *
-     * @var \PDOStatement
-     */
-    protected $linkAttributesStmt;
-
-    /**
-     * Initializes the repository's prepared statements.
-     *
-     * @return void
-     */
-    public function init()
-    {
-
-        // load the utility class name
-        $utilityClassName = $this->getUtilityClassName();
-
-        // initialize the prepared statements
-        $this->linkAttributesStmt =
-            $this->getConnection()->prepare($this->getUtilityClass()->find($utilityClassName::LINK_ATTRIBUTES));
-    }
 
     /**
      * Return's an array with all available link attributes.
      *
      * @return array The available link attributes
      */
-    public function findAll()
-    {
-        $this->linkAttributesStmt->execute();
-        return $this->linkAttributesStmt->fetchAll(\PDO::FETCH_ASSOC);
-    }
+    public function findAll();
 }

@@ -576,13 +576,7 @@ class AbstractSubjectTest extends AbstractTest
              ->getSystemLogger()
              ->expects($this->once())
              ->method('debug')
-             ->with(
-                 sprintf(
-                     'Successfully processed row (operation: add-update) in file %s on line %d',
-                     $filename,
-                     1
-                 )
-             )
+             ->with(sprintf('Successfully processed operation add-update on row 1 in file %s', $filename))
              ->willReturn(null);
 
         // create a mock observer
@@ -623,14 +617,8 @@ class AbstractSubjectTest extends AbstractTest
              ->getSystemLogger()
              ->expects($this->once())
              ->method('debug')
-             ->with(
-                 sprintf(
-                     'Successfully processed row (operation: add-update) in file %s on line %d',
-                     $filename,
-                     1
-                 )
-            )
-            ->willReturn(null);
+             ->with(sprintf('Successfully processed operation add-update on row 1 in file %s', $filename))
+             ->willReturn(null);
 
         // create a mock observer and make sure, that it's handle() method will NOT be invoked
         $mockObserver = $this->getMockBuilder('TechDivision\Import\Observers\ObserverInterface')
@@ -933,14 +921,8 @@ class AbstractSubjectTest extends AbstractTest
              ->getSystemLogger()
              ->expects($this->once())
              ->method('debug')
-             ->with(
-                 sprintf(
-                         'Successfully processed row (operation: add-update) in file %s on line %d',
-                         $filename,
-                         1
-                     )
-                 )
-                 ->willReturn(null);
+             ->with(sprintf('Successfully processed operation add-update on row 1 in file %s', $filename))
+             ->willReturn(null);
 
         // create a mock observer and make sure, that it's handle() method will NOT be invoked
         $mockObserver = $this->getMockBuilder('TechDivision\Import\Observers\ObserverInterface')
@@ -994,13 +976,7 @@ class AbstractSubjectTest extends AbstractTest
              ->getSystemLogger()
              ->expects($this->once())
              ->method('debug')
-             ->with(
-                 sprintf(
-                     'Successfully processed row (operation: add-update) in file %s on line %d',
-                     $filename,
-                     1
-                 )
-             )
+             ->with(sprintf('Successfully processed operation add-update on row 1 in file %s', $filename))
              ->willReturn(null);
 
         // create a mock observer and make sure, that it's handle() method will NOT be invoked
@@ -1041,13 +1017,7 @@ class AbstractSubjectTest extends AbstractTest
              ->getSystemLogger()
              ->expects($this->once())
              ->method('debug')
-             ->with(
-                 sprintf(
-                     'Successfully processed row (operation: add-update) in file %s on line %d',
-                     $filename,
-                     1
-                 )
-             )
+             ->with(sprintf('Successfully processed operation add-update on row 1 in file %s', $filename))
              ->willReturn(null);
 
         // register the mock observers

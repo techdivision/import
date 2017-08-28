@@ -31,7 +31,7 @@ use TechDivision\Import\Utils\MemberNames;
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
  */
-class EavEntityTypeRepository extends AbstractRepository
+class EavEntityTypeRepository extends AbstractCachedRepository implements EavEntityTypeRepositoryInterface
 {
 
     /**
@@ -72,24 +72,30 @@ class EavEntityTypeRepository extends AbstractRepository
     public function findAll()
     {
 
-        // query whether or not we've already loaded the value
-        if (!isset($this->cache[__METHOD__])) {
-            // try to load the EAV entity types
-            $this->eavEntityTypeStmt->execute();
+        // load the utility class name
+        $utilityClassName = $this->getUtilityClassName();
 
+        // prepare the cache key
+        $cacheKey = $this->cacheKey($utilityClassName::EAV_ATTRIBUTE_OPTION_VALUE_BY_OPTION_ID_AND_STORE_ID, array());
+
+        // query whether or not the result has been cached
+        if ($this->notCached($cacheKey)) {
             // initialize the array for the EAV entity types
             $eavEntityTypes = array();
+
+            // try to load the EAV entity types
+            $this->eavEntityTypeStmt->execute();
 
             // prepare the EAV entity types => we need the entity type code as key
             foreach ($this->eavEntityTypeStmt->fetchAll(\PDO::FETCH_ASSOC) as $eavEntityType) {
                 $eavEntityTypes[$eavEntityType[MemberNames::ENTITY_TYPE_CODE]] = $eavEntityType;
             }
 
-            // append the EAV entity types to the cache
-            $this->cache[__METHOD__] = $eavEntityTypes;
+            // set the entity types in the cache
+            $this->toCache($cacheKey, $eavEntityTypes);
         }
 
-        // return the EAV entity types from the cache
-        return $this->cache[__METHOD__];
+        // return the value from the cache
+        return $this->fromCache($cacheKey);
     }
 }
