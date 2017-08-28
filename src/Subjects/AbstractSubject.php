@@ -530,7 +530,7 @@ abstract class AbstractSubject implements SubjectInterface
         );
 
         // log a debug message with the new source directory
-        $this->getSystemLogger()->info(
+        $this->getSystemLogger()->debug(
             sprintf('Subject %s successfully updated source directory to %s', get_class($this), $newSourceDir)
         );
     }
@@ -700,7 +700,7 @@ abstract class AbstractSubject implements SubjectInterface
             $this->setFilename($filename);
 
             // log a message that the file has to be imported
-            $systemLogger->debug(sprintf('Now start importing file %s', $filename));
+            $systemLogger->info(sprintf('Now start processing file %s', $filename));
 
             // let the adapter process the file
             $this->getImportAdapter()->import(array($this, 'importRow'), $filename);
@@ -709,7 +709,7 @@ abstract class AbstractSubject implements SubjectInterface
             $endTime = microtime(true) - $startTime;
 
             // log a message that the file has successfully been imported
-            $systemLogger->debug(sprintf('Successfully imported file %s in %f s', $filename, $endTime));
+            $systemLogger->info(sprintf('Successfully processed file %s with %d lines in %f s', $filename, $this->lineNumber, $endTime));
 
             // rename flag file, because import has been successfull
             $this->rename($inProgressFilename, $importedFilename);
@@ -796,10 +796,10 @@ abstract class AbstractSubject implements SubjectInterface
         // log a debug message with the actual line nr/file information
         $this->getSystemLogger()->debug(
             sprintf(
-                'Successfully processed row (operation: %s) in file %s on line %d',
+                'Successfully processed operation %s on row %d in file %s',
                 $this->operationName,
-                $this->filename,
-                $this->lineNumber
+                $this->lineNumber,
+                $this->filename
             )
         );
     }

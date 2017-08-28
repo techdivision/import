@@ -146,7 +146,7 @@ class SubjectPlugin extends AbstractPlugin
             if ($this->bunches === 0) {
                 $this->getApplication()->stop(
                     sprintf(
-                        'Operation %s has been stopped by %s, because no import files has been found in directory %s',
+                        'Operation %s has been stopped by %s, because no import files can be found in directory %s',
                         $this->getConfiguration()->getOperationName(),
                         get_class($this),
                         $this->getConfiguration()->getSourceDir()

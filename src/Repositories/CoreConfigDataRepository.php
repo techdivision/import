@@ -33,7 +33,7 @@ use TechDivision\Import\Connection\ConnectionInterface;
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
  */
-class CoreConfigDataRepository extends AbstractRepository
+class CoreConfigDataRepository extends AbstractRepository implements CoreConfigDataRepositoryInterface
 {
 
     /**

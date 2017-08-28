@@ -31,7 +31,7 @@ use TechDivision\Import\Utils\MemberNames;
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
  */
-class CategoryRepository extends AbstractRepository
+class CategoryRepository extends AbstractRepository implements CategoryRepositoryInterface
 {
 
     /**

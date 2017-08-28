@@ -152,6 +152,13 @@ class SqlStatements extends AbstractSqlStatements
     const EAV_ATTRIBUTE_OPTION_VALUE_BY_OPTION_ID_AND_STORE_ID = 'eav_attribute_option_value.by.option_id.and.store_id';
 
     /**
+     * The SQL statement to load the available EAV attribute option values.
+     *
+     * @var string
+     */
+    const EAV_ATTRIBUTE_OPTION_VALUES = 'eav_attribute_option_values';
+
+    /**
      * The SQL statement to load EAV attributes by attribute option value and store ID.
      *
      * @var string
@@ -417,6 +424,13 @@ class SqlStatements extends AbstractSqlStatements
                FROM eav_attribute_option_value t1
               WHERE t1.option_id = :option_id
                 AND t1.store_id = :store_id',
+        SqlStatements::EAV_ATTRIBUTE_OPTION_VALUES =>
+            'SELECT t3.*, t1.attribute_code
+               FROM eav_attribute t1,
+                    eav_attribute_option t2,
+                    eav_attribute_option_value t3
+              WHERE t2.option_id = t3.option_id
+                AND t1.attribute_id = t2.attribute_id',
         SqlStatements::CORE_CONFIG_DATA =>
             'SELECT * FROM core_config_data',
         SqlStatements::URL_REWRITES_BY_ENTITY_TYPE_AND_ENTITY_ID =>
