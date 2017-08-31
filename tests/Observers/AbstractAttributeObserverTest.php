@@ -22,8 +22,9 @@ namespace TechDivision\Import\Observers;
 
 use TechDivision\Import\Utils\MemberNames;
 use TechDivision\Import\Utils\EntityStatus;
-use TechDivision\Import\Utils\BackendTypeKeys;
 use TechDivision\Import\Utils\StoreViewCodes;
+use TechDivision\Import\Utils\BackendTypeKeys;
+use TechDivision\Import\Utils\ConfigurationKeys;
 
 /**
  * Test class for the abstract observer implementation.
@@ -54,7 +55,7 @@ class AbstractAttributeObserverTest extends \PHPUnit_Framework_TestCase
     protected function setUp()
     {
         $this->attributeObserver = $this->getMockBuilder('TechDivision\Import\Observers\AbstractAttributeObserver')
-                                        ->setMethods(array('getFilename', 'getLineNumber', 'isDebugMode'))
+                                        ->setMethods(array('isDebugMode', 'getPrimaryKeyMemberName', 'getPrimaryKey'))
                                         ->getMockForAbstractClass();
     }
 
@@ -70,30 +71,20 @@ class AbstractAttributeObserverTest extends \PHPUnit_Framework_TestCase
         $this->attributeObserver->expects($this->once())
                                 ->method('isDebugMode')
                                 ->willReturn(true);
-        $this->attributeObserver->expects($this->once())
-                                ->method('getFilename')
-                                ->willReturn($filename = 'var/importexport/product-import_20171112-102312_01.csv');
-        $this->attributeObserver->expects($this->once())
-                                ->method('getLineNumber')
-                                ->willReturn($lineNumber = 2);
 
         // make sure the persist method will NEVER be invoked
         $this->attributeObserver->expects($this->never())
                                 ->method('persistVarcharAttribute');
 
         // prepare the headers
-        $headers = array(
-            $attributeCode = 'unknown_attribute_code' => 0,
-        );
+        $headers = array($attributeCode = 'unknown_attribute_code' => 0);
 
         // prepare the row
-        $row = array(
-            0 => 'a-attribute-value'
-        );
+        $row = array(0 => 'a-attribute-value');
 
         // prepare the backend types
         $backendTypes = array(
-            BackendTypeKeys::BACKEND_TYPE_VARCHAR  => array('persistVarcharAttribute', 'loadVarcharAttribute')
+            BackendTypeKeys::BACKEND_TYPE_VARCHAR  => array('persistVarcharAttribute', 'loadVarcharAttribute', 'deleteVarcharAttribute')
         );
 
         // mock a system logger
@@ -102,23 +93,34 @@ class AbstractAttributeObserverTest extends \PHPUnit_Framework_TestCase
                                  ->getMock();
         $mockSystemLogger->expects($this->once())
                          ->method('debug')
-                         ->with(
-                             sprintf(
-                                 'Can\'t find attribute with attribute code %s in file %s on line %d',
-                                 $attributeCode,
-                                 $filename,
-                                 $lineNumber
-                             )
-                         )
+                         ->with(sprintf('Can\'t find attribute with attribute code %s', $attributeCode))
                          ->willReturn(null);
+
+        // mock a subject configuration
+        $mockSubjectConfiguration = $this->getMockBuilder('TechDivision\Import\Configuration\SubjectConfigurationInterface')
+                                         ->setMethods(get_class_methods('TechDivision\Import\Configuration\SubjectConfigurationInterface'))
+                                         ->getMock();
+        $mockSubjectConfiguration->expects($this->once())
+                                 ->method('hasParam')
+                                 ->with(ConfigurationKeys::CLEAN_UP_EMPTY_COLUMNS)
+                                 ->willReturn(false);
 
         // mock a subject
         $mockSubject = $this->getMockBuilder('TechDivision\Import\Observers\EntitySubjectImpl')
                             ->setMethods(get_class_methods('TechDivision\Import\Observers\EntitySubjectImpl'))
                             ->getMock();
         $mockSubject->expects($this->once())
+                    ->method('appendExceptionSuffix')
+                    ->willReturnArgument(0);
+        $mockSubject->expects($this->once())
                     ->method('getSystemLogger')
                     ->willReturn($mockSystemLogger);
+        $mockSubject->expects($this->once())
+                    ->method('appendExceptionSuffix')
+                    ->willReturnArgument(0);
+        $mockSubject->expects($this->once())
+                    ->method('getConfiguration')
+                    ->willReturn($mockSubjectConfiguration);
         $mockSubject->expects($this->once())
                     ->method('prepareStoreViewCode')
                     ->willReturn(null);
@@ -139,8 +141,6 @@ class AbstractAttributeObserverTest extends \PHPUnit_Framework_TestCase
         $this->attributeObserver->handle($mockSubject);
     }
 
-
-
     /**
      * Test the handle() method with an attribute with an empty backend type.
      *
@@ -153,30 +153,20 @@ class AbstractAttributeObserverTest extends \PHPUnit_Framework_TestCase
         $this->attributeObserver->expects($this->once())
                                 ->method('isDebugMode')
                                 ->willReturn(true);
-        $this->attributeObserver->expects($this->exactly(2))
-                                ->method('getFilename')
-                                ->willReturn($filename = 'var/importexport/product-import_20171112-102312_01.csv');
-        $this->attributeObserver->expects($this->exactly(2))
-                                ->method('getLineNumber')
-                                ->willReturn($lineNumber = 2);
 
         // make sure the persist method will NEVER be invoked
         $this->attributeObserver->expects($this->never())
                                 ->method('persistVarcharAttribute');
 
         // prepare the headers
-        $headers = array(
-            $attributeCode = 'attribute_code' => 0,
-        );
+        $headers = array($attributeCode = 'attribute_code' => 0);
 
         // prepare the row
-        $row = array(
-            0 => 'a-attribute-value'
-        );
+        $row = array(0 => 'a-attribute-value');
 
         // prepare the backend types
         $backendTypes = array(
-            BackendTypeKeys::BACKEND_TYPE_VARCHAR  => array('persistVarcharAttribute', 'loadVarcharAttribute')
+            BackendTypeKeys::BACKEND_TYPE_VARCHAR  => array('persistVarcharAttribute', 'loadVarcharAttribute', 'deleteVarcharAttribute')
         );
 
         // prepare the attributes WHITHOUT backend type
@@ -195,31 +185,32 @@ class AbstractAttributeObserverTest extends \PHPUnit_Framework_TestCase
                                  ->getMock();
         $mockSystemLogger->expects($this->once())
                          ->method('debug')
-                         ->with(
-                             sprintf(
-                                 'Found attribute with attribute code %s in file %s on line %d',
-                                 $attributeCode,
-                                 $filename,
-                                 $lineNumber
-                             )
-                         )
+                         ->with(sprintf('Found attribute with attribute code %s', $attributeCode))
                          ->willReturn(null);
         $mockSystemLogger->expects($this->once())
                         ->method('warning')
-                        ->with(
-                            sprintf(
-                                'Found EMTPY backend type for attribute %s in file %s on line %d',
-                                $attributeCode,
-                                $filename,
-                                $lineNumber
-                            )
-                        )
+                        ->with(sprintf('Found EMTPY backend type for attribute %s', $attributeCode))
                         ->willReturn(null);
+
+        // mock a subject configuration
+        $mockSubjectConfiguration = $this->getMockBuilder('TechDivision\Import\Configuration\SubjectConfigurationInterface')
+                                         ->setMethods(get_class_methods('TechDivision\Import\Configuration\SubjectConfigurationInterface'))
+                                         ->getMock();
+        $mockSubjectConfiguration->expects($this->once())
+                                 ->method('hasParam')
+                                 ->with(ConfigurationKeys::CLEAN_UP_EMPTY_COLUMNS)
+                                 ->willReturn(false);
 
         // mock a subject
         $mockSubject = $this->getMockBuilder('TechDivision\Import\Observers\EntitySubjectImpl')
                             ->setMethods(get_class_methods('TechDivision\Import\Observers\EntitySubjectImpl'))
                             ->getMock();
+        $mockSubject->expects($this->exactly(2))
+                    ->method('appendExceptionSuffix')
+                    ->willReturnArgument(0);
+        $mockSubject->expects($this->once())
+                    ->method('getConfiguration')
+                    ->willReturn($mockSubjectConfiguration);
         $mockSubject->expects($this->exactly(2))
                     ->method('getSystemLogger')
                     ->willReturn($mockSystemLogger);
@@ -259,15 +250,15 @@ class AbstractAttributeObserverTest extends \PHPUnit_Framework_TestCase
                                 ->method('isDebugMode')
                                 ->willReturn(true);
         $this->attributeObserver->expects($this->once())
-                                ->method('getFilename')
-                                ->willReturn($filename = 'var/importexport/product-import_20171112-102312_01.csv');
+                                ->method('getPrimaryKeyMemberName')
+                                ->willReturn(MemberNames::ENTITY_ID);
         $this->attributeObserver->expects($this->once())
-                                ->method('getLineNumber')
-                                ->willReturn($lineNumber = 2);
+                                ->method('getPrimaryKey')
+                                ->willReturn($lastEntityId = 100);
 
         // prepare the backend types
         $backendTypes = array(
-            BackendTypeKeys::BACKEND_TYPE_VARCHAR  => array('persistVarcharAttribute', 'loadVarcharAttribute')
+            BackendTypeKeys::BACKEND_TYPE_VARCHAR  => array('persistVarcharAttribute', 'loadVarcharAttribute', 'deleteVarcharAttribute')
         );
 
         // prepare the attributes
@@ -281,20 +272,15 @@ class AbstractAttributeObserverTest extends \PHPUnit_Framework_TestCase
         );
 
         // prepare the headers
-        $headers = array(
-            $attributeCode => 0,
-        );
+        $headers = array($attributeCode => 0);
 
         // prepare the row
-        $row = array(
-            0 => $attributeValue = 'test-url-key'
-        );
-
+        $row = array(0 => $attributeValue = 'test-url-key');
 
         // prepare the varchar attribute that has to be persisted
         $varcharAttribute = array(
             EntityStatus::MEMBER_NAME => EntityStatus::STATUS_CREATE,
-            MemberNames::ENTITY_ID    => $lastEntityId = 100,
+            MemberNames::ENTITY_ID    => $lastEntityId,
             MemberNames::ATTRIBUTE_ID => $attributeId,
             MemberNames::STORE_ID     => $storeId = 1,
             MemberNames::VALUE        => $attributeValue
@@ -306,20 +292,28 @@ class AbstractAttributeObserverTest extends \PHPUnit_Framework_TestCase
                                  ->getMock();
         $mockSystemLogger->expects($this->once())
                          ->method('debug')
-                         ->with(
-                             sprintf(
-                                 'Found attribute with attribute code %s in file %s on line %d',
-                                 $attributeCode,
-                                 $filename,
-                                 $lineNumber
-                             )
-                         )
+                         ->with(sprintf('Found attribute with attribute code %s', $attributeCode))
                          ->willReturn(null);
+
+        // mock a subject configuration
+        $mockSubjectConfiguration = $this->getMockBuilder('TechDivision\Import\Configuration\SubjectConfigurationInterface')
+                                         ->setMethods(get_class_methods('TechDivision\Import\Configuration\SubjectConfigurationInterface'))
+                                         ->getMock();
+        $mockSubjectConfiguration->expects($this->once())
+                                 ->method('hasParam')
+                                 ->with(ConfigurationKeys::CLEAN_UP_EMPTY_COLUMNS)
+                                 ->willReturn(false);
 
         // mock a subject
         $mockSubject = $this->getMockBuilder('TechDivision\Import\Observers\EntitySubjectImpl')
                             ->setMethods(get_class_methods('TechDivision\Import\Observers\EntitySubjectImpl'))
                             ->getMock();
+        $mockSubject->expects($this->once())
+                    ->method('appendExceptionSuffix')
+                    ->willReturnArgument(0);
+        $mockSubject->expects($this->once())
+                    ->method('getConfiguration')
+                    ->willReturn($mockSubjectConfiguration);
         $mockSubject->expects($this->once())
                     ->method('getSystemLogger')
                     ->willReturn($mockSystemLogger);
@@ -342,9 +336,6 @@ class AbstractAttributeObserverTest extends \PHPUnit_Framework_TestCase
                     ->method('getCallbacksByType')
                     ->with($attributeCode)
                     ->willReturn(array());
-        $mockSubject->expects($this->once())
-                    ->method('getLastEntityId')
-                    ->willReturn($lastEntityId);
         $mockSubject->expects($this->once())
                     ->method('castValueByBackendType')
                     ->with($backendType, $attributeValue)
@@ -378,7 +369,7 @@ class AbstractAttributeObserverTest extends \PHPUnit_Framework_TestCase
 
         // prepare the backend types
         $backendTypes = array(
-            BackendTypeKeys::BACKEND_TYPE_VARCHAR  => array('persistVarcharAttribute', 'loadVarcharAttribute')
+            BackendTypeKeys::BACKEND_TYPE_VARCHAR  => array('persistVarcharAttribute', 'loadVarcharAttribute', 'deleteVarcharAttribute')
         );
 
         // prepare the attributes
@@ -392,19 +383,27 @@ class AbstractAttributeObserverTest extends \PHPUnit_Framework_TestCase
         );
 
         // prepare the headers
-        $headers = array(
-            $attributeCode => 0,
-        );
+        $headers = array($attributeCode => 0);
 
         // prepare the row
-        $row = array(
-            0 => null
-        );
+        $row = array(0 => null);
+
+        // mock a subject configuration
+        $mockSubjectConfiguration = $this->getMockBuilder('TechDivision\Import\Configuration\SubjectConfigurationInterface')
+                                         ->setMethods(get_class_methods('TechDivision\Import\Configuration\SubjectConfigurationInterface'))
+                                         ->getMock();
+        $mockSubjectConfiguration->expects($this->once())
+                                 ->method('hasParam')
+                                 ->with(ConfigurationKeys::CLEAN_UP_EMPTY_COLUMNS)
+                                 ->willReturn(false);
 
         // mock a subject
         $mockSubject = $this->getMockBuilder('TechDivision\Import\Observers\EntitySubjectImpl')
                             ->setMethods(get_class_methods('TechDivision\Import\Observers\EntitySubjectImpl'))
                             ->getMock();
+        $mockSubject->expects($this->once())
+                    ->method('getConfiguration')
+                    ->willReturn($mockSubjectConfiguration);
         $mockSubject->expects($this->never())
                     ->method('getSystemLogger');
         $mockSubject->expects($this->once())
@@ -441,7 +440,7 @@ class AbstractAttributeObserverTest extends \PHPUnit_Framework_TestCase
 
         // prepare the backend types
         $backendTypes = array(
-            BackendTypeKeys::BACKEND_TYPE_VARCHAR  => array('persistVarcharAttribute', 'loadVarcharAttribute')
+            BackendTypeKeys::BACKEND_TYPE_VARCHAR  => array('persistVarcharAttribute', 'loadVarcharAttribute', 'deleteVarcharAttribute')
         );
 
         // prepare the attributes
@@ -455,14 +454,10 @@ class AbstractAttributeObserverTest extends \PHPUnit_Framework_TestCase
         );
 
         // prepare the headers
-        $headers = array(
-            $attributeCode => 0
-        );
+        $headers = array($attributeCode => 0);
 
         // prepare the row
-        $row = array(
-            0 => 'test-url-key'
-        );
+        $row = array(0 => 'test-url-key');
 
         // mock the callbacks
         $callback = $this->getMockBuilder('TechDivision\Import\Callbacks\CallbackInterface')
@@ -473,12 +468,34 @@ class AbstractAttributeObserverTest extends \PHPUnit_Framework_TestCase
                  ->willReturn(null);
         $callbacks = array($callback);
 
+        // mock a system logger
+        $mockSystemLogger = $this->getMockBuilder('Psr\Log\LoggerInterface')
+                                 ->setMethods(get_class_methods('Psr\Log\LoggerInterface'))
+                                 ->getMock();
+        $mockSystemLogger->expects($this->once())
+                         ->method('debug')
+                         ->with(sprintf('Found empty value for attribute "%s"', $attributeCode))
+                         ->willReturn(null);
+
+        // mock a subject configuration
+        $mockSubjectConfiguration = $this->getMockBuilder('TechDivision\Import\Configuration\SubjectConfigurationInterface')
+                                         ->setMethods(get_class_methods('TechDivision\Import\Configuration\SubjectConfigurationInterface'))
+                                         ->getMock();
+        $mockSubjectConfiguration->expects($this->once())
+                                 ->method('hasParam')
+                                 ->with(ConfigurationKeys::CLEAN_UP_EMPTY_COLUMNS)
+                                 ->willReturn(false);
+
         // mock a subject
         $mockSubject = $this->getMockBuilder('TechDivision\Import\Observers\EntitySubjectImpl')
                     ->setMethods(get_class_methods('TechDivision\Import\Observers\EntitySubjectImpl'))
                     ->getMock();
-        $mockSubject->expects($this->never())
-                    ->method('getSystemLogger');
+        $mockSubject->expects($this->once())
+                    ->method('getConfiguration')
+                    ->willReturn($mockSubjectConfiguration);
+        $mockSubject->expects($this->once())
+                    ->method('getSystemLogger')
+                    ->willReturn($mockSystemLogger);
         $mockSubject->expects($this->once())
                     ->method('prepareStoreViewCode')
                     ->willReturn(null);
@@ -515,17 +532,9 @@ class AbstractAttributeObserverTest extends \PHPUnit_Framework_TestCase
     public function testHandleWithAttributeAndInvalidBackendType()
     {
 
-        // mock filename + line number
-        $this->attributeObserver->expects($this->once())
-                                ->method('getFilename')
-                                ->willReturn($filename = 'var/importexport/product-import_20171112-102312_01.csv');
-        $this->attributeObserver->expects($this->once())
-                                ->method('getLineNumber')
-                                ->willReturn($lineNumber = 2);
-
         // prepare the backend types
         $backendTypes = array(
-            BackendTypeKeys::BACKEND_TYPE_VARCHAR  => array('persistVarcharAttribute', 'loadVarcharAttribute')
+            BackendTypeKeys::BACKEND_TYPE_VARCHAR  => array('persistVarcharAttribute', 'loadVarcharAttribute', 'deleteVarcharAttribute')
         );
 
         // prepare the attributes
@@ -539,14 +548,10 @@ class AbstractAttributeObserverTest extends \PHPUnit_Framework_TestCase
         );
 
         // prepare the headers
-        $headers = array(
-            $attributeCode => 0,
-        );
+        $headers = array($attributeCode => 0);
 
         // prepare the row
-        $row = array(
-            0 => 'test-url-key'
-        );
+        $row = array(0 => 'test-url-key');
 
         // mock a system logger
         $mockSystemLogger = $this->getMockBuilder('Psr\Log\LoggerInterface')
@@ -554,21 +559,28 @@ class AbstractAttributeObserverTest extends \PHPUnit_Framework_TestCase
                                  ->getMock();
         $mockSystemLogger->expects($this->once())
                          ->method('debug')
-                         ->with(
-                             sprintf(
-                                 'Found invalid backend type %s for attribute %s in file %s on line %s',
-                                 $backendType,
-                                 $attributeCode,
-                                 $filename,
-                                 $lineNumber
-                             )
-                         )
+                         ->with(sprintf('Found invalid backend type %s for attribute %s', $backendType, $attributeCode))
                          ->willReturn(null);
+
+        // mock a subject configuration
+        $mockSubjectConfiguration = $this->getMockBuilder('TechDivision\Import\Configuration\SubjectConfigurationInterface')
+                                         ->setMethods(get_class_methods('TechDivision\Import\Configuration\SubjectConfigurationInterface'))
+                                         ->getMock();
+        $mockSubjectConfiguration->expects($this->once())
+                                 ->method('hasParam')
+                                 ->with(ConfigurationKeys::CLEAN_UP_EMPTY_COLUMNS)
+                                 ->willReturn(false);
 
         // mock a subject
         $mockSubject = $this->getMockBuilder('TechDivision\Import\Observers\EntitySubjectImpl')
                             ->setMethods(get_class_methods('TechDivision\Import\Observers\EntitySubjectImpl'))
                             ->getMock();
+        $mockSubject->expects($this->once())
+                    ->method('appendExceptionSuffix')
+                    ->willReturnArgument(0);
+        $mockSubject->expects($this->once())
+                    ->method('getConfiguration')
+                    ->willReturn($mockSubjectConfiguration);
         $mockSubject->expects($this->any())
                     ->method('getSystemLogger')
                     ->willReturn($mockSystemLogger);
@@ -606,7 +618,7 @@ class AbstractAttributeObserverTest extends \PHPUnit_Framework_TestCase
 
         // prepare the backend types
         $backendTypes = array(
-            BackendTypeKeys::BACKEND_TYPE_VARCHAR  => array('persistVarcharAttribute', 'loadVarcharAttribute')
+            BackendTypeKeys::BACKEND_TYPE_VARCHAR  => array('persistVarcharAttribute', 'loadVarcharAttribute', 'deleteVarcharAttribute')
         );
 
         // prepare the attributes
@@ -620,19 +632,27 @@ class AbstractAttributeObserverTest extends \PHPUnit_Framework_TestCase
         );
 
         // prepare the headers
-        $headers = array(
-            $attributeCode => 0,
-        );
+        $headers = array($attributeCode => 0);
 
         // prepare the row
-        $row = array(
-            0 => 'test-sku'
-        );
+        $row = array(0 => 'test-sku');
+
+        // mock a subject configuration
+        $mockSubjectConfiguration = $this->getMockBuilder('TechDivision\Import\Configuration\SubjectConfigurationInterface')
+                                         ->setMethods(get_class_methods('TechDivision\Import\Configuration\SubjectConfigurationInterface'))
+                                         ->getMock();
+        $mockSubjectConfiguration->expects($this->once())
+                                 ->method('hasParam')
+                                 ->with(ConfigurationKeys::CLEAN_UP_EMPTY_COLUMNS)
+                                 ->willReturn(false);
 
         // mock a subject
         $mockSubject = $this->getMockBuilder('TechDivision\Import\Observers\EntitySubjectImpl')
                             ->setMethods(get_class_methods('TechDivision\Import\Observers\EntitySubjectImpl'))
                             ->getMock();
+        $mockSubject->expects($this->once())
+                    ->method('getConfiguration')
+                    ->willReturn($mockSubjectConfiguration);
         $mockSubject->expects($this->never())
                     ->method('getSystemLogger');
         $mockSubject->expects($this->once())

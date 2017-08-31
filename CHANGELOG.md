@@ -1,3 +1,13 @@
+# Version 1.0.0-beta46
+
+## Bugfixes
+
+* None
+
+## Features
+
+* Add functionality to delete entity attributes with empty values in column names
+
 # Version 1.0.0-beta45
 
 ## Bugfixes
