@@ -392,4 +392,17 @@ interface SubjectInterface
      * @return string The store view code
      */
     public function getStoreViewCode($default = null);
+
+    /**
+     * Append's the exception suffix containing filename and line number to the
+     * passed message. If no message has been passed, only the suffix will be
+     * returned
+     *
+     * @param string|null $message    The message to append the exception suffix to
+     * @param string|null $filename   The filename used to create the suffix
+     * @param string|null $lineNumber The line number used to create the suffx
+     *
+     * @return string The message with the appended exception suffix
+     */
+    public function appendExceptionSuffix($message = null, $filename = null, $lineNumber = null);
 }

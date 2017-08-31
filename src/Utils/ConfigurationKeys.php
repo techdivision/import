@@ -90,4 +90,11 @@ class ConfigurationKeys
      * @var string
      */
     const CACHE_WARMERS = 'cache-warmers';
+
+    /**
+     * Name for the configuration key 'clean-up-empty-columns',
+     *
+     * @var string
+     */
+    const CLEAN_UP_EMPTY_COLUMNS = 'clean-up-empty-columns';
 }
