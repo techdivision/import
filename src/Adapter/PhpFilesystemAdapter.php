@@ -113,6 +113,18 @@ class PhpFilesystemAdapter implements FilesystemAdapterInterface
     }
 
     /**
+     * Delete the file with the passed name.
+     *
+     * @param string $filename The name of the file to be deleted
+     *
+     * @return boolean TRUE on success, else FALSE
+     */
+    public function delete($filename)
+    {
+        return unlink($filename);
+    }
+
+    /**
      * Copy's a file from source to destination.
      *
      * @param string $src  The source file

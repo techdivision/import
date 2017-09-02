@@ -47,18 +47,11 @@ trait FileUploadTrait
     protected $imagesFileDir;
 
     /**
-     * The name of the craeted image.
-     *
-     * @var integer
-     */
-    protected $parentImage;
-
-    /**
      * The flag whether to copy the images or not.
      *
      * @var boolean
      */
-    protected $copyImages;
+    protected $copyImages = false;
 
     /**
      * Set's the flag to copy the images or not.
@@ -124,28 +117,6 @@ trait FileUploadTrait
     public function getImagesFileDir()
     {
         return $this->imagesFileDir;
-    }
-
-    /**
-     * Set's the name of the created image.
-     *
-     * @param string $parentImage The name of the created image
-     *
-     * @return void
-     */
-    public function setParentImage($parentImage)
-    {
-        $this->parentImage = $parentImage;
-    }
-
-    /**
-     * Return's the name of the created image.
-     *
-     * @return string The name of the created image
-     */
-    public function getParentImage()
-    {
-        return $this->parentImage;
     }
 
     /**
@@ -226,5 +197,31 @@ trait FileUploadTrait
 
         // return the new target filename
         return str_replace($mediaDir, '', $targetFilename);
+    }
+
+    /**
+     * Delete the file with the passed name.
+     *
+     * @param string $filename The name of the file to be deleted
+     *
+     * @return boolean TRUE on success, else FALSE
+     */
+    public function deleteFile($filename)
+    {
+
+        // trim the leading /, if available
+        $trimmedFilename = ltrim($filename, '/');
+        $mediaDir = ltrim($this->getMediaDir(), '/');
+
+        // prepare source/target filename
+        $targetFilename = sprintf('%s/%s', $mediaDir, $trimmedFilename);
+
+        // query whether or not the image file to be deleted is available
+        if (!$this->getFilesystemAdapter()->isFile($targetFilename)) {
+            throw new \Exception(sprintf('Media file %s not available', $targetFilename));
+        }
+
+        // delte the image from the target directory
+        $this->getFilesystemAdapter()->delete($targetFilename);
     }
 }

@@ -78,6 +78,7 @@ interface FilesystemAdapterInterface
      * @return boolean TRUE on success, else FALSE
      */
     public function rename($oldname, $newname);
+
     /**
      * Writes the passed data to file with the passed name.
      *
@@ -87,6 +88,15 @@ interface FilesystemAdapterInterface
      * @return number The number of bytes written to the file
      */
     public function write($filename, $data);
+
+    /**
+     * Delete the file with the passed name.
+     *
+     * @param string $filename The name of the file to be deleted
+     *
+     * @return boolean TRUE on success, else FALSE
+     */
+    public function delete($filename);
 
     /**
      * Copy's a file from source to destination.
