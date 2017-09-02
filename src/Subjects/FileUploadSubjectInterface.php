@@ -54,13 +54,6 @@ interface FileUploadSubjectInterface extends FilesystemSubjectInterface
     public function getImagesFileDir();
 
     /**
-     * Return's the name of the created image.
-     *
-     * @return string The name of the created image
-     */
-    public function getParentImage();
-
-    /**
      * Get new file name if the same is already exists.
      *
      * @param string $targetFilename The name of the exisising files

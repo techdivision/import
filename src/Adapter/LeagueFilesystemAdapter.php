@@ -124,7 +124,19 @@ class LeagueFilesystemAdapter implements FilesystemAdapterInterface
      */
     public function write($filename, $data)
     {
-        return $this->filesystem->write($filename, $data);
+        return $this->filesystem->put($filename, $data);
+    }
+
+    /**
+     * Delete the file with the passed name.
+     *
+     * @param string $filename The name of the file to be deleted
+     *
+     * @return boolean TRUE on success, else FALSE
+     */
+    public function delete($filename)
+    {
+        return $this->filesystem->delete($filename);
     }
 
     /**

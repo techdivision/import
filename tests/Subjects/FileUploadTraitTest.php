@@ -85,17 +85,6 @@ class FileUploadTraitTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * Test the set/getParentImage() methods.
-     *
-     * @return void
-     */
-    public function testSetGetParentImage()
-    {
-        $this->fileUploadTrait->setParentImage($parentImage = 'var/importexport/pub/images/test-01.jpg');
-        $this->assertSame($parentImage, $this->fileUploadTrait->getParentImage());
-    }
-
-    /**
      * Test the getNewFileName() method when the file not already exists.
      *
      * @return void

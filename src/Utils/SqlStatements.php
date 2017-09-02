@@ -229,6 +229,13 @@ class SqlStatements extends AbstractSqlStatements
     const DELETE_URL_REWRITE_BY_PATH = 'delete.url_rewrite.by.path';
 
     /**
+     * The SQL statement to remove existing product URL rewrites by their category ID.
+     *
+     * @var string
+     */
+    const DELETE_URL_REWRITE_BY_CATEGORY_ID = 'delete.url_rewrite.by.category_id';
+
+    /**
      * The SQL statement to create new URL rewrites.
      *
      * @var string
@@ -461,6 +468,12 @@ class SqlStatements extends AbstractSqlStatements
               WHERE catalog_category_entity.path = :path
                 AND url_rewrite.entity_id = catalog_category_entity.entity_id
                 AND url_rewrite.entity_type = \'category\'',
+        SqlStatements::DELETE_URL_REWRITE_BY_CATEGORY_ID =>
+            'DELETE t1.*
+               FROM url_rewrite t1
+         INNER JOIN catalog_url_rewrite_product_category t2
+              WHERE t2.category_id = :category_id
+                AND t1.url_rewrite_id = t2.url_rewrite_id',
         SqlStatements::CREATE_URL_REWRITE =>
             'INSERT
                INTO url_rewrite
