@@ -92,6 +92,13 @@ class ConfigurationKeys
     const CACHE_WARMERS = 'cache-warmers';
 
     /**
+     * Name for the configuration key 'clean-up-url-rewrites'.
+     *
+     * @var string
+     */
+    const CLEAN_UP_URL_REWRITES = 'clean-up-url-rewrites';
+
+    /**
      * Name for the configuration key 'clean-up-empty-columns',
      *
      * @var string
