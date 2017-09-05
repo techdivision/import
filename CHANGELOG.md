@@ -1,3 +1,13 @@
+# Version 1.0.0-beta48
+
+## Bugfixes
+
+* None
+
+## Features
+
+* Add configuration key for clean-up URL rewrites
+
 # Version 1.0.0-beta47
 
 ## Bugfixes
