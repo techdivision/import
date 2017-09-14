@@ -196,71 +196,6 @@ class AbstractSubjectTest extends AbstractTest
     }
 
     /**
-     * Test the set/getValue() method.
-     *
-     * @return void
-     */
-    /* public function testGetValueWithNumber()
-    {
-
-        // mock the available haeders
-        $this->abstractSubject->setHeaders(array($name = 'test' => 0));
-
-        // query whether or not the given value is available and a number
-        $this->abstractSubject->setValue($name, $value = 1);
-        $this->assertSame($value, $this->abstractSubject->getValue($name));
-    } */
-
-    /**
-     * Test the set/getValue() method converting the value by invoking a callback.
-     *
-     * @return void
-     */
-    /* public function testGetValueWithStringConvertedToNumberByCallback()
-    {
-
-        // mock the available haeders
-        $this->abstractSubject->setHeaders(array($name = 'test' => 0));
-
-        // query whether or not the given value is available and a number
-        $this->abstractSubject->setValue($name, '100');
-        $this->assertSame(100, $this->abstractSubject->getValue($name, null, function ($value) {
-            return (integer) $value;
-        }));
-    } */
-
-    /**
-     * Test the getValue() method with a default value.
-     *
-     * @return void
-     */
-    /* public function testGetDefaultValue()
-    {
-        $this->assertSame(100, $this->abstractSubject->getValue('test', 100));
-    } */
-
-    /**
-     * Test the hasValue() method without a header available.
-     *
-     * @return void
-     */
-    /* public function testHasValueWithMissingValueWithoutHeader()
-    {
-        $this->assertFalse($this->abstractSubject->hasValue('test'));
-    } */
-
-    /**
-     * Test the hasValue() method with a header available.
-     *
-     * @return void
-     */
-    /* public function testHasValueWithMissingValueWithHeader()
-    {
-        $this->abstractSubject->addHeader($name = 'test');
-        $this->assertFalse($this->abstractSubject->hasValue($name));
-    } */
-
-    /**
      * Test the formatDate() method with a valid date.
      *
      * @return void
@@ -576,7 +511,7 @@ class AbstractSubjectTest extends AbstractTest
              ->getSystemLogger()
              ->expects($this->once())
              ->method('debug')
-             ->with(sprintf('Successfully processed operation add-update on row 1 in file %s', $filename))
+             ->with(sprintf('Successfully processed operation "add-update" in file %s on line 1', $filename))
              ->willReturn(null);
 
         // create a mock observer
@@ -617,7 +552,7 @@ class AbstractSubjectTest extends AbstractTest
              ->getSystemLogger()
              ->expects($this->once())
              ->method('debug')
-             ->with(sprintf('Successfully processed operation add-update on row 1 in file %s', $filename))
+             ->with(sprintf('Successfully processed operation "add-update" in file %s on line 1', $filename))
              ->willReturn(null);
 
         // create a mock observer and make sure, that it's handle() method will NOT be invoked
@@ -921,7 +856,7 @@ class AbstractSubjectTest extends AbstractTest
              ->getSystemLogger()
              ->expects($this->once())
              ->method('debug')
-             ->with(sprintf('Successfully processed operation add-update on row 1 in file %s', $filename))
+             ->with(sprintf('Successfully processed operation "add-update" in file %s on line 1', $filename))
              ->willReturn(null);
 
         // create a mock observer and make sure, that it's handle() method will NOT be invoked
@@ -976,7 +911,7 @@ class AbstractSubjectTest extends AbstractTest
              ->getSystemLogger()
              ->expects($this->once())
              ->method('debug')
-             ->with(sprintf('Successfully processed operation add-update on row 1 in file %s', $filename))
+             ->with(sprintf('Successfully processed operation "add-update" in file %s on line 1', $filename))
              ->willReturn(null);
 
         // create a mock observer and make sure, that it's handle() method will NOT be invoked
@@ -1017,7 +952,7 @@ class AbstractSubjectTest extends AbstractTest
              ->getSystemLogger()
              ->expects($this->once())
              ->method('debug')
-             ->with(sprintf('Successfully processed operation add-update on row 1 in file %s', $filename))
+             ->with(sprintf('Successfully processed operation "add-update" in file %s on line 1', $filename))
              ->willReturn(null);
 
         // register the mock observers

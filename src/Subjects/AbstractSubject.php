@@ -783,7 +783,19 @@ abstract class AbstractSubject implements SubjectInterface
             foreach ($observers as $observer) {
                 // query whether or not we have to skip the row
                 if ($this->skipRow) {
-                    break;
+                    // log a debug message with the actual line nr/file information
+                    $this->getSystemLogger()->warning(
+                        $this->appendExceptionSuffix(
+                            sprintf(
+                                'Skip processing operation "%s" after observer "%s"',
+                                $this->operationName,
+                                $this->getConfiguration()->getId()
+                            )
+                        )
+                    );
+
+                    // skip the row
+                    break 2;
                 }
 
                 // if not, set the subject and process the observer
@@ -795,11 +807,11 @@ abstract class AbstractSubject implements SubjectInterface
 
         // log a debug message with the actual line nr/file information
         $this->getSystemLogger()->debug(
-            sprintf(
-                'Successfully processed operation %s on row %d in file %s',
-                $this->operationName,
-                $this->lineNumber,
-                $this->filename
+            $this->appendExceptionSuffix(
+                sprintf(
+                    'Successfully processed operation "%s"',
+                    $this->operationName
+                )
             )
         );
     }
