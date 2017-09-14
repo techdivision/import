@@ -1,3 +1,13 @@
+# Version 1.0.0-beta49
+
+## Bugfixes
+
+* Fixed invalid interruption of observer chain when skipping row
+
+## Features
+
+* None
+
 # Version 1.0.0-beta48
 
 ## Bugfixes
