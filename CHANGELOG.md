@@ -1,3 +1,13 @@
+# Version 1.0.0-beta50
+
+## Bugfixes
+
+* Columns with empty values, related to the inventory, doesn't overwrite already existing values
+
+## Features
+
+* None
+
 # Version 1.0.0-beta49
 
 ## Bugfixes

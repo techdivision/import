@@ -68,7 +68,7 @@ trait RowTrait
      *
      * @return boolean TRUE if the value is set, else FALSE
      */
-    protected function hasValue($name)
+    public function hasValue($name)
     {
 
         // query whether or not the header is available

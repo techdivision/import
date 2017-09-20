@@ -248,8 +248,9 @@
             <argument type="service" id="loggers"/>
         </service>
 
-        <service id="import.observer.additional.attribute" class="TechDivision\Import\Observers\AdditionalAttributeObserver"/>
         <service id="import.observer.attribute.set" class="TechDivision\Import\Observers\AttributeSetObserver"/>
+        <service id="import.observer.dynamic.attribute.loader" class="TechDivision\Import\Observers\DynamicAttributeLoader"/>
+        <service id="import.observer.additional.attribute" class="TechDivision\Import\Observers\AdditionalAttributeObserver"/>
 
         <service id="import.visitor.callback" class="TechDivision\Import\Callbacks\CallbackVisitor">
             <argument type="service" id="service_container"/>
