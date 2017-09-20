@@ -293,11 +293,10 @@ abstract class AbstractObserver implements ObserverInterface
      * @param string $name The header name to query
      *
      * @return boolean TRUE if the header is available, else FALSE
-     * @deprecated Will be removed with version 1.0.0, use subject method instead
      *
      * @codeCoverageIgnore
      */
-    protected function hasHeader($name)
+    public function hasHeader($name)
     {
         return $this->getSubject()->hasHeader($name);
     }
@@ -366,11 +365,10 @@ abstract class AbstractObserver implements ObserverInterface
      * @param mixed  $value       The value to be casted
      *
      * @return mixed The casted value
-     * @deprecated Will be removed with version 1.0.0, use subject method instead
      *
      * @codeCoverageIgnore
      */
-    protected function castValueByBackendType($backendType, $value)
+    public function castValueByBackendType($backendType, $value)
     {
         return $this->getSubject()->castValueByBackendType($backendType, $value);
     }
