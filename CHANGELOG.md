@@ -1,3 +1,13 @@
+# Version 1.0.0-beta51
+
+## Bugfixes
+
+* None
+
+## Features
+
+* Wrap \PDOExceptions in AbstractBaseProcessor for more detailed database releated exceptions
+
 # Version 1.0.0-beta50
 
 ## Bugfixes

@@ -154,7 +154,26 @@ abstract class AbstractBaseProcessor extends AbstractProcessor
      */
     public function execute($row, $name = null)
     {
-        $this->getPreparedStatement($name)->execute($this->prepareRow($row));
+        try {
+            $this->getPreparedStatement($name)->execute($this->prepareRow($row));
+        } catch(\PDOException $pdoe) {
+            // prepare the params for more detailed error message
+            $params = array();
+            foreach ($row as $key => $value) {
+                $params[] = $key . ' => ' . $value;
+            }
+
+            // prepare the error message itself
+            $message = sprintf(
+                '%s when executing SQL "%s" with params "[%s]"',
+                $pdoe->getMessage(),
+                $this->getPreparedStatement($name)->queryString,
+                implode(', ', $params)
+            );
+
+            // re-throw the exception with a more detailed error message
+            throw new \PDOException($message, null, $pdoe);
+        }
     }
 
     /**
