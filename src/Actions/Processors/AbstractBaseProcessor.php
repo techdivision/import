@@ -155,21 +155,20 @@ abstract class AbstractBaseProcessor extends AbstractProcessor
     public function execute($row, $name = null)
     {
         try {
+            // finally execute the prepared statement
             $this->getPreparedStatement($name)->execute($this->prepareRow($row));
-        } catch(\PDOException $pdoe) {
-            // prepare the params for more detailed error message
-            $params = array();
+
+        } catch (\PDOException $pdoe) {
+            // initialize the SQL statement with the placeholders
+            $sql = $this->getPreparedStatement($name)->queryString;
+
+            // replace the placeholders with the values
             foreach ($row as $key => $value) {
-                $params[] = $key . ' => ' . $value;
+                $sql = str_replace(sprintf(':%s', $key), $value, $sql);
             }
 
             // prepare the error message itself
-            $message = sprintf(
-                '%s when executing SQL "%s" with params "[%s]"',
-                $pdoe->getMessage(),
-                $this->getPreparedStatement($name)->queryString,
-                implode(', ', $params)
-            );
+            $message = sprintf('%s when executing SQL "%s"', $pdoe->getMessage(), preg_replace('/\r\n\s\s+/', ' ', $sql));
 
             // re-throw the exception with a more detailed error message
             throw new \PDOException($message, null, $pdoe);
