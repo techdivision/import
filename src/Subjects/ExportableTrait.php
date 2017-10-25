@@ -70,13 +70,14 @@ trait ExportableTrait
      * Add the passed product type artefacts to the product with the
      * last entity ID.
      *
-     * @param string $type      The artefact type, e. g. configurable
-     * @param array  $artefacts The product type artefacts
+     * @param string  $type      The artefact type, e. g. configurable
+     * @param array   $artefacts The product type artefacts
+     * @param boolean $override  Whether or not the artefacts for the actual entity ID has to be overwritten
      *
      * @return void
      * @uses \TechDivision\Import\Product\Subjects\BunchSubject::getLastEntityId()
      */
-    public function addArtefacts($type, array $artefacts)
+    public function addArtefacts($type, array $artefacts, $override = true)
     {
 
         // query whether or not, any artefacts are available
@@ -91,14 +92,43 @@ trait ExportableTrait
             }
         });
 
-        // initialize the artefacts for the passed type and entity ID
-        if (!isset($this->artefacs[$type][$this->getLastEntityId()])) {
-            $this->artefacs[$type][$this->getLastEntityId()] = array();
+        // query whether or not, existing artefacts has to be overwritten
+        if ($override === true) {
+            $this->overrideArtefacts($type, $artefacts);
+        } else {
+            $this->appendArtefacts($type, $artefacts);
         }
+    }
 
-        // append the artefacts to the stack
+    /**
+     * Add the passed product type artefacts to the product with the
+     * last entity ID and overrides existing ones with the same key.
+     *
+     * @param string $type      The artefact type, e. g. configurable
+     * @param array  $artefacts The product type artefacts
+     *
+     * @return void
+     */
+    protected function overrideArtefacts($type, array $artefacts)
+    {
         foreach ($artefacts as $key => $artefact) {
             $this->artefacs[$type][$this->getLastEntityId()][$key] = $artefact;
+        }
+    }
+
+    /**
+     * Append's the passed product type artefacts to the product with the
+     * last entity ID.
+     *
+     * @param string $type      The artefact type, e. g. configurable
+     * @param array  $artefacts The product type artefacts
+     *
+     * @return void
+     */
+    protected function appendArtefacts($type, array $artefacts)
+    {
+        foreach ($artefacts as $artefact) {
+            $this->artefacs[$type][$this->getLastEntityId()][] = $artefact;
         }
     }
 

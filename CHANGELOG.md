@@ -1,3 +1,14 @@
+# Version 1.0.0-beta52
+
+## Bugfixes
+
+* None
+
+## Features
+
+* Add override parameter to method ExportableTrait::addArtefact() method
+* Format exception message when the executionn of INSERT/UPDATE/DELETE statements fails
+
 # Version 1.0.0-beta51
 
 ## Bugfixes
