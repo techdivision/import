@@ -1,3 +1,13 @@
+# Version 1.0.0-beta53
+
+## Bugfixes
+
+* None
+
+## Features
+
+* Add new method EavAttributeRepository::findOneByEntityTypeIdAndAttributeCode() for loading attributes in integration tests
+
 # Version 1.0.0-beta52
 
 ## Bugfixes

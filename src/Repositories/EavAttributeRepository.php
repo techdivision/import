@@ -49,6 +49,13 @@ class EavAttributeRepository extends AbstractRepository implements EavAttributeR
     protected $eavAttributesByOptionValueAndStoreIdStmt;
 
     /**
+     * The prepared statement to load a attribute by its entity type ID and name.
+     *
+     * @var \PDOStatement
+     */
+    protected $eavAttributeByEntityTypeIdAndAttributeCodeStmt;
+
+    /**
      * The prepared statement to load the attributes for a specific entity type and the user defined flag.
      *
      * @var \PDOStatement
@@ -78,10 +85,34 @@ class EavAttributeRepository extends AbstractRepository implements EavAttributeR
             $this->getConnection()->prepare($this->getUtilityClass()->find($utilityClassName::EAV_ATTRIBUTES_BY_IS_USER_DEFINED));
         $this->eavAttributesByOptionValueAndStoreIdStmt =
             $this->getConnection()->prepare($this->getUtilityClass()->find($utilityClassName::EAV_ATTRIBUTES_BY_OPTION_VALUE_AND_STORE_ID));
+        $this->eavAttributeByEntityTypeIdAndAttributeCodeStmt =
+            $this->getConnection()->prepare($this->getUtilityClass()->find($utilityClassName::EAV_ATTRIBUTE_BY_ENTITY_TYPE_ID_AND_ATTRIBUTE_CODE));
         $this->eavAttributesByEntityTypeIdAndUserDefinedStmt =
             $this->getConnection()->prepare($this->getUtilityClass()->find($utilityClassName::EAV_ATTRIBUTES_BY_ENTITY_TYPE_ID_AND_IS_USER_DEFINED));
         $this->eavAttributesByEntityTypeIdAndAttributeSetNameStmt =
             $this->getConnection()->prepare($this->getUtilityClass()->find($utilityClassName::EAV_ATTRIBUTES_BY_ENTITY_TYPE_ID_AND_ATTRIBUTE_SET_NAME));
+    }
+
+    /**
+     * Return's the EAV attribute with the passed entity type ID and code.
+     *
+     * @param integer $entityTypeId  The entity type ID of the EAV attributes to return
+     * @param string  $attributeCode The code of the EAV attribute to return
+     *
+     * @return array The EAV attribute
+     */
+    public function findOneByEntityTypeIdAndAttributeCode($entityTypeId, $attributeCode)
+    {
+
+        // initialize the params
+        $params = array(
+            MemberNames::ENTITY_TYPE_ID => $entityTypeId,
+            MemberNames::ATTRIBUTE_CODE => $attributeCode
+        );
+
+        // execute the prepared statement and return the EAV attribute with the passed entity type ID and code
+        $this->eavAttributeByEntityTypeIdAndAttributeCodeStmt->execute($params);
+        return $this->eavAttributeByEntityTypeIdAndAttributeCodeStmt->fetch(\PDO::FETCH_ASSOC);
     }
 
     /**

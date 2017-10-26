@@ -138,6 +138,13 @@ class SqlStatements extends AbstractSqlStatements
     const EAV_ATTRIBUTE_GROUPS_BY_ATTRIBUTE_SET_ID = 'eav_attribute_groups.by.attribute_set_id';
 
     /**
+     * The SQL statement to load EAV attribute by its entity type ID and attribute code.
+     *
+     * @var string
+     */
+    const EAV_ATTRIBUTE_BY_ENTITY_TYPE_ID_AND_ATTRIBUTE_CODE = 'eav_attribute.by.entity_type_id.and.attribute_code';
+
+    /**
      * The SQL statement to load EAV attributes by entity type ID and attribute set name.
      *
      * @var string
@@ -389,6 +396,11 @@ class SqlStatements extends AbstractSqlStatements
             'SELECT *
                FROM eav_attribute_group
               WHERE attribute_set_id = :attribute_set_id',
+        SqlStatements::EAV_ATTRIBUTE_BY_ENTITY_TYPE_ID_AND_ATTRIBUTE_CODE =>
+            'SELECT *
+               FROM eav_attribute
+              WHERE entity_type_id = :entity_type_id
+                AND attribute_code = :attribute_code',
         SqlStatements::EAV_ATTRIBUTES_BY_ENTITY_TYPE_ID_AND_ATTRIBUTE_SET_NAME =>
             'SELECT t3.*
                FROM eav_attribute AS t3
