@@ -32,7 +32,7 @@ use Symfony\Component\DependencyInjection\TaggedContainerInterface;
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
  */
-class ObserverVisitor
+class ObserverVisitor implements ObserverVisitorInterface
 {
 
     /**

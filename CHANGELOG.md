@@ -1,3 +1,13 @@
+# Version 1.0.0-beta54
+
+## Bugfixes
+
+* None
+
+## Features
+
+* Add interfaces for observer and callback visitor implementations
+
 # Version 1.0.0-beta53
 
 ## Bugfixes

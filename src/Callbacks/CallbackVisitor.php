@@ -32,7 +32,7 @@ use Symfony\Component\DependencyInjection\TaggedContainerInterface;
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
  */
-class CallbackVisitor
+class CallbackVisitor implements CallbackVisitorInterface
 {
 
     /**
@@ -76,7 +76,7 @@ class CallbackVisitor
      *
      * @return void
      */
-    public function prepareCallbacks(SubjectInterface $subject, array $callbacks, $type = null)
+    protected function prepareCallbacks(SubjectInterface $subject, array $callbacks, $type = null)
     {
 
         // iterate over the array with callbacks and prepare them
