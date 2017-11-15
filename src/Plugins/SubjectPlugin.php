@@ -23,8 +23,8 @@ namespace TechDivision\Import\Plugins;
 use TechDivision\Import\Utils\BunchKeys;
 use TechDivision\Import\Utils\RegistryKeys;
 use TechDivision\Import\ApplicationInterface;
-use TechDivision\Import\Callbacks\CallbackVisitor;
-use TechDivision\Import\Observers\ObserverVisitor;
+use TechDivision\Import\Callbacks\CallbackVisitorInterface;
+use TechDivision\Import\Observers\ObserverVisitorInterface;
 use TechDivision\Import\Subjects\SubjectFactoryInterface;
 use TechDivision\Import\Exceptions\LineNotFoundException;
 use TechDivision\Import\Exceptions\MissingOkFileException;
@@ -81,15 +81,15 @@ class SubjectPlugin extends AbstractPlugin
     /**
      * Initializes the plugin with the application instance.
      *
-     * @param \TechDivision\Import\ApplicationInterface             $application     The application instance
-     * @param \TechDivision\Import\Callbacks\CallbackVisitor        $callbackVisitor The callback visitor instance
-     * @param \TechDivision\Import\Observers\ObserverVisitor        $observerVisitor The observer visitor instance
-     * @param \TechDivision\Import\Subjects\SubjectFactoryInterface $subjectFactory  The subject factory instance
+     * @param \TechDivision\Import\ApplicationInterface               $application     The application instance
+     * @param \TechDivision\Import\Callbacks\CallbackVisitorInterface $callbackVisitor The callback visitor instance
+     * @param \TechDivision\Import\Observers\ObserverVisitorInterface $observerVisitor The observer visitor instance
+     * @param \TechDivision\Import\Subjects\SubjectFactoryInterface   $subjectFactory  The subject factory instance
      */
     public function __construct(
         ApplicationInterface $application,
-        CallbackVisitor $callbackVisitor,
-        ObserverVisitor $observerVisitor,
+        CallbackVisitorInterface $callbackVisitor,
+        ObserverVisitorInterface $observerVisitor,
         SubjectFactoryInterface $subjectFactory
     ) {
 
@@ -228,10 +228,10 @@ class SubjectPlugin extends AbstractPlugin
         foreach ($files as $pathname) {
             // query whether or not that the file is part of the actual bunch
             if ($this->isPartOfBunch($subject->getPrefix(), $subject->getSuffix(), $pathname)) {
-                try {
-                    // initialize the subject and import the bunch
-                    $subjectInstance = $this->subjectFactory->createSubject($subject);
+                // initialize the subject and import the bunch
+                $subjectInstance = $this->subjectFactory->createSubject($subject);
 
+                try {
                     // setup the subject instance
                     $subjectInstance->setUp($serial);
 
