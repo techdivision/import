@@ -183,6 +183,15 @@ class RegistryKeys
     const LINK_TYPES = 'linkTypes';
 
     /**
+     * Key for the registry entry containing the image types.
+     *
+     *
+     * @var string
+     */
+    const IMAGE_TYPES = 'imageTypes';
+
+
+    /**
      * Key for the registry entry containing the link attributes.
      *
      * @var string
