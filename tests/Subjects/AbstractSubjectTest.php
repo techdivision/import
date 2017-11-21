@@ -117,9 +117,15 @@ class AbstractSubjectTest extends AbstractTest
              ->method('mergeAttributesRecursive')
              ->with(
                  $this->serial,
-                 array(RegistryKeys::SOURCE_DIRECTORY => sprintf('%s/%s', $targetDir, $this->serial))
+                 array(
+                     RegistryKeys::SOURCE_DIRECTORY => sprintf('%s/%s', $targetDir, $this->serial),
+                     RegistryKeys::FILES => array($filename = 'var/tmp/testfile.csv' => 1)
+                 )
              )
              ->willReturn(null);
+
+        // mock the filename
+        $this->abstractSubject->setFilename($filename);
 
         // invoke the tear down and make sure no value will be returned
         $this->assertNull($this->abstractSubject->tearDown($this->serial));

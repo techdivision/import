@@ -526,7 +526,10 @@ abstract class AbstractSubject implements SubjectInterface
         // update the source directory for the next subject
         $registryProcessor->mergeAttributesRecursive(
             $serial,
-            array(RegistryKeys::SOURCE_DIRECTORY => $newSourceDir = $this->getNewSourceDir($serial))
+            array(
+                RegistryKeys::SOURCE_DIRECTORY => $newSourceDir = $this->getNewSourceDir($serial),
+                RegistryKeys::FILES => array($this->getFilename() => 1)
+            )
         );
 
         // log a debug message with the new source directory
