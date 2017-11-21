@@ -76,6 +76,10 @@ class MoveFilesSubject extends AbstractSubject
 
         // only process the file, if the filename match
         if ($this->match($filename)) {
+            // initialize the serial/filename
+            $this->setSerial($serial);
+            $this->setFilename($filename);
+
             // query whether the new source directory has to be created or not
             if (!$this->isDir($newSourceDir = $this->getNewSourceDir($serial))) {
                 $this->mkdir($newSourceDir);
