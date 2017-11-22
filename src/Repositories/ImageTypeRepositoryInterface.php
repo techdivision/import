@@ -41,9 +41,9 @@ interface ImageTypeRepositoryInterface extends RepositoryInterface
 
 
     /**
-     * Method to extends the given image types with custom image types
+     * Method to extends the given image types with custom image types.
      *
-     * @return mixed
+     * @return array The array with the extended image types
      */
     public function extendsImageTypesFromDatabase();
 }

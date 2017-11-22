@@ -20,7 +20,6 @@
 
 namespace TechDivision\Import\Repositories;
 
-
 /**
  * Repository implementation to load image type data.
  *
@@ -34,7 +33,7 @@ class ImageTypeRepository extends AbstractRepository implements LinkTypeReposito
 {
 
     /**
-     * The array with the available image types and their label columns.
+     * The array with the Magento 2 default image types and their label columns.
      *
      * @var array
      */
@@ -45,14 +44,12 @@ class ImageTypeRepository extends AbstractRepository implements LinkTypeReposito
         'thumbnail_image' => 'thumbnail_image_label'
     );
 
-
     /**
      * The cache for the query results.
      *
      * @var array
      */
     protected $cache = array();
-
 
     /**
      * Initializes the repository's prepared statements.
@@ -61,17 +58,16 @@ class ImageTypeRepository extends AbstractRepository implements LinkTypeReposito
      */
     public function init()
     {
-
     }
 
     /**
-     * Extends the global image types
+     * Extends the global image types. Override this function in case
+     * you want to extends the image types.
      *
-     * @return array
+     * @return array The array with the extended image types
      */
     public function extendsImageTypesFromDatabase()
     {
-        //Override this function in case you want to extends the image types
         return array();
     }
 
