@@ -40,6 +40,10 @@ interface ImageTypeRepositoryInterface extends RepositoryInterface
     public function findAll();
 
 
-
+    /**
+     * Method to extends the given image types with custom image types
+     *
+     * @return mixed
+     */
     public function extendsImageTypesFromDatabase();
 }
