@@ -493,6 +493,17 @@ abstract class AbstractSubject implements SubjectInterface
         // merge the header mappings with the values found in the configuration
         $this->headerMappings = array_merge($this->headerMappings, $this->getConfiguration()->getHeaderMappings());
 
+        if(isset($this->imageTypes) && count($this->imageTypes)) {
+            $localHeaderMappings = array();
+            foreach ($this->imageTypes as $key => $value) {
+                $valueImage = $value . '_image';
+                $valueImageLabel = $value . '_image_label';
+                $localHeaderMappings[$valueImage] = $value;
+                $localHeaderMappings[$valueImageLabel] = $value . '_label';
+            }
+            $this->headerMappings = array_merge($this->headerMappings, $localHeaderMappings);
+        }
+
         // merge the callback mappings the the one from the configuration file
         foreach ($this->getConfiguration()->getCallbacks() as $callbackMappings) {
             foreach ($callbackMappings as $attributeCode => $mappings) {
