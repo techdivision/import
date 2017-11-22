@@ -75,6 +75,10 @@
             <argument type="service" id="connection"/>
             <argument type="service" id="import.utility.class.name"/>
         </service>
+        <service id="import.repository.image.type" class="TechDivision\Import\Repositories\ImageTypeRepository">
+            <argument type="service" id="connection"/>
+            <argument type="service" id="import.utility.class.name"/>
+        </service>
 
         <service id="import.repository.cache.warmer.eav.attribute.option.value" class="TechDivision\Import\Repositories\CacheWarmer\EavAttributeOptionValueCacheWarmer">
             <argument type="service" id="import.repository.eav.attribute.option.value"/>
@@ -160,6 +164,7 @@
             <argument type="service" id="import.action.store"/>
             <argument type="service" id="import.action.store.group"/>
             <argument type="service" id="import.action.store.website"/>
+            <argument type="service" id="import.repository.image.type"/>
         </service>
 
         <!--

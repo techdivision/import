@@ -37,6 +37,7 @@ use TechDivision\Import\Repositories\StoreRepository;
 use TechDivision\Import\Repositories\StoreWebsiteRepository;
 use TechDivision\Import\Repositories\TaxClassRepository;
 use TechDivision\Import\Repositories\LinkTypeRepository;
+use TechDivision\Import\Repositories\ImageTypeRepository;
 use TechDivision\Import\Repositories\LinkAttributeRepository;
 use TechDivision\Import\Repositories\CoreConfigDataRepository;
 
@@ -137,6 +138,13 @@ class ImportProcessor implements ImportProcessorInterface
     protected $linkTypeRepository;
 
     /**
+     * The repository to access image types.
+     *
+     * @var \TechDivision\Import\Repositories\ImageTypeRepository
+     */
+    protected $imageTypeRepository;
+
+    /**
      * The repository to access link attributes.
      *
      * @var \TechDivision\Import\Repositories\LinkAttributeRepository
@@ -191,6 +199,7 @@ class ImportProcessor implements ImportProcessorInterface
      * @param \TechDivision\Import\Actions\StoreAction                      $storeAction                 The action with the store CRUD methods
      * @param \TechDivision\Import\Actions\StoreGroupAction                 $storeGroupAction            The action with the store group CRUD methods
      * @param \TechDivision\Import\Actions\StoreWebsiteAction               $storeWebsiteAction          The action with the store website CRUD methods
+     * @param \TechDivision\Import\Repositories\ImageTypeRepository         $imageTypeRepository         The repository to access images types
      */
     public function __construct(
         ConnectionInterface $connection,
@@ -209,7 +218,8 @@ class ImportProcessor implements ImportProcessorInterface
         CoreConfigDataRepository $coreConfigDataRepository,
         StoreAction $storeAction,
         StoreGroupAction $storeGroupAction,
-        StoreWebsiteAction $storeWebsiteAction
+        StoreWebsiteAction $storeWebsiteAction,
+        ImageTypeRepository $imageTypeRepository
     ) {
         $this->setConnection($connection);
         $this->setCategoryAssembler($categoryAssembler);
@@ -228,6 +238,7 @@ class ImportProcessor implements ImportProcessorInterface
         $this->setStoreAction($storeAction);
         $this->setStoreGroupAction($storeGroupAction);
         $this->setStoreWebsiteAction($storeWebsiteAction);
+        $this->setImageTypeRepository($imageTypeRepository);
     }
 
     /**
@@ -541,7 +552,7 @@ class ImportProcessor implements ImportProcessorInterface
     /**
      * Set's the repository to access link attributes.
      *
-     * @param \TechDivision\Import\Repositories\LinkTypeRepository $linkAttributeRepository The repository to access link attributes
+     * @param \TechDivision\Import\Repositories\LinkAttributeRepository $linkAttributeRepository The repository to access link attributes
      *
      * @return void
      */
@@ -553,11 +564,33 @@ class ImportProcessor implements ImportProcessorInterface
     /**
      * Return's the repository to access link attributes.
      *
-     * @return \TechDivision\Import\Repositories\LinkTypeRepository The repository instance
+     * @return \TechDivision\Import\Repositories\LinkAttributeRepository The repository instance
      */
     public function getLinkAttributeRepository()
     {
         return $this->linkAttributeRepository;
+    }
+
+    /**
+     * Set's the repository to access link types.
+     *
+     * @param \TechDivision\Import\Repositories\ImageTypeRepository $imageTypeRepository The repository to access image types
+     *
+     * @return void
+     */
+    public function setImageTypeRepository($imageTypeRepository)
+    {
+        $this->imageTypeRepository = $imageTypeRepository;
+    }
+
+    /**
+     * Return's the repository to access link types.
+     *
+     * @return \TechDivision\Import\Repositories\ImageTypeRepository The repository instance
+     */
+    public function getImageTypeRepository()
+    {
+        return $this->imageTypeRepository;
     }
 
     /**
@@ -854,6 +887,16 @@ class ImportProcessor implements ImportProcessorInterface
     }
 
     /**
+     * Return's an array with all available image types.
+     *
+     * @return array The available image types
+     */
+    public function getImageTypes()
+    {
+        return $this->getImageTypeRepository()->findAll();
+    }
+
+    /**
      * Return's an array with the Magento 2 configuration.
      *
      * @return array The Magento 2 configuration
@@ -921,6 +964,7 @@ class ImportProcessor implements ImportProcessorInterface
         $globalData[RegistryKeys::ROOT_CATEGORIES] = $this->getRootCategories();
         $globalData[RegistryKeys::CORE_CONFIG_DATA] = $this->getCoreConfigData();
         $globalData[RegistryKeys::ENTITY_TYPES] = $eavEntityTypes = $this->getEavEntityTypes();
+        $globalData[RegistryKeys::IMAGE_TYPES] = $this->getImageTypes();
 
         // prepare the attribute sets
         $eavAttributes = array();
