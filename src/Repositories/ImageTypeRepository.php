@@ -20,6 +20,8 @@
 
 namespace TechDivision\Import\Repositories;
 
+use TechDivision\Import\Utils\ImageTypeKeys;
+
 /**
  * Repository implementation to load image type data.
  *
@@ -37,11 +39,23 @@ class ImageTypeRepository extends AbstractRepository implements LinkTypeReposito
      *
      * @var array
      */
-    const IMAGE_TYPES = array(
-        'image' => array('image' => 'base_image', 'image_label' => 'base_image_label'),
-        'small_image' => array('image' => 'small_image', 'image_label' => 'small_image_label'),
-        'swatch_image' => array('image' => 'swatch_image', 'image_label' => 'swatch_image_label'),
-        'thumbnail' => array('image' => 'thumbnail_image', 'image_label' => 'thumbnail_image_label')
+    protected $imageTypes = array(
+        'image' => array(
+            ImageTypeKeys::IMAGE => 'base_image',
+            ImageTypeKeys::IMAGE_LABEL => 'base_image_label'
+        ),
+        'small_image' => array(
+            ImageTypeKeys::IMAGE => 'small_image',
+            ImageTypeKeys::IMAGE_LABEL => 'small_image_label'
+        ),
+        'swatch_image' => array(
+            ImageTypeKeys::IMAGE => 'swatch_image',
+            ImageTypeKeys::IMAGE_LABEL => 'swatch_image_label'
+        ),
+        'thumbnail' => array(
+            ImageTypeKeys::IMAGE => 'thumbnail_image',
+            ImageTypeKeys::IMAGE_LABEL => 'thumbnail_image_label'
+        )
     );
 
     /**
@@ -62,7 +76,7 @@ class ImageTypeRepository extends AbstractRepository implements LinkTypeReposito
 
     /**
      * Extends the global image types. Override this function in case
-     * you want to extends the image types.
+     * the image types has to be extended.
      *
      * @return array The array with the extended image types
      */
@@ -78,13 +92,13 @@ class ImageTypeRepository extends AbstractRepository implements LinkTypeReposito
      */
     public function findAll()
     {
+
         // query whether or not we've already loaded the value
         if (!isset($this->cache[__METHOD__])) {
-            // append the image types to the cache
-            $imageTypesFromDB = $this->extendsImageTypesFromDatabase();
-            $imageTypes = array_merge(static::IMAGE_TYPES, $imageTypesFromDB);
-            $this->cache[__METHOD__] = $imageTypes;
+            // load the extended image types and append the image types to the cache
+            $this->cache[__METHOD__] =  array_merge($this->imageTypes, $this->extendsImageTypesFromDatabase());
         }
+
         // return the image types from the cache
         return $this->cache[__METHOD__];
     }
