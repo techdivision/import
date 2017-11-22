@@ -33,15 +33,15 @@ class ImageTypeRepository extends AbstractRepository implements LinkTypeReposito
 {
 
     /**
-     * The array with the Magento 2 default image types and their label columns.
+     * The array with the Magento 2 default image types and their label columns. The key equals to the attribute name.
      *
      * @var array
      */
     const IMAGE_TYPES = array(
-        'base_image'      => 'base_image_label',
-        'small_image'     => 'small_image_label',
-        'swatch_image'    => 'swatch_image_label',
-        'thumbnail_image' => 'thumbnail_image_label'
+        'image' => array('image' => 'base_image', 'image_label' => 'base_image_label'),
+        'small_image' => array('image' => 'small_image', 'image_label' => 'small_image_label'),
+        'swatch_image' => array('image' => 'swatch_image', 'image_label' => 'swatch_image_label'),
+        'thumbnail' => array('image' => 'thumbnail_image', 'image_label' => 'thumbnail_image_label')
     );
 
     /**
