@@ -104,5 +104,4 @@ class ConfigurationKeys
      * @var string
      */
     const CLEAN_UP_EMPTY_COLUMNS = 'clean-up-empty-columns';
-
 }
