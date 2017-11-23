@@ -20,6 +20,8 @@
 
 namespace TechDivision\Import\Repositories;
 
+use TechDivision\Import\Utils\MemberNames;
+
 /**
  * Repository implementation to load image type data.
  *
@@ -84,13 +86,14 @@ class ImageTypeRepository extends AbstractRepository implements LinkTypeReposito
         if ($imageTypes = $this->imageTypesByEntityTypeCodeAndFrontendInputStmt->fetchAll(\PDO::FETCH_ASSOC)) {
             // iterate over the image types found
             foreach ($imageTypes as $imageType) {
+                $attributeCode = $imageType[MemberNames::ATTRIBUTE_CODE];
                 // map the default image types
-                if (isset($this->defaultMappings[$imageType])) {
-                    $imageType = $this->defaultMappings[$imageType];
+                if (isset($this->defaultMappings[$attributeCode])) {
+                    $attributeCode = $this->defaultMappings[$attributeCode];
                 }
 
                 // add the (mapped) image type
-                $result[] = array($imageType => sprintf('%s_label', $imageType));
+                $result[$attributeCode] = sprintf('%s_label', $attributeCode);
             }
         }
 
