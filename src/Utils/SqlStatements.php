@@ -96,6 +96,13 @@ class SqlStatements extends AbstractSqlStatements
     const LINK_TYPES = 'link_types';
 
     /**
+     * The SQL statement to load the available image types by their entity type code and frontend input.
+     *
+     * @var string
+     */
+    const IMAGE_TYPES = 'image_types';
+
+    /**
      * The SQL statement to load all available link types.
      *
      * @var string
@@ -582,6 +589,18 @@ class SqlStatements extends AbstractSqlStatements
                     default_group_id = :default_group_id,
                     is_default = :is_default
               WHERE website_id = :website_id',
+        SqlStatements::IMAGE_TYPES =>
+            'SELECT main_table.attribute_code
+               FROM eav_attribute AS main_table
+         INNER JOIN eav_entity_type AS entity_type
+                 ON main_table.entity_type_id = entity_type.entity_type_id
+          LEFT JOIN eav_entity_attribute
+                 ON main_table.attribute_id = eav_entity_attribute.attribute_id
+         INNER JOIN catalog_eav_attribute AS additional_table
+                 ON main_table.attribute_id = additional_table.attribute_id
+              WHERE (entity_type_code = \'catalog_product\')
+                AND (frontend_input = \'media_image\')
+           GROUP BY main_table.attribute_code'
     );
 
     /**

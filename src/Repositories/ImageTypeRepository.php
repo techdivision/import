@@ -20,8 +20,6 @@
 
 namespace TechDivision\Import\Repositories;
 
-use TechDivision\Import\Utils\ImageTypeKeys;
-
 /**
  * Repository implementation to load image type data.
  *
@@ -35,35 +33,21 @@ class ImageTypeRepository extends AbstractRepository implements LinkTypeReposito
 {
 
     /**
-     * The array with the Magento 2 default image types and their label columns. The key equals to the attribute name.
+     * The prepared statement to load the default store.
      *
-     * @var array
+     * @var \PDOStatement
      */
-    protected $imageTypes = array(
-        'image' => array(
-            ImageTypeKeys::IMAGE => 'base_image',
-            ImageTypeKeys::IMAGE_LABEL => 'base_image_label'
-        ),
-        'small_image' => array(
-            ImageTypeKeys::IMAGE => 'small_image',
-            ImageTypeKeys::IMAGE_LABEL => 'small_image_label'
-        ),
-        'swatch_image' => array(
-            ImageTypeKeys::IMAGE => 'swatch_image',
-            ImageTypeKeys::IMAGE_LABEL => 'swatch_image_label'
-        ),
-        'thumbnail' => array(
-            ImageTypeKeys::IMAGE => 'thumbnail_image',
-            ImageTypeKeys::IMAGE_LABEL => 'thumbnail_image_label'
-        )
-    );
+    protected $imageTypesByEntityTypeCodeAndFrontendInputStmt;
 
     /**
-     * The cache for the query results.
+     * The mapping for the image/thumbnail image types
      *
      * @var array
      */
-    protected $cache = array();
+    protected $defaultMappings = array(
+        'image'     => 'base_image',
+        'thumbnail' => 'thumbnail_image'
+    );
 
     /**
      * Initializes the repository's prepared statements.
@@ -72,34 +56,45 @@ class ImageTypeRepository extends AbstractRepository implements LinkTypeReposito
      */
     public function init()
     {
+
+        // load the utility class name
+        $utilityClassName = $this->getUtilityClassName();
+
+        // initialize the prepared statements
+        $this->imageTypesByEntityTypeCodeAndFrontendInputStmt =
+            $this->getConnection()->prepare($this->getUtilityClass()->find($utilityClassName::IMAGE_TYPES));
     }
 
     /**
-     * Extends the global image types. Override this function in case
-     * the image types has to be extended.
-     *
-     * @return array The array with the extended image types
-     */
-    public function extendsImageTypesFromDatabase()
-    {
-        return array();
-    }
-
-    /**
-     * Return's an array with all available image types with the link type code as key.
+     * Return's an array with all available image types for the passed entity type code
+     * and frontend input type with the link type code as key.
      *
      * @return array The available image types
      */
     public function findAll()
     {
 
-        // query whether or not we've already loaded the value
-        if (!isset($this->cache[__METHOD__])) {
-            // load the extended image types and append the image types to the cache
-            $this->cache[__METHOD__] =  array_merge($this->imageTypes, $this->extendsImageTypesFromDatabase());
+        // initialize the result array
+        $result = array();
+
+        // load and the image types from the EAV attribute table
+        $this->imageTypesByEntityTypeCodeAndFrontendInputStmt->execute();
+
+        // fetch the image types with the passed parameters
+        if ($imageTypes = $this->imageTypesByEntityTypeCodeAndFrontendInputStmt->fetchAll(\PDO::FETCH_ASSOC)) {
+            // iterate over the image types found
+            foreach ($imageTypes as $imageType) {
+                // map the default image types
+                if (isset($this->defaultMappings[$imageType])) {
+                    $imageType = $this->defaultMappings[$imageType];
+                }
+
+                // add the (mapped) image type
+                $result[] = array($imageType => sprintf('%s_label', $imageType));
+            }
         }
 
-        // return the image types from the cache
-        return $this->cache[__METHOD__];
+        // return the result
+        return $result;
     }
 }

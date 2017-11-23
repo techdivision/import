@@ -33,9 +33,10 @@ interface LinkTypeRepositoryInterface extends RepositoryInterface
 {
 
     /**
-     * Return's an array with all available link types with the link type code as key.
+     * Return's an array with all available image types for the passed entity type code
+     * and frontend input type with the link type code as key.
      *
-     * @return array The available link types
+     * @return array The available image types
      */
     public function findAll();
 }
