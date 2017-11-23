@@ -104,4 +104,11 @@ class ConfigurationKeys
      * @var string
      */
     const CLEAN_UP_EMPTY_COLUMNS = 'clean-up-empty-columns';
+
+    /**
+     * Name for the configuration key 'clean-up-empty-image-columns'.
+     *
+     * @var string
+     */
+    const CLEAN_UP_EMPTY_IMAGE_COLUMNS = 'clean-up-empty-image-columns';
 }

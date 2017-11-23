@@ -110,11 +110,13 @@ trait AttributeObserverTrait
             // query whether or not column names that has to be cleaned up have been configured
             if ($this->getSubject()->getConfiguration()->hasParam(ConfigurationKeys::CLEAN_UP_EMPTY_COLUMNS)) {
                 // if yes, load the column names
-                $cleanUpEmptyColumns = $this->getSubject()->getConfiguration()->getParam(ConfigurationKeys::CLEAN_UP_EMPTY_COLUMNS);
+                $cleanUpEmptyColumns = $this->getSubject()->getCleanUpColumns();
 
                 // translate the column names into column keys
                 foreach ($cleanUpEmptyColumns as $cleanUpEmptyColumn) {
-                    $this->cleanUpEmptyColumnKeys[] = $this->getHeader($cleanUpEmptyColumn);
+                    if ($this->hasHeader($cleanUpEmptyColumn)) {
+                        $this->cleanUpEmptyColumnKeys[] = $this->getHeader($cleanUpEmptyColumn);
+                    }
                 }
             }
         }
