@@ -528,7 +528,7 @@ abstract class AbstractSubject implements SubjectInterface
             $serial,
             array(
                 RegistryKeys::SOURCE_DIRECTORY => $newSourceDir = $this->getNewSourceDir($serial),
-                RegistryKeys::FILES => array($this->getFilename() => 1)
+                RegistryKeys::FILES => array($this->getFilename() => array(RegistryKeys::STATUS => 1))
             )
         );
 
