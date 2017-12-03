@@ -1,3 +1,13 @@
+# Version 1.0.0-beta57
+
+## Bugfixes
+
+* None
+
+## Features
+
+* Update processed file status in AbstractSubject
+
 # Version 1.0.0-beta56
 
 ## Bugfixes
