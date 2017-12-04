@@ -70,11 +70,8 @@ class EavEntityTypeRepository extends AbstractCachedRepository implements EavEnt
     public function findAll()
     {
 
-        // load the utility class name
-        $utilityClassName = $this->getUtilityClassName();
-
         // prepare the cache key
-        $cacheKey = $this->cacheKey($utilityClassName::EAV_ATTRIBUTE_OPTION_VALUE_BY_OPTION_ID_AND_STORE_ID, array());
+        $cacheKey = $this->cacheKey(SqlStatementKeys::EAV_ATTRIBUTE_OPTION_VALUE_BY_OPTION_ID_AND_STORE_ID, array());
 
         // query whether or not the result has been cached
         if ($this->notCached($cacheKey)) {

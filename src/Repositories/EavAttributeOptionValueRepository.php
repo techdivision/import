@@ -107,11 +107,8 @@ class EavAttributeOptionValueRepository extends AbstractCachedRepository impleme
             MemberNames::STORE_ID  => $storeId,
         );
 
-        // load the utility class name
-        $utilityClassName = $this->getUtilityClassName();
-
         // prepare the cache key
-        $cacheKey = $this->cacheKey($utilityClassName::EAV_ATTRIBUTE_OPTION_VALUE_BY_OPTION_ID_AND_STORE_ID, $params);
+        $cacheKey = $this->cacheKey(SqlStatementKeys::EAV_ATTRIBUTE_OPTION_VALUE_BY_OPTION_ID_AND_STORE_ID, $params);
 
         // query whether or not the result has been cached
         if ($this->notCached($cacheKey)) {
@@ -143,11 +140,8 @@ class EavAttributeOptionValueRepository extends AbstractCachedRepository impleme
             MemberNames::VALUE          => $value
         );
 
-        // load the utility class name
-        $utilityClassName = $this->getUtilityClassName();
-
         // prepare the cache key
-        $cacheKey = $this->cacheKey($utilityClassName::EAV_ATTRIBUTE_OPTION_VALUE_BY_ATTRIBUTE_CODE_AND_STORE_ID_AND_VALUE, $params);
+        $cacheKey = $this->cacheKey(SqlStatementKeys::EAV_ATTRIBUTE_OPTION_VALUE_BY_ATTRIBUTE_CODE_AND_STORE_ID_AND_VALUE, $params);
 
         // query whether or not the result has been cached
         if ($this->notCached($cacheKey)) {

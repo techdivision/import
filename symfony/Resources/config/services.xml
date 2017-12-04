@@ -13,7 +13,7 @@
 
         <service id="import.generator.core.config.data.uid" class="TechDivision\Import\Utils\Generators\CoreConfigDataUidGenerator"/>
 
-        <service id="import.repository.sql.statement" class="TechDivision\Import\Repository\SqlStatementRepository"/>
+        <service id="import.repository.sql.statement" class="TechDivision\Import\Repositories\SqlStatementRepository"/>
         <service id="import.repository.category" class="TechDivision\Import\Repositories\CategoryRepository">
             <argument type="service" id="connection"/>
             <argument type="service" id="import.repository.sql.statement"/>
