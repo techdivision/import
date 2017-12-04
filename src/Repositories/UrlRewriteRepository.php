@@ -21,6 +21,7 @@
 namespace TechDivision\Import\Repositories;
 
 use TechDivision\Import\Utils\MemberNames;
+use TechDivision\Import\Utils\SqlStatementKeys;
 
 /**
  * Repository implementation to load URL rewrite data.
@@ -56,14 +57,11 @@ class UrlRewriteRepository extends AbstractRepository implements UrlRewriteRepos
     public function init()
     {
 
-        // load the utility class name
-        $utilityClassName = $this->getUtilityClassName();
-
         // initialize the prepared statements
         $this->urlRewritesByEntityTypeAndEntityIdStmt =
-            $this->getConnection()->prepare($this->getUtilityClass()->find($utilityClassName::URL_REWRITES_BY_ENTITY_TYPE_AND_ENTITY_ID));
+            $this->getConnection()->prepare($this->loadStatement(SqlStatementKeys::URL_REWRITES_BY_ENTITY_TYPE_AND_ENTITY_ID));
         $this->urlRewritesByEntityTypeAndEntityIdAndStoreIdStmt =
-            $this->getConnection()->prepare($this->getUtilityClass()->find($utilityClassName::URL_REWRITES_BY_ENTITY_TYPE_AND_ENTITY_ID_AND_STORE_ID));
+            $this->getConnection()->prepare($this->loadStatement(SqlStatementKeys::URL_REWRITES_BY_ENTITY_TYPE_AND_ENTITY_ID_AND_STORE_ID));
     }
 
     /**

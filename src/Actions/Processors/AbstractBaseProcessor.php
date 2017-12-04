@@ -59,19 +59,6 @@ abstract class AbstractBaseProcessor extends AbstractProcessor
     }
 
     /**
-     * Set's the prepared statement.
-     *
-     * @param \PDOStatement $preparedStatement The prepared statement
-     *
-     * @return void
-     * @deprecated Use TechDivision\Import\Actions\Processors\AbstractBaseProcessor::addPreparedStatement() instead
-     */
-    protected function setPreparedStatement(\PDOStatement $preparedStatement)
-    {
-        $this->preparedStatements[$preparedStatement->queryString] = $preparedStatement;
-    }
-
-    /**
      * Add's the prepared statement.
      *
      * @param string        $name              The unique name of the prepared statement

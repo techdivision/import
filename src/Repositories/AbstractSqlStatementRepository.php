@@ -1,7 +1,7 @@
 <?php
 
 /**
- * TechDivision\Import\Utils\SqlStatementsInterface
+ * TechDivision\Import\Repositories\AbstractSqlStatementRepository
  *
  * NOTICE OF LICENSE
  *
@@ -18,10 +18,10 @@
  * @link      http://www.techdivision.com
  */
 
-namespace TechDivision\Import\Utils;
+namespace TechDivision\Import\Repositories;
 
 /**
- * Interfaces of the classes that contains the SQL statements to use.
+ * Abstract repository class for the SQL statements to use.
  *
  * @author    Tim Wagner <t.wagner@techdivision.com>
  * @copyright 2016 TechDivision GmbH <info@techdivision.com>
@@ -29,16 +29,33 @@ namespace TechDivision\Import\Utils;
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
  */
-interface SqlStatementsInterface
+abstract class AbstractSqlStatementRepository implements SqlStatementRepositoryInterface
 {
 
     /**
-     * Returns the SQL statement with the passed name.
+     * The initializes SQL statements.
      *
-     * @param string $key The key of the SQL statement to return
+     * @var array
+     */
+    protected $preparedStatements = array();
+
+    /**
+     * Returns the SQL statement with the passed ID.
+     *
+     * @param string $id The ID of the SQL statement to return
      *
      * @return string The SQL statement
      * @throws \Exception Is thrown, if the SQL statement with the passed key cannot be found
      */
-    public function find($key);
+    public function load($id)
+    {
+
+        // try to find the SQL statement with the passed key
+        if (isset($this->preparedStatements[$id])) {
+            return $this->preparedStatements[$id];
+        }
+
+        // throw an exception if NOT available
+        throw new \Exception(sprintf('Can\'t find SQL statement with ID %s', $id));
+    }
 }

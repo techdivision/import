@@ -21,6 +21,7 @@
 namespace TechDivision\Import\Repositories;
 
 use TechDivision\Import\Utils\MemberNames;
+use TechDivision\Import\Utils\SqlStatementKeys;
 
 /**
  * Repository implementation to load EAV attribute set data.
@@ -56,14 +57,11 @@ class EavAttributeSetRepository extends AbstractRepository implements EavAttribu
     public function init()
     {
 
-        // load the utility class name
-        $utilityClassName = $this->getUtilityClassName();
-
         // initialize the prepared statements
         $this->eavAttributeSetStmt =
-            $this->getConnection()->prepare($this->getUtilityClass()->find($utilityClassName::EAV_ATTRIBUTE_SET));
+            $this->getConnection()->prepare($this->loadStatement(SqlStatementKeys::EAV_ATTRIBUTE_SET));
         $this->eavAttributeSetsByEntityTypeIdStmt =
-            $this->getConnection()->prepare($this->getUtilityClass()->find($utilityClassName::EAV_ATTRIBUTE_SETS_BY_ENTITY_TYPE_ID));
+            $this->getConnection()->prepare($this->loadStatement(SqlStatementKeys::EAV_ATTRIBUTE_SETS_BY_ENTITY_TYPE_ID));
     }
 
     /**

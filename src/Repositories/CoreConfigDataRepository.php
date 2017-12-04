@@ -20,7 +20,7 @@
 
 namespace TechDivision\Import\Repositories;
 
-use TechDivision\Import\Utils\SqlStatementsInterface;
+use TechDivision\Import\Utils\SqlStatementKeys;
 use TechDivision\Import\Utils\Generators\GeneratorInterface;
 use TechDivision\Import\Connection\ConnectionInterface;
 
@@ -54,16 +54,16 @@ class CoreConfigDataRepository extends AbstractRepository implements CoreConfigD
      * Initialize the repository with the passed connection and utility class name.
      * .
      *
-     * @param \TechDivision\Import\Utils\Generators\GeneratorInterface $coreConfigDataUidGenerator The UID generator for the core config data
-     * @param \TechDivision\Import\Connection\ConnectionInterface      $connection                 The connection instance
-     * @param \TechDivision\Import\Utils\SqlStatementsInterface        $utilityClass               The utility class instance
+     * @param \TechDivision\Import\Utils\Generators\GeneratorInterface          $coreConfigDataUidGenerator The UID generator for the core config data
+     * @param \TechDivision\Import\Connection\ConnectionInterface               $connection                 The connection instance
+     * @param \TechDivision\Import\Repositories\SqlStatementRepositoryInterface $sqlStatementRepository     The SQL repository instance
      */
     public function __construct(
         GeneratorInterface $coreConfigDataUidGenerator,
         ConnectionInterface $connection,
-        SqlStatementsInterface $utilityClass
+        SqlStatementRepositoryInterface $sqlStatementRepository
     ) {
-        parent::__construct($connection, $utilityClass);
+        parent::__construct($connection, $sqlStatementRepository);
         $this->coreConfigDataUidGenerator = $coreConfigDataUidGenerator;
     }
 
@@ -75,12 +75,9 @@ class CoreConfigDataRepository extends AbstractRepository implements CoreConfigD
     public function init()
     {
 
-        // load the utility class name
-        $utilityClassName = $this->getUtilityClassName();
-
         // initialize the prepared statements
         $this->coreConfigDataStmt =
-            $this->getConnection()->prepare($this->getUtilityClass()->find($utilityClassName::CORE_CONFIG_DATA));
+            $this->getConnection()->prepare($this->loadStatement(SqlStatementKeys::CORE_CONFIG_DATA));
     }
 
     /**

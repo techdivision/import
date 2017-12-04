@@ -119,7 +119,7 @@ class AbstractSubjectTest extends AbstractTest
                  $this->serial,
                  array(
                      RegistryKeys::SOURCE_DIRECTORY => sprintf('%s/%s', $targetDir, $this->serial),
-                     RegistryKeys::FILES => array($filename = 'var/tmp/testfile.csv' => 1)
+                     RegistryKeys::FILES => array($filename = 'var/tmp/testfile.csv' => array(RegistryKeys::STATUS => 1))
                  )
              )
              ->willReturn(null);

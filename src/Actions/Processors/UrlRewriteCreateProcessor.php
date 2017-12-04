@@ -20,6 +20,8 @@
 
 namespace TechDivision\Import\Actions\Processors;
 
+use TechDivision\Import\Utils\SqlStatementKeys;
+
 /**
  * The URL rewrite create processor implementation.
  *
@@ -40,14 +42,7 @@ class UrlRewriteCreateProcessor extends AbstractCreateProcessor
      */
     protected function getStatements()
     {
-
-        // load the utility class name
-        $utilityClassName = $this->getUtilityClassName();
-
-        // return the array with the SQL statements that has to be prepared
-        return array(
-            $utilityClassName::CREATE_URL_REWRITE => $this->getUtilityClass()->find($utilityClassName::CREATE_URL_REWRITE)
-        );
+        return array(SqlStatementKeys::CREATE_URL_REWRITE => $this->loadStatement(SqlStatementKeys::CREATE_URL_REWRITE));
     }
 
     /**

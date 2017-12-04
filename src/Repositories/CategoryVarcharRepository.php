@@ -20,6 +20,8 @@
 
 namespace TechDivision\Import\Repositories;
 
+use TechDivision\Import\Utils\SqlStatementKeys;
+
 /**
  * Repository implementation to load category varchar data.
  *
@@ -52,12 +54,9 @@ class CategoryVarcharRepository extends AbstractRepository implements CategoryVa
     public function findAllByEntityIds(array $entityIds)
     {
 
-        // load the utility class name
-        $utilityClassName = $this->getUtilityClassName();
-
         // prepare the cache key
         $vals = implode(',', $entityIds);
-        $sql = str_replace('?', $vals, $this->getUtilityClass()->find($utilityClassName::CATEGORY_VARCHARS_BY_ENTITY_IDS));
+        $sql = str_replace('?', $vals, $this->loadStatement(SqlStatementKeys::CATEGORY_VARCHARS_BY_ENTITY_IDS));
 
         // load the categories with the passed values and return them
         if ($stmt = $this->getConnection()->query($sql)) {
@@ -75,11 +74,9 @@ class CategoryVarcharRepository extends AbstractRepository implements CategoryVa
      */
     public function findByEntityId($entityId)
     {
-        // load the utility class name
-        $utilityClassName = $this->getUtilityClassName();
 
         // prepare the cache key
-        $sql = str_replace('?', $entityId, $this->getUtilityClass()->find($utilityClassName::CATEGORY_VARCHARS_BY_ENTITY_IDS));
+        $sql = str_replace('?', $entityId, $this->loadStatement(SqlStatementKeys::CATEGORY_VARCHARS_BY_ENTITY_IDS));
 
         // load the categories with the passed values and return them
         if ($stmt = $this->getConnection()->query($sql)) {

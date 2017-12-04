@@ -21,6 +21,7 @@
 namespace TechDivision\Import\Repositories;
 
 use TechDivision\Import\Utils\MemberNames;
+use TechDivision\Import\Utils\SqlStatementKeys;
 
 /**
  * Repository implementation to load store data.
@@ -56,14 +57,11 @@ class StoreRepository extends AbstractRepository
     public function init()
     {
 
-        // load the utility class name
-        $utilityClassName = $this->getUtilityClassName();
-
         // initialize the prepared statements
         $this->storesStmt =
-            $this->getConnection()->prepare($this->getUtilityClass()->find($utilityClassName::STORES));
+            $this->getConnection()->prepare($this->loadStatement(SqlStatementKeys::STORES));
         $this->storeDefaultStmt =
-            $this->getConnection()->prepare($this->getUtilityClass()->find($utilityClassName::STORE_DEFAULT));
+            $this->getConnection()->prepare($this->loadStatement(SqlStatementKeys::STORE_DEFAULT));
     }
 
     /**

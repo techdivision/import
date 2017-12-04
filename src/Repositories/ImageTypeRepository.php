@@ -21,6 +21,7 @@
 namespace TechDivision\Import\Repositories;
 
 use TechDivision\Import\Utils\MemberNames;
+use TechDivision\Import\Utils\SqlStatementKeys;
 
 /**
  * Repository implementation to load image type data.
@@ -59,12 +60,9 @@ class ImageTypeRepository extends AbstractRepository implements LinkTypeReposito
     public function init()
     {
 
-        // load the utility class name
-        $utilityClassName = $this->getUtilityClassName();
-
         // initialize the prepared statements
         $this->imageTypesByEntityTypeCodeAndFrontendInputStmt =
-            $this->getConnection()->prepare($this->getUtilityClass()->find($utilityClassName::IMAGE_TYPES));
+            $this->getConnection()->prepare($this->loadStatement(SqlStatementKeys::IMAGE_TYPES));
     }
 
     /**

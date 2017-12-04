@@ -21,6 +21,7 @@
 namespace TechDivision\Import\Repositories;
 
 use TechDivision\Import\Utils\MemberNames;
+use TechDivision\Import\Utils\SqlStatementKeys;
 
 /**
  * Repository implementation to load the EAV entity type data.
@@ -56,12 +57,9 @@ class EavEntityTypeRepository extends AbstractCachedRepository implements EavEnt
     public function init()
     {
 
-        // load the utility class name
-        $utilityClassName = $this->getUtilityClassName();
-
         // initialize the prepared statements
         $this->eavEntityTypeStmt =
-            $this->getConnection()->prepare($this->getUtilityClass()->find($utilityClassName::EAV_ENTITY_TYPES));
+            $this->getConnection()->prepare($this->loadStatement(SqlStatementKeys::EAV_ENTITY_TYPES));
     }
 
     /**

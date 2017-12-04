@@ -21,6 +21,7 @@
 namespace TechDivision\Import\Repositories;
 
 use TechDivision\Import\Utils\MemberNames;
+use TechDivision\Import\Utils\SqlStatementKeys;
 
 /**
  * Cached repository implementation to load EAV attribute option value data.
@@ -63,20 +64,17 @@ class EavAttributeOptionValueRepository extends AbstractCachedRepository impleme
     public function init()
     {
 
-        // load the utility class name
-        $utilityClassName = $this->getUtilityClassName();
-
         // initialize the prepared statements
         $this->eavAttributeOptionValuesStmt =
-            $this->getConnection()->prepare($this->getUtilityClass()->find($utilityClassName::EAV_ATTRIBUTE_OPTION_VALUES));
+            $this->getConnection()->prepare($this->loadStatement(SqlStatementKeys::EAV_ATTRIBUTE_OPTION_VALUES));
 
         // initialize the prepared statements
         $this->eavAttributeOptionValueByOptionIdAndStoreIdStmt =
-            $this->getConnection()->prepare($this->getUtilityClass()->find($utilityClassName::EAV_ATTRIBUTE_OPTION_VALUE_BY_OPTION_ID_AND_STORE_ID));
+            $this->getConnection()->prepare($this->loadStatement(SqlStatementKeys::EAV_ATTRIBUTE_OPTION_VALUE_BY_OPTION_ID_AND_STORE_ID));
 
         // initialize the prepared statements
         $this->eavAttributeOptionValueByAttributeCodeAndStoreIdAndValueStmt =
-            $this->getConnection()->prepare($this->getUtilityClass()->find($utilityClassName::EAV_ATTRIBUTE_OPTION_VALUE_BY_ATTRIBUTE_CODE_AND_STORE_ID_AND_VALUE));
+            $this->getConnection()->prepare($this->loadStatement(SqlStatementKeys::EAV_ATTRIBUTE_OPTION_VALUE_BY_ATTRIBUTE_CODE_AND_STORE_ID_AND_VALUE));
     }
 
     /**

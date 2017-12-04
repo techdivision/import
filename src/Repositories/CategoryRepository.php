@@ -21,6 +21,7 @@
 namespace TechDivision\Import\Repositories;
 
 use TechDivision\Import\Utils\MemberNames;
+use TechDivision\Import\Utils\SqlStatementKeys;
 
 /**
  * Repository implementation to load category data.
@@ -56,14 +57,11 @@ class CategoryRepository extends AbstractRepository implements CategoryRepositor
     public function init()
     {
 
-        // load the utility class name
-        $utilityClassName = $this->getUtilityClassName();
-
         // initialize the prepared statements
         $this->categoriesStmt =
-            $this->getConnection()->prepare($this->getUtilityClass()->find($utilityClassName::CATEGORIES));
+            $this->getConnection()->prepare($this->loadStatement(SqlStatementKeys::CATEGORIES));
         $this->rootCategoriesStmt =
-            $this->getConnection()->prepare($this->getUtilityClass()->find($utilityClassName::ROOT_CATEGORIES));
+            $this->getConnection()->prepare($this->loadStatement(SqlStatementKeys::ROOT_CATEGORIES));
     }
 
     /**

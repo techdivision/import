@@ -21,6 +21,7 @@
 namespace TechDivision\Import\Repositories;
 
 use TechDivision\Import\Utils\MemberNames;
+use TechDivision\Import\Utils\SqlStatementKeys;
 
 /**
  * Repository implementation to load link type data.
@@ -56,12 +57,9 @@ class LinkTypeRepository extends AbstractRepository implements LinkTypeRepositor
     public function init()
     {
 
-        // load the utility class name
-        $utilityClassName = $this->getUtilityClassName();
-
         // initialize the prepared statements
         $this->linkTypeStmt =
-            $this->getConnection()->prepare($this->getUtilityClass()->find($utilityClassName::LINK_TYPES));
+            $this->getConnection()->prepare($this->loadStatement(SqlStatementKeys::LINK_TYPES));
     }
 
     /**

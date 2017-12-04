@@ -20,6 +20,8 @@
 
 namespace TechDivision\Import\Actions\Processors;
 
+use TechDivision\Import\Utils\SqlStatementKeys;
+
 /**
  * The store website create processor implementation.
  *
@@ -40,14 +42,7 @@ class StoreWebsiteCreateProcessor extends AbstractCreateProcessor
      */
     protected function getStatements()
     {
-
-        // load the utility class name
-        $utilityClassName = $this->getUtilityClassName();
-
-        // return the array with the SQL statements that has to be prepared
-        return array(
-            $utilityClassName::CREATE_STORE_WEBSITE => $this->getUtilityClass()->find($utilityClassName::CREATE_STORE_WEBSITE)
-        );
+        return array(SqlStatementKeys::CREATE_STORE_WEBSITE => $this->loadStatement(SqlStatementKeys::CREATE_STORE_WEBSITE));
     }
 
     /**

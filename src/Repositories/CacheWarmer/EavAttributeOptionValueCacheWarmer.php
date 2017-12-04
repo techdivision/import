@@ -21,6 +21,7 @@
 namespace TechDivision\Import\Repositories\CacheWarmer;
 
 use TechDivision\Import\Utils\MemberNames;
+use TechDivision\Import\Utils\SqlStatementKeys;
 use TechDivision\Import\Repositories\EavAttributeOptionValueRepositoryInterface;
 
 /**
@@ -68,11 +69,8 @@ class EavAttributeOptionValueCacheWarmer implements CacheWarmerInterface
                 MemberNames::OPTION_ID      => $optionValue[MemberNames::OPTION_ID]
             );
 
-            // load the repositories utility class name
-            $utilityClassName = $this->repository->getUtilityClassName();
-
             // prepare the cache key and add the option value to the cache
-            $cacheKey = $this->repository->cacheKey($utilityClassName::EAV_ATTRIBUTE_OPTION_VALUE_BY_OPTION_ID_AND_STORE_ID, $params);
+            $cacheKey = $this->repository->cacheKey(SqlStatementKeys::EAV_ATTRIBUTE_OPTION_VALUE_BY_OPTION_ID_AND_STORE_ID, $params);
             $this->repository->toCache($cacheKey, $optionValue);
         }
     }
