@@ -127,8 +127,15 @@ abstract class AbstractEavSubject extends AbstractSubject implements EavSubjectI
         $this->attributeSets = $status[RegistryKeys::GLOBAL_DATA][RegistryKeys::ATTRIBUTE_SETS];
         $this->userDefinedAttributes = $status[RegistryKeys::GLOBAL_DATA][RegistryKeys::EAV_USER_DEFINED_ATTRIBUTES];
 
-        // load the default frontend callback mappings from the child instance
+        // load the default frontend callback mappings from the child instance and merge with the one from the configuration
         $defaultFrontendInputCallbackMappings = $this->getDefaultFrontendInputCallbackMappings();
+
+        // merge the default mappings with the one's found in the configuration
+        foreach ($this->getConfiguration()->getFrontendInputCallbacks() as $frontendInputCallbackMappings) {
+            foreach ($frontendInputCallbackMappings as $frontendInput => $frontentInputMappings) {
+                $defaultFrontendInputCallbackMappings[$frontendInput] = $frontentInputMappings;
+            }
+        }
 
         // load the user defined attributes and add the callback mappings
         foreach ($this->getEavUserDefinedAttributes() as $eavAttribute) {
@@ -143,7 +150,9 @@ abstract class AbstractEavSubject extends AbstractSubject implements EavSubjectI
 
             // set the appropriate callback mapping for the attributes input type
             if (isset($defaultFrontendInputCallbackMappings[$frontendInput])) {
-                $this->callbackMappings[$attributeCode][] = $defaultFrontendInputCallbackMappings[$frontendInput];
+                foreach ($defaultFrontendInputCallbackMappings[$frontendInput] as $defaultFrontendInputCallbackMapping) {
+                    $this->callbackMappings[$attributeCode][] = $defaultFrontendInputCallbackMapping;
+                }
             }
         }
 

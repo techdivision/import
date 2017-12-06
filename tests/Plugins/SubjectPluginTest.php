@@ -46,7 +46,7 @@ class SubjectPluginTest extends \PHPUnit_Framework_TestCase
      *
      * @var \PHPUnit_Framework_MockObject_MockObject
      */
-    protected $mockSubjectFactory;
+    protected $mockSubjectExecutor;
 
     /**
      * The subject we want to test.
@@ -77,31 +77,17 @@ class SubjectPluginTest extends \PHPUnit_Framework_TestCase
                                       ->setMethods(get_class_methods('TechDivision\Import\ApplicationInterface'))
                                       ->getMock();
 
-        // create a mock subject factory
-        $this->mockSubjectFactory = $this->getMockBuilder('TechDivision\Import\Subjects\SubjectFactoryInterface')
-                                         ->setMethods(get_class_methods('TechDivision\Import\Subjects\SubjectFactoryInterface'))
+        // create a mock subject executor
+        $this->mockSubjectExecutor = $this->getMockBuilder('TechDivision\Import\Plugins\SubjectExecutorInterface')
+                                         ->setMethods(get_class_methods('TechDivision\Import\Plugins\SubjectExecutorInterface'))
                                          ->getMock();
-
-        // create a mock callback visitor
-        $mockCallbackVisitor = $this->getMockBuilder('TechDivision\Import\Callbacks\CallbackVisitor')
-                                    ->disableOriginalConstructor()
-                                    ->setMethods(get_class_methods('TechDivision\Import\Callbacks\CallbackVisitor'))
-                                    ->getMock();
-
-        // create a mock observer visitor
-        $mockObserverVisitor = $this->getMockBuilder('TechDivision\Import\Observers\ObserverVisitor')
-                                    ->disableOriginalConstructor()
-                                    ->setMethods(get_class_methods('TechDivision\Import\Observers\ObserverVisitor'))
-                                    ->getMock();
 
         // initialize the subject instance
         $this->subject = $this->getMockBuilder('TechDivision\Import\Plugins\SubjectPlugin')
                               ->setConstructorArgs(
                                   array(
                                       $this->mockApplication,
-                                      $mockCallbackVisitor,
-                                      $mockObserverVisitor,
-                                      $this->mockSubjectFactory
+                                      $this->mockSubjectExecutor
                                   )
                               )
                               ->setMethods(array('lock', 'unlock', 'removeLineFromFile'))
@@ -214,6 +200,9 @@ class SubjectPluginTest extends \PHPUnit_Framework_TestCase
         $mockSubjectConfiguration->expects($this->once())
                                  ->method('getId')
                                  ->willReturn('a.subject.id');
+        $mockSubjectConfiguration->expects($this->once())
+                                 ->method('isOkFileNeeded')
+                                 ->willReturn(true);
 
         // mock the array with subjects
         $mockSubjectConfigurations = array($mockSubjectConfiguration);
@@ -239,18 +228,6 @@ class SubjectPluginTest extends \PHPUnit_Framework_TestCase
                               ->with($serial)
                               ->willReturn($status);
 
-        // mock the subject
-        $mockSubject = $this->getMockBuilder('TechDivision\Import\Plugins\ExportableSubjectImpl')
-                            ->setMethods(get_class_methods('TechDivision\Import\Plugins\ExportableSubjectImpl'))
-                            ->getMockForAbstractClass();
-        $mockSubject->expects($this->once())
-                    ->method('isOkFileNeeded')
-                    ->willReturn(true);
-        $mockSubject->expects($this->once())
-                    ->method('export')
-                    ->with('20170720-125052', '01')
-                    ->willReturn(null);
-
         // mock the configuration
         $mockConfiguration = $this->getMockBuilder('TechDivision\Import\ConfigurationInterface')
                                   ->setMethods(get_class_methods('TechDivision\Import\ConfigurationInterface'))
@@ -260,10 +237,9 @@ class SubjectPluginTest extends \PHPUnit_Framework_TestCase
                                   ->willReturn($sourceDir);
 
         // mock the subject factory
-        $this->mockSubjectFactory->expects($this->once())
-                                 ->method('createSubject')
-                                 ->with($mockSubjectConfiguration)
-                                 ->willReturn($mockSubject);
+        $this->mockSubjectExecutor->expects($this->once())
+                                 ->method('execute')
+                                 ->willReturn(null);
 
         // mock the application methods
         $this->mockApplication->expects($this->exactly(3))
@@ -330,6 +306,9 @@ class SubjectPluginTest extends \PHPUnit_Framework_TestCase
         $mockSubjectConfiguration->expects($this->exactly(3))
                                  ->method('getSuffix')
                                  ->willReturn('csv');
+        $mockSubjectConfiguration->expects($this->once())
+                                 ->method('isOkFileNeeded')
+                                 ->willReturn(true);
 
         // mock the array with subjects
         $mockSubjectConfigurations = array($mockSubjectConfiguration);
@@ -343,7 +322,7 @@ class SubjectPluginTest extends \PHPUnit_Framework_TestCase
         $mockRegistryProcessor = $this->getMockBuilder('TechDivision\Import\Services\RegistryProcessorInterface')
                                       ->setMethods(get_class_methods('TechDivision\Import\Services\RegistryProcessorInterface'))
                                       ->getMock();
-        $mockRegistryProcessor->expects($this->once())
+        $mockRegistryProcessor->expects($this->exactly(1))
                               ->method('mergeAttributesRecursive')
                               ->with($serial, array($prefix => array()))
                               ->willReturn(null);
@@ -351,18 +330,6 @@ class SubjectPluginTest extends \PHPUnit_Framework_TestCase
                               ->method('getAttribute')
                               ->with($serial)
                               ->willReturn($status);
-
-        // mock the subject
-        $mockSubject = $this->getMockBuilder('TechDivision\Import\Plugins\ExportableSubjectImpl')
-                            ->setMethods(get_class_methods('TechDivision\Import\Plugins\ExportableSubjectImpl'))
-                            ->getMockForAbstractClass();
-        $mockSubject->expects($this->once())
-                    ->method('isOkFileNeeded')
-                    ->willReturn(true);
-        $mockSubject->expects($this->once())
-                    ->method('export')
-                    ->with('20170720-125052', '01')
-                    ->willThrowException(new \Exception('Can\'t export file'));
 
         // mock the configuration
         $mockConfiguration = $this->getMockBuilder('TechDivision\Import\ConfigurationInterface')
@@ -373,10 +340,9 @@ class SubjectPluginTest extends \PHPUnit_Framework_TestCase
                                   ->willReturn($sourceDir);
 
         // mock the subject factory
-        $this->mockSubjectFactory->expects($this->once())
-                                 ->method('createSubject')
-                                 ->with($mockSubjectConfiguration)
-                                 ->willReturn($mockSubject);
+        $this->mockSubjectExecutor->expects($this->once())
+                                  ->method('execute')
+                                  ->willThrowException(new \Exception('Can\'t export file'));
 
         // mock the application methods
         $this->mockApplication->expects($this->exactly(2))
