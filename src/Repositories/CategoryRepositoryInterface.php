@@ -40,6 +40,14 @@ interface CategoryRepositoryInterface extends RepositoryInterface
     public function findAll();
 
     /**
+     * Return's an array with all available categories by store view id
+     *
+     * @param int $storeViewId
+     * @return array The available categories
+     */
+    public function findAllByStoreView($storeViewId);
+
+    /**
      * Return's an array with the root categories with the store code as key.
      *
      * @return array The root categories

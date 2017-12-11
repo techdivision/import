@@ -49,6 +49,13 @@ class CategoryRepository extends AbstractRepository implements CategoryRepositor
     protected $rootCategoriesStmt;
 
     /**
+     * The statement to load categories by store view id.
+     *
+     * @var \PDOStatement
+     */
+    protected $categoriesByStoreViewStmt;
+
+    /**
      * Initializes the repository's prepared statements.
      *
      * @return void
@@ -64,6 +71,8 @@ class CategoryRepository extends AbstractRepository implements CategoryRepositor
             $this->getConnection()->prepare($this->getUtilityClass()->find($utilityClassName::CATEGORIES));
         $this->rootCategoriesStmt =
             $this->getConnection()->prepare($this->getUtilityClass()->find($utilityClassName::ROOT_CATEGORIES));
+        $this->categoriesByStoreViewStmt =
+            $this->getConnection()->prepare($this->getUtilityClass()->find($utilityClassName::CATEGORIES_BY_STORE_VIEW));
     }
 
     /**
@@ -76,6 +85,21 @@ class CategoryRepository extends AbstractRepository implements CategoryRepositor
         // try to load the categories
         $this->categoriesStmt->execute();
         return $this->categoriesStmt->fetchAll(\PDO::FETCH_ASSOC);
+    }
+
+    /**
+     * Return's an array with all available categories by store view id
+     *
+     * @param int $storeViewId
+     * @return array The available categories
+     */
+    public function findAllByStoreView($storeViewId)
+    {
+        // try to load the categories
+        $this->categoriesByStoreViewStmt->execute(array(
+            MemberNames::STORE_ID => $storeViewId
+        ));
+        return $this->categoriesByStoreViewStmt->fetchAll(\PDO::FETCH_ASSOC);
     }
 
     /**
