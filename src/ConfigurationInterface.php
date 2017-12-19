@@ -35,6 +35,13 @@ interface ConfigurationInterface
 {
 
     /**
+     * Return's the application's unique DI identifier.
+     *
+     * @return string The application's unique DI identifier
+     */
+    public function getId();
+
+    /**
      * Return's the systemm name to be used.
      *
      * @return string The system name to be used
