@@ -1009,17 +1009,12 @@ class ImportProcessor implements ImportProcessorInterface
         $globalData[RegistryKeys::ATTRIBUTE_GROUPS] = $eavAttributeGroups;
         $globalData[RegistryKeys::EAV_USER_DEFINED_ATTRIBUTES] = $eavUserDefinedAttributes;
 
-        // initialize the array with the avaliable categories
-        // this property should be replaced by CATEGORIES_PER_STORE_VIEW
-        // for compatibility reasons it will be still initialized here
-        $globalData[RegistryKeys::CATEGORIES] = $this->categoryAssembler->getCategoriesWithResolvedPath();
-
         // initialize categories per store view
-        $globalData[RegistryKeys::CATEGORIES_PER_STORE_VIEW] = array();
+        $globalData[RegistryKeys::CATEGORIES] = array();
         foreach ($globalData[RegistryKeys::STORES] as $storeView) {
             $storeViewCode = $storeView[MemberNames::CODE];
             $storeViewId = $storeView[MemberNames::STORE_ID];
-            $globalData[RegistryKeys::CATEGORIES_PER_STORE_VIEW][$storeViewCode] = $this->categoryAssembler->getCategoriesWithResolvedPathByStoreView($storeViewId);
+            $globalData[RegistryKeys::CATEGORIES][$storeViewCode] = $this->categoryAssembler->getCategoriesWithResolvedPathByStoreView($storeViewId);
         }
 
         // return the array

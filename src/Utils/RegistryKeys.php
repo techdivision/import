@@ -165,16 +165,8 @@ class RegistryKeys
      * Key for the registry entry containing the categories.
      *
      * @var string
-     * @deprecated use CATEGORIES_PER_STORE_VIEW
      */
     const CATEGORIES = 'categories';
-
-    /**
-     * Key for the registry entry containing the categories.
-     *
-     * @var string
-     */
-    const CATEGORIES_PER_STORE_VIEW = 'categories_per_store_view';
 
     /**
      * Key for the registry entry containing the root categories.
