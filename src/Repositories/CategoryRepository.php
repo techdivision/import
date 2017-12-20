@@ -88,17 +88,16 @@ class CategoryRepository extends AbstractRepository implements CategoryRepositor
     }
 
     /**
-     * Return's an array with all available categories by store view id
+     * Return's an array with all available categories by store view ID.
      *
-     * @param int $storeViewId
-     * @return array The available categories
+     * @param integer $storeViewId The store view ID to return the categories for
+     *
+     * @return array The available categories for the passed store view ID
      */
     public function findAllByStoreView($storeViewId)
     {
-        // try to load the categories
-        $this->categoriesByStoreViewStmt->execute(array(
-            MemberNames::STORE_ID => $storeViewId
-        ));
+        // try to load the categories and return them
+        $this->categoriesByStoreViewStmt->execute(array(MemberNames::STORE_ID => $storeViewId));
         return $this->categoriesByStoreViewStmt->fetchAll(\PDO::FETCH_ASSOC);
     }
 

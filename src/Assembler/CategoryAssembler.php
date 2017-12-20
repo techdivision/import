@@ -106,11 +106,12 @@ class CategoryAssembler
 
 
     /**
-     * Returns an array with the available categories and their
-     * resolved path as keys by store view id.
+     * Return's an array with the available categories and their resolved path
+     * as keys by store view ID.
      *
-     * @param int $storeViewId
-     * @return array The array with the categories
+     * @param integer $storeViewId The store view ID to return the categories for
+     *
+     * @return array The available categories for the passed store view ID
      */
     public function getCategoriesWithResolvedPathByStoreView($storeViewId)
     {
@@ -144,5 +145,4 @@ class CategoryAssembler
         // return array with the categories
         return $categories;
     }
-
 }
