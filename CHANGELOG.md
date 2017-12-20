@@ -1,3 +1,13 @@
+# Version 1.0.0-beta58
+
+## Bugfixes
+
+* Update category path handling in order to use store view specific slugs
+
+## Features
+
+* None
+
 # Version 1.0.0-beta57
 
 ## Bugfixes
