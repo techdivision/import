@@ -203,6 +203,19 @@ abstract class AbstractSubject implements SubjectInterface
     protected $coreConfigDataUidGenerator;
 
     /**
+     * UNIX timestamp with the date the last row counter has been logged.
+     *
+     * @var integer
+     */
+    protected $lastLog = 0;
+
+    /**
+     * The number of the last line that has been logged with the row counter
+     * @var integer
+     */
+    protected $lastLineNumber = 0;
+
+    /**
      * Initialize the subject instance.
      *
      * @param \TechDivision\Import\Services\RegistryProcessorInterface $registryProcessor          The registry processor instance
@@ -702,6 +715,9 @@ abstract class AbstractSubject implements SubjectInterface
             $this->setSerial($serial);
             $this->setFilename($filename);
 
+            // initialize the last time we've logged the counter with the processed rows per minute
+            $this->lastLog = time();
+
             // log a message that the file has to be imported
             $systemLogger->info(sprintf('Now start processing file %s', $filename));
 
@@ -806,6 +822,22 @@ abstract class AbstractSubject implements SubjectInterface
                     $this->row = $observer->handle($this);
                 }
             }
+        }
+
+        // query whether or not a minute has been passed
+        if ($this->lastLog < time() - 60) {
+            // log the number processed rows per minute
+            $this->getSystemLogger()->info(
+                sprintf(
+                    'Successfully processed %d rows per minute of file %s',
+                    $this->lineNumber - $this->lastLineNumber,
+                    $this->getFilename()
+                )
+            );
+
+            // reset the last log time and the line number
+            $this->lastLog = time();
+            $this->lastLineNumber = $this->lineNumber;
         }
 
         // log a debug message with the actual line nr/file information
