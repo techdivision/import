@@ -1,3 +1,13 @@
+# Version 1.0.0-beta59
+
+## Bugfixes
+
+* None
+
+## Features
+
+* Add row counter the logs the number of processed rows per minute
+
 # Version 1.0.0-beta58
 
 ## Bugfixes
