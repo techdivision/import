@@ -56,6 +56,16 @@ class EavAttributeOptionValueRepository extends AbstractCachedRepository impleme
     protected $eavAttributeOptionValueByAttributeCodeAndStoreIdAndValueStmt;
 
     /**
+     * Return's the primary key name of the entity.
+     *
+     * @return string The name of the entity's primary key
+     */
+    public function getPrimaryKeyName()
+    {
+        return MemberNames::VALUE_ID;
+    }
+
+    /**
      * Initializes the repository's prepared statements.
      *
      * @return void
@@ -115,15 +125,25 @@ class EavAttributeOptionValueRepository extends AbstractCachedRepository impleme
         // prepare the cache key
         $cacheKey = $this->cacheKey($utilityClassName::EAV_ATTRIBUTE_OPTION_VALUE_BY_OPTION_ID_AND_STORE_ID, $params);
 
-        // query whether or not the result has been cached
-        if ($this->notCached($cacheKey)) {
-            // load and return the EAV attribute option value with the passed parameters
-            $this->eavAttributeOptionValueByOptionIdAndStoreIdStmt->execute($params);
-            $this->toCache($cacheKey, $this->eavAttributeOptionValueByOptionIdAndStoreIdStmt->fetch(\PDO::FETCH_ASSOC));
+        // return the cached result if available
+        if ($this->isCached($cacheKey)) {
+            return $this->fromCache($cacheKey);
         }
 
-        // return the value from the cache
-        return $this->fromCache($cacheKey);
+        // load and return the EAV attribute option value with the passed parameters
+        $this->eavAttributeOptionValueByOptionIdAndStoreIdStmt->execute($params);
+
+        // query whether or not the EAV attribute option value is available in the database
+        if ($eavAttributeOptionValue = $this->eavAttributeOptionValueByOptionIdAndStoreIdStmt->fetch(\PDO::FETCH_ASSOC)) {
+            // add the EAV attribute option value to the cache, register the cache key reference as well
+            $this->toCache(
+                $eavAttributeOptionValue[MemberNames::VALUE_ID],
+                $eavAttributeOptionValue,
+                array($cacheKey => $eavAttributeOptionValue[MemberNames::VALUE_ID])
+            );
+            // finally, return it
+            return $eavAttributeOptionValue;
+        }
     }
 
     /**
@@ -151,14 +171,24 @@ class EavAttributeOptionValueRepository extends AbstractCachedRepository impleme
         // prepare the cache key
         $cacheKey = $this->cacheKey($utilityClassName::EAV_ATTRIBUTE_OPTION_VALUE_BY_ATTRIBUTE_CODE_AND_STORE_ID_AND_VALUE, $params);
 
-        // query whether or not the result has been cached
-        if ($this->notCached($cacheKey)) {
-            // load and return the EAV attribute option value with the passed parameters
-            $this->eavAttributeOptionValueByAttributeCodeAndStoreIdAndValueStmt->execute($params);
-            $this->toCache($cacheKey, $this->eavAttributeOptionValueByAttributeCodeAndStoreIdAndValueStmt->fetch(\PDO::FETCH_ASSOC));
+        // return the cached result if available
+        if ($this->isCached($cacheKey)) {
+            return $this->fromCache($cacheKey);
         }
 
-        // return the value from the cache
-        return $this->fromCache($cacheKey);
+        // load and return the EAV attribute option value with the passed parameters
+        $this->eavAttributeOptionValueByAttributeCodeAndStoreIdAndValueStmt->execute($params);
+
+        // query whether or not the result has been cached
+        if ($eavAttributeOptionValue = $this->eavAttributeOptionValueByAttributeCodeAndStoreIdAndValueStmt->fetch(\PDO::FETCH_ASSOC)) {
+            // add the EAV attribute option value to the cache, register the cache key reference as well
+            $this->toCache(
+                $eavAttributeOptionValue[MemberNames::VALUE_ID],
+                $eavAttributeOptionValue,
+                array($cacheKey => $eavAttributeOptionValue[MemberNames::VALUE_ID])
+            );
+            // finally, return it
+            return $eavAttributeOptionValue;
+        }
     }
 }

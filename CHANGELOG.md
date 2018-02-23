@@ -1,3 +1,13 @@
+# Version 1.0.0-beta60
+
+## Bugfixes
+
+* None
+
+## Features
+
+* Refactor cache warmer functionality for optimized memory management
+
 # Version 1.0.0-beta59
 
 ## Bugfixes

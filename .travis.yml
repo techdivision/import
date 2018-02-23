@@ -5,7 +5,7 @@ php:
   - 5.6
   
 before_install:
-  - pecl install xdebug
+  - pecl install xdebug-2.5.5
   - phpenv rehash
   - wget https://scrutinizer-ci.com/ocular.phar
 
