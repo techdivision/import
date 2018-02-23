@@ -31,7 +31,7 @@ use TechDivision\Import\Utils\MemberNames;
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
  */
-class EavEntityTypeRepository extends AbstractCachedRepository implements EavEntityTypeRepositoryInterface
+class EavEntityTypeRepository extends AbstractRepository implements EavEntityTypeRepositoryInterface
 {
 
     /**
@@ -72,30 +72,18 @@ class EavEntityTypeRepository extends AbstractCachedRepository implements EavEnt
     public function findAll()
     {
 
-        // load the utility class name
-        $utilityClassName = $this->getUtilityClassName();
+        // initialize the array for the EAV entity types
+        $eavEntityTypes = array();
 
-        // prepare the cache key
-        $cacheKey = $this->cacheKey($utilityClassName::EAV_ATTRIBUTE_OPTION_VALUE_BY_OPTION_ID_AND_STORE_ID, array());
+        // try to load the EAV entity types
+        $this->eavEntityTypeStmt->execute();
 
-        // query whether or not the result has been cached
-        if ($this->notCached($cacheKey)) {
-            // initialize the array for the EAV entity types
-            $eavEntityTypes = array();
-
-            // try to load the EAV entity types
-            $this->eavEntityTypeStmt->execute();
-
-            // prepare the EAV entity types => we need the entity type code as key
-            foreach ($this->eavEntityTypeStmt->fetchAll(\PDO::FETCH_ASSOC) as $eavEntityType) {
-                $eavEntityTypes[$eavEntityType[MemberNames::ENTITY_TYPE_CODE]] = $eavEntityType;
-            }
-
-            // set the entity types in the cache
-            $this->toCache($cacheKey, $eavEntityTypes);
+        // prepare the EAV entity types => we need the entity type code as key
+        foreach ($this->eavEntityTypeStmt->fetchAll(\PDO::FETCH_ASSOC) as $eavEntityType) {
+            $eavEntityTypes[$eavEntityType[MemberNames::ENTITY_TYPE_CODE]] = $eavEntityType;
         }
 
-        // return the value from the cache
-        return $this->fromCache($cacheKey);
+        // return the array with the EAV entity types
+        return $eavEntityTypes;
     }
 }
