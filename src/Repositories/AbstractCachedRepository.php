@@ -68,7 +68,7 @@ abstract class AbstractCachedRepository extends AbstractRepository implements Ca
      */
     public function isCached($cacheKey)
     {
-        return isset($this->cache[$resolvedCacheKey = $this->resolveReference($cacheKey)]);
+        return isset($this->cache[$this->resolveReference($cacheKey)]);
     }
 
     /**
@@ -174,8 +174,8 @@ abstract class AbstractCachedRepository extends AbstractRepository implements Ca
         }
 
         // only flush the value with the passed cache key
-        if (isset($this->cache[$cacheKey = $this->resolveReference($cacheKey)])) {
-            unset($this->cache[$cacheKey]);
+        if (isset($this->cache[$resolvedCacheKey = $this->resolveReference($cacheKey)])) {
+            unset($this->cache[$resolvedCacheKey]);
         }
     }
 }
