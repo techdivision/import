@@ -1,3 +1,33 @@
+# Version 1.0.0-beta60
+
+## Bugfixes
+
+* None
+
+## Features
+
+* Refactor cache warmer functionality for optimized memory management
+
+# Version 1.0.0-beta59
+
+## Bugfixes
+
+* None
+
+## Features
+
+* Add row counter the logs the number of processed rows per minute
+
+# Version 1.0.0-beta58
+
+## Bugfixes
+
+* Update category path handling in order to use store view specific slugs
+
+## Features
+
+* None
+
 # Version 1.0.0-beta57
 
 ## Bugfixes

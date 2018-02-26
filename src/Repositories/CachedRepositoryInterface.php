@@ -33,6 +33,13 @@ interface CachedRepositoryInterface extends RepositoryInterface
 {
 
     /**
+     * Return's the primary key name of the entity.
+     *
+     * @return string The name of the entity's primary key
+     */
+    public function getPrimaryKeyName();
+
+    /**
      * Prepares a unique cache key for the passed query name and params.
      *
      * @param string $queryName The query name to prepare the cache key for
@@ -63,12 +70,13 @@ interface CachedRepositoryInterface extends RepositoryInterface
     /**
      * Add the passed value to the cache.
      *
-     * @param string $cacheKey The cache key
-     * @param mixed  $value    The value to cache
+     * @param string $cacheKey   The cache key
+     * @param mixed  $value      The value to cache
+     * @param array  $references An array with references to add
      *
      * @return void
      */
-    public function toCache($cacheKey, $value);
+    public function toCache($cacheKey, $value, array $references = array());
 
     /**
      * Query whether or not a value for the passed cache key exists or not. If yes, the value
@@ -80,4 +88,23 @@ interface CachedRepositoryInterface extends RepositoryInterface
      * @throws \Exception Is thrown, if no value is available
      */
     public function fromCache($cacheKey);
+
+    /**
+     * Add's a cache reference from one key to another.
+     *
+     * @param string $from The key to reference from
+     * @param string $to   The key to reference to
+     *
+     * @return void
+     */
+    public function addReference($from, $to);
+
+    /**
+     * Flush the cache, or the value with the passed key.
+     *
+     * @param mixed|null $cacheKey The key of the value to flush
+     *
+     * @return void
+     */
+    public function flushCache($cacheKey = null);
 }

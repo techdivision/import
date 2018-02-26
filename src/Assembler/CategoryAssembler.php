@@ -103,4 +103,46 @@ class CategoryAssembler
         // return array with the categories
         return $categories;
     }
+
+
+    /**
+     * Return's an array with the available categories and their resolved path
+     * as keys by store view ID.
+     *
+     * @param integer $storeViewId The store view ID to return the categories for
+     *
+     * @return array The available categories for the passed store view ID
+     */
+    public function getCategoriesWithResolvedPathByStoreView($storeViewId)
+    {
+        // prepare the categories
+        $categories = array();
+
+        // create the array with the resolved category path as keys
+        foreach ($this->categoryRepository->findAllByStoreView($storeViewId) as $category) {
+            // expload the entity IDs from the category path
+            $entityIds = explode('/', $category[MemberNames::PATH]);
+
+            // cut-off the root category
+            array_shift($entityIds);
+
+            // continue with the next category if no entity IDs are available
+            if (sizeof($entityIds) === 0) {
+                continue;
+            }
+
+            // initialize the array for the path elements
+            $path = array();
+            foreach ($entityIds as $entityId) {
+                $cat = $this->categoryVarcharRepository->findByEntityId($entityId);
+                $path[] = $cat[MemberNames::VALUE];
+            }
+
+            // append the catogory with the string path as key
+            $categories[implode('/', $path)] = $category;
+        }
+
+        // return array with the categories
+        return $categories;
+    }
 }
