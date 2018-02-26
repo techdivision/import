@@ -829,8 +829,9 @@ abstract class AbstractSubject implements SubjectInterface
             // log the number processed rows per minute
             $this->getSystemLogger()->info(
                 sprintf(
-                    'Successfully processed %d rows per minute of file %s',
+                    'Successfully processed "%d (%d)" rows per minute of file "%s"',
                     $this->lineNumber - $this->lastLineNumber,
+                    $this->lineNumber,
                     $this->getFilename()
                 )
             );
