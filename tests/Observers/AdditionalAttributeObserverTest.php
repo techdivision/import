@@ -206,7 +206,7 @@ class AdditionalAttributeObserverTest extends \PHPUnit_Framework_TestCase
 
         // prepare the expected row structure after the observer
         $expectedRow = array(
-            0  => $additionalAttributes = "manufacturer_accessoires=\"Gabor Shoe Care\",color_careproduct=\"weiss\",length=\"38\",width_accessoires=\"48\",height=\"152\",material_careproduct=\"\",amount_careproduct=\"75 ml\",usage=\"Groben Staub und Schmutz entfernen. Creme dünn und gleichmäßig auftragen. Trocknen lassen und anschließend mit einem weichen Tuch auspolieren.\",valid_for=\"Für alle Glattleder sowie Soft- und Anilinleder.\",size_careproduct=\"\",weight_careproduct=\"101\"",
+            0  => $additionalAttributes = '"manufacturer_accessoires=Gabor Shoe Care","color_careproduct=weiss","length=38","width_accessoires=48","height=152","material_careproduct=","amount_careproduct=75 ml","usage=Groben Staub und Schmutz entfernen. Creme dünn und gleichmäßig auftragen. Trocknen lassen, anschließend mit einem weichen Tuch auspolieren.","valid_for=Für alle Glattleder sowie Soft- und Anilinleder.","size_careproduct=","weight_careproduct=101"',
             1  => $val1 = 'Gabor Shoe Care',
             2  => $val2 = 'weiss',
             3  => $val3 = '38',
@@ -214,7 +214,7 @@ class AdditionalAttributeObserverTest extends \PHPUnit_Framework_TestCase
             5  => $val5 = '152',
             6  => $val6 = '',
             7  => $val7 = '75 ml',
-            8  => $val8 = 'Groben Staub und Schmutz entfernen. Creme dünn und gleichmäßig auftragen. Trocknen lassen und anschließend mit einem weichen Tuch auspolieren.',
+            8  => $val8 = 'Groben Staub und Schmutz entfernen. Creme dünn und gleichmäßig auftragen. Trocknen lassen, anschließend mit einem weichen Tuch auspolieren.',
             9  => $val9 = 'Für alle Glattleder sowie Soft- und Anilinleder.',
             10 => $val10 = '',
             11 => $val11 = '101'
@@ -439,17 +439,17 @@ class AdditionalAttributeObserverTest extends \PHPUnit_Framework_TestCase
         $mockSubject->expects($this->exactly(11))
             ->method('explode')
             ->withConsecutive(
-                array(sprintf('%s="%s"', $col1, $val1)),
-                array(sprintf('%s="%s"', $col2, $val2)),
-                array(sprintf('%s="%s"', $col3, $val3)),
-                array(sprintf('%s="%s"', $col4, $val4)),
-                array(sprintf('%s="%s"', $col5, $val5)),
-                array(sprintf('%s="%s"', $col6, $val6)),
-                array(sprintf('%s="%s"', $col7, $val7)),
-                array(sprintf('%s="%s"', $col8, $val8)),
-                array(sprintf('%s="%s"', $col9, $val9)),
-                array(sprintf('%s="%s"', $col10, $val10)),
-                array(sprintf('%s="%s"', $col11, $val11))
+                array(sprintf('%s=%s', $col1, $val1)),
+                array(sprintf('%s=%s', $col2, $val2)),
+                array(sprintf('%s=%s', $col3, $val3)),
+                array(sprintf('%s=%s', $col4, $val4)),
+                array(sprintf('%s=%s', $col5, $val5)),
+                array(sprintf('%s=%s', $col6, $val6)),
+                array(sprintf('%s=%s', $col7, $val7)),
+                array(sprintf('%s=%s', $col8, $val8)),
+                array(sprintf('%s=%s', $col9, $val9)),
+                array(sprintf('%s=%s', $col10, $val10)),
+                array(sprintf('%s=%s', $col11, $val11))
             )
             ->willReturnOnConsecutiveCalls(
                 array($col1, $val1),

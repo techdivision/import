@@ -21,7 +21,6 @@
 namespace TechDivision\Import\Repositories;
 
 use TechDivision\Import\Utils\MemberNames;
-use TechDivision\Import\Utils\SqlStatementKeys;
 
 /**
  * Repository implementation to load the EAV entity type data.
@@ -32,15 +31,8 @@ use TechDivision\Import\Utils\SqlStatementKeys;
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
  */
-class EavEntityTypeRepository extends AbstractCachedRepository implements EavEntityTypeRepositoryInterface
+class EavEntityTypeRepository extends AbstractRepository implements EavEntityTypeRepositoryInterface
 {
-
-    /**
-     * The cache for the query results.
-     *
-     * @var array
-     */
-    protected $cache = array();
 
     /**
      * The statement to load the available EAV entity types.
@@ -57,9 +49,12 @@ class EavEntityTypeRepository extends AbstractCachedRepository implements EavEnt
     public function init()
     {
 
+        // load the utility class name
+        $utilityClassName = $this->getUtilityClassName();
+
         // initialize the prepared statements
         $this->eavEntityTypeStmt =
-            $this->getConnection()->prepare($this->loadStatement(SqlStatementKeys::EAV_ENTITY_TYPES));
+            $this->getConnection()->prepare($this->getUtilityClass()->find($utilityClassName::EAV_ENTITY_TYPES));
     }
 
     /**
@@ -70,27 +65,18 @@ class EavEntityTypeRepository extends AbstractCachedRepository implements EavEnt
     public function findAll()
     {
 
-        // prepare the cache key
-        $cacheKey = $this->cacheKey(SqlStatementKeys::EAV_ATTRIBUTE_OPTION_VALUE_BY_OPTION_ID_AND_STORE_ID, array());
+        // initialize the array for the EAV entity types
+        $eavEntityTypes = array();
 
-        // query whether or not the result has been cached
-        if ($this->notCached($cacheKey)) {
-            // initialize the array for the EAV entity types
-            $eavEntityTypes = array();
+        // try to load the EAV entity types
+        $this->eavEntityTypeStmt->execute();
 
-            // try to load the EAV entity types
-            $this->eavEntityTypeStmt->execute();
-
-            // prepare the EAV entity types => we need the entity type code as key
-            foreach ($this->eavEntityTypeStmt->fetchAll(\PDO::FETCH_ASSOC) as $eavEntityType) {
-                $eavEntityTypes[$eavEntityType[MemberNames::ENTITY_TYPE_CODE]] = $eavEntityType;
-            }
-
-            // set the entity types in the cache
-            $this->toCache($cacheKey, $eavEntityTypes);
+        // prepare the EAV entity types => we need the entity type code as key
+        foreach ($this->eavEntityTypeStmt->fetchAll(\PDO::FETCH_ASSOC) as $eavEntityType) {
+            $eavEntityTypes[$eavEntityType[MemberNames::ENTITY_TYPE_CODE]] = $eavEntityType;
         }
 
-        // return the value from the cache
-        return $this->fromCache($cacheKey);
+        // return the array with the EAV entity types
+        return $eavEntityTypes;
     }
 }

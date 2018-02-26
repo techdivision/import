@@ -21,7 +21,6 @@
 namespace TechDivision\Import\Repositories;
 
 use TechDivision\Import\Utils\MemberNames;
-use TechDivision\Import\Utils\SqlStatementKeys;
 
 /**
  * Repository implementation to load category data.
@@ -57,11 +56,16 @@ class CategoryRepository extends AbstractRepository implements CategoryRepositor
     public function init()
     {
 
+        // load the utility class name
+        $utilityClassName = $this->getUtilityClassName();
+
         // initialize the prepared statements
         $this->categoriesStmt =
-            $this->getConnection()->prepare($this->loadStatement(SqlStatementKeys::CATEGORIES));
+            $this->getConnection()->prepare($this->getUtilityClass()->find($utilityClassName::CATEGORIES));
         $this->rootCategoriesStmt =
-            $this->getConnection()->prepare($this->loadStatement(SqlStatementKeys::ROOT_CATEGORIES));
+            $this->getConnection()->prepare($this->getUtilityClass()->find($utilityClassName::ROOT_CATEGORIES));
+        $this->categoriesByStoreViewStmt =
+            $this->getConnection()->prepare($this->getUtilityClass()->find($utilityClassName::CATEGORIES_BY_STORE_VIEW));
     }
 
     /**
@@ -74,6 +78,20 @@ class CategoryRepository extends AbstractRepository implements CategoryRepositor
         // try to load the categories
         $this->categoriesStmt->execute();
         return $this->categoriesStmt->fetchAll(\PDO::FETCH_ASSOC);
+    }
+
+    /**
+     * Return's an array with all available categories by store view ID.
+     *
+     * @param integer $storeViewId The store view ID to return the categories for
+     *
+     * @return array The available categories for the passed store view ID
+     */
+    public function findAllByStoreView($storeViewId)
+    {
+        // try to load the categories and return them
+        $this->categoriesByStoreViewStmt->execute(array(MemberNames::STORE_ID => $storeViewId));
+        return $this->categoriesByStoreViewStmt->fetchAll(\PDO::FETCH_ASSOC);
     }
 
     /**

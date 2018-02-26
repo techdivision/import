@@ -1,7 +1,7 @@
 <?php
 
 /**
- * TechDivision\Import\Repositories\SqlStatementRepository
+ * TechDivision\Import\Utils\SqlStatements
  *
  * NOTICE OF LICENSE
  *
@@ -78,14 +78,77 @@ class SqlStatementRepository extends AbstractSqlStatementRepository
                  ON t1.root_category_id = t0.entity_id
          INNER JOIN store t2
                  ON t2.group_id = t1.group_id',
-        SqlStatementKeys::ROOT_CATEGORIES =>
+        SqlStatements::CATEGORIES_BY_STORE_VIEW =>
+            'SELECT t0.*,
+                 IF (name_store.value_id > 0, name_store.value, name_default.value) AS name,
+                 IF (url_key_store.value_id > 0, url_key_store.value, url_key_default.value) AS url_key,
+                 IF (url_path_store.value_id > 0, url_path_store.value, url_path_default.value) AS url_path,
+                 IF (is_anchor_store.value_id > 0, is_anchor_store.value, is_anchor_default.value) AS is_anchor
+               FROM catalog_category_entity AS t0
+          LEFT JOIN catalog_category_entity_varchar AS name_store
+                 ON name_store.attribute_id = (
+                        SELECT attribute_id FROM eav_attribute
+                        WHERE attribute_code = \'name\' AND entity_type_id = 3
+                    )
+                    AND name_store.store_id = :store_id
+                    AND name_store.entity_id = t0.entity_id
+          LEFT JOIN catalog_category_entity_varchar AS name_default
+                 ON name_default.attribute_id = (
+                        SELECT attribute_id FROM eav_attribute
+                        WHERE attribute_code = \'name\' AND entity_type_id = 3
+                    )
+                    AND name_default.store_id = 0
+                    AND name_default.entity_id = t0.entity_id
+          LEFT JOIN catalog_category_entity_varchar AS url_key_store
+                 ON url_key_store.attribute_id = (
+                        SELECT attribute_id FROM eav_attribute
+                        WHERE attribute_code = \'url_key\' AND entity_type_id = 3
+                    )
+                    AND url_key_store.store_id = :store_id
+                    AND url_key_store.entity_id = t0.entity_id
+          LEFT JOIN catalog_category_entity_varchar AS url_key_default
+                 ON url_key_default.attribute_id = (
+                        SELECT attribute_id FROM eav_attribute
+                        WHERE attribute_code = \'url_key\' AND entity_type_id = 3
+                    )
+                    AND url_key_default.store_id = 0
+                    AND url_key_default.entity_id = t0.entity_id
+          LEFT JOIN catalog_category_entity_varchar AS url_path_store
+                 ON url_path_store.attribute_id = (
+                        SELECT attribute_id FROM eav_attribute
+                        WHERE attribute_code = \'url_path\' AND entity_type_id = 3
+                    )
+                    AND url_path_store.store_id = :store_id
+                    AND url_path_store.entity_id = t0.entity_id
+          LEFT JOIN catalog_category_entity_varchar AS url_path_default
+                 ON url_path_default.attribute_id = (
+                        SELECT attribute_id FROM eav_attribute
+                        WHERE attribute_code = \'url_path\' AND entity_type_id = 3
+                    )
+                    AND url_path_default.store_id = 0
+                    AND url_path_default.entity_id = t0.entity_id
+          LEFT JOIN catalog_category_entity_int AS is_anchor_store
+                 ON is_anchor_store.attribute_id = (
+                        SELECT attribute_id FROM eav_attribute
+                        WHERE attribute_code = \'is_anchor\' AND entity_type_id = 3
+                    )
+                    AND is_anchor_store.store_id = :store_id
+                    AND is_anchor_store.entity_id = t0.entity_id
+          LEFT JOIN catalog_category_entity_int AS is_anchor_default
+                 ON is_anchor_default.attribute_id = (
+                        SELECT attribute_id FROM eav_attribute
+                        WHERE attribute_code = \'is_anchor\' AND entity_type_id = 3
+                    )
+                    AND is_anchor_default.store_id = 0
+                    AND is_anchor_default.entity_id = t0.entity_id',
+        SqlStatements::ROOT_CATEGORIES =>
             'SELECT t2.code, t0.*
                FROM catalog_category_entity t0
          INNER JOIN store_group t1
                  ON t1.root_category_id = t0.entity_id
          INNER JOIN store t2
                  ON t2.group_id = t1.group_id',
-        SqlStatementKeys::CATEGORY_VARCHARS_BY_ENTITY_IDS =>
+        SqlStatements::CATEGORY_VARCHARS_BY_ENTITY_IDS =>
             'SELECT t1.*
                FROM catalog_category_entity_varchar AS t1
          INNER JOIN eav_attribute AS t2
@@ -94,9 +157,9 @@ class SqlStatementRepository extends AbstractSqlStatementRepository
                 AND t1.attribute_id = t2.attribute_id
                 AND t1.store_id = 0
                 AND t1.entity_id IN (?)',
-        SqlStatementKeys::STORES =>
+        SqlStatements::STORES =>
             'SELECT t1.* FROM store AS t1',
-        SqlStatementKeys::STORE_DEFAULT =>
+        SqlStatements::STORE_DEFAULT =>
             'SELECT t0.*
                FROM store t0
          INNER JOIN store_group t1
@@ -104,40 +167,40 @@ class SqlStatementRepository extends AbstractSqlStatementRepository
          INNER JOIN store_website t2
                  ON t1.website_id = t2.website_id
                 AND t2.is_default = 1;',
-        SqlStatementKeys::STORE_WEBSITES =>
+        SqlStatements::STORE_WEBSITES =>
             'SELECT t1.* FROM store_website AS t1',
-        SqlStatementKeys::STORE_GROUPS =>
+        SqlStatements::STORE_GROUPS =>
             'SELECT t1.* FROM store_group AS t1',
-        SqlStatementKeys::TAX_CLASSES =>
+        SqlStatements::TAX_CLASSES =>
             'SELECT t1.* FROM tax_class AS t1',
-        SqlStatementKeys::LINK_TYPES =>
+        SqlStatements::LINK_TYPES =>
             'SELECT t1.* FROM catalog_product_link_type AS t1',
-        SqlStatementKeys::LINK_ATTRIBUTES =>
+        SqlStatements::LINK_ATTRIBUTES =>
             'SELECT t1.* FROM catalog_product_link_attribute AS t1',
-        SqlStatementKeys::EAV_ENTITY_TYPES =>
+        SqlStatements::EAV_ENTITY_TYPES =>
             'SELECT t1.* FROM eav_entity_type AS t1',
-        SqlStatementKeys::EAV_ATTRIBUTE_SET =>
+        SqlStatements::EAV_ATTRIBUTE_SET =>
             'SELECT t1.*
                FROM eav_attribute_set AS t1
               WHERE attribute_set_id = ?',
-        SqlStatementKeys::EAV_ATTRIBUTE_GROUP =>
+        SqlStatements::EAV_ATTRIBUTE_GROUP =>
             'SELECT t1.*
                FROM eav_attribute_group AS t1
               WHERE attribute_group_id = :attribute_group_id',
-        SqlStatementKeys::EAV_ATTRIBUTE_SETS_BY_ENTITY_TYPE_ID =>
+        SqlStatements::EAV_ATTRIBUTE_SETS_BY_ENTITY_TYPE_ID =>
             'SELECT t1.*
                FROM eav_attribute_set AS t1
               WHERE entity_type_id = ?',
-        SqlStatementKeys::EAV_ATTRIBUTE_GROUPS_BY_ATTRIBUTE_SET_ID =>
+        SqlStatements::EAV_ATTRIBUTE_GROUPS_BY_ATTRIBUTE_SET_ID =>
             'SELECT *
                FROM eav_attribute_group
               WHERE attribute_set_id = :attribute_set_id',
-        SqlStatementKeys::EAV_ATTRIBUTE_BY_ENTITY_TYPE_ID_AND_ATTRIBUTE_CODE =>
+        SqlStatements::EAV_ATTRIBUTE_BY_ENTITY_TYPE_ID_AND_ATTRIBUTE_CODE =>
             'SELECT *
                FROM eav_attribute
               WHERE entity_type_id = :entity_type_id
                 AND attribute_code = :attribute_code',
-        SqlStatementKeys::EAV_ATTRIBUTES_BY_ENTITY_TYPE_ID_AND_ATTRIBUTE_SET_NAME =>
+        SqlStatements::EAV_ATTRIBUTES_BY_ENTITY_TYPE_ID_AND_ATTRIBUTE_SET_NAME =>
             'SELECT t3.*
                FROM eav_attribute AS t3
          INNER JOIN eav_entity_type AS t0
@@ -148,7 +211,7 @@ class SqlStatementRepository extends AbstractSqlStatementRepository
          INNER JOIN eav_entity_attribute AS t2
                  ON t2.attribute_set_id = t1.attribute_set_id
                 AND t3.attribute_id = t2.attribute_id',
-        SqlStatementKeys::EAV_ATTRIBUTES_BY_OPTION_VALUE_AND_STORE_ID =>
+        SqlStatements::EAV_ATTRIBUTES_BY_OPTION_VALUE_AND_STORE_ID =>
             'SELECT t1.*
                FROM eav_attribute AS t1
          INNER JOIN eav_attribute_option_value AS t2
@@ -157,14 +220,14 @@ class SqlStatementRepository extends AbstractSqlStatementRepository
          INNER JOIN eav_attribute_option AS t3
                  ON t3.option_id = t2.option_id
                 AND t1.attribute_id = t3.attribute_id',
-        SqlStatementKeys::EAV_ATTRIBUTES_BY_IS_USER_DEFINED =>
+        SqlStatements::EAV_ATTRIBUTES_BY_IS_USER_DEFINED =>
             'SELECT * FROM eav_attribute WHERE is_user_defined = :is_user_defined',
-        SqlStatementKeys::EAV_ATTRIBUTES_BY_ENTITY_TYPE_ID_AND_IS_USER_DEFINED =>
+        SqlStatements::EAV_ATTRIBUTES_BY_ENTITY_TYPE_ID_AND_IS_USER_DEFINED =>
             'SELECT *
                FROM eav_attribute
               WHERE entity_type_id = :entity_type_id
                 AND is_user_defined = :is_user_defined',
-        SqlStatementKeys::EAV_ATTRIBUTE_OPTION_VALUE_BY_ATTRIBUTE_CODE_AND_STORE_ID_AND_VALUE =>
+        SqlStatements::EAV_ATTRIBUTE_OPTION_VALUE_BY_ATTRIBUTE_CODE_AND_STORE_ID_AND_VALUE =>
             'SELECT t3.*
                FROM eav_attribute t1,
                     eav_attribute_option t2,
@@ -174,55 +237,55 @@ class SqlStatementRepository extends AbstractSqlStatementRepository
                 AND t3.value = :value
                 AND t2.attribute_id = t1.attribute_id
                 AND t2.option_id = t3.option_id',
-        SqlStatementKeys::EAV_ATTRIBUTE_OPTION_VALUE_BY_OPTION_ID_AND_STORE_ID =>
+        SqlStatements::EAV_ATTRIBUTE_OPTION_VALUE_BY_OPTION_ID_AND_STORE_ID =>
             'SELECT t1.*
                FROM eav_attribute_option_value t1
               WHERE t1.option_id = :option_id
                 AND t1.store_id = :store_id',
-        SqlStatementKeys::EAV_ATTRIBUTE_OPTION_VALUES =>
+        SqlStatements::EAV_ATTRIBUTE_OPTION_VALUES =>
             'SELECT t3.*, t1.attribute_code
                FROM eav_attribute t1,
                     eav_attribute_option t2,
                     eav_attribute_option_value t3
               WHERE t2.option_id = t3.option_id
                 AND t1.attribute_id = t2.attribute_id',
-        SqlStatementKeys::CORE_CONFIG_DATA =>
+        SqlStatements::CORE_CONFIG_DATA =>
             'SELECT * FROM core_config_data',
-        SqlStatementKeys::URL_REWRITES_BY_ENTITY_TYPE_AND_ENTITY_ID =>
+        SqlStatements::URL_REWRITES_BY_ENTITY_TYPE_AND_ENTITY_ID =>
             'SELECT *
                FROM url_rewrite
               WHERE entity_type = :entity_type
                 AND entity_id = :entity_id',
-        SqlStatementKeys::URL_REWRITES_BY_ENTITY_TYPE_AND_ENTITY_ID_AND_STORE_ID =>
+        SqlStatements::URL_REWRITES_BY_ENTITY_TYPE_AND_ENTITY_ID_AND_STORE_ID =>
             'SELECT *
                FROM url_rewrite
               WHERE entity_type = :entity_type
                 AND entity_id = :entity_id
                 AND store_id = :store_id',
-        SqlStatementKeys::DELETE_URL_REWRITE =>
+        SqlStatements::DELETE_URL_REWRITE =>
             'DELETE
                FROM url_rewrite
               WHERE url_rewrite_id = :url_rewrite_id',
-        SqlStatementKeys::DELETE_URL_REWRITE_BY_SKU =>
+        SqlStatements::DELETE_URL_REWRITE_BY_SKU =>
             'DELETE url_rewrite
                FROM url_rewrite
          INNER JOIN catalog_product_entity
               WHERE catalog_product_entity.sku = :sku
                 AND url_rewrite.entity_id = catalog_product_entity.entity_id',
-        SqlStatementKeys::DELETE_URL_REWRITE_BY_PATH =>
+        SqlStatements::DELETE_URL_REWRITE_BY_PATH =>
             'DELETE url_rewrite
                FROM url_rewrite
          INNER JOIN catalog_category_entity
               WHERE catalog_category_entity.path = :path
                 AND url_rewrite.entity_id = catalog_category_entity.entity_id
                 AND url_rewrite.entity_type = \'category\'',
-        SqlStatementKeys::DELETE_URL_REWRITE_BY_CATEGORY_ID =>
+        SqlStatements::DELETE_URL_REWRITE_BY_CATEGORY_ID =>
             'DELETE t1.*
                FROM url_rewrite t1
          INNER JOIN catalog_url_rewrite_product_category t2
               WHERE t2.category_id = :category_id
                 AND t1.url_rewrite_id = t2.url_rewrite_id',
-        SqlStatementKeys::CREATE_URL_REWRITE =>
+        SqlStatements::CREATE_URL_REWRITE =>
             'INSERT
                INTO url_rewrite
                     (entity_type,
@@ -243,7 +306,7 @@ class SqlStatementRepository extends AbstractSqlStatementRepository
                      :description,
                      :is_autogenerated,
                      :metadata)',
-        SqlStatementKeys::UPDATE_URL_REWRITE =>
+        SqlStatements::UPDATE_URL_REWRITE =>
             'UPDATE url_rewrite
                 SET entity_type = :entity_type,
                     entity_id = :entity_id,
@@ -255,7 +318,7 @@ class SqlStatementRepository extends AbstractSqlStatementRepository
                     is_autogenerated = :is_autogenerated,
                     metadata = :metadata
               WHERE url_rewrite_id = :url_rewrite_id',
-        SqlStatementKeys::CREATE_STORE =>
+        SqlStatements::CREATE_STORE =>
             'INSERT
                INTO store
                     (code,
@@ -270,7 +333,7 @@ class SqlStatementRepository extends AbstractSqlStatementRepository
                      :name,
                      :sort_order,
                      :is_active)',
-        SqlStatementKeys::UPDATE_STORE =>
+        SqlStatements::UPDATE_STORE =>
             'UPDATE store
                 SET code = :code,
                     website_id = :website_id,
@@ -279,7 +342,7 @@ class SqlStatementRepository extends AbstractSqlStatementRepository
                     sort_order = :sort_order,
                     is_active = :is_active
               WHERE store_id = :store_id',
-        SqlStatementKeys::CREATE_STORE_GROUP =>
+        SqlStatements::CREATE_STORE_GROUP =>
             'INSERT
                INTO store_group
                     (website_id,
@@ -290,14 +353,14 @@ class SqlStatementRepository extends AbstractSqlStatementRepository
                      :name,
                      :root_category_id,
                      :default_store_id)',
-        SqlStatementKeys::UPDATE_STORE_GROUP =>
+        SqlStatements::UPDATE_STORE_GROUP =>
             'UPDATE store_group
                 SET website_id = :website_id,
                     name = :name,
                     root_category_id = :root_category_id,
                     default_store_id = :default_store_id
               WHERE group_id = :group_id',
-        SqlStatementKeys::CREATE_STORE_WEBSITE =>
+        SqlStatements::CREATE_STORE_WEBSITE =>
             'INSERT
                INTO store_website
                     (code,
@@ -310,7 +373,7 @@ class SqlStatementRepository extends AbstractSqlStatementRepository
                      :sort_order,
                      :default_group_id,
                      :is_default)',
-        SqlStatementKeys::UPDATE_STORE_WEBSITE =>
+        SqlStatements::UPDATE_STORE_WEBSITE =>
             'UPDATE store_website
                 SET code = :code,
                     name = :name,
@@ -318,7 +381,7 @@ class SqlStatementRepository extends AbstractSqlStatementRepository
                     default_group_id = :default_group_id,
                     is_default = :is_default
               WHERE website_id = :website_id',
-        SqlStatementKeys::IMAGE_TYPES =>
+        SqlStatements::IMAGE_TYPES =>
             'SELECT main_table.attribute_code
                FROM eav_attribute AS main_table
          INNER JOIN eav_entity_type AS entity_type
