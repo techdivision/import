@@ -38,6 +38,12 @@ class SqlStatementKeys
      * @var string
      */
     const CATEGORIES = 'categories';
+    /**
+     * The SQL statement to load all categories by store view id.
+     *
+     * @var string
+     */
+    const CATEGORIES_BY_STORE_VIEW = 'categories_by_store_view';
 
     /**
      * The SQL statement to load the root categories.
