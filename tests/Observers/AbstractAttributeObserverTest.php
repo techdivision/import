@@ -229,9 +229,6 @@ class AbstractAttributeObserverTest extends \PHPUnit_Framework_TestCase
         $mockSubject->expects($this->once())
                     ->method('getBackendTypes')
                     ->willReturn($backendTypes);
-        $mockSubject->expects($this->once())
-                    ->method('getBackendTypes')
-                    ->willReturn($backendTypes);
 
         // invoke the handle method
         $this->attributeObserver->handle($mockSubject);
@@ -252,7 +249,7 @@ class AbstractAttributeObserverTest extends \PHPUnit_Framework_TestCase
         $this->attributeObserver->expects($this->once())
                                 ->method('getPrimaryKeyMemberName')
                                 ->willReturn(MemberNames::ENTITY_ID);
-        $this->attributeObserver->expects($this->once())
+        $this->attributeObserver->expects($this->exactly(2))
                                 ->method('getPrimaryKey')
                                 ->willReturn($lastEntityId = 100);
 
@@ -340,7 +337,7 @@ class AbstractAttributeObserverTest extends \PHPUnit_Framework_TestCase
                     ->method('castValueByBackendType')
                     ->with($backendType, $attributeValue)
                     ->willReturn($attributeValue);
-        $mockSubject->expects($this->once())
+        $mockSubject->expects($this->exactly(2))
                     ->method('getRowStoreId')
                     ->with(StoreViewCodes::ADMIN)
                     ->willReturn($storeId);

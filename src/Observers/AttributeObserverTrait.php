@@ -75,6 +75,13 @@ trait AttributeObserverTrait
     protected $cleanUpEmptyColumnKeys;
 
     /**
+     * The entity's existing attribues.
+     *
+     * @var array
+     */
+    protected $attributes;
+
+    /**
      * The attribute code that has to be processed.
      *
      * @return string The attribute code
@@ -144,6 +151,12 @@ trait AttributeObserverTrait
 
         // load the PK
         $pk = $this->getValue($this->getPrimaryKeyColumnName());
+
+        // load the store ID, use the admin store if NO store view code has been set
+        $storeId = $this->getRowStoreId(StoreViewCodes::ADMIN);
+
+        // load the entity's existing attributes
+        $this->getAttributesByPrimaryKeyAndStoreId($this->getPrimaryKey(), $storeId);
 
         // load the store view - if no store view has been set, we assume the admin
         // store view, which will contain the default (fallback) attribute values
@@ -359,6 +372,16 @@ trait AttributeObserverTrait
     {
         return $this->getSubject()->getAttributes();
     }
+
+    /**
+     * Intializes the existing attributes for the entity with the passed primary key.
+     *
+     * @param string  $pk      The primary key of the entity to load the attributes for
+     * @param integer $storeId The ID of the store view to load the attributes for
+     *
+     * @return array The entity attributes
+     */
+    abstract protected function getAttributesByPrimaryKeyAndStoreId($pk, $storeId);
 
     /**
      * Return's the logger with the passed name, by default the system logger.
