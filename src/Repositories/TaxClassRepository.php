@@ -21,6 +21,7 @@
 namespace TechDivision\Import\Repositories;
 
 use TechDivision\Import\Utils\MemberNames;
+use TechDivision\Import\Utils\SqlStatementKeys;
 
 /**
  * Repository implementation to load tax class data.
@@ -42,12 +43,9 @@ class TaxClassRepository extends AbstractRepository implements TaxClassRepositor
     public function init()
     {
 
-        // load the utility class name
-        $utilityClassName = $this->getUtilityClassName();
-
         // initialize the prepared statements
         $this->taxClassesStmt =
-            $this->getConnection()->prepare($this->getUtilityClass()->find($utilityClassName::TAX_CLASSES));
+            $this->getConnection()->prepare($this->loadStatement(SqlStatementKeys::TAX_CLASSES));
     }
 
     /**

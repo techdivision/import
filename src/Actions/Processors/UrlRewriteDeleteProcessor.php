@@ -20,6 +20,8 @@
 
 namespace TechDivision\Import\Actions\Processors;
 
+use TechDivision\Import\Utils\SqlStatementKeys;
+
 /**
  * The URL rewrite delete processor implementation.
  *
@@ -40,16 +42,11 @@ class UrlRewriteDeleteProcessor extends AbstractDeleteProcessor
      */
     protected function getStatements()
     {
-
-        // load the utility class name
-        $utilityClassName = $this->getUtilityClassName();
-
-        // return the array with the SQL statements that has to be prepared
         return array(
-            $utilityClassName::DELETE_URL_REWRITE => $this->getUtilityClass()->find($utilityClassName::DELETE_URL_REWRITE),
-            $utilityClassName::DELETE_URL_REWRITE_BY_SKU => $this->getUtilityClass()->find($utilityClassName::DELETE_URL_REWRITE_BY_SKU),
-            $utilityClassName::DELETE_URL_REWRITE_BY_PATH => $this->getUtilityClass()->find($utilityClassName::DELETE_URL_REWRITE_BY_PATH),
-            $utilityClassName::DELETE_URL_REWRITE_BY_CATEGORY_ID => $this->getUtilityClass()->find($utilityClassName::DELETE_URL_REWRITE_BY_CATEGORY_ID)
+            SqlStatementKeys::DELETE_URL_REWRITE => $this->loadStatement(SqlStatementKeys::DELETE_URL_REWRITE),
+            SqlStatementKeys::DELETE_URL_REWRITE_BY_SKU => $this->loadStatement(SqlStatementKeys::DELETE_URL_REWRITE_BY_SKU),
+            SqlStatementKeys::DELETE_URL_REWRITE_BY_PATH => $this->loadStatement(SqlStatementKeys::DELETE_URL_REWRITE_BY_PATH),
+            SqlStatementKeys::DELETE_URL_REWRITE_BY_CATEGORY_ID => $this->loadStatement(SqlStatementKeys::DELETE_URL_REWRITE_BY_CATEGORY_ID)
         );
     }
 }

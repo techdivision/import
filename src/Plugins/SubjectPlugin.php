@@ -23,12 +23,8 @@ namespace TechDivision\Import\Plugins;
 use TechDivision\Import\Utils\BunchKeys;
 use TechDivision\Import\Utils\RegistryKeys;
 use TechDivision\Import\ApplicationInterface;
-use TechDivision\Import\Callbacks\CallbackVisitorInterface;
-use TechDivision\Import\Observers\ObserverVisitorInterface;
-use TechDivision\Import\Subjects\SubjectFactoryInterface;
 use TechDivision\Import\Exceptions\LineNotFoundException;
 use TechDivision\Import\Exceptions\MissingOkFileException;
-use TechDivision\Import\Subjects\ExportableSubjectInterface;
 use TechDivision\Import\Configuration\SubjectConfigurationInterface;
 
 /**
@@ -58,48 +54,28 @@ class SubjectPlugin extends AbstractPlugin
     protected $bunches = 0;
 
     /**
-     * The callback visitor instance.
+     * The subject executor instance.
      *
-     * @var \TechDivision\Import\Callbacks\CallbackVisitor
+     * @var \TechDivision\Import\Plugins\SubjectExecutorInterface
      */
-    protected $callbackVisitor;
-
-    /**
-     * The observer visitor instance.
-     *
-     * @var \TechDivision\Import\Observers\ObserverVisitor
-     */
-    protected $observerVisitor;
-
-    /**
-     * The subject factory instance.
-     *
-     * @var \TechDivision\Import\Subjects\SubjectFactoryInterface
-     */
-    protected $subjectFactory;
+    protected $subjectExecutor;
 
     /**
      * Initializes the plugin with the application instance.
      *
-     * @param \TechDivision\Import\ApplicationInterface               $application     The application instance
-     * @param \TechDivision\Import\Callbacks\CallbackVisitorInterface $callbackVisitor The callback visitor instance
-     * @param \TechDivision\Import\Observers\ObserverVisitorInterface $observerVisitor The observer visitor instance
-     * @param \TechDivision\Import\Subjects\SubjectFactoryInterface   $subjectFactory  The subject factory instance
+     * @param \TechDivision\Import\ApplicationInterface             $application     The application instance
+     * @param \TechDivision\Import\Plugins\SubjectExecutorInterface $subjectExecutor The subject executor instance
      */
     public function __construct(
         ApplicationInterface $application,
-        CallbackVisitorInterface $callbackVisitor,
-        ObserverVisitorInterface $observerVisitor,
-        SubjectFactoryInterface $subjectFactory
+        SubjectExecutorInterface $subjectExecutor
     ) {
 
         // call the parent constructor
         parent::__construct($application);
 
         // initialize the callback/observer visitors
-        $this->callbackVisitor = $callbackVisitor;
-        $this->observerVisitor = $observerVisitor;
-        $this->subjectFactory = $subjectFactory;
+        $this->subjectExecutor = $subjectExecutor;
     }
 
 
@@ -212,7 +188,6 @@ class SubjectPlugin extends AbstractPlugin
      * @param \TechDivision\Import\Configuration\SubjectConfigurationInterface $subject The subject configuration
      *
      * @return void
-     * @throws \Exception Is thrown, if the subject can't be processed
      */
     protected function processSubject(SubjectConfigurationInterface $subject)
     {
@@ -228,50 +203,16 @@ class SubjectPlugin extends AbstractPlugin
         foreach ($files as $pathname) {
             // query whether or not that the file is part of the actual bunch
             if ($this->isPartOfBunch($subject->getPrefix(), $subject->getSuffix(), $pathname)) {
-                // initialize the subject and import the bunch
-                $subjectInstance = $this->subjectFactory->createSubject($subject);
-
-                try {
-                    // setup the subject instance
-                    $subjectInstance->setUp($serial);
-
-                    // initialize the callbacks/observers
-                    $this->callbackVisitor->visit($subjectInstance);
-                    $this->observerVisitor->visit($subjectInstance);
-
-                    // query whether or not the subject needs an OK file,
-                    // if yes remove the filename from the file
-                    if ($subjectInstance->isOkFileNeeded()) {
-                        $this->removeFromOkFile($pathname, $subject->getSuffix());
-                    }
-
-                    // finally import the CSV file
-                    $subjectInstance->import($serial, $pathname);
-
-                    // query whether or not, we've to export artefacts
-                    if ($subjectInstance instanceof ExportableSubjectInterface) {
-                        $subjectInstance->export(
-                            $this->matches[BunchKeys::FILENAME],
-                            $this->matches[BunchKeys::COUNTER]
-                        );
-                    }
-
-                    // raise the number of the imported bunches
-                    $bunches++;
-
-                    // tear down the subject instance
-                    $subjectInstance->tearDown($serial);
-
-                } catch (\Exception $e) {
-                    // query whether or not, we've to export artefacts
-                    if ($subjectInstance instanceof ExportableSubjectInterface) {
-                        // tear down the subject instance
-                        $subjectInstance->tearDown($serial);
-                    }
-
-                    // re-throw the exception
-                    throw $e;
+                // query whether or not the subject needs an OK file,
+                // if yes remove the filename from the file
+                if ($subject->isOkFileNeeded()) {
+                    $this->removeFromOkFile($pathname, $subject->getSuffix());
                 }
+
+                // initialize the subject and import the bunch
+                $this->subjectExecutor->execute($subject, $this->matches, $serial, $pathname);
+                // raise the number of the imported bunches
+                $bunches++;
             }
         }
 

@@ -21,6 +21,7 @@
 namespace TechDivision\Import\Repositories;
 
 use TechDivision\Import\Utils\MemberNames;
+use TechDivision\Import\Utils\SqlStatementKeys;
 
 /**
  * Repository implementation to load category data.
@@ -49,13 +50,6 @@ class CategoryRepository extends AbstractRepository implements CategoryRepositor
     protected $rootCategoriesStmt;
 
     /**
-     * The statement to load categories by store view id.
-     *
-     * @var \PDOStatement
-     */
-    protected $categoriesByStoreViewStmt;
-
-    /**
      * Initializes the repository's prepared statements.
      *
      * @return void
@@ -63,16 +57,13 @@ class CategoryRepository extends AbstractRepository implements CategoryRepositor
     public function init()
     {
 
-        // load the utility class name
-        $utilityClassName = $this->getUtilityClassName();
-
         // initialize the prepared statements
         $this->categoriesStmt =
-            $this->getConnection()->prepare($this->getUtilityClass()->find($utilityClassName::CATEGORIES));
+            $this->getConnection()->prepare($this->loadStatement(SqlStatementKeys::CATEGORIES));
         $this->rootCategoriesStmt =
-            $this->getConnection()->prepare($this->getUtilityClass()->find($utilityClassName::ROOT_CATEGORIES));
+            $this->getConnection()->prepare($this->loadStatement(SqlStatementKeys::ROOT_CATEGORIES));
         $this->categoriesByStoreViewStmt =
-            $this->getConnection()->prepare($this->getUtilityClass()->find($utilityClassName::CATEGORIES_BY_STORE_VIEW));
+            $this->getConnection()->prepare($this->loadStatement(SqlStatementKeys::CATEGORIES_BY_STORE_VIEW));
     }
 
     /**

@@ -20,6 +20,8 @@
 
 namespace TechDivision\Import\Repositories;
 
+use TechDivision\Import\Utils\SqlStatementKeys;
+
 /**
  * Repository implementation to load link attribute data.
  *
@@ -47,12 +49,9 @@ class LinkAttributeRepository extends AbstractRepository implements LinkAttribut
     public function init()
     {
 
-        // load the utility class name
-        $utilityClassName = $this->getUtilityClassName();
-
         // initialize the prepared statements
         $this->linkAttributesStmt =
-            $this->getConnection()->prepare($this->getUtilityClass()->find($utilityClassName::LINK_ATTRIBUTES));
+            $this->getConnection()->prepare($this->loadStatement(SqlStatementKeys::LINK_ATTRIBUTES));
     }
 
     /**

@@ -1,7 +1,7 @@
 <?php
 
 /**
- * TechDivision\Import\Utils\SqlStatementsTest
+ * TechDivision\Import\Utils\SqlStatementRepositoryTest
 *
 * NOTICE OF LICENSE
 *
@@ -18,7 +18,9 @@
 * @link      http://www.techdivision.com
 */
 
-namespace TechDivision\Import\Utils;
+namespace TechDivision\Import\Repositories;
+
+use TechDivision\Import\Utils\SqlStatementKeys;
 
 /**
  * Test class for the SQL statement implementation.
@@ -29,15 +31,15 @@ namespace TechDivision\Import\Utils;
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
  */
-class SqlStatementsTest extends \PHPUnit_Framework_TestCase
+class SqlStatementRepositoryTest extends \PHPUnit_Framework_TestCase
 {
 
     /**
      * The subject we want to test.
      *
-     * @var \TechDivision\Import\Utils\SqlStatements
+     * @var \TechDivision\Import\Repositories\SqlStatementRepository
      */
-    protected $sqlStatements;
+    protected $sqlStatementRepository;
 
     /**
      * Sets up the fixture, for example, open a network connection.
@@ -48,7 +50,7 @@ class SqlStatementsTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->sqlStatements = new SqlStatements();
+        $this->sqlStatementRepository = new SqlStatementRepository();
     }
 
     /**
@@ -59,11 +61,8 @@ class SqlStatementsTest extends \PHPUnit_Framework_TestCase
     public function testFindWithSuccess()
     {
 
-        // load the utility class name
-        $utilityClassName = get_class($this->sqlStatements);
-
         // query whether or not the SQL statement can be loade
-        $this->assertEquals('SELECT * FROM core_config_data', $this->sqlStatements->find($utilityClassName::CORE_CONFIG_DATA));
+        $this->assertEquals('SELECT * FROM core_config_data', $this->sqlStatementRepository->load(SqlStatementKeys::CORE_CONFIG_DATA));
     }
 
     /**
@@ -71,10 +70,10 @@ class SqlStatementsTest extends \PHPUnit_Framework_TestCase
      *
      * @return void
      * @expectedException \Exception
-     * @expectedExceptionMessage Can't find SQL statement with key a.key.that.is.not.available
+     * @expectedExceptionMessage Can't find SQL statement with ID a.id.that.is.not.available
      */
     public function testFindWithException()
     {
-        $this->sqlStatements->find('a.key.that.is.not.available');
+        $this->sqlStatementRepository->load('a.id.that.is.not.available');
     }
 }

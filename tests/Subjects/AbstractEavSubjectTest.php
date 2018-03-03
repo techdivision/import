@@ -479,7 +479,7 @@ class AbstractEavSubjectTest extends AbstractTest
                            ->method('getDefaultFrontendInputCallbackMappings')
                            ->willReturn(
                                array(
-                                   FrontendInputTypes::SELECT => 'import_product.callback.select'
+                                   FrontendInputTypes::SELECT => array('import_product.callback.select')
                                )
                            );
 

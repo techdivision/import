@@ -11,73 +11,73 @@
         <service id="configuration.import.plugin.missing.option.values" synthetic="true" />
         <service id="configuration.import.subject.move.files" synthetic="true" />
 
-        <service id="import.utility.class.name" class="TechDivision\Import\Utils\SqlStatements"/>
         <service id="import.generator.core.config.data.uid" class="TechDivision\Import\Utils\Generators\CoreConfigDataUidGenerator"/>
 
+        <service id="import.repository.sql.statement" class="TechDivision\Import\Repositories\SqlStatementRepository"/>
         <service id="import.repository.category" class="TechDivision\Import\Repositories\CategoryRepository">
             <argument type="service" id="connection"/>
-            <argument type="service" id="import.utility.class.name"/>
+            <argument type="service" id="import.repository.sql.statement"/>
         </service>
         <service id="import.repository.category.varchar" class="TechDivision\Import\Repositories\CategoryVarcharRepository">
             <argument type="service" id="connection"/>
-            <argument type="service" id="import.utility.class.name"/>
+            <argument type="service" id="import.repository.sql.statement"/>
         </service>
         <service id="import.repository.eav.attribute" class="TechDivision\Import\Repositories\EavAttributeRepository">
             <argument type="service" id="connection"/>
-            <argument type="service" id="import.utility.class.name"/>
+            <argument type="service" id="import.repository.sql.statement"/>
         </service>
         <service id="import.repository.eav.attribute" class="TechDivision\Import\Repositories\EavAttributeRepository">
             <argument type="service" id="connection"/>
-            <argument type="service" id="import.utility.class.name"/>
+            <argument type="service" id="import.repository.sql.statement"/>
         </service>
         <service id="import.repository.eav.attribute.set" class="TechDivision\Import\Repositories\EavAttributeSetRepository">
             <argument type="service" id="connection"/>
-            <argument type="service" id="import.utility.class.name"/>
+            <argument type="service" id="import.repository.sql.statement"/>
         </service>
         <service id="import.repository.eav.attribute.group" class="TechDivision\Import\Repositories\EavAttributeGroupRepository">
             <argument type="service" id="connection"/>
-            <argument type="service" id="import.utility.class.name"/>
+            <argument type="service" id="import.repository.sql.statement"/>
         </service>
         <service id="import.repository.eav.attribute.option.value" class="TechDivision\Import\Repositories\EavAttributeOptionValueRepository">
             <argument type="service" id="connection"/>
-            <argument type="service" id="import.utility.class.name"/>
+            <argument type="service" id="import.repository.sql.statement"/>
         </service>
         <service id="import.repository.eav.entity.type" class="TechDivision\Import\Repositories\EavEntityTypeRepository">
             <argument type="service" id="connection"/>
-            <argument type="service" id="import.utility.class.name"/>
+            <argument type="service" id="import.repository.sql.statement"/>
         </service>
         <service id="import.repository.store" class="TechDivision\Import\Repositories\StoreRepository">
             <argument type="service" id="connection"/>
-            <argument type="service" id="import.utility.class.name"/>
+            <argument type="service" id="import.repository.sql.statement"/>
         </service>
         <service id="import.repository.store.website" class="TechDivision\Import\Repositories\StoreWebsiteRepository">
             <argument type="service" id="connection"/>
-            <argument type="service" id="import.utility.class.name"/>
+            <argument type="service" id="import.repository.sql.statement"/>
         </service>
         <service id="import.repository.tax.class" class="TechDivision\Import\Repositories\TaxClassRepository">
             <argument type="service" id="connection"/>
-            <argument type="service" id="import.utility.class.name"/>
+            <argument type="service" id="import.repository.sql.statement"/>
         </service>
         <service id="import.repository.link.type" class="TechDivision\Import\Repositories\LinkTypeRepository">
             <argument type="service" id="connection"/>
-            <argument type="service" id="import.utility.class.name"/>
+            <argument type="service" id="import.repository.sql.statement"/>
         </service>
         <service id="import.repository.link.attribute" class="TechDivision\Import\Repositories\LinkAttributeRepository">
             <argument type="service" id="connection"/>
-            <argument type="service" id="import.utility.class.name"/>
+            <argument type="service" id="import.repository.sql.statement"/>
         </service>
         <service id="import.repository.url.rewrite" class="TechDivision\Import\Repositories\UrlRewriteRepository">
             <argument type="service" id="connection"/>
-            <argument type="service" id="import.utility.class.name"/>
+            <argument type="service" id="import.repository.sql.statement"/>
         </service>
         <service id="import.repository.core.config.data" class="TechDivision\Import\Repositories\CoreConfigDataRepository">
             <argument type="service" id="import.generator.core.config.data.uid"/>
             <argument type="service" id="connection"/>
-            <argument type="service" id="import.utility.class.name"/>
+            <argument type="service" id="import.repository.sql.statement"/>
         </service>
         <service id="import.repository.image.type" class="TechDivision\Import\Repositories\ImageTypeRepository">
             <argument type="service" id="connection"/>
-            <argument type="service" id="import.utility.class.name"/>
+            <argument type="service" id="import.repository.sql.statement"/>
         </service>
 
         <service id="import.repository.cache.warmer.eav.attribute.option.value" class="TechDivision\Import\Repositories\CacheWarmer\EavAttributeOptionValueCacheWarmer">
@@ -86,39 +86,39 @@
 
         <service id="import.action.processor.url.rewrite.product.create" class="TechDivision\Import\Actions\Processors\UrlRewriteCreateProcessor">
             <argument type="service" id="connection"/>
-            <argument type="service" id="import.utility.class.name"/>
+            <argument type="service" id="import.repository.sql.statement"/>
         </service>
         <service id="import.action.processor.url.rewrite.product.update" class="TechDivision\Import\Actions\Processors\UrlRewriteUpdateProcessor">
             <argument type="service" id="connection"/>
-            <argument type="service" id="import.utility.class.name"/>
+            <argument type="service" id="import.repository.sql.statement"/>
         </service>
         <service id="import.action.processor.url.rewrite.product.delete" class="TechDivision\Import\Actions\Processors\UrlRewriteDeleteProcessor">
             <argument type="service" id="connection"/>
-            <argument type="service" id="import.utility.class.name"/>
+            <argument type="service" id="import.repository.sql.statement"/>
         </service>
         <service id="import.action.processor.store.create" class="TechDivision\Import\Actions\Processors\StoreCreateProcessor">
             <argument type="service" id="connection"/>
-            <argument type="service" id="import.utility.class.name"/>
+            <argument type="service" id="import.repository.sql.statement"/>
         </service>
         <service id="import.action.processor.store.update" class="TechDivision\Import\Actions\Processors\StoreUpdateProcessor">
             <argument type="service" id="connection"/>
-            <argument type="service" id="import.utility.class.name"/>
+            <argument type="service" id="import.repository.sql.statement"/>
         </service>
         <service id="import.action.processor.store.group.create" class="TechDivision\Import\Actions\Processors\StoreGroupCreateProcessor">
             <argument type="service" id="connection"/>
-            <argument type="service" id="import.utility.class.name"/>
+            <argument type="service" id="import.repository.sql.statement"/>
         </service>
         <service id="import.action.processor.store.group.update" class="TechDivision\Import\Actions\Processors\StoreGroupUpdateProcessor">
             <argument type="service" id="connection"/>
-            <argument type="service" id="import.utility.class.name"/>
+            <argument type="service" id="import.repository.sql.statement"/>
         </service>
         <service id="import.action.processor.store.website.create" class="TechDivision\Import\Actions\Processors\StoreWebsiteCreateProcessor">
             <argument type="service" id="connection"/>
-            <argument type="service" id="import.utility.class.name"/>
+            <argument type="service" id="import.repository.sql.statement"/>
         </service>
         <service id="import.action.processor.store.website.update" class="TechDivision\Import\Actions\Processors\StoreWebsiteUpdateProcessor">
             <argument type="service" id="connection"/>
-            <argument type="service" id="import.utility.class.name"/>
+            <argument type="service" id="import.repository.sql.statement"/>
         </service>
 
         <service id="import.action.url.rewrite" class="TechDivision\Import\Actions\UrlRewriteAction">
@@ -184,14 +184,17 @@
         <!--
          | The DI configuration for the plugins
          |-->
+        <service id="import.plugin.subject.executor" class="TechDivision\Import\Plugins\SubjectExecutor">
+            <argument type="service" id="import.visitor.callback"/>
+            <argument type="service" id="import.visitor.observer"/>
+            <argument type="service" id="import.subject.factory"/>
+        </service>
         <service id="import.plugin.archive" class="TechDivision\Import\Plugins\ArchivePlugin">
             <argument type="service" id="import_app_simple.simple"/>
         </service>
         <service id="import.plugin.subject" class="TechDivision\Import\Plugins\SubjectPlugin">
             <argument type="service" id="import_app_simple.simple"/>
-            <argument type="service" id="import.visitor.callback"/>
-            <argument type="service" id="import.visitor.observer"/>
-            <argument type="service" id="import.subject.factory"/>
+            <argument type="service" id="import.plugin.subject.executor"/>
         </service>
         <service id="import.plugin.global.data" class="TechDivision\Import\Plugins\GlobalDataPlugin">
             <argument type="service" id="import_app_simple.simple"/>

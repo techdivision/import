@@ -166,6 +166,13 @@ interface SubjectConfigurationInterface extends ParamsConfigurationInterface
     public function getCallbacks();
 
     /**
+     * Return's the array with the subject's frontend input callbacks.
+     *
+     * @return array The subject's frontend input callbacks
+     */
+    public function getFrontendInputCallbacks();
+
+    /**
      * Queries whether or not that the subject needs an OK file to be processed.
      *
      * @return boolean TRUE if the subject needs an OK file, else FALSE

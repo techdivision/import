@@ -47,16 +47,27 @@ interface RepositoryInterface
     public function getConnection();
 
     /**
-     * Return's the utility class instance with the SQL statements to use.
+     * Set's the repository instance with the SQL statements to use.
      *
-     * @return \TechDivision\Import\Utils\SqlStatementsInterface The utility class instance
+     * @param \TechDivision\Import\Repositories\SqlStatementRepositoryInterface $sqlStatementRepository The repository instance
+     *
+     * @return void
      */
-    public function getUtilityClass();
+    public function setSqlStatementRepository(SqlStatementRepositoryInterface $sqlStatementRepository);
 
     /**
-     * Return's the utility class with the SQL statements to use.
+     * Return's the repository instance with the SQL statements to use.
      *
-     * @return string The utility class name
+     * @return \TechDivision\Import\Repositories\SqlStatementRepositoryInterface The repository instance
      */
-    public function getUtilityClassName();
+    public function getSqlStatementRepository();
+
+    /**
+     * Load's the SQL statement with the passed ID from the SQL repository.
+     *
+     * @param string $id The ID of the SQL statement to load
+     *
+     * @return string The SQL statement with the passed ID
+     */
+    public function loadStatement($id);
 }

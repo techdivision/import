@@ -55,6 +55,8 @@ class AdditionalAttributeObserverTest extends \PHPUnit_Framework_TestCase
 
     /**
      * Test the handle() method.
+     *
+     * @return void
      */
     public function testHandle()
     {

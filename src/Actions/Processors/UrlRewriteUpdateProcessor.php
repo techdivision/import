@@ -21,6 +21,7 @@
 namespace TechDivision\Import\Actions\Processors;
 
 use TechDivision\Import\Utils\MemberNames;
+use TechDivision\Import\Utils\SqlStatementKeys;
 
 /**
  * The URL rewrite update processor implementation.
@@ -42,14 +43,7 @@ class UrlRewriteUpdateProcessor extends AbstractUpdateProcessor
      */
     protected function getStatements()
     {
-
-        // load the utility class name
-        $utilityClassName = $this->getUtilityClassName();
-
-        // return the array with the SQL statements that has to be prepared
-        return array(
-            $utilityClassName::UPDATE_URL_REWRITE => $this->getUtilityClass()->find($utilityClassName::UPDATE_URL_REWRITE)
-        );
+        return array(SqlStatementKeys::UPDATE_URL_REWRITE => $this->loadStatement(SqlStatementKeys::UPDATE_URL_REWRITE));
     }
 
     /**

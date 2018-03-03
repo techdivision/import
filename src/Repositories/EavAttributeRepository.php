@@ -21,6 +21,7 @@
 namespace TechDivision\Import\Repositories;
 
 use TechDivision\Import\Utils\MemberNames;
+use TechDivision\Import\Utils\SqlStatementKeys;
 
 /**
  * Repository implementation to load EAV attribute data.
@@ -77,20 +78,17 @@ class EavAttributeRepository extends AbstractRepository implements EavAttributeR
     public function init()
     {
 
-        // load the utility class name
-        $utilityClassName = $this->getUtilityClassName();
-
         // initialize the prepared statements
         $this->eavAttributesByUserDefinedStmt =
-            $this->getConnection()->prepare($this->getUtilityClass()->find($utilityClassName::EAV_ATTRIBUTES_BY_IS_USER_DEFINED));
+            $this->getConnection()->prepare($this->loadStatement(SqlStatementKeys::EAV_ATTRIBUTES_BY_IS_USER_DEFINED));
         $this->eavAttributesByOptionValueAndStoreIdStmt =
-            $this->getConnection()->prepare($this->getUtilityClass()->find($utilityClassName::EAV_ATTRIBUTES_BY_OPTION_VALUE_AND_STORE_ID));
+            $this->getConnection()->prepare($this->loadStatement(SqlStatementKeys::EAV_ATTRIBUTES_BY_OPTION_VALUE_AND_STORE_ID));
         $this->eavAttributeByEntityTypeIdAndAttributeCodeStmt =
-            $this->getConnection()->prepare($this->getUtilityClass()->find($utilityClassName::EAV_ATTRIBUTE_BY_ENTITY_TYPE_ID_AND_ATTRIBUTE_CODE));
+            $this->getConnection()->prepare($this->loadStatement(SqlStatementKeys::EAV_ATTRIBUTE_BY_ENTITY_TYPE_ID_AND_ATTRIBUTE_CODE));
         $this->eavAttributesByEntityTypeIdAndUserDefinedStmt =
-            $this->getConnection()->prepare($this->getUtilityClass()->find($utilityClassName::EAV_ATTRIBUTES_BY_ENTITY_TYPE_ID_AND_IS_USER_DEFINED));
+            $this->getConnection()->prepare($this->loadStatement(SqlStatementKeys::EAV_ATTRIBUTES_BY_ENTITY_TYPE_ID_AND_IS_USER_DEFINED));
         $this->eavAttributesByEntityTypeIdAndAttributeSetNameStmt =
-            $this->getConnection()->prepare($this->getUtilityClass()->find($utilityClassName::EAV_ATTRIBUTES_BY_ENTITY_TYPE_ID_AND_ATTRIBUTE_SET_NAME));
+            $this->getConnection()->prepare($this->loadStatement(SqlStatementKeys::EAV_ATTRIBUTES_BY_ENTITY_TYPE_ID_AND_ATTRIBUTE_SET_NAME));
     }
 
     /**
