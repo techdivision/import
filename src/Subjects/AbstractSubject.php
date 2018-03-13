@@ -20,6 +20,7 @@
 
 namespace TechDivision\Import\Subjects;
 
+use League\Event\EmitterInterface;
 use Doctrine\Common\Collections\Collection;
 use TechDivision\Import\RowTrait;
 use TechDivision\Import\HeaderTrait;
@@ -35,6 +36,7 @@ use TechDivision\Import\Adapter\ImportAdapterInterface;
 use TechDivision\Import\Exceptions\WrappedColumnException;
 use TechDivision\Import\Services\RegistryProcessorInterface;
 use TechDivision\Import\Configuration\SubjectConfigurationInterface;
+use TechDivision\Import\Utils\EventNames;
 
 /**
  * An abstract subject implementation.
@@ -216,20 +218,40 @@ abstract class AbstractSubject implements SubjectInterface
     protected $lastLineNumber = 0;
 
     /**
+     * The event emitter instance.
+     *
+     * @var \League\Event\EmitterInterface
+     */
+    protected $emitter;
+
+    /**
      * Initialize the subject instance.
      *
      * @param \TechDivision\Import\Services\RegistryProcessorInterface $registryProcessor          The registry processor instance
      * @param \TechDivision\Import\Utils\Generators\GeneratorInterface $coreConfigDataUidGenerator The UID generator for the core config data
      * @param \Doctrine\Common\Collections\Collection                  $systemLoggers              The array with the system loggers instances
+     * @param \League\Event\EmitterInterface                           $emitter                    The event emitter instance
      */
     public function __construct(
         RegistryProcessorInterface $registryProcessor,
         GeneratorInterface $coreConfigDataUidGenerator,
-        Collection $systemLoggers
+        Collection $systemLoggers,
+        EmitterInterface $emitter
     ) {
+        $this->emitter = $emitter;
         $this->systemLoggers = $systemLoggers;
         $this->registryProcessor = $registryProcessor;
         $this->coreConfigDataUidGenerator = $coreConfigDataUidGenerator;
+    }
+
+    /**
+     * Return's the event emitter instance.
+     *
+     * @return \League\Event\EmitterInterface The event emitter instance
+     */
+    public function getEmitter()
+    {
+        return $this->emitter;
     }
 
     /**
@@ -687,6 +709,13 @@ abstract class AbstractSubject implements SubjectInterface
                 return;
             }
 
+            // initialize the serial/filename
+            $this->setSerial($serial);
+            $this->setFilename($filename);
+
+            // invoke the events that has to be fired before the artfact will be processed
+            $this->getEmitter()->emit(EventNames::SUBJECT_ARTEFACT_PROCESS_START, $this);
+
             // load the system logger instance
             $systemLogger = $this->getSystemLogger();
 
@@ -711,10 +740,6 @@ abstract class AbstractSubject implements SubjectInterface
             // track the start time
             $startTime = microtime(true);
 
-            // initialize the serial/filename
-            $this->setSerial($serial);
-            $this->setFilename($filename);
-
             // initialize the last time we've logged the counter with the processed rows per minute
             $this->lastLog = time();
 
@@ -733,10 +758,16 @@ abstract class AbstractSubject implements SubjectInterface
             // rename flag file, because import has been successfull
             $this->rename($inProgressFilename, $importedFilename);
 
+            // invoke the events that has to be fired when the artfact has been successfully processed
+            $this->getEmitter()->emit(EventNames::SUBJECT_ARTEFACT_PROCESS_SUCCESS, $this);
+
         } catch (\Exception $e) {
             // rename the flag file, because import failed and write the stack trace
             $this->rename($inProgressFilename, $failedFilename);
             $this->write($failedFilename, $e->__toString());
+
+            // invoke the events that has to be fired when the artfact can't be processed
+            $this->getEmitter()->emit(EventNames::SUBJECT_ARTEFACT_PROCESS_FAILURE, $this, $e);
 
             // do not wrap the exception if not already done
             if ($e instanceof WrappedColumnException) {
@@ -787,6 +818,9 @@ abstract class AbstractSubject implements SubjectInterface
         // raise the line number and reset the skip row flag
         $this->lineNumber++;
         $this->skipRow = false;
+
+        // invoke the events that has to be fired before the artfact's row will be processed
+        $this->getEmitter()->emit(EventNames::SUBJECT_ARTEFACT_ROW_PROCESS_START, $this);
 
         // initialize the headers with the columns from the first line
         if (sizeof($this->headers) === 0) {
@@ -850,6 +884,9 @@ abstract class AbstractSubject implements SubjectInterface
                 )
             )
         );
+
+        // invoke the events that has to be fired when the artfact's row has been successfully processed
+        $this->getEmitter()->emit(EventNames::SUBJECT_ARTEFACT_ROW_PROCESS_SUCCESS, $this);
     }
 
     /**

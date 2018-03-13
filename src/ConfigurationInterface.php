@@ -282,4 +282,11 @@ interface ConfigurationInterface
      * @return array The custom image types
      */
     public function getImageTypes();
+
+    /**
+     * Return's the array with the configured listeners.
+     *
+     * @return array The array with the listeners
+     */
+    public function getListeners();
 }

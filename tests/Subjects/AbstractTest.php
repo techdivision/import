@@ -235,11 +235,17 @@ abstract class AbstractTest extends \PHPUnit_Framework_TestCase
         // mock the loggers
         $mockLoggers = $this->getMockLoggers();
 
+        // mock the event emitter
+        $mockEmitter = $this->getMockBuilder('League\Event\EmitterInterface')
+                            ->setMethods(\get_class_methods('League\Event\EmitterInterface'))
+                            ->getMock();
+
         // prepare the constructor arguments
         return array(
             $mockRegistryProcessor,
             $mockGenerator,
-            $mockLoggers
+            $mockLoggers,
+            $mockEmitter
         );
     }
 
@@ -250,6 +256,11 @@ abstract class AbstractTest extends \PHPUnit_Framework_TestCase
      */
     abstract protected function getSubjectClassName();
 
+    /**
+     * Return's an array with method names that should also be mocked.
+     *
+     * @return array The array with the method names
+     */
     abstract protected function getSubjectMethodsToMock();
 
     /**
