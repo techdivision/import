@@ -1,3 +1,13 @@
+# Version 1.0.0-beta62
+
+## Bugfixes
+
+* None
+
+## Features
+
+* Add configurable events to AbstractSubject to allow simple extend of artefact and row handling
+
 # Version 1.0.0-beta61
 
 ## Bugfixes

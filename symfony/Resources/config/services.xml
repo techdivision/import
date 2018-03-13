@@ -254,6 +254,7 @@
             <argument type="service" id="import.processor.registry"/>
             <argument type="service" id="import.generator.core.config.data.uid"/>
             <argument type="service" id="loggers"/>
+            <argument type="service" id="import.events.emitter"/>
         </service>
 
         <service id="import.observer.attribute.set" class="TechDivision\Import\Observers\AttributeSetObserver"/>
@@ -265,6 +266,15 @@
         </service>
         <service id="import.visitor.observer" class="TechDivision\Import\Observers\ObserverVisitor">
             <argument type="service" id="service_container"/>
+        </service>
+
+        <!-- The DI configuration for the event emitter/listeners -->
+        <service id="import.events.emitter.factory" class="TechDivision\Import\Events\EmitterFactory">
+            <argument type="service" id="configuration"/>
+            <argument type="service" id="service_container"/>
+        </service>
+        <service id="import.events.emitter" class="League\Event\Emitter">
+            <factory service="import.events.emitter.factory" method="createEmitter"/>
         </service>
 
     </services>
