@@ -1,3 +1,14 @@
+# Version 1.0.0-beta63
+
+## Bugfixes
+
+* None
+
+## Features
+
+* Add --single-transaction parameter to configuration
+* Add additional event names
+
 # Version 1.0.0-beta62
 
 ## Bugfixes
