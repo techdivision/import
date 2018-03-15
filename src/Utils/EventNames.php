@@ -50,6 +50,27 @@ class EventNames
     }
 
     /**
+     * The event name for the event before the application start's the transaction (if single transaction mode has been activated).
+     *
+     * @var string
+     */
+    const APP_PROCESS_TRANSACTION_START = 'app.process.transaction.start';
+
+    /**
+     * The event name for the event after the application has the transaction committed successfully (if single transaction mode has been activated).
+     *
+     * @var string
+     */
+    const APP_PROCESS_TRANSACTION_SUCCESS = 'app.process.transaction.success';
+
+    /**
+     * The event name for the event after the application rollbacked the transaction (if single transaction mode has been activated).
+     *
+     * @var string
+     */
+    const APP_PROCESS_TRANSACTION_FAILURE = 'app.process.transaction.failure';
+
+    /**
      * The event name for the event before an import artefact will be processed.
      *
      * @var string

@@ -289,4 +289,11 @@ interface ConfigurationInterface
      * @return array The array with the listeners
      */
     public function getListeners();
+
+    /**
+     * Whether or not the import should be wrapped within a single transation.
+     *
+     * @return boolean TRUE if the import should be wrapped in a single transation, else FALSE
+     */
+    public function isSingleTransaction();
 }
