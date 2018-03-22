@@ -1,3 +1,13 @@
+# Version 1.0.0-beta65
+
+## Bugfixes
+
+* None
+
+## Features
+
+* Add missing interface for UrlRewriteAction
+
 # Version 1.0.0-beta64
 
 ## Bugfixes
