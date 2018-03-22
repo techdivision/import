@@ -32,7 +32,7 @@ use TechDivision\Import\Utils\SqlStatementKeys;
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
  */
-class ImageTypeRepository extends AbstractRepository implements LinkTypeRepositoryInterface
+class ImageTypeRepository extends AbstractRepository implements ImageTypeRepositoryInterface
 {
 
     /**

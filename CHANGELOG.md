@@ -1,3 +1,14 @@
+# Version 1.0.0-beta64
+
+## Bugfixes
+
+* None
+
+## Features
+
+* Add missing interfaces for actions, repositories and emitter factory
+* Replace class type hints for ImportProcessor with interfaces
+
 # Version 1.0.0-beta63
 
 ## Bugfixes

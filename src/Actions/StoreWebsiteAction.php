@@ -31,7 +31,7 @@ use TechDivision\Import\Utils\EntityStatus;
  * @link      https://github.com/techdivision/import-category
  * @link      http://www.techdivision.com
  */
-class StoreWebsiteAction extends AbstractAction
+class StoreWebsiteAction extends AbstractAction implements StoreWebsiteActionInterface
 {
 
     /**

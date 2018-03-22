@@ -1,7 +1,7 @@
 <?php
 
 /**
- * TechDivision\Import\Repositories\ImageTypeRepositoryInterface
+ * TechDivision\Import\Repositories\StoreRepositoryInterface
  *
  * NOTICE OF LICENSE
  *
@@ -21,7 +21,7 @@
 namespace TechDivision\Import\Repositories;
 
 /**
- * Interface for a image type data repository implementation.
+ * Interface for store repository implementations.
  *
  * @author    Tim Wagner <t.wagner@techdivision.com>
  * @copyright 2016 TechDivision GmbH <info@techdivision.com>
@@ -29,13 +29,21 @@ namespace TechDivision\Import\Repositories;
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
  */
-interface ImageTypeRepositoryInterface extends RepositoryInterface
+interface StoreRepositoryInterface extends RepositoryInterface
 {
 
     /**
-     * Return's an array with all available link types with the link type code as key.
+     * Return's an array with the available stores and their
+     * store codes as keys.
      *
-     * @return array The available link types
+     * @return array The array with all available stores
      */
     public function findAll();
+
+    /**
+     * Return's the default store.
+     *
+     * @return array The default store
+     */
+    public function findOneByDefault();
 }

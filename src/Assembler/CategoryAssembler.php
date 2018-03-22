@@ -33,7 +33,7 @@ use TechDivision\Import\Repositories\CategoryVarcharRepository;
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
  */
-class CategoryAssembler
+class CategoryAssembler implements CategoryAssemblerInterface
 {
 
     /**

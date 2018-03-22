@@ -32,7 +32,7 @@ use TechDivision\Import\Utils\SqlStatementKeys;
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
  */
-class StoreRepository extends AbstractRepository
+class StoreRepository extends AbstractRepository implements StoreRepositoryInterface
 {
 
     /**
