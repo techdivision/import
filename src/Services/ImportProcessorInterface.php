@@ -76,81 +76,116 @@ interface ImportProcessorInterface
     public function rollBack();
 
     /**
+     * Return's the category assembler.
+     *
+     * @return \TechDivision\Import\Assembler\CategoryAssemblerInterface The category assembler instance
+     */
+    public function getCategoryAssembler();
+
+    /**
      * Return's the repository to access categories.
      *
-     * @return \TechDivision\Import\Repositories\CategoryRepository The repository instance
+     * @return \TechDivision\Import\Repositories\CategoryRepositoryInterface The repository instance
      */
     public function getCategoryRepository();
 
     /**
      * Return's the repository to access category varchar values.
      *
-     * @return \TechDivision\Import\Repositories\CategoryVarcharRepository The repository instance
+     * @return \TechDivision\Import\Repositories\CategoryVarcharRepositoryInterface The repository instance
      */
     public function getCategoryVarcharRepository();
 
     /**
      * Return's the repository to access EAV attributes.
      *
-     * @return \TechDivision\Import\Repositories\EavAttributeRepository The repository instance
+     * @return \TechDivision\Import\Repositories\EavAttributeRepositoryInterface The repository instance
      */
     public function getEavAttributeRepository();
 
     /**
      * Return's the repository to access EAV attribute sets.
      *
-     * @return \TechDivision\Import\Repositories\EavAttributeSetRepository The repository instance
+     * @return \TechDivision\Import\Repositories\EavAttributeSetRepositoryInterface The repository instance
      */
     public function getEavAttributeSetRepository();
 
     /**
      * Return's the repository to access EAV attribute groups.
      *
-     * @return \TechDivision\Import\Repositories\EavAttributeGroupRepository The repository instance
+     * @return \TechDivision\Import\Repositories\EavAttributeGroupRepositoryInterface The repository instance
      */
     public function getEavAttributeGroupRepository();
 
     /**
-     * Return's the repository to access EAV entity types.
-     *
-     * @return \TechDivision\Import\Repositories\EavEntityTypeRepository The repository instance
-     */
-    public function getEavEntityTypeRepository();
-
-    /**
      * Return's the repository to access stores.
      *
-     * @return \TechDivision\Import\Repositories\StoreRepository The repository instance
+     * @return \TechDivision\Import\Repositories\StoreRepositoryInterface The repository instance
      */
     public function getStoreRepository();
 
     /**
      * Return's the repository to access store websites.
      *
-     * @return \TechDivision\Import\Repositories\StoreWebsiteRepository The repository instance
+     * @return \TechDivision\Import\Repositories\StoreWebsiteRepositoryInterface The repository instance
      */
     public function getStoreWebsiteRepository();
 
     /**
      * Return's the repository to access tax classes.
      *
-     * @return \TechDivision\Import\Repositories\TaxClassRepository The repository instance
+     * @return \TechDivision\Import\Repositories\TaxClassRepositoryInterface The repository instance
      */
     public function getTaxClassRepository();
 
     /**
      * Return's the repository to access link types.
      *
-     * @return \TechDivision\Import\Repositories\LinkTypeRepository The repository instance
+     * @return \TechDivision\Import\Repositories\LinkTypeRepositoryInterface The repository instance
      */
     public function getLinkTypeRepository();
 
     /**
+     * Return's the repository to access link attributes.
+     *
+     * @return \TechDivision\Import\Repositories\LinkAttributeRepositoryInterface The repository instance
+     */
+    public function getLinkAttributeRepository();
+
+    /**
+     * Return's the repository to access link types.
+     *
+     * @return \TechDivision\Import\Repositories\ImageTypeRepositoryInterface The repository instance
+     */
+    public function getImageTypeRepository();
+
+    /**
      * Return's the repository to access the Magento 2 configuration.
      *
-     * @return \TechDivision\Import\Repositories\CoreConfigDataRepository The repository instance
+     * @return \TechDivision\Import\Repositories\CoreConfigDataRepositoryInterface The repository instance
      */
     public function getCoreConfigDataRepository();
+
+    /**
+     * Return's the action with the store CRUD methods.
+     *
+     * @return \TechDivision\Import\Actions\StoreActionInterface The action instance
+     */
+    public function getStoreAction();
+
+    /**
+     * Return's the action with the store group CRUD methods.
+     *
+     * @return \TechDivision\Import\Actions\StoreGroupActionInterface The action instance
+     */
+    public function getStoreGroupAction();
+
+    /**
+     * Return's the action with the store website CRUD methods.
+     *
+     * @return \TechDivision\Import\Actions\StoreWebsiteActionInterface The action instance
+     */
+    public function getStoreWebsiteAction();
 
     /**
      * Return's the EAV attribute set with the passed ID.
@@ -160,13 +195,6 @@ interface ImportProcessorInterface
      * @return array The EAV attribute set
      */
     public function getEavAttributeSet($id);
-
-    /**
-     * Return's the category assembler.
-     *
-     * @return \TechDivision\Import\Assembler\CategoryAssembler The category assembler instance
-     */
-    public function getCategoryAssembler();
 
     /**
      * Return's the attribute sets for the passed entity type ID.
@@ -304,39 +332,25 @@ interface ImportProcessorInterface
     public function getLinkTypes();
 
     /**
+     * Return's an array with all available link attributes.
+     *
+     * @return array The available link attributes
+     */
+    public function getLinkAttributes();
+
+    /**
+     * Return's an array with all available image types.
+     *
+     * @return array The available image types
+     */
+    public function getImageTypes();
+
+    /**
      * Return's an array with the Magento 2 configuration.
      *
      * @return array The Magento 2 configuration
      */
     public function getCoreConfigData();
-    /**
-     * Returns the array with the global data necessary for the
-     * import process.
-     *
-     * @return array The array with the global data
-     */
-    public function getGlobalData();
-
-    /**
-     * Return's the action with the store CRUD methods.
-     *
-     * @return \TechDivision\Import\Actions\StoreAction The action instance
-     */
-    public function getStoreAction();
-
-    /**
-     * Return's the action with the store group CRUD methods.
-     *
-     * @return \TechDivision\Import\Actions\StoreGroupAction The action instance
-     */
-    public function getStoreGroupAction();
-
-    /**
-     * Return's the action with the store website CRUD methods.
-     *
-     * @return \TechDivision\Import\Actions\StoreWebsiteAction The action instance
-     */
-    public function getStoreWebsiteAction();
 
     /**
      * Persist's the passed store.
@@ -364,4 +378,12 @@ interface ImportProcessorInterface
      * @return void
      */
     public function persistStoreWebsite(array $storeWebsite);
+
+    /**
+     * Returns the array with the global data necessary for the
+     * import process.
+     *
+     * @return array The array with the global data
+     */
+    public function getGlobalData();
 }

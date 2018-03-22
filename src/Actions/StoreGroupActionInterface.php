@@ -1,7 +1,7 @@
 <?php
 
 /**
- * TechDivision\Import\Repositories\ImageTypeRepositoryInterface
+ * TechDivision\Import\Actions\StoreGroupActionInterface
  *
  * NOTICE OF LICENSE
  *
@@ -14,28 +14,21 @@
  * @author    Tim Wagner <t.wagner@techdivision.com>
  * @copyright 2016 TechDivision GmbH <info@techdivision.com>
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
- * @link      https://github.com/techdivision/import
+ * @link      https://github.com/techdivision/import-category
  * @link      http://www.techdivision.com
  */
 
-namespace TechDivision\Import\Repositories;
+namespace TechDivision\Import\Actions;
 
 /**
- * Interface for a image type data repository implementation.
+ * Interface for action implementations that provides CRUD functionality for store groups.
  *
  * @author    Tim Wagner <t.wagner@techdivision.com>
  * @copyright 2016 TechDivision GmbH <info@techdivision.com>
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
- * @link      https://github.com/techdivision/import
+ * @link      https://github.com/techdivision/import-category
  * @link      http://www.techdivision.com
  */
-interface ImageTypeRepositoryInterface extends RepositoryInterface
+interface StoreGroupActionInterface extends ActionInterface
 {
-
-    /**
-     * Return's an array with all available link types with the link type code as key.
-     *
-     * @return array The available link types
-     */
-    public function findAll();
 }

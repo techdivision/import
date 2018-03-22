@@ -1,7 +1,7 @@
 <?php
 
 /**
- * TechDivision\Import\Repositories\ImageTypeRepositoryInterface
+ * TechDivision\Import\Assembler\CategoryAssemblerInterface
  *
  * NOTICE OF LICENSE
  *
@@ -18,10 +18,10 @@
  * @link      http://www.techdivision.com
  */
 
-namespace TechDivision\Import\Repositories;
+namespace TechDivision\Import\Assembler;
 
 /**
- * Interface for a image type data repository implementation.
+ *Interface for catagory data assembler implementations.
  *
  * @author    Tim Wagner <t.wagner@techdivision.com>
  * @copyright 2016 TechDivision GmbH <info@techdivision.com>
@@ -29,13 +29,24 @@ namespace TechDivision\Import\Repositories;
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
  */
-interface ImageTypeRepositoryInterface extends RepositoryInterface
+interface CategoryAssemblerInterface
 {
 
     /**
-     * Return's an array with all available link types with the link type code as key.
+     * Returns an array with the available categories and their
+     * resolved path as keys.
      *
-     * @return array The available link types
+     * @return array The array with the categories
      */
-    public function findAll();
+    public function getCategoriesWithResolvedPath();
+
+    /**
+     * Return's an array with the available categories and their resolved path
+     * as keys by store view ID.
+     *
+     * @param integer $storeViewId The store view ID to return the categories for
+     *
+     * @return array The available categories for the passed store view ID
+     */
+    public function getCategoriesWithResolvedPathByStoreView($storeViewId);
 }

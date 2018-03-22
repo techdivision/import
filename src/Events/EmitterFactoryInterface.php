@@ -1,7 +1,7 @@
 <?php
 
 /**
- * TechDivision\Import\Repositories\ImageTypeRepositoryInterface
+ * TechDivision\Import\Events\EmitterFactoryInterface
  *
  * NOTICE OF LICENSE
  *
@@ -18,10 +18,10 @@
  * @link      http://www.techdivision.com
  */
 
-namespace TechDivision\Import\Repositories;
+namespace TechDivision\Import\Events;
 
 /**
- * Interface for a image type data repository implementation.
+ * Interface for factory implementations to create a new event emitter instance.
  *
  * @author    Tim Wagner <t.wagner@techdivision.com>
  * @copyright 2016 TechDivision GmbH <info@techdivision.com>
@@ -29,13 +29,13 @@ namespace TechDivision\Import\Repositories;
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
  */
-interface ImageTypeRepositoryInterface extends RepositoryInterface
+interface EmitterFactoryInterface
 {
 
     /**
-     * Return's an array with all available link types with the link type code as key.
+     * The factory method that creates a new emitter instance.
      *
-     * @return array The available link types
+     * @return void
      */
-    public function findAll();
+    public function createEmitter();
 }
