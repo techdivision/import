@@ -46,9 +46,7 @@ class RoboFile extends \Robo\Tasks
         'src.dir' => __DIR__ . '/src',
         'dist.dir' => __DIR__ . '/dist',
         'vendor.dir' => __DIR__ . '/vendor',
-        'target.dir' => __DIR__ . '/target',
-        'webapp.name' => 'import-cli-simple',
-        'webapp.version' => '1.0.0-alpha5'
+        'target.dir' => __DIR__ . '/target'
     );
 
     /**

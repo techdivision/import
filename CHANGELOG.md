@@ -1,3 +1,13 @@
+# Version 1.0.0
+
+## Bugfixes
+
+* None
+
+## Features
+
+* Move PHPUnit test from tests to tests/unit folder for integration test compatibility reasons
+
 # Version 1.0.0-beta65
 
 ## Bugfixes
