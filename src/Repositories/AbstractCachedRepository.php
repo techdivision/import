@@ -101,7 +101,7 @@ abstract class AbstractCachedRepository extends AbstractRepository implements Ca
      *
      * @param string $from The cache key to resolve
      *
-     * @return The resolved reference
+     * @return string The resolved reference
      */
     protected function resolveReference($from)
     {
