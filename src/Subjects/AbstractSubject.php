@@ -756,7 +756,11 @@ abstract class AbstractSubject implements SubjectInterface
             $systemLogger->info(sprintf('Successfully processed file %s with %d lines in %f s', $filename, $this->lineNumber, $endTime));
 
             // rename flag file, because import has been successfull
-            $this->rename($inProgressFilename, $importedFilename);
+            if ($this->getConfiguration()->isCreatingImportedFile()) {
+                $this->rename($inProgressFilename, $importedFilename);
+            } else {
+                unlink($inProgressFilename);
+            }
 
             // invoke the events that has to be fired when the artfact has been successfully processed
             $this->getEmitter()->emit(EventNames::SUBJECT_ARTEFACT_PROCESS_SUCCESS, $this);

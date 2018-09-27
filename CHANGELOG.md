@@ -1,3 +1,15 @@
+# Version 2.0.0
+
+## Bugfixes
+
+* Fixed issue that creates column original_data also if no original data is available
+
+## Features
+
+* Add configuration option create-imported-file to subject configuration
+* Add getter SubjectConfigurationInterface::isCreatingImportedFile() method
+* Add functionality to NOT create .imported flagfile based on configuration value to enable multiple subjects processing the same CSV file
+
 # Version 1.0.0
 
 ## Bugfixes

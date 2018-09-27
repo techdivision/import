@@ -180,6 +180,13 @@ interface SubjectConfigurationInterface extends ParamsConfigurationInterface
     public function isOkFileNeeded();
 
     /**
+     * Queries whether or not the subject should create a .imported flagfile
+     *
+     * @return boolean TRUE if subject has to create the .imported flagfile, else FALSE
+     */
+    public function isCreatingImportedFile();
+
+    /**
      * Return's the import adapter configuration instance.
      *
      * @return \TechDivision\Import\Configuration\Subject\ImportAdapterConfigurationInterface The import adapter configuration instance

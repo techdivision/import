@@ -196,14 +196,17 @@ trait ExportableTrait
 
         // initialize the original data
         $originalData = array();
+
+        // query whether or not, we've original columns
         if (sizeof($originalColumnNames) > 0) {
+            // prepare the original column data
             $originalData[ColumnKeys::ORIGINAL_FILENAME] = $this->getFilename();
             $originalData[ColumnKeys::ORIGINAL_LINE_NUMBER] = $this->getLineNumber();
             $originalData[ColumnKeys::ORIGINAL_COLUMN_NAMES] =  $originalColumnNames;
-        }
 
-        // prepare a new artefact entity
-        $artefact = array(ColumnKeys::ORIGINAL_DATA => $originalData);
+            // add the original column data to the new artefact
+            $artefact = array(ColumnKeys::ORIGINAL_DATA => $originalData);
+        }
 
         // merge the columns into the artefact entity and return it
         return array_merge($artefact, $columns);

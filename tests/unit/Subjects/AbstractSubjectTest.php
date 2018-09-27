@@ -302,6 +302,13 @@ class AbstractSubjectTest extends AbstractTest
              ->method('getSuffix')
              ->willReturn('csv');
 
+         // mock the flag to create the .imported flagfile
+         $this->abstractSubject
+             ->getConfiguration()
+             ->expects($this->once())
+             ->method('isCreatingImportedFile')
+             ->willReturn(true);
+
         // mock the isFile() method
         $this->abstractSubject
              ->expects($this->exactly(3))
