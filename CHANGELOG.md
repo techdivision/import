@@ -1,3 +1,14 @@
+# Version 2.0.1
+
+## Bugfixes
+
+* Add missing artefact initialization in ExportableTrait::newArtefact() method
+* Fixed invalid .inProgress file deletion in AbstractSubject::import() method
+
+## Features
+
+* None
+
 # Version 2.0.0
 
 ## Bugfixes
