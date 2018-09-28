@@ -194,7 +194,8 @@ trait ExportableTrait
     public function newArtefact(array $columns, array $originalColumnNames = array())
     {
 
-        // initialize the original data
+        // initialize the original data and the artefact
+        $artefact = array();
         $originalData = array();
 
         // query whether or not, we've original columns

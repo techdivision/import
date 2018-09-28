@@ -759,7 +759,7 @@ abstract class AbstractSubject implements SubjectInterface
             if ($this->getConfiguration()->isCreatingImportedFile()) {
                 $this->rename($inProgressFilename, $importedFilename);
             } else {
-                unlink($inProgressFilename);
+                $this->getFilesystemAdapter()->delete($inProgressFilename);
             }
 
             // invoke the events that has to be fired when the artfact has been successfully processed
