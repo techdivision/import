@@ -1,3 +1,13 @@
+# Version 3.0.0
+
+## Bugfixes
+
+* None
+
+## Features
+
+* Tap doctrine/dbal to version 2.5.x
+
 # Version 2.0.1
 
 ## Bugfixes
