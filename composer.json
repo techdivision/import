@@ -13,7 +13,7 @@
         "zendframework/zend-filter": "~2.0"
     },
     "require-dev": {
-        "doctrine/dbal": "~2.0",
+        "doctrine/dbal": "2.5.*",
         "symfony/config": "~2.8|~3.0",
         "symfony/http-kernel": "~2.8|~3.0",
         "phpmd/phpmd": "2.5.*",
