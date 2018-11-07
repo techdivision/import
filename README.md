@@ -17,63 +17,9 @@ A simple command line implementation should give a brief overview of how a simpl
 like. For more information, have a look at the [M2IF - Simple Console Tool](https://github.com/techdivision/import-cli-simple) 
 repository
 
-## Performance & Memory Comparison
-
-Import performance is one of the main topics, as in many, especially the bigger projects with more than 100.000
-products, the necessary time to keep the catalog up to date, may always be a bottleneck or an issue.
-
-This performance comparison below, will actually **NOT** be a real source of truth, as M2IF doesn't yet provide 
-the complete functionality the Magento 2 standard import does. But as M2IF meanwhile will provide the most common 
-features, it would give you a nice impression about what will be possible.
-
-### Preparation
-
-For the comparison, we used a standard Magento 2 CE v2.1.2 with sample data. As M2IF actually doesn't support
-Downloadable and Grouped Products, we removed these from the CSV file(s). This finally results in
-
-* 23 custom attributes
-* 1 bundle product
-* 147 configurable products
-* 1.891 simple products
-
-that we exported with the standard CSV export and created 4 bunches with ~500 products. To start the import process
-itself we used the [M2IF - Simple Console Tool](https://github.com/techdivision/import-cli-simple). 
-
-To execute the Magento 2 standard import we used a simple M2 extension that extends the Magento 2 command line tool. 
-The extension is provided by CedricBlondeau and can be found on [Github](https://github.com/cedricblondeau/magento2-module-catalog-import-command).
-
-Before we start the import (both the Magento 2 + M2IF), we removed the already imported image files, as importing
-the same images again and again will lower performance.
-
-### Results
-
-On a MacBook Pro (Retina, Mid 2012) with the following configuration
-
-* Intel Core i7 2.3 GHz
-* 8 GB RAM
-* 256 GB HDD
-
-using PHP 5.6 + MySQL 5.6.34 we actually achieve these results
-
-| Operation            | M2 Standard  |       M2IF |    Improvement |
-|:---------------------|:-------------|:-----------|:---------------|
-| replace              |        113 s |       32 s |       ~ x 3.50 |
-| add-update           |        114 s |       49 s |       ~ x 2.30 |
-| delete               |         10 s |       10 s |       ~ x 0.00 |
-
-Beside Performance, the Memory Usage will also be a topic in some cases. As well as the Performance
-topic, Memory Usage will be relevant in projects with more than 100.000 products.
-
-When importing the sample data, as described under [Performance](#performance-memory-comparison), M2IF has a memory peak of 38.1 MB
-in contrast to Magento 2 standard import with 149.4 MB. For M2IF, it doesn't matter how big the CSV will be.
-
-> As already mentioned, please keep in mind, this comparison lacks of some functionality the Magento 2 standard 
-> import provides and and executes when running it. Especially the data validation will take some time and M2IF 
-> actually lacks of any validation functionality!
-
 ## Status
 
-Actually we've a pre-alpha status, so we **STRONGLY** recommend not to use M2IF in production now.
+This version of M2IF is suited for Magento 2.2.x and ready for production now.
 
 The following functionality is already available, for CE and EE
 
