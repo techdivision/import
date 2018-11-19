@@ -172,6 +172,7 @@
          |-->
         <service id="import.subject.factory" class="TechDivision\Import\Subjects\SubjectFactory">
             <argument type="service" id="service_container"/>
+            <argument type="service" id="loggers"/>
         </service>
 
         <!--
@@ -179,6 +180,21 @@
          |-->
         <service id="import.plugin.factory" class="TechDivision\Import\Plugins\PluginFactory">
             <argument type="service" id="service_container"/>
+        </service>
+
+        <!--
+         | The DI configuration for the plugin file resolver factory
+         |-->
+        <service id="import.plugin.file.resolver.factory" class="TechDivision\Import\Plugins\FileResolver\FileResolverFactory">
+            <argument type="service" id="service_container"/>
+        </service>
+
+        <!--
+         | The DI configuration for the plugin file resolvers
+         |-->
+        <service id="import.plugin.file.resolver.simple" class="TechDivision\Import\Plugins\FileResolver\SimpleFileResolver">
+            <argument type="service" id="import_app_simple.simple"/>
+            <argument type="service" id="import.processor.registry"/>
         </service>
 
         <!--
@@ -195,6 +211,7 @@
         <service id="import.plugin.subject" class="TechDivision\Import\Plugins\SubjectPlugin">
             <argument type="service" id="import_app_simple.simple"/>
             <argument type="service" id="import.plugin.subject.executor"/>
+            <argument type="service" id="import.plugin.file.resolver.factory"/>
         </service>
         <service id="import.plugin.global.data" class="TechDivision\Import\Plugins\GlobalDataPlugin">
             <argument type="service" id="import_app_simple.simple"/>
@@ -224,6 +241,9 @@
             <argument type="service" id="import.adapter.lexer"/>
             <argument type="service" id="import.adapter.interpreter"/>
         </service>
+        <service id="import.adapter.import.csv.factory" class="TechDivision\Import\Adapter\CsvImportAdapterFactory">
+            <argument type="service" id="service_container"/>
+        </service>
 
         <!--
          | The DI configuration for the export adapter
@@ -239,6 +259,9 @@
         </service>
         <service id="import.adapter.export.csv" class="TechDivision\Import\Adapter\CsvExportAdapter">
             <argument type="service" id="import.adapter.export"/>
+        </service>
+        <service id="import.adapter.export.csv.factory" class="TechDivision\Import\Adapter\CsvExportAdapterFactory">
+            <argument type="service" id="service_container"/>
         </service>
 
         <!--

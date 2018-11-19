@@ -1,3 +1,14 @@
+# Version 4.0.0
+
+## Bugfixes
+
+* None
+
+## Features
+
+* Move CSV configuration from subject to import/export adapter configuration
+* Add FileResolver implementation to make configuration of import file + OK file handling more generic
+
 # Version 3.0.0
 
 ## Bugfixes

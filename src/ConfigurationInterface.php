@@ -20,6 +20,8 @@
 
 namespace TechDivision\Import;
 
+use TechDivision\Import\Configuration\CsvConfigurationInterface;
+use TechDivision\Import\Configuration\ParamsConfigurationInterface;
 use TechDivision\Import\Configuration\DatabaseConfigurationInterface;
 
 /**
@@ -31,7 +33,7 @@ use TechDivision\Import\Configuration\DatabaseConfigurationInterface;
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
  */
-interface ConfigurationInterface
+interface ConfigurationInterface extends CsvConfigurationInterface, ParamsConfigurationInterface
 {
 
     /**
@@ -154,48 +156,6 @@ interface ConfigurationInterface
      * @return string The multiple value delimiter character
      */
     public function getMultipleValueDelimiter();
-
-    /**
-     * Return's the delimiter character to use, default value is comma (,).
-     *
-     * @return string The delimiter character
-     */
-    public function getDelimiter();
-
-    /**
-     * The enclosure character to use, default value is double quotation (").
-     *
-     * @return string The enclosure character
-     */
-    public function getEnclosure();
-
-    /**
-     * The escape character to use, default value is backslash (\).
-     *
-     * @return string The escape character
-     */
-    public function getEscape();
-
-    /**
-     * The file encoding of the CSV source file, default value is UTF-8.
-     *
-     * @return string The charset used by the CSV source file
-     */
-    public function getFromCharset();
-
-    /**
-     * The file encoding of the CSV targetfile, default value is UTF-8.
-     *
-     * @return string The charset used by the CSV target file
-     */
-    public function getToCharset();
-
-    /**
-     * The file mode of the CSV target file, either one of write or append, default is write.
-     *
-     * @return string The file mode of the CSV target file
-     */
-    public function getFileMode();
 
     /**
      * Queries whether or not strict mode is enabled or not, default is TRUE.

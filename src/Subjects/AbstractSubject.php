@@ -37,6 +37,8 @@ use TechDivision\Import\Exceptions\WrappedColumnException;
 use TechDivision\Import\Services\RegistryProcessorInterface;
 use TechDivision\Import\Configuration\SubjectConfigurationInterface;
 use TechDivision\Import\Utils\EventNames;
+use TechDivision\Import\Plugins\FileResolver\FileResolverFactory;
+use TechDivision\Import\Plugins\FileResolver\SimpleFileResolver;
 
 /**
  * An abstract subject implementation.
@@ -704,11 +706,6 @@ abstract class AbstractSubject implements SubjectInterface
     {
 
         try {
-            // stop processing, if the filename doesn't match
-            if (!$this->match($filename)) {
-                return;
-            }
-
             // initialize the serial/filename
             $this->setSerial($serial);
             $this->setFilename($filename);
@@ -781,28 +778,6 @@ abstract class AbstractSubject implements SubjectInterface
             // else wrap and throw the exception
             throw $this->wrapException(array(), $e);
         }
-    }
-
-    /**
-     * This method queries whether or not the passed filename matches
-     * the pattern, based on the subjects configured prefix.
-     *
-     * @param string $filename The filename to match
-     *
-     * @return boolean TRUE if the filename matches, else FALSE
-     */
-    protected function match($filename)
-    {
-
-        // prepare the pattern to query whether the file has to be processed or not
-        $pattern = sprintf(
-            '/^.*\/%s.*\\.%s$/',
-            $this->getConfiguration()->getPrefix(),
-            $this->getConfiguration()->getSuffix()
-        );
-
-        // stop processing, if the filename doesn't match
-        return (boolean) preg_match($pattern, $filename);
     }
 
     /**

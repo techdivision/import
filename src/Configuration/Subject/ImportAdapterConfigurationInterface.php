@@ -20,6 +20,8 @@
 
 namespace TechDivision\Import\Configuration\Subject;
 
+use TechDivision\Import\Configuration\CsvConfigurationInterface;
+
 /**
  * The interface for an import adapter's configuration.
  *
@@ -29,7 +31,7 @@ namespace TechDivision\Import\Configuration\Subject;
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
  */
-interface ImportAdapterConfigurationInterface
+interface ImportAdapterConfigurationInterface extends CsvConfigurationInterface
 {
 
     /**

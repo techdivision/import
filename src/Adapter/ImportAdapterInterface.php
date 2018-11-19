@@ -20,6 +20,8 @@
 
 namespace TechDivision\Import\Adapter;
 
+use TechDivision\Import\Configuration\CsvConfigurationInterface;
+
 /**
  * Interface for all import adapter implementations.
  *
@@ -31,6 +33,15 @@ namespace TechDivision\Import\Adapter;
  */
 interface ImportAdapterInterface
 {
+
+    /**
+     * Overwrites the default CSV configuration values with the one from the passed configuration.
+     *
+     * @param \TechDivision\Import\Configuration\CsvConfigurationInterface $importAdapterConfiguration The configuration to use the values from
+     *
+     * @return void
+     */
+    public function setImportAdapterConfiguration(CsvConfigurationInterface $importAdapterConfiguration);
 
     /**
      * Imports the content of the CSV file with the passed filename.

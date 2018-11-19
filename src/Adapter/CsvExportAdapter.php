@@ -21,6 +21,7 @@
 namespace TechDivision\Import\Adapter;
 
 use Goodby\CSV\Export\Protocol\ExporterInterface;
+use TechDivision\Import\Configuration\CsvConfigurationInterface;
 
 /**
  * CSV export adapter implementation.
@@ -56,6 +57,51 @@ class CsvExportAdapter implements ExportAdapterInterface
     public function __construct(ExporterInterface $exporter)
     {
         $this->exporter = $exporter;
+    }
+
+    /**
+     * Overwrites the default CSV configuration values with the one from the passed configuration.
+     *
+     * @param \TechDivision\Import\Configuration\CsvConfigurationInterface $exportAdapterConfiguration The configuration to use the values from
+     *
+     * @return void
+     */
+    public function setExportAdapterConfiguration(CsvConfigurationInterface $exportAdapterConfiguration)
+    {
+
+        // load the exporter configuration and overwrite the values
+        /** @var \Goodby\CSV\Export\Standard\ExporterConfig $config */
+        $config = $this->exporter->getConfig();
+
+        // query whether or not a delimiter character has been configured
+        if ($delimiter = $exportAdapterConfiguration->getDelimiter()) {
+            $config->setDelimiter($delimiter);
+        }
+
+        // query whether or not a custom escape character has been configured
+        if ($escape = $exportAdapterConfiguration->getEscape()) {
+            $config->setEscape($escape);
+        }
+
+        // query whether or not a custom enclosure character has been configured
+        if ($enclosure = $exportAdapterConfiguration->getEnclosure()) {
+            $config->setEnclosure($enclosure);
+        }
+
+        // query whether or not a custom source charset has been configured
+        if ($fromCharset = $exportAdapterConfiguration->getFromCharset()) {
+            $config->setFromCharset($fromCharset);
+        }
+
+        // query whether or not a custom target charset has been configured
+        if ($toCharset = $exportAdapterConfiguration->getToCharset()) {
+            $config->setToCharset($toCharset);
+        }
+
+        // query whether or not a custom file mode has been configured
+        if ($fileMode = $exportAdapterConfiguration->getFileMode()) {
+            $config->setFileMode($fileMode);
+        }
     }
 
     /**

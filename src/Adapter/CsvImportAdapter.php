@@ -22,6 +22,7 @@ namespace TechDivision\Import\Adapter;
 
 use Goodby\CSV\Import\Protocol\LexerInterface;
 use Goodby\CSV\Import\Protocol\InterpreterInterface;
+use TechDivision\Import\Configuration\CsvConfigurationInterface;
 
 /**
  * CSV import adapter implementation.
@@ -59,6 +60,46 @@ class CsvImportAdapter implements ImportAdapterInterface
     {
         $this->lexer = $lexer;
         $this->interpreter = $interpreter;
+    }
+
+    /**
+     * Overwrites the default CSV configuration values with the one from the passed configuration.
+     *
+     * @param \TechDivision\Import\Configuration\CsvConfigurationInterface $importAdapterConfiguration The configuration to use the values from
+     *
+     * @return void
+     */
+    public function setImportAdapterConfiguration(CsvConfigurationInterface $importAdapterConfiguration)
+    {
+
+        // load the lexer configuration and overwrite the values
+        /** @var \Goodby\CSV\Import\Standard\LexerConfig $config */
+        $config = $this->lexer->getConfig();
+
+        // query whether or not a delimiter character has been configured
+        if ($delimiter = $importAdapterConfiguration->getDelimiter()) {
+            $config->setDelimiter($delimiter);
+        }
+
+        // query whether or not a custom escape character has been configured
+        if ($escape = $importAdapterConfiguration->getEscape()) {
+            $config->setEscape($escape);
+        }
+
+        // query whether or not a custom enclosure character has been configured
+        if ($enclosure = $importAdapterConfiguration->getEnclosure()) {
+            $config->setEnclosure($enclosure);
+        }
+
+        // query whether or not a custom source charset has been configured
+        if ($fromCharset = $importAdapterConfiguration->getFromCharset()) {
+            $config->setFromCharset($fromCharset);
+        }
+
+        // query whether or not a custom target charset has been configured
+        if ($toCharset = $importAdapterConfiguration->getToCharset()) {
+            $config->setToCharset($toCharset);
+        }
     }
 
     /**

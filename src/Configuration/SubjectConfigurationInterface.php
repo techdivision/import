@@ -117,13 +117,6 @@ interface SubjectConfigurationInterface extends ParamsConfigurationInterface
     public function getPrefix();
 
     /**
-     * Return's the suffix for the import files.
-     *
-     * @return string The suffix
-     */
-    public function getSuffix();
-
-    /**
      * Return's the subject's source date format to use.
      *
      * @return string The source date format
@@ -206,6 +199,13 @@ interface SubjectConfigurationInterface extends ParamsConfigurationInterface
      * @return \TechDivision\Import\Configuration\Subject\FilesystemAdapterConfigurationInterface The filesystem adapter configuration instance
      */
     public function getFilesystemAdapter();
+
+    /**
+     * Return's the file resolver configuration instance.
+     *
+     * @return \TechDivision\Import\Configuration\Subject\FileResolverConfigurationInterface The file resolver configuration instance
+     */
+    public function getFileResolver();
 
     /**
      * The array with the subject's custom header mappings.

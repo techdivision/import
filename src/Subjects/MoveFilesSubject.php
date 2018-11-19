@@ -74,19 +74,16 @@ class MoveFilesSubject extends AbstractSubject
     public function import($serial, $filename)
     {
 
-        // only process the file, if the filename match
-        if ($this->match($filename)) {
-            // initialize the serial/filename
-            $this->setSerial($serial);
-            $this->setFilename($filename);
+        // initialize the serial/filename
+        $this->setSerial($serial);
+        $this->setFilename($filename);
 
-            // query whether the new source directory has to be created or not
-            if (!$this->isDir($newSourceDir = $this->getNewSourceDir($serial))) {
-                $this->mkdir($newSourceDir);
-            }
-
-            // move the file to the new source directory
-            $this->rename($filename, sprintf('%s/%s', $newSourceDir, basename($filename)));
+        // query whether the new source directory has to be created or not
+        if (!$this->isDir($newSourceDir = $this->getNewSourceDir($serial))) {
+            $this->mkdir($newSourceDir);
         }
+
+        // move the file to the new source directory
+        $this->rename($filename, sprintf('%s/%s', $newSourceDir, basename($filename)));
     }
 }

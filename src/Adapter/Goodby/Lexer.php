@@ -64,6 +64,16 @@ class Lexer implements LexerInterface
     }
 
     /**
+     * Returns the lexer configuration.
+     *
+     * @return \Goodby\CSV\Import\Standard\LexerConfig The configuration instance
+     */
+    public function getConfig()
+    {
+        return $this->config;
+    }
+
+    /**
      * Parse the passed CSV file.
      *
      * @param string                                           $filename    The filename to parse

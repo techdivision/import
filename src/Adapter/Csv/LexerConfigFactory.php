@@ -21,7 +21,7 @@
 namespace TechDivision\Import\Adapter\Csv;
 
 use Goodby\CSV\Import\Standard\LexerConfig;
-use TechDivision\Import\ConfigurationInterface;
+use TechDivision\Import\Configuration\CsvConfigurationInterface;
 
 /**
  * Factory implementation for a CSV lexer configuration.
@@ -38,16 +38,16 @@ class LexerConfigFactory implements LexerConfigFactoryInterface
     /**
      * The configuration instance.
      *
-     * @var \TechDivision\Import\ConfigurationInterface
+     * @var \TechDivision\Import\Configuration\CsvConfigurationInterface
      */
     protected $configuration;
 
     /**
      * Initialize the adapter with the configuration.
      *
-     * @param \TechDivision\Import\ConfigurationInterface $configuration The configuration instance
+     * @param \TechDivision\Import\Configuration\CsvConfigurationInterface $configuration The configuration instance
      */
-    public function __construct(ConfigurationInterface $configuration)
+    public function __construct(CsvConfigurationInterface $configuration)
     {
         $this->configuration = $configuration;
     }

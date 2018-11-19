@@ -85,6 +85,20 @@ class DependencyInjectionKeys
     const IMPORT_ADAPTER_EXPORT_CSV = 'import.adapter.export.csv';
 
     /**
+     * The key for the CSV import adapter service.
+     *
+     * @var string
+     */
+    const IMPORT_ADAPTER_IMPORT_CSV_FACTORY = 'import.adapter.import.csv.factory';
+
+    /**
+     * The key for the CSV export adapter service.
+     *
+     * @var string
+     */
+    const IMPORT_ADAPTER_EXPORT_CSV_FACTORY = 'import.adapter.export.csv.factory';
+
+    /**
      * The key for the simple PHP filesystem adapter service.
      *
      * @var string
@@ -111,4 +125,11 @@ class DependencyInjectionKeys
      * @var string
      */
     const IMPORT_CACHE_WARMER_EAV_ATTRIBUTE_OPTION_VALUE_REPOSITORY = 'import.repository.cache.warmer.eav.attribute.option.value';
+
+    /**
+     * The key for the CSV import bunch file resolver service.
+     *
+     * @var string
+     */
+    const IMPORT_PLUGIN_FILE_RESOLVER_SIMPLE = 'import.plugin.file.resolver.simple';
 }

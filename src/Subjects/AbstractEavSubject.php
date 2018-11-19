@@ -293,17 +293,26 @@ abstract class AbstractEavSubject extends AbstractSubject implements EavSubjectI
             // load the attributes for the entity type code
             $attributes = $this->attributes[$entityTypeCode];
 
-            // query whether or not attributes for the actual attribute set name
-            if (isset($attributes[$attributeSetName = $this->attributeSet[MemberNames::ATTRIBUTE_SET_NAME]])) {
-                return $attributes[$attributeSetName];
-            }
+            // query whether or not an attribute set has been loaded from the source file
+            if (is_array($this->attributeSet) && isset($this->attributeSet[MemberNames::ATTRIBUTE_SET_NAME])) {
+                // load the attribute set name
+                $attributeSetName = $this->attributeSet[MemberNames::ATTRIBUTE_SET_NAME];
 
-            // throw an exception, if not
-            throw new \Exception(
-                $this->appendExceptionSuffix(
-                    sprintf('Found invalid attribute set name "%s"', $attributeSetName)
-                )
-            );
+                // query whether or not attributes for the actual attribute set name
+                if ($attributeSetName && isset($attributes[$attributeSetName])) {
+                    return $attributes[$attributeSetName];
+                }
+
+                // throw an exception, if not
+                throw new \Exception(
+                    $this->appendExceptionSuffix(
+                        sprintf('Found invalid attribute set name "%s"', $attributeSetName)
+                    )
+                );
+
+            } else {
+                return call_user_func_array('array_merge', $attributes);
+            }
         }
 
         // throw an exception, if not

@@ -90,6 +90,16 @@ class Exporter implements ExporterInterface
     }
 
     /**
+     * Returns the exporter configuration.
+     *
+     * @return \Goodby\CSV\Export\Standard\ExporterConfig The configuration instance
+     */
+    public function getConfig()
+    {
+        return $this->config;
+    }
+
+    /**
      * Export data as CSV file.
      *
      * @param string $filename The filename to export to

@@ -1,7 +1,7 @@
 <?php
 
 /**
- * TechDivision\Import\Configuration\Subject\ExportAdapterConfigurationInterface
+ * TechDivision\Import\Adapter\ExportAdapterFactoryInterface
  *
  * NOTICE OF LICENSE
  *
@@ -18,12 +18,12 @@
  * @link      http://www.techdivision.com
  */
 
-namespace TechDivision\Import\Configuration\Subject;
+namespace TechDivision\Import\Adapter;
 
-use TechDivision\Import\Configuration\CsvConfigurationInterface;
+use TechDivision\Import\Configuration\SubjectConfigurationInterface;
 
 /**
- * The interface for an export adapter's configuration.
+ * Interface for all CSV export adapter factory implementations.
  *
  * @author    Tim Wagner <t.wagner@techdivision.com>
  * @copyright 2016 TechDivision GmbH <info@techdivision.com>
@@ -31,13 +31,15 @@ use TechDivision\Import\Configuration\CsvConfigurationInterface;
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
  */
-interface ExportAdapterConfigurationInterface extends CsvConfigurationInterface
+interface ExportAdapterFactoryInterface
 {
 
     /**
-     * Return's the export adapter's unique DI identifier
+     * Creates and returns the export adapter for the subject with the passed configuration.
      *
-     * @return string The export adapter's unique DI identifier
+     * @param \TechDivision\Import\Configuration\SubjectConfigurationInterface $subjectConfiguration
+     *
+     * @return \TechDivision\Import\Adapter\ExportAdapterInterface The export adapter instance
      */
-    public function getId();
+    public function createExportAdapter(SubjectConfigurationInterface $subjectConfiguration);
 }
