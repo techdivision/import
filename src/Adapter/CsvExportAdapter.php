@@ -21,7 +21,8 @@
 namespace TechDivision\Import\Adapter;
 
 use Goodby\CSV\Export\Protocol\ExporterInterface;
-use TechDivision\Import\Configuration\CsvConfigurationInterface;
+use TechDivision\Import\Configuration\Subject\ExportAdapterConfigurationInterface;
+use TechDivision\Import\Serializers\ConfigurationAwareSerializerFactoryInterface;
 
 /**
  * CSV export adapter implementation.
@@ -32,8 +33,15 @@ use TechDivision\Import\Configuration\CsvConfigurationInterface;
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
  */
-class CsvExportAdapter implements ExportAdapterInterface
+class CsvExportAdapter implements ExportAdapterInterface, SerializerAwareAdapterInterface
 {
+
+    /**
+     * The trait that provides serializer functionality.
+     *
+     * @var \TechDivision\Import\Adapter\SerializerTrait
+     */
+    use SerializerTrait;
 
     /**
      * The exporter instance.
@@ -62,12 +70,15 @@ class CsvExportAdapter implements ExportAdapterInterface
     /**
      * Overwrites the default CSV configuration values with the one from the passed configuration.
      *
-     * @param \TechDivision\Import\Configuration\CsvConfigurationInterface $exportAdapterConfiguration The configuration to use the values from
+     * @param \TechDivision\Import\Configuration\Subject\ExportAdapterConfigurationInterface $exportAdapterConfiguration The configuration to use the values from
+     * @param \TechDivision\Import\Serializers\ConfigurationAwareSerializerFactoryInterface  $serializerFactory          The serializer factory instance
      *
      * @return void
      */
-    public function setExportAdapterConfiguration(CsvConfigurationInterface $exportAdapterConfiguration)
-    {
+    public function init(
+        ExportAdapterConfigurationInterface $exportAdapterConfiguration,
+        ConfigurationAwareSerializerFactoryInterface $serializerFactory
+    ) {
 
         // load the exporter configuration and overwrite the values
         /** @var \Goodby\CSV\Export\Standard\ExporterConfig $config */
@@ -102,6 +113,9 @@ class CsvExportAdapter implements ExportAdapterInterface
         if ($fileMode = $exportAdapterConfiguration->getFileMode()) {
             $config->setFileMode($fileMode);
         }
+
+        // load the serializer instance from the DI container and set it on the subject instance
+        $this->setSerializer($serializerFactory->createSerializer($exportAdapterConfiguration));
     }
 
     /**

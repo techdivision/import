@@ -131,5 +131,40 @@ class DependencyInjectionKeys
      *
      * @var string
      */
-    const IMPORT_PLUGIN_FILE_RESOLVER_SIMPLE = 'import.plugin.file.resolver.simple';
+    const IMPORT_SUBJECT_FILE_RESOLVER_SIMPLE = 'import.subject.file.resolver.simple';
+
+    /**
+     * The key for the simple number converter service.
+     *
+     * @var string
+     */
+    const IMPORT_SUBJECT_NUMBER_CONVERTER_SIMPLE = 'import.subject.number.converter.simple';
+
+    /**
+     * The key for the simple date converter service.
+     *
+     * @var string
+     */
+    const IMPORT_SUBJECT_DATE_CONVERTER_SIMPLE = 'import.subject.date.converter.simple';
+
+    /**
+     * The key for the CSV value serializer.
+     *
+     * @var string
+     */
+    const IMPORT_SERIALIZER_CSV_VALUE = 'import.serializer.csv.value';
+
+    /**
+     * The key for the CSV additional attribute serializer.
+     *
+     * @var string
+     */
+    const IMPORT_SERIALIZER_CSV_ADDITIONAL_ATTRIBUTE = 'import.serializer.csv.additional.attribute';
+
+    /**
+     * The key for the CSV additional attribute serializer factory.
+     *
+     * @var string
+     */
+    const IMPORT_SERIALIZER_FACTORY_CSV_ADDITIONAL_ATTRIBUTE = 'import.serializer.factory.csv.additional.attribute';
 }

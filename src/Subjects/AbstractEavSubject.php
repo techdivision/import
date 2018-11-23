@@ -205,7 +205,7 @@ abstract class AbstractEavSubject extends AbstractSubject implements EavSubjectI
 
         // cast the value to a valid timestamp
         if ($backendType === BackendTypeKeys::BACKEND_TYPE_DATETIME) {
-            return \DateTime::createFromFormat($this->getSourceDateFormat(), $value)->format('Y-m-d H:i:s');
+            return \DateTime::createFromFormat($this->getConfiguration()->getDateConverter()->getSourceDateFormat(), $value)->format('Y-m-d H:i:s');
         }
 
         // cast the value to a float value
@@ -309,7 +309,6 @@ abstract class AbstractEavSubject extends AbstractSubject implements EavSubjectI
                         sprintf('Found invalid attribute set name "%s"', $attributeSetName)
                     )
                 );
-
             } else {
                 return call_user_func_array('array_merge', $attributes);
             }

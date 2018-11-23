@@ -1,7 +1,7 @@
 <?php
 
 /**
- * TechDivision\Import\Plugins\FileResolver\FileResolverFactory
+ * TechDivision\Import\Subjects\I18n\NumberConverterFactory
  *
  * NOTICE OF LICENSE
  *
@@ -18,13 +18,13 @@
  * @link      http://www.techdivision.com
  */
 
-namespace TechDivision\Import\Plugins\FileResolver;
+namespace TechDivision\Import\Subjects\I18n;
 
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use TechDivision\Import\Configuration\SubjectConfigurationInterface;
 
 /**
- * Factory for file resolver instances.
+ * Factory for number converter instances.
  *
  * @author    Tim Wagner <t.wagner@techdivision.com>
  * @copyright 2016 TechDivision GmbH <info@techdivision.com>
@@ -32,7 +32,7 @@ use TechDivision\Import\Configuration\SubjectConfigurationInterface;
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
  */
-class FileResolverFactory implements FileResolverFactoryInterface
+class NumberConverterFactory implements NumberConverterFactoryInterface
 {
 
     /**
@@ -53,20 +53,20 @@ class FileResolverFactory implements FileResolverFactoryInterface
     }
 
     /**
-     * Creates and returns the file resolver instance for the subject with the passed configuration.
+     * Creates and returns the number converter instance for the subject with the passed configuration.
      *
-     * @param \TechDivision\Import\Configuration\SubjectConfigurationInterface $subject The subject to create the file resolver for
+     * @param \TechDivision\Import\Configuration\SubjectConfigurationInterface $subject The subject to create the number converter for
      *
-     * @return \TechDivision\Import\Plugins\FileResolver\FileResolverInterface The file resolver instance
+     * @return \TechDivision\Import\Subjects\I18n\NumberConverterInterface The number converter instance
      */
-    public function createFileResolver(SubjectConfigurationInterface $subject)
+    public function createNumberConverter(SubjectConfigurationInterface $subject)
     {
 
-        // create a new file resolver instance for the subject with the passed configuration
-        $fileResolver = $this->container->get($subject->getFileResolver()->getId());
-        $fileResolver->setSubjectConfiguration($subject);
+        // create a new number converter instance for the subject with the passed configuration
+        $numberConverter = $this->container->get($subject->getNumberConverter()->getId());
+        $numberConverter->setSubjectConfiguration($subject);
 
-        // return the file resolver instance
-        return $fileResolver;
+        // return the number converter instance
+        return $numberConverter;
     }
 }

@@ -116,7 +116,6 @@ class SubjectExecutor implements SubjectExecutorInterface
 
             // tear down the subject instance
             $subjectInstance->tearDown($serial);
-
         } catch (\Exception $e) {
             // query whether or not, we've to export artefacts
             if ($subjectInstance instanceof ExportableSubjectInterface) {

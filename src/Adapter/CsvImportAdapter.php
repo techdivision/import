@@ -22,7 +22,8 @@ namespace TechDivision\Import\Adapter;
 
 use Goodby\CSV\Import\Protocol\LexerInterface;
 use Goodby\CSV\Import\Protocol\InterpreterInterface;
-use TechDivision\Import\Configuration\CsvConfigurationInterface;
+use TechDivision\Import\Configuration\Subject\ImportAdapterConfigurationInterface;
+use TechDivision\Import\Serializers\ConfigurationAwareSerializerFactoryInterface;
 
 /**
  * CSV import adapter implementation.
@@ -33,8 +34,15 @@ use TechDivision\Import\Configuration\CsvConfigurationInterface;
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
  */
-class CsvImportAdapter implements ImportAdapterInterface
+class CsvImportAdapter implements ImportAdapterInterface, SerializerAwareAdapterInterface
 {
+
+    /**
+     * The trait that provides serializer functionality.
+     *
+     * @var \TechDivision\Import\Adapter\SerializerTrait
+     */
+    use SerializerTrait;
 
     /**
      * The lexer instance.
@@ -51,6 +59,13 @@ class CsvImportAdapter implements ImportAdapterInterface
     protected $interpreter;
 
     /**
+     * The adapter's serializer instance.
+     *
+     * @var \TechDivision\Import\Serializers\SerializerInterface
+     */
+    protected $serializer;
+
+    /**
      * Initialize the adapter with the configuration.
      *
      * @param \Goodby\CSV\Import\Protocol\LexerInterface       $lexer       The lexer instance
@@ -65,12 +80,15 @@ class CsvImportAdapter implements ImportAdapterInterface
     /**
      * Overwrites the default CSV configuration values with the one from the passed configuration.
      *
-     * @param \TechDivision\Import\Configuration\CsvConfigurationInterface $importAdapterConfiguration The configuration to use the values from
+     * @param \TechDivision\Import\Configuration\Subject\ImportAdapterConfigurationInterface $importAdapterConfiguration The configuration to use the values from
+     * @param \TechDivision\Import\Serializers\ConfigurationAwareSerializerFactoryInterface  $serializerFactory          The serializer factory instance
      *
      * @return void
      */
-    public function setImportAdapterConfiguration(CsvConfigurationInterface $importAdapterConfiguration)
-    {
+    public function init(
+        ImportAdapterConfigurationInterface $importAdapterConfiguration,
+        ConfigurationAwareSerializerFactoryInterface $serializerFactory
+    ) {
 
         // load the lexer configuration and overwrite the values
         /** @var \Goodby\CSV\Import\Standard\LexerConfig $config */
@@ -100,6 +118,9 @@ class CsvImportAdapter implements ImportAdapterInterface
         if ($toCharset = $importAdapterConfiguration->getToCharset()) {
             $config->setToCharset($toCharset);
         }
+
+        // load the serializer instance from the DI container and set it on the subject instance
+        $this->setSerializer($serializerFactory->createSerializer($importAdapterConfiguration));
     }
 
     /**

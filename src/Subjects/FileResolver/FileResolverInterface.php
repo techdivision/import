@@ -1,7 +1,7 @@
 <?php
 
 /**
- * TechDivision\Import\Plugins\FileResolver\FileResolverInterface
+ * TechDivision\Import\Subjects\FileResolver\FileResolverInterface
  *
  * NOTICE OF LICENSE
  *
@@ -18,7 +18,7 @@
  * @link      http://www.techdivision.com
  */
 
-namespace TechDivision\Import\Plugins\FileResolver;
+namespace TechDivision\Import\Subjects\FileResolver;
 
 use TechDivision\Import\Configuration\SubjectConfigurationInterface;
 

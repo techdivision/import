@@ -144,7 +144,6 @@ abstract class AbstractBaseProcessor extends AbstractProcessor
         try {
             // finally execute the prepared statement
             $this->getPreparedStatement($name)->execute($this->prepareRow($row));
-
         } catch (\PDOException $pdoe) {
             // initialize the SQL statement with the placeholders
             $sql = $this->getPreparedStatement($name)->queryString;

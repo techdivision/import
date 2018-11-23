@@ -368,13 +368,6 @@ class AbstractEavSubjectTest extends AbstractTest
     public function testCastValueByBackendType($backendType, $value, $expected)
     {
 
-        // set the configuration value for the source date format
-        $this->abstractEavSubject
-             ->getConfiguration()
-             ->expects($this->any())
-             ->method('getSourceDateFormat')
-             ->willReturn('n/d/y, g:i A');
-
         // cast the passed values
         $this->assertSame($expected, $this->abstractEavSubject->castValueByBackendType($backendType, $value));
     }

@@ -20,7 +20,8 @@
 
 namespace TechDivision\Import\Adapter;
 
-use TechDivision\Import\Configuration\CsvConfigurationInterface;
+use TechDivision\Import\Serializers\ConfigurationAwareSerializerFactoryInterface;
+use TechDivision\Import\Configuration\Subject\ExportAdapterConfigurationInterface;
 
 /**
  * Interface for all export adapter implementations.
@@ -37,11 +38,15 @@ interface ExportAdapterInterface
     /**
      * Overwrites the default CSV configuration values with the one from the passed configuration.
      *
-     * @param \TechDivision\Import\Configuration\CsvConfigurationInterface $exportAdapterConfiguration The configuration to use the values from
+     * @param \TechDivision\Import\Configuration\Subject\ExportAdapterConfigurationInterface $exportAdapterConfiguration The configuration to use the values from
+     * @param \TechDivision\Import\Serializers\ConfigurationAwareSerializerFactoryInterface  $serializerFactory          The serializer factory instance
      *
      * @return void
      */
-    public function setExportAdapterConfiguration(CsvConfigurationInterface $exportAdapterConfiguration);
+    public function init(
+        ExportAdapterConfigurationInterface $exportAdapterConfiguration,
+        ConfigurationAwareSerializerFactoryInterface $serializerFactory
+    );
 
     /**
      * Imports the content of the CSV file with the passed filename.

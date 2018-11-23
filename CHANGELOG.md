@@ -6,7 +6,9 @@
 
 ## Features
 
+* Add Converter for numbers and date
 * Move CSV configuration from subject to import/export adapter configuration
+* Add Serializer implementation to serialize/unserialize values from import files
 * Add FileResolver implementation to make configuration of import file + OK file handling more generic
 
 # Version 3.0.0

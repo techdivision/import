@@ -117,13 +117,6 @@ interface SubjectConfigurationInterface extends ParamsConfigurationInterface
     public function getPrefix();
 
     /**
-     * Return's the subject's source date format to use.
-     *
-     * @return string The source date format
-     */
-    public function getSourceDateFormat();
-
-    /**
      * Return's the source directory that has to be watched for new files.
      *
      * @return string The source directory
@@ -206,6 +199,20 @@ interface SubjectConfigurationInterface extends ParamsConfigurationInterface
      * @return \TechDivision\Import\Configuration\Subject\FileResolverConfigurationInterface The file resolver configuration instance
      */
     public function getFileResolver();
+
+    /**
+     * Return's the number converter configuration instance.
+     *
+     * @return \TechDivision\Import\Configuration\Subject\NumberConverterConfigurationInterface The number converter configuration instance
+     */
+    public function getNumberConverter();
+
+    /**
+     * Return's the date converter configuration instance.
+     *
+     * @return \TechDivision\Import\Configuration\Subject\DateConverterConfigurationInterface The date converter configuration instance
+     */
+    public function getDateConverter();
 
     /**
      * The array with the subject's custom header mappings.

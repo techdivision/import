@@ -26,7 +26,6 @@ use TechDivision\Import\Utils\LoggerKeys;
 use TechDivision\Import\Utils\MemberNames;
 use TechDivision\Import\Utils\RegistryKeys;
 use TechDivision\Import\Utils\StoreViewCodes;
-use TechDivision\Import\Exceptions\WrappedColumnException;
 
 /**
  * Test class for the abstract subject implementation.
@@ -202,71 +201,6 @@ class AbstractSubjectTest extends AbstractTest
     }
 
     /**
-     * Test the formatDate() method with a valid date.
-     *
-     * @return void
-     */
-    public function testFormatDateWithValidDate()
-    {
-
-        // mock the source date format
-        $this->abstractSubject
-             ->getConfiguration()
-             ->expects($this->once())
-             ->method('getSourceDateFormat')
-             ->willReturn('n/d/y, g:i A');
-
-
-        // query whether or not the date is formatted as expected
-        $this->assertSame('2016-10-24 17:36:00', $this->abstractSubject->formatDate('10/24/16, 5:36 PM'));
-    }
-
-    /**
-     * Test the formatDate() method with an invalid date.
-     *
-     * @return void
-     */
-    public function testFormatDateWithInvalidDate()
-    {
-
-        // mock the source date format
-        $this->abstractSubject
-             ->getConfiguration()
-             ->expects($this->once())
-             ->method('getSourceDateFormat')
-             ->willReturn('n/d/y, g:i A');
-
-
-        // make sure that NULL is returned for an invalid date
-        $this->assertNull($this->abstractSubject->formatDate('invalid date'));
-    }
-
-    /**
-     * Test the import() method with a not matching filename.
-     *
-     * @return void
-     */
-    public function testImportWithNotMatchingFilename()
-    {
-
-        // mock the prefix
-        $this->abstractSubject
-             ->getConfiguration()
-             ->expects($this->once())
-             ->method('getPrefix')
-             ->willReturn('product-import');
-
-        // mock the suffix
-        $this->abstractSubject
-             ->getConfiguration()
-             ->expects($this->once())
-             ->method('getSuffix')
-             ->willReturn('csv');
-
-        $this->assertNull($this->abstractSubject->import(uniqid(), 'var/importexport/test.xxx'));
-    }
-
-    /**
      * Test the import() method with a matching filename.
      *
      * @return void
@@ -287,20 +221,6 @@ class AbstractSubjectTest extends AbstractTest
 
         // set the import adapter
         $this->abstractSubject->setImportAdapter($mockImportAdapter);
-
-        // mock the prefix
-        $this->abstractSubject
-             ->getConfiguration()
-             ->expects($this->once())
-             ->method('getPrefix')
-             ->willReturn('product-import');
-
-        // mock the suffix
-        $this->abstractSubject
-             ->getConfiguration()
-             ->expects($this->once())
-             ->method('getSuffix')
-             ->willReturn('csv');
 
          // mock the flag to create the .imported flagfile
          $this->abstractSubject
@@ -339,128 +259,6 @@ class AbstractSubjectTest extends AbstractTest
     }
 
     /**
-     * Test the import() method with a matching filename throwing an exception.
-     *
-     * @return void
-     *
-     * @expectedException \Exception
-     * @expectedExceptionMessage Something went wrong
-     */
-    public function testImportWithMatchingFilenameAndException()
-    {
-
-        // set the filename
-        $filename = 'var/importexport/product-import_20170706-160000_01.csv';
-
-        // create the mock import adapter and mock the import() method
-        $mockImportAdapter = $this->getMockBuilder('TechDivision\Import\Adapter\ImportAdapterInterface')
-                                  ->setMethods(get_class_methods('TechDivision\Import\Adapter\ImportAdapterInterface'))
-                                  ->getMock();
-        $mockImportAdapter->expects($this->once())
-                          ->method('import')
-                          ->willThrowException(new \Exception('Something went wrong'));
-
-        // set the import adapter
-        $this->abstractSubject->setImportAdapter($mockImportAdapter);
-
-        // mock the prefix
-        $this->abstractSubject
-             ->getConfiguration()
-             ->expects($this->once())
-             ->method('getPrefix')
-             ->willReturn('product-import');
-
-        // mock the suffix
-        $this->abstractSubject
-             ->getConfiguration()
-             ->expects($this->once())
-             ->method('getSuffix')
-             ->willReturn('csv');
-
-        // mock the isFile() method
-        $this->abstractSubject
-             ->expects($this->exactly(3))
-             ->method('isFile')
-             ->withConsecutive(
-                 array(sprintf('%s.failed', $filename)),
-                 array(sprintf('%s.imported', $filename)),
-                 array(sprintf('%s.inProgress', $filename))
-             )
-             ->willReturnOnConsecutiveCalls(false, false, false);
-
-        // mock the touch() method
-        $this->abstractSubject
-             ->expects($this->once())
-             ->method('touch')
-             ->with(sprintf('%s.inProgress', $filename))
-             ->willReturn(true);
-
-        // try to import the file with the passed name
-        $this->abstractSubject->import(uniqid(), $filename);
-    }
-
-    /**
-     * Test the import() method with a matching filename throwing an WrappedColunException.
-     *
-     * @return void
-     *
-     * @expectedException \TechDivision\Import\Exceptions\WrappedColumnException
-     * @expectedExceptionMessage Something went wrong
-     */
-    public function testImportWithMatchingFilenameAndWrappedException()
-    {
-
-        // set the filename
-        $filename = 'var/importexport/product-import_20170706-160000_01.csv';
-
-        // create the mock import adapter and mock the import() method
-        $mockImportAdapter = $this->getMockBuilder('TechDivision\Import\Adapter\ImportAdapterInterface')
-                                  ->setMethods(get_class_methods('TechDivision\Import\Adapter\ImportAdapterInterface'))
-                                  ->getMock();
-        $mockImportAdapter->expects($this->once())
-                          ->method('import')
-                          ->willThrowException(new WrappedColumnException('Something went wrong'));
-
-        // set the import adapter
-        $this->abstractSubject->setImportAdapter($mockImportAdapter);
-
-        // mock the prefix
-        $this->abstractSubject
-             ->getConfiguration()
-             ->expects($this->once())
-             ->method('getPrefix')
-             ->willReturn('product-import');
-
-        // mock the suffix
-        $this->abstractSubject
-             ->getConfiguration()
-             ->expects($this->once())
-             ->method('getSuffix')
-             ->willReturn('csv');
-
-        // mock the isFile() method
-        $this->abstractSubject
-             ->expects($this->exactly(3))
-             ->method('isFile')
-             ->withConsecutive(
-                 array(sprintf('%s.failed', $filename)),
-                 array(sprintf('%s.imported', $filename)),
-                 array(sprintf('%s.inProgress', $filename))
-             )
-             ->willReturnOnConsecutiveCalls(false, false, false);
-
-        // mock the touch() method
-        $this->abstractSubject
-             ->expects($this->once())
-             ->method('touch')
-             ->with(sprintf('%s.inProgress', $filename))
-             ->willReturn(true);
-
-        // try to import the file with the passed name
-        $this->abstractSubject->import(uniqid(), $filename);
-    }
-
-    /**
      * Test the import() method with a matching filename and an existing .inProgress flag file.
      *
      * @return void
@@ -470,20 +268,6 @@ class AbstractSubjectTest extends AbstractTest
 
         // set the filename
         $filename = 'var/importexport/product-import_20170706-160000_01.csv';
-
-        // mock the prefix
-        $this->abstractSubject
-             ->getConfiguration()
-             ->expects($this->once())
-             ->method('getPrefix')
-             ->willReturn('product-import');
-
-        // mock the suffix
-        $this->abstractSubject
-             ->getConfiguration()
-             ->expects($this->once())
-             ->method('getSuffix')
-             ->willReturn('csv');
 
         // mock the isFile() method
         $this->abstractSubject
@@ -1064,64 +848,6 @@ class AbstractSubjectTest extends AbstractTest
 
         // merge the attributes recursively
         $this->assertNull($this->abstractSubject->mergeAttributesRecursive($status));
-    }
-
-    /**
-     * Test the explode() method.
-     *
-     * @return void
-     */
-    public function testExplodeWithSimpleString()
-    {
-
-        // mock the CSV configuration options
-        $this->abstractSubject
-             ->getConfiguration()
-             ->expects($this->once())
-             ->method('getDelimiter')
-             ->willReturn(',');
-       $this->abstractSubject
-             ->getConfiguration()
-             ->expects($this->once())
-             ->method('getEnclosure')
-             ->willReturn('"');
-       $this->abstractSubject
-             ->getConfiguration()
-             ->expects($this->once())
-             ->method('getEscape')
-             ->willReturn('"');
-
-        // explode a simple string
-        $this->assertSame(array('foo', 'bar'), $this->abstractSubject->explode('foo,bar'));
-    }
-
-    /**
-     * Test the explode() method with an escaped string.
-     *
-     * @return void
-     */
-    public function testExplodeWithEscapedString()
-    {
-
-        // mock the CSV configuration options
-        $this->abstractSubject
-             ->getConfiguration()
-             ->expects($this->once())
-             ->method('getDelimiter')
-             ->willReturn(',');
-        $this->abstractSubject
-             ->getConfiguration()
-             ->expects($this->once())
-             ->method('getEnclosure')
-             ->willReturn('"');
-        $this->abstractSubject
-             ->getConfiguration()
-             ->expects($this->once())
-             ->method('getEscape')
-             ->willReturn('"');
-
-        // explode the escaped string
-        $this->assertSame(array('foo,bar', 'bar,foo'), $this->abstractSubject->explode('"foo,bar","bar,foo"'));
     }
 
     /**
