@@ -102,13 +102,6 @@ interface ConfigurationInterface extends CsvConfigurationInterface, ParamsConfig
     public function getPlugins();
 
     /**
-     * Return's the subject's source date format to use.
-     *
-     * @return string The source date format
-     */
-    public function getSourceDateFormat();
-
-    /**
      * Return's the Magento installation directory.
      *
      * @return string The Magento installation directory

@@ -1,7 +1,7 @@
 <?php
 
 /**
- * TechDivision\Import\Plugins\FileResolver\AbstractFileResolver
+ * TechDivision\Import\Subjects\FileResolver\AbstractFileResolver
  *
  * NOTICE OF LICENSE
  *
@@ -18,7 +18,7 @@
  * @link      http://www.techdivision.com
  */
 
-namespace TechDivision\Import\Plugins\FileResolver;
+namespace TechDivision\Import\Subjects\FileResolver;
 
 use TechDivision\Import\ApplicationInterface;
 use TechDivision\Import\Utils\RegistryKeys;
@@ -108,6 +108,8 @@ abstract class AbstractFileResolver implements FileResolverInterface
      * Sets the actual source directory to load the files from.
      *
      * @param string $sourceDir The actual source directory
+     *
+     * @return void
      */
     protected function setSourceDir($sourceDir)
     {
@@ -177,8 +179,7 @@ abstract class AbstractFileResolver implements FileResolverInterface
     /**
      * Initializes the file resolver for the import process with the passed serial.
      *
-     * @param \TechDivision\Import\Configuration\SubjectConfigurationInterface $subject The source directory to parse for files
-     * @param string                                                           $serial  The unique identifier of the actual import process
+     * @param string $serial The unique identifier of the actual import process
      *
      * @return void
      * @throws \Exception Is thrown if the configured source directory is not available

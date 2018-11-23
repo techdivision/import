@@ -43,16 +43,6 @@ class MoveFilesSubject extends AbstractSubject
     }
 
     /**
-     * Return's the default callback mappings.
-     *
-     * @return array The default callback mappings
-     */
-    public function getDefaultCallbackMappings()
-    {
-        return array();
-    }
-
-    /**
      * Return's the default callback frontend input mappings for the user defined attributes.
      *
      * @return array The default frontend input callback mappings

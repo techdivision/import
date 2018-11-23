@@ -37,7 +37,7 @@ interface ExportAdapterFactoryInterface
     /**
      * Creates and returns the export adapter for the subject with the passed configuration.
      *
-     * @param \TechDivision\Import\Configuration\SubjectConfigurationInterface $subjectConfiguration
+     * @param \TechDivision\Import\Configuration\SubjectConfigurationInterface $subjectConfiguration The subject configuration
      *
      * @return \TechDivision\Import\Adapter\ExportAdapterInterface The export adapter instance
      */

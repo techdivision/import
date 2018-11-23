@@ -168,11 +168,46 @@
         </service>
 
         <!--
+         | The DI configuration for the file resolvers and their factories
+         |-->
+        <service id="import.subject.file.resolver.factory" class="TechDivision\Import\Subjects\FileResolver\FileResolverFactory">
+            <argument type="service" id="service_container"/>
+        </service>
+        <service id="import.subject.file.resolver.simple" class="TechDivision\Import\Subjects\FileResolver\SimpleFileResolver">
+            <argument type="service" id="import_app_simple.simple"/>
+            <argument type="service" id="import.processor.registry"/>
+        </service>
+
+        <!--
+         | The DI configuration for the number converters and their factories
+         |-->
+        <service id="import.subject.number.converter.factory" class="TechDivision\Import\Subjects\I18n\NumberConverterFactory">
+            <argument type="service" id="service_container"/>
+        </service>
+        <service id="import.subject.number.converter.simple" class="TechDivision\Import\Subjects\I18n\SimpleNumberConverter">
+            <argument type="service" id="import_app_simple.simple"/>
+            <argument type="service" id="import.processor.registry"/>
+        </service>
+
+        <!--
+         | The DI configuration for the date converters and their factories
+         |-->
+        <service id="import.subject.date.converter.factory" class="TechDivision\Import\Subjects\I18n\DateConverterFactory">
+            <argument type="service" id="service_container"/>
+        </service>
+        <service id="import.subject.date.converter.simple" class="TechDivision\Import\Subjects\I18n\SimpleDateConverter">
+            <argument type="service" id="import_app_simple.simple"/>
+            <argument type="service" id="import.processor.registry"/>
+        </service>
+
+        <!--
          | The DI configuration for the subject factory
          |-->
         <service id="import.subject.factory" class="TechDivision\Import\Subjects\SubjectFactory">
             <argument type="service" id="service_container"/>
             <argument type="service" id="loggers"/>
+            <argument type="service" id="import.subject.number.converter.factory"/>
+            <argument type="service" id="import.subject.date.converter.factory"/>
         </service>
 
         <!--
@@ -180,21 +215,6 @@
          |-->
         <service id="import.plugin.factory" class="TechDivision\Import\Plugins\PluginFactory">
             <argument type="service" id="service_container"/>
-        </service>
-
-        <!--
-         | The DI configuration for the plugin file resolver factory
-         |-->
-        <service id="import.plugin.file.resolver.factory" class="TechDivision\Import\Plugins\FileResolver\FileResolverFactory">
-            <argument type="service" id="service_container"/>
-        </service>
-
-        <!--
-         | The DI configuration for the plugin file resolvers
-         |-->
-        <service id="import.plugin.file.resolver.simple" class="TechDivision\Import\Plugins\FileResolver\SimpleFileResolver">
-            <argument type="service" id="import_app_simple.simple"/>
-            <argument type="service" id="import.processor.registry"/>
         </service>
 
         <!--
@@ -211,7 +231,7 @@
         <service id="import.plugin.subject" class="TechDivision\Import\Plugins\SubjectPlugin">
             <argument type="service" id="import_app_simple.simple"/>
             <argument type="service" id="import.plugin.subject.executor"/>
-            <argument type="service" id="import.plugin.file.resolver.factory"/>
+            <argument type="service" id="import.subject.file.resolver.factory"/>
         </service>
         <service id="import.plugin.global.data" class="TechDivision\Import\Plugins\GlobalDataPlugin">
             <argument type="service" id="import_app_simple.simple"/>
@@ -291,13 +311,29 @@
             <argument type="service" id="service_container"/>
         </service>
 
-        <!-- The DI configuration for the event emitter/listeners -->
+        <!-- 
+         ! The DI configuration for the event emitter/listeners 
+         !-->
         <service id="import.events.emitter.factory" class="TechDivision\Import\Events\EmitterFactory">
             <argument type="service" id="configuration"/>
             <argument type="service" id="service_container"/>
         </service>
         <service id="import.events.emitter" class="League\Event\Emitter">
             <factory service="import.events.emitter.factory" method="createEmitter"/>
+        </service>
+
+        <!-- 
+         ! The DI configuration for the value/additional attribute serializers 
+         !-->
+        <service id="import.serializer.csv.value" class="TechDivision\Import\Serializers\ValueCsvSerializer"/>
+        <service id="import.serializer.csv.additional.attribute" class="TechDivision\Import\Serializers\AdditionalAttributeCsvSerializer">
+            <argument type="service" id="import.serializer.factory.csv.value"/>
+        </service>
+        <service id="import.serializer.factory.csv.value" class="TechDivision\Import\Serializers\ValueCsvSerializerFactory">
+            <argument type="service" id="service_container"/>
+        </service>
+        <service id="import.serializer.factory.csv.additional.attribute" class="TechDivision\Import\Serializers\AdditionalAttributeCsvSerializerFactory">
+            <argument type="service" id="service_container"/>
         </service>
 
     </services>

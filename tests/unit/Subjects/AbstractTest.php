@@ -26,6 +26,8 @@ use TechDivision\Import\Utils\RegistryKeys;
 use TechDivision\Import\Utils\EntityTypeCodes;
 use TechDivision\Import\Utils\Generators\CoreConfigDataUidGenerator;
 use Doctrine\Common\Collections\ArrayCollection;
+use TechDivision\Import\Subjects\I18n\DateConverterInterface;
+use TechDivision\Import\Configuration\Subject\DateConverterConfigurationInterface;
 
 /**
  * Abstract subject test class.
@@ -284,48 +286,55 @@ abstract class AbstractTest extends \PHPUnit_Framework_TestCase
             )
         );
 
+        // mock the date converter configuration
+        $mockDateConverterConfiguration = $this->getMockBuilder(DateConverterConfigurationInterface::class)->getMock();
+        $mockDateConverterConfiguration->expects($this->any())->method('getSourceDateFormat')->willReturn('n/d/y, g:i A');
+
         // create a mock configuration
         $mockConfiguration = $this->getMockConfiguration();
         $mockConfiguration->expects($this->any())
-                          ->method('getOperationName')
-                          ->willReturn('add-update');
+            ->method('getOperationName')
+            ->willReturn('add-update');
 
         // create a mock subject configuration
         $mockSubjectConfiguration = $this->getMockSubjectConfiguration();
         $mockSubjectConfiguration->expects($this->any())
-                                 ->method('getConfiguration')
-                                 ->willReturn($mockConfiguration);
+            ->method('getConfiguration')
+            ->willReturn($mockConfiguration);
         $mockSubjectConfiguration->expects($this->any())
-                                 ->method('getCallbacks')
-                                 ->willReturn($callbacks);
+            ->method('getCallbacks')
+            ->willReturn($callbacks);
         $mockSubjectConfiguration->expects($this->any())
-                                 ->method('getHeaderMappings')
-                                 ->willReturn(array());
+            ->method('getHeaderMappings')
+            ->willReturn(array());
         $mockSubjectConfiguration->expects($this->any())
-                                 ->method('getFrontendInputCallbacks')
-                                 ->willReturn(array());
+            ->method('getFrontendInputCallbacks')
+            ->willReturn(array());
+        $mockSubjectConfiguration->expects($this->any())
+            ->method('getDateConverter')
+            ->willReturn($mockDateConverterConfiguration);
 
         // initialize the abstract subject that has to be tested
         $abstractSubject = $this->getMockBuilder($this->getSubjectClassName())
-                                ->setConstructorArgs($this->getMockSubjectConstructorArgs())
-                                ->setMethods(
-                                    array_merge(
-                                        $this->getSubjectMethodsToMock(),
-                                        $methodsToMock
-                                    )
-                                )
-                                ->getMockForAbstractClass();
+            ->setConstructorArgs($this->getMockSubjectConstructorArgs())
+            ->setMethods(
+                array_merge(
+                    $this->getSubjectMethodsToMock(),
+                    $methodsToMock
+                )
+            )
+            ->getMockForAbstractClass();
 
         // mock the getDefaultCallbackMappings() method
         $abstractSubject->expects($this->any())
-                        ->method('getDefaultCallbackMappings')
-                        ->willReturn($defaultCallbacks);
+            ->method('getDefaultCallbackMappings')
+            ->willReturn($defaultCallbacks);
 
         // mock the getAttribute() method
         $abstractSubject->getRegistryProcessor()
-                        ->expects($this->any())
-                        ->method('getAttribute')
-                        ->willReturn($this->getMockGlobalData());
+            ->expects($this->any())
+            ->method('getAttribute')
+            ->willReturn($this->getMockGlobalData());
 
         // set the mock configuration instance
         $abstractSubject->setConfiguration($mockSubjectConfiguration);

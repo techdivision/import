@@ -56,7 +56,7 @@ class CsvImportAdapterFactory implements ImportAdapterFactoryInterface
     /**
      * Creates and returns the import adapter for the subject with the passed configuration.
      *
-     * @param \TechDivision\Import\Configuration\SubjectConfigurationInterface $subjectConfiguration
+     * @param \TechDivision\Import\Configuration\SubjectConfigurationInterface $subjectConfiguration The subject configuration
      *
      * @return \TechDivision\Import\Adapter\ExportAdapterInterface The import adapter instance
      */
@@ -66,9 +66,12 @@ class CsvImportAdapterFactory implements ImportAdapterFactoryInterface
         // load the import adapter configuration
         $importAdapterConfiguration = $subjectConfiguration->getImportAdapter();
 
+        // load the serializer factory instance
+        $serializerFactory = $this->container->get($importAdapterConfiguration->getSerializer()->getId());
+
         // create the instance and pass the import adapter configuration instance
         $importAdapter = $this->container->get(DependencyInjectionKeys::IMPORT_ADAPTER_IMPORT_CSV);
-        $importAdapter->setImportAdapterConfiguration($importAdapterConfiguration);
+        $importAdapter->init($importAdapterConfiguration, $serializerFactory);
 
         // return the initialized import adapter instance
         return $importAdapter;

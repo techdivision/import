@@ -23,7 +23,7 @@ namespace TechDivision\Import\Plugins;
 use TechDivision\Import\Utils\RegistryKeys;
 use TechDivision\Import\ApplicationInterface;
 use TechDivision\Import\Configuration\SubjectConfigurationInterface;
-use TechDivision\Import\Plugins\FileResolver\FileResolverFactoryInterface;
+use TechDivision\Import\Subjects\FileResolver\FileResolverFactoryInterface;
 
 /**
  * Plugin that processes the subjects.
@@ -61,16 +61,16 @@ class SubjectPlugin extends AbstractPlugin
     /**
      * The file resolver factory instance.
      *
-     * @var \TechDivision\Import\Plugins\FileResolver\FileResolverFactoryInterface
+     * @var \TechDivision\Import\Subjects\FileResolver\FileResolverFactoryInterface
      */
     protected $fileResolverFactory;
 
     /**
      * Initializes the plugin with the application instance.
      *
-     * @param \TechDivision\Import\ApplicationInterface                              $application         The application instance
-     * @param \TechDivision\Import\Plugins\SubjectExecutorInterface                  $subjectExecutor     The subject executor instance
-     * @param \TechDivision\Import\Plugins\FileResolver\FileResolverFactoryInterface $fileResolverFactory The file resolver instance
+     * @param \TechDivision\Import\ApplicationInterface                               $application         The application instance
+     * @param \TechDivision\Import\Plugins\SubjectExecutorInterface                   $subjectExecutor     The subject executor instance
+     * @param \TechDivision\Import\Subjects\FileResolver\FileResolverFactoryInterface $fileResolverFactory The file resolver instance
      */
     public function __construct(
         ApplicationInterface $application,
@@ -142,7 +142,6 @@ class SubjectPlugin extends AbstractPlugin
             // finally, if a PID has been set (because CSV files has been found),
             // remove it from the PID file to unlock the importer
             $this->unlock();
-
         } catch (\Exception $e) {
             // finally, if a PID has been set (because CSV files has been found),
             // remove it from the PID file to unlock the importer

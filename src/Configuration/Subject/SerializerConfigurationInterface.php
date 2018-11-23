@@ -1,7 +1,7 @@
 <?php
 
 /**
- * TechDivision\Import\Plugins\FileResolver\FileResolverFactoryInterface
+ * TechDivision\Import\Configuration\Subject\SerializerConfigurationInterface
  *
  * NOTICE OF LICENSE
  *
@@ -18,12 +18,10 @@
  * @link      http://www.techdivision.com
  */
 
-namespace TechDivision\Import\Plugins\FileResolver;
-
-use TechDivision\Import\Configuration\SubjectConfigurationInterface;
+namespace TechDivision\Import\Configuration\Subject;
 
 /**
- * Interface for all file resolver factory instances.
+ * The interface for a serializer configuration.
  *
  * @author    Tim Wagner <t.wagner@techdivision.com>
  * @copyright 2016 TechDivision GmbH <info@techdivision.com>
@@ -31,15 +29,13 @@ use TechDivision\Import\Configuration\SubjectConfigurationInterface;
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
  */
-interface FileResolverFactoryInterface
+interface SerializerConfigurationInterface
 {
 
     /**
-     * Creates and returns the file resolver instance for the subject with the passed configuration.
+     * Returns the serializer's factory unique DI identifier.
      *
-     * @param \TechDivision\Import\Configuration\SubjectConfigurationInterface $subject The subject to create the file resolver for
-     *
-     * @return \TechDivision\Import\Plugins\FileResolver\FileResolverInterface The file resolver instance
+     * @return string The unique DI identifier of the serializer factory
      */
-    public function createFileResolver(SubjectConfigurationInterface $subject);
+    public function getId();
 }

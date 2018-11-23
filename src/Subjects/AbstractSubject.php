@@ -27,6 +27,7 @@ use TechDivision\Import\HeaderTrait;
 use TechDivision\Import\SystemLoggerTrait;
 use TechDivision\Import\Utils\ScopeKeys;
 use TechDivision\Import\Utils\ColumnKeys;
+use TechDivision\Import\Utils\EventNames;
 use TechDivision\Import\Utils\MemberNames;
 use TechDivision\Import\Utils\RegistryKeys;
 use TechDivision\Import\Utils\Generators\GeneratorInterface;
@@ -36,9 +37,6 @@ use TechDivision\Import\Adapter\ImportAdapterInterface;
 use TechDivision\Import\Exceptions\WrappedColumnException;
 use TechDivision\Import\Services\RegistryProcessorInterface;
 use TechDivision\Import\Configuration\SubjectConfigurationInterface;
-use TechDivision\Import\Utils\EventNames;
-use TechDivision\Import\Plugins\FileResolver\FileResolverFactory;
-use TechDivision\Import\Plugins\FileResolver\SimpleFileResolver;
 
 /**
  * An abstract subject implementation.
@@ -49,34 +47,41 @@ use TechDivision\Import\Plugins\FileResolver\SimpleFileResolver;
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
  */
-abstract class AbstractSubject implements SubjectInterface
+abstract class AbstractSubject implements SubjectInterface, FilesystemSubjectInterface
 {
 
     /**
      * The trait that provides basic filesystem handling functionality.
      *
-     * @var TechDivision\Import\Subjects\FilesystemTrait
+     * @var \TechDivision\Import\Subjects\FilesystemTrait
      */
     use FilesystemTrait;
 
     /**
      * The trait that provides basic filesystem handling functionality.
      *
-     * @var TechDivision\Import\SystemLoggerTrait
+     * @var \TechDivision\Import\SystemLoggerTrait
      */
     use SystemLoggerTrait;
 
     /**
+     * The trait that provides date converting functionality.
+     *
+     * @var \TechDivision\Import\DateConverterTrait
+     */
+    use DateConverterTrait;
+
+    /**
      * The trait that provides header handling functionality.
      *
-     * @var TechDivision\Import\HeaderTrait
+     * @var \TechDivision\Import\HeaderTrait
      */
     use HeaderTrait;
 
     /**
      * The trait that provides row handling functionality.
      *
-     * @var TechDivision\Import\RowTrait
+     * @var \TechDivision\Import\RowTrait
      */
     use RowTrait;
 
@@ -352,14 +357,7 @@ abstract class AbstractSubject implements SubjectInterface
      */
     public function formatDate($value)
     {
-
-        // create a DateTime instance from the passed value
-        if ($dateTime = \DateTime::createFromFormat($this->getSourceDateFormat(), $value)) {
-            return $dateTime->format('Y-m-d H:i:s');
-        }
-
-        // return NULL, if the passed value is NOT a valid date
-        return null;
+        return $this->getDateConverter()->convert($value);
     }
 
     /**
@@ -373,16 +371,7 @@ abstract class AbstractSubject implements SubjectInterface
      */
     public function explode($value, $delimiter = null)
     {
-        // load the global configuration
-        $configuration = $this->getConfiguration();
-
-        // initializet delimiter, enclosure and escape char
-        $delimiter = $delimiter ? $delimiter : $configuration->getDelimiter();
-        $enclosure = $configuration->getEnclosure();
-        $escape = $configuration->getEscape();
-
-        // parse and return the found data as array
-        return str_getcsv($value, $delimiter, $enclosure, $escape);
+        return $this->getImportAdapter()->explode($value, $delimiter);
     }
 
     /**
@@ -761,7 +750,6 @@ abstract class AbstractSubject implements SubjectInterface
 
             // invoke the events that has to be fired when the artfact has been successfully processed
             $this->getEmitter()->emit(EventNames::SUBJECT_ARTEFACT_PROCESS_SUCCESS, $this);
-
         } catch (\Exception $e) {
             // rename the flag file, because import failed and write the stack trace
             $this->rename($inProgressFilename, $failedFilename);
@@ -1202,7 +1190,6 @@ abstract class AbstractSubject implements SubjectInterface
                 $originalData[ColumnKeys::ORIGINAL_FILENAME],
                 $originalData[ColumnKeys::ORIGINAL_LINE_NUMBER]
             );
-
         } else {
             // append filename and line number to the original message
             $message = $this->appendExceptionSuffix(

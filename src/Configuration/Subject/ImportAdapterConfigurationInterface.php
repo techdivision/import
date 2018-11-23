@@ -40,4 +40,11 @@ interface ImportAdapterConfigurationInterface extends CsvConfigurationInterface
      * @return string The import adapter's unique DI identifier
      */
     public function getId();
+
+    /**
+     * Returns the import adapter's serializer configuration.
+     *
+     * @return \TechDivision\Import\Configuration\Subject\SerializerConfigurationInterface
+     */
+    public function getSerializer();
 }

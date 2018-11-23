@@ -20,6 +20,7 @@
 
 namespace TechDivision\Import\Subjects;
 
+use Doctrine\Common\Collections\Collection;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use TechDivision\Import\SystemLoggerTrait;
 use TechDivision\Import\Adapter\ImportAdapterInterface;
@@ -27,7 +28,8 @@ use TechDivision\Import\Adapter\ExportAdapterInterface;
 use TechDivision\Import\Adapter\ImportAdapterFactoryInterface;
 use TechDivision\Import\Adapter\ExportAdapterFactoryInterface;
 use TechDivision\Import\Configuration\SubjectConfigurationInterface;
-use Doctrine\Common\Collections\Collection;
+use TechDivision\Import\Subjects\I18n\DateConverterFactoryInterface;
+use TechDivision\Import\Subjects\I18n\NumberConverterFactoryInterface;
 
 /**
  * A generic subject factory implementation.
@@ -42,13 +44,6 @@ class SubjectFactory implements SubjectFactoryInterface
 {
 
     /**
-     * The DI container instance.
-     *
-     * @var \Symfony\Component\DependencyInjection\ContainerInterface
-     */
-    protected $container;
-
-    /**
      * The trait that provides basic filesystem handling functionality.
      *
      * @var TechDivision\Import\SystemLoggerTrait
@@ -56,15 +51,44 @@ class SubjectFactory implements SubjectFactoryInterface
     use SystemLoggerTrait;
 
     /**
+     * The DI container instance.
+     *
+     * @var \Symfony\Component\DependencyInjection\ContainerInterface
+     */
+    protected $container;
+
+    /**
+     * The number converter factory instance.
+     *
+     * @var \TechDivision\Import\Subjects\I18n\NumberConverterFactoryInterface
+     */
+    protected $numberConverterFactory;
+
+    /**
+     * The date converter factory instance.
+     *
+     * @var \TechDivision\Import\Subjects\I18n\DateConverterFactoryInterface
+     */
+    protected $dateConverterFactory;
+
+    /**
      * Initialize the factory with the DI container instance.
      *
-     * @param \Symfony\Component\DependencyInjection\ContainerInterface $container     The DI container instance
-     * @param \Doctrine\Common\Collections\Collection                   $systemLoggers The array with the system loggers instances
+     * @param \Symfony\Component\DependencyInjection\ContainerInterface          $container              The DI container instance
+     * @param \Doctrine\Common\Collections\Collection                            $systemLoggers          The collection with the system loggers instances
+     * @param \TechDivision\Import\Subjects\I18n\NumberConverterFactoryInterface $numberConverterFactory The number converter factory instance
+     * @param \TechDivision\Import\Subjects\I18n\DateConverterFactoryInterface   $dateConverterFactory   The date converter factory instance
      */
-    public function __construct(ContainerInterface $container, Collection $systemLoggers)
-    {
+    public function __construct(
+        ContainerInterface $container,
+        Collection $systemLoggers,
+        NumberConverterFactoryInterface $numberConverterFactory,
+        DateConverterFactoryInterface $dateConverterFactory
+    ) {
         $this->container = $container;
         $this->systemLoggers = $systemLoggers;
+        $this->numberConverterFactory = $numberConverterFactory;
+        $this->dateConverterFactory = $dateConverterFactory;
     }
 
     /**
@@ -133,9 +157,21 @@ class SubjectFactory implements SubjectFactoryInterface
             }
         }
 
-        // load the filesystem adapter instance from the DI container and set it non the subject instance
-        $filesystemAdapterFactory = $this->container->get($subjectConfiguration->getFilesystemAdapter()->getId());
-        $subjectInstance->setFilesystemAdapter($filesystemAdapterFactory->createFilesystemAdapter($subjectConfiguration));
+        // load te number converter instance from the DI container and set it on the subject instance
+        if ($subjectInstance instanceof NumberConverterSubjectInterface) {
+            $subjectInstance->setNumberConverter($this->numberConverterFactory->createNumberConverter($subjectConfiguration));
+        }
+
+        // load te date converter instance from the DI container and set it on the subject instance
+        if ($subjectInstance instanceof DateConverterSubjectInterface) {
+            $subjectInstance->setDateConverter($this->dateConverterFactory->createDateConverter($subjectConfiguration));
+        }
+
+        // load the filesystem adapter instance from the DI container and set it on the subject instance
+        if ($subjectInstance instanceof FilesystemSubjectInterface) {
+            $filesystemAdapterFactory = $this->container->get($subjectConfiguration->getFilesystemAdapter()->getId());
+            $subjectInstance->setFilesystemAdapter($filesystemAdapterFactory->createFilesystemAdapter($subjectConfiguration));
+        }
 
         // return the initialized subject instance
         return $subjectInstance;

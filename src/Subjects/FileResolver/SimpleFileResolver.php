@@ -1,7 +1,7 @@
 <?php
 
 /**
- * TechDivision\Import\Plugins\FileResolver\BunchFileResolver
+ * TechDivision\Import\Subjects\FileResolver\BunchFileResolver
  *
  * NOTICE OF LICENSE
  *
@@ -18,7 +18,7 @@
  * @link      http://www.techdivision.com
  */
 
-namespace TechDivision\Import\Plugins\FileResolver;
+namespace TechDivision\Import\Subjects\FileResolver;
 
 use TechDivision\Import\Utils\BunchKeys;
 use TechDivision\Import\Exceptions\LineNotFoundException;
@@ -161,8 +161,8 @@ class SimpleFileResolver extends AbstractFileResolver
     protected function resolvePatternValue($element)
     {
 
-        // query whether or not matches has been found
-        if ($this->countMatches() === 0) {
+        // query whether or not matches has been found OR the counter element has been passed
+        if ($this->countMatches() === 0 || BunchKeys::COUNTER === $element) {
             // prepare the method name for the callback to load the pattern value with
             $methodName = sprintf('get%s', ucfirst($element));
 
@@ -187,7 +187,7 @@ class SimpleFileResolver extends AbstractFileResolver
      */
     protected function preparePattern()
     {
-       return sprintf($this->getRegex(), implode($this->getElementSeparator(), $this->resolvePatternValues()), $this->getSuffix());
+        return sprintf($this->getRegex(), implode($this->getElementSeparator(), $this->resolvePatternValues()), $this->getSuffix());
     }
 
     /**
@@ -289,9 +289,6 @@ class SimpleFileResolver extends AbstractFileResolver
     public function shouldBeHandled($filename)
     {
 
-        // initialize the array for the matches
-        $this->reset();
-
         // initialize the array with the matches
         $matches = array();
 
@@ -359,7 +356,6 @@ class SimpleFileResolver extends AbstractFileResolver
                     implode(', ', $okFilenames)
                 )
             );
-
         } catch (LineNotFoundException $lne) {
             // wrap and re-throw the exception
             throw new \Exception(
