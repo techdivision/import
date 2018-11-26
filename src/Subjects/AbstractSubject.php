@@ -47,7 +47,7 @@ use TechDivision\Import\Configuration\SubjectConfigurationInterface;
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
  */
-abstract class AbstractSubject implements SubjectInterface, FilesystemSubjectInterface
+abstract class AbstractSubject implements SubjectInterface, FilesystemSubjectInterface, DateConverterSubjectInterface
 {
 
     /**
