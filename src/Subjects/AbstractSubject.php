@@ -764,7 +764,6 @@ abstract class AbstractSubject implements SubjectInterface
 
             // invoke the events that has to be fired when the artfact has been successfully processed
             $this->getEmitter()->emit(EventNames::SUBJECT_ARTEFACT_PROCESS_SUCCESS, $this);
-
         } catch (\Exception $e) {
             // rename the flag file, because import failed and write the stack trace
             $this->rename($inProgressFilename, $failedFilename);
@@ -1227,7 +1226,6 @@ abstract class AbstractSubject implements SubjectInterface
                 $originalData[ColumnKeys::ORIGINAL_FILENAME],
                 $originalData[ColumnKeys::ORIGINAL_LINE_NUMBER]
             );
-
         } else {
             // append filename and line number to the original message
             $message = $this->appendExceptionSuffix(

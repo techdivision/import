@@ -72,6 +72,9 @@ abstract class AbstractMultiselectCallback extends AbstractCallback
         $attributeCode = $observer->getAttributeCode();
         $attributeValue = $observer->getAttributeValue();
 
+        // load the ID of the actual store
+        $storeId = $this->getStoreId(StoreViewCodes::ADMIN);
+
         // explode the multiselect values
         $vals = explode('|', $attributeValue);
 
@@ -80,9 +83,6 @@ abstract class AbstractMultiselectCallback extends AbstractCallback
 
         // convert the option values into option value ID's
         foreach ($vals as $val) {
-            // load the ID of the actual store
-            $storeId = $this->getStoreId(StoreViewCodes::ADMIN);
-
             // try to load the attribute option value and add the option ID
             if ($eavAttributeOptionValue = $this->loadEavAttributeOptionValueByAttributeCodeAndStoreIdAndValue($attributeCode, $storeId, $val)) {
                 $mappedValues[] = $eavAttributeOptionValue[MemberNames::OPTION_ID];

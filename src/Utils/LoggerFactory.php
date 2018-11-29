@@ -87,7 +87,6 @@ class LoggerFactory
                 // initialize the handler node
                 $reflectionClass = new \ReflectionClass($handlerConfiguration->getType());
                 $handler = $reflectionClass->newInstanceArgs(array($swiftMailer, $message, $logLevel, $bubble));
-
             } else {
                 // initialize the handler node
                 $reflectionClass = new \ReflectionClass($handlerConfiguration->getType());

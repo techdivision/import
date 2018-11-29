@@ -1,3 +1,13 @@
+# Version 3.0.1
+
+## Bugfixes
+
+* Load store ID only once, not for every value of a multiselect attribute
+
+## Features
+
+* None
+
 # Version 3.0.0
 
 ## Bugfixes

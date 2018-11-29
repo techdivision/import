@@ -146,7 +146,6 @@ trait FileUploadTrait
 
             // set the new filename
             $targetFilename = $baseName;
-
         } else {
             // if not, simply return the filename
             return $fileInfo['basename'];
