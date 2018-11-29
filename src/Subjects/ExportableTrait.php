@@ -86,7 +86,7 @@ trait ExportableTrait
         }
 
         // serialize the original data
-        array_walk($artefacts, function(&$artefact) {
+        array_walk($artefacts, function (&$artefact) {
             if (isset($artefact[ColumnKeys::ORIGINAL_DATA])) {
                 $artefact[ColumnKeys::ORIGINAL_DATA] = serialize($artefact[ColumnKeys::ORIGINAL_DATA]);
             }
@@ -150,7 +150,7 @@ trait ExportableTrait
             $artefacts = $this->artefacs[$type][$entityId];
 
             // unserialize the original data
-            array_walk($artefacts, function(&$artefact) {
+            array_walk($artefacts, function (&$artefact) {
                 if (isset($artefact[ColumnKeys::ORIGINAL_DATA])) {
                     $artefact[ColumnKeys::ORIGINAL_DATA] = unserialize($artefact[ColumnKeys::ORIGINAL_DATA]);
                 }

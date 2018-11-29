@@ -133,7 +133,6 @@ class SubjectPlugin extends AbstractPlugin
             // finally, if a PID has been set (because CSV files has been found),
             // remove it from the PID file to unlock the importer
             $this->unlock();
-
         } catch (\Exception $e) {
             // finally, if a PID has been set (because CSV files has been found),
             // remove it from the PID file to unlock the importer
@@ -254,7 +253,6 @@ class SubjectPlugin extends AbstractPlugin
                 BunchKeys::COUNTER,
                 $suffix
             );
-
         } else {
             // initialize the pattern to query whether the NEXT file is part of a bunch or not
             $pattern = sprintf(
@@ -365,7 +363,6 @@ class SubjectPlugin extends AbstractPlugin
                     implode(', ', $okFilenames)
                 )
             );
-
         } catch (LineNotFoundException $lne) {
             // wrap and re-throw the exception
             throw new \Exception(
