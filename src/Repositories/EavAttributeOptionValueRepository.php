@@ -149,6 +149,7 @@ class EavAttributeOptionValueRepository extends AbstractCachedRepository impleme
      * @param string  $value         The value of the attribute option to load
      *
      * @return array The EAV attribute option value
+     * @deprecated Since 2.0.2, because multiple attributes wit the same attribute code, but differenct entity type code can be available
      */
     public function findOneByAttributeCodeAndStoreIdAndValue($attributeCode, $storeId, $value)
     {
