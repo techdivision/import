@@ -139,6 +139,17 @@ trait AttributeObserverTrait
     }
 
     /**
+     * Returns the value(s) of the primary key column(s). As the primary key column can
+     * also consist of two columns, the return value can be an array also.
+     *
+     * @return mixed The primary key value(s)
+     */
+    protected function getPrimaryKeyValue()
+    {
+        return $this->getValue($this->getPrimaryKeyColumnName());
+    }
+
+    /**
      * Process the observer's business logic.
      *
      * @return void
@@ -148,9 +159,6 @@ trait AttributeObserverTrait
 
         // initialize the store view code
         $this->prepareStoreViewCode();
-
-        // load the PK
-        $pk = $this->getValue($this->getPrimaryKeyColumnName());
 
         // load the store ID, use the admin store if NO store view code has been set
         $storeId = $this->getRowStoreId(StoreViewCodes::ADMIN);
@@ -163,7 +171,7 @@ trait AttributeObserverTrait
         $storeViewCode = $this->getSubject()->getStoreViewCode(StoreViewCodes::ADMIN);
 
         // query whether or not the row has already been processed
-        if ($this->storeViewHasBeenProcessed($pk, $storeViewCode)) {
+        if ($this->storeViewHasBeenProcessed($pk = $this->getPrimaryKeyValue(), $storeViewCode)) {
             // log a message
             $this->getSystemLogger()->warning(
                 $this->appendExceptionSuffix(

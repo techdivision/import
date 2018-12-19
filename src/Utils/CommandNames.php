@@ -47,6 +47,20 @@ class CommandNames extends \ArrayObject
     const IMPORT_CATEGORIES = 'import:categories';
 
     /**
+     * The command name for the customer import.
+     *
+     * @var string
+     */
+    const IMPORT_CUSTOMERS = 'import:customers';
+
+    /**
+     * The command name for the customer address import.
+     *
+     * @var string
+     */
+    const IMPORT_CUSTOMERS_ADDRESS = 'import:customers:address';
+
+    /**
      * The command name for the product import.
      *
      * @var string
@@ -107,7 +121,9 @@ class CommandNames extends \ArrayObject
                 CommandNames::IMPORT_PRODUCTS_INVENTORY,
                 CommandNames::IMPORT_CREATE_OK_FILE,
                 CommandNames::IMPORT_CREATE_CONFIGURATION_FILE,
-                CommandNames::IMPORT_CLEAR_PID_FILE
+                CommandNames::IMPORT_CLEAR_PID_FILE,
+                CommandNames::IMPORT_CUSTOMERS,
+                CommandNames::IMPORT_CUSTOMERS_ADDRESS
             ),
             $commandNames
         );

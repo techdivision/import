@@ -1,3 +1,14 @@
+# Version 5.0.0
+
+## Bugfixes
+
+* None
+
+## Features
+
+* Add constants for customer + customer address import commands
+* Refactoring AbstractAttributeTrait to support customer import functionality
+
 # Version 4.0.0
 
 ## Bugfixes

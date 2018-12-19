@@ -68,6 +68,20 @@ class EntityTypeCodes extends \ArrayObject
     const CATALOG_CATEGORY = 'catalog_category';
 
     /**
+     * Key for the customer entity 'customer'.
+     *
+     * @var integer
+     */
+    const CUSTOMER = 'customer';
+
+    /**
+     * Key for the customer entity 'customer_address'.
+     *
+     * @var integer
+     */
+    const CUSTOMER_ADDRESS = 'customer_address';
+
+    /**
      * Key for the attribute entity 'eav_attribute'.
      *
      * @var integer
@@ -91,7 +105,9 @@ class EntityTypeCodes extends \ArrayObject
                 EntityTypeCodes::CATALOG_PRODUCT_PRICE,
                 EntityTypeCodes::CATALOG_PRODUCT_INVENTORY,
                 EntityTypeCodes::CATALOG_CATEGORY,
-                EntityTypeCodes::EAV_ATTRIBUTE
+                EntityTypeCodes::EAV_ATTRIBUTE,
+                EntityTypeCodes::CUSTOMER,
+                EntityTypeCodes::CUSTOMER_ADDRESS
             ),
             $entityTypeCodes
         );
