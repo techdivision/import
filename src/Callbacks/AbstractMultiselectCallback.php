@@ -23,7 +23,6 @@ namespace TechDivision\Import\Callbacks;
 use TechDivision\Import\Utils\MemberNames;
 use TechDivision\Import\Utils\RegistryKeys;
 use TechDivision\Import\Utils\StoreViewCodes;
-use TechDivision\Import\Services\EavAwareProcessorInterface;
 use TechDivision\Import\Observers\AttributeCodeAndValueAwareObserverInterface;
 
 /**
@@ -35,25 +34,8 @@ use TechDivision\Import\Observers\AttributeCodeAndValueAwareObserverInterface;
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
  */
-abstract class AbstractMultiselectCallback extends AbstractCallback
+abstract class AbstractMultiselectCallback extends AbstractEavAwareCallback
 {
-
-    /**
-     * The EAV aware processor.
-     *
-     * @var \TechDivision\Import\Services\EavAwareProcessorInterface
-     */
-    protected $eavAwareProcessor;
-
-    /**
-     * Initialize the callback with the passed processor instance.
-     *
-     * @param \TechDivision\Import\Services\EavAwareProcessorInterface $eavAwareProcessor The processor instance
-     */
-    public function __construct(EavAwareProcessorInterface $eavAwareProcessor)
-    {
-        $this->eavAwareProcessor = $eavAwareProcessor;
-    }
 
     /**
      * Will be invoked by a observer it has been registered for.
@@ -84,7 +66,7 @@ abstract class AbstractMultiselectCallback extends AbstractCallback
         // convert the option values into option value ID's
         foreach ($vals as $val) {
             // try to load the attribute option value and add the option ID
-            if ($eavAttributeOptionValue = $this->loadEavAttributeOptionValueByAttributeCodeAndStoreIdAndValue($attributeCode, $storeId, $val)) {
+            if ($eavAttributeOptionValue = $this->loadAttributeOptionValueByEntityTypeIdAndAttributeCodeAndStoreIdAndValue($this->getEntityTypeId(), $attributeCode, $storeId, $val)) {
                 $mappedValues[] = $eavAttributeOptionValue[MemberNames::OPTION_ID];
                 continue;
             }
@@ -139,43 +121,5 @@ abstract class AbstractMultiselectCallback extends AbstractCallback
 
         // re-concatenate and return the values
         return implode(',', $mappedValues);
-    }
-
-    /**
-     * Return's the EAV aware processor instance.
-     *
-     * @return \TechDivision\Import\Services\EavAwareProcessorInterface The processor instance
-     */
-    protected function getEavAwareProcessor()
-    {
-        return $this->eavAwareProcessor;
-    }
-
-    /**
-     * Return's the store ID of the actual row, or of the default store
-     * if no store view code is set in the CSV file.
-     *
-     * @param string|null $default The default store view code to use, if no store view code is set in the CSV file
-     *
-     * @return integer The ID of the actual store
-     * @throws \Exception Is thrown, if the store with the actual code is not available
-     */
-    protected function getRowStoreId($default = null)
-    {
-        return $this->getSubject()->getRowStoreId($default);
-    }
-
-    /**
-     * Load's and return's the EAV attribute option value with the passed code, store ID and value.
-     *
-     * @param string  $attributeCode The code of the EAV attribute option to load
-     * @param integer $storeId       The store ID of the attribute option to load
-     * @param string  $value         The value of the attribute option to load
-     *
-     * @return array The EAV attribute option value
-     */
-    protected function loadEavAttributeOptionValueByAttributeCodeAndStoreIdAndValue($attributeCode, $storeId, $value)
-    {
-        return $this->getEavAwareProcessor()->loadEavAttributeOptionValueByAttributeCodeAndStoreIdAndValue($attributeCode, $storeId, $value);
     }
 }

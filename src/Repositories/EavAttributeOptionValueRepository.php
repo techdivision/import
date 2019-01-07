@@ -57,6 +57,13 @@ class EavAttributeOptionValueRepository extends AbstractCachedRepository impleme
     protected $eavAttributeOptionValueByAttributeCodeAndStoreIdAndValueStmt;
 
     /**
+     * The prepared statement to load an existing EAV attribute option value by its entity type ID, attribute code, store ID and value.
+     *
+     * @var \PDOStatement
+     */
+    protected $eavAttributeOptionValueByEntityTypeIdAndAttributeCodeAndStoreIdAndValueStmt;
+
+    /**
      * Return's the primary key name of the entity.
      *
      * @return string The name of the entity's primary key
@@ -85,6 +92,10 @@ class EavAttributeOptionValueRepository extends AbstractCachedRepository impleme
         // initialize the prepared statements
         $this->eavAttributeOptionValueByAttributeCodeAndStoreIdAndValueStmt =
             $this->getConnection()->prepare($this->loadStatement(SqlStatementKeys::EAV_ATTRIBUTE_OPTION_VALUE_BY_ATTRIBUTE_CODE_AND_STORE_ID_AND_VALUE));
+
+        // initialize the prepared statements
+        $this->eavAttributeOptionValueByEntityTypeIdAndAttributeCodeAndStoreIdAndValueStmt =
+            $this->getConnection()->prepare($this->loadStatement(SqlStatementKeys::EAV_ATTRIBUTE_OPTION_VALUE_BY_ENTITY_TYPE_ID_AND_ATTRIBUTE_CODE_AND_STORE_ID_AND_VALUE));
     }
 
     /**
@@ -149,7 +160,8 @@ class EavAttributeOptionValueRepository extends AbstractCachedRepository impleme
      * @param string  $value         The value of the attribute option to load
      *
      * @return array The EAV attribute option value
-     * @deprecated Since 2.0.2, because multiple attributes wit the same attribute code, but differenct entity type code can be available
+     * @deprecated Since 2.0.2, because multiple attributes with the same attribute code, but differenct entity type code can be available
+     * @see \TechDivision\Import\Repositories\EavAttributeOptionValueRepositoryInterface::findOneByEntityTypeIdAndAttributeCodeAndStoreIdAndValue()
      */
     public function findOneByAttributeCodeAndStoreIdAndValue($attributeCode, $storeId, $value)
     {
@@ -174,6 +186,51 @@ class EavAttributeOptionValueRepository extends AbstractCachedRepository impleme
 
         // query whether or not the result has been cached
         if ($eavAttributeOptionValue = $this->eavAttributeOptionValueByAttributeCodeAndStoreIdAndValueStmt->fetch(\PDO::FETCH_ASSOC)) {
+            // add the EAV attribute option value to the cache, register the cache key reference as well
+            $this->toCache(
+                $eavAttributeOptionValue[MemberNames::VALUE_ID],
+                $eavAttributeOptionValue,
+                array($cacheKey => $eavAttributeOptionValue[MemberNames::VALUE_ID])
+            );
+            // finally, return it
+            return $eavAttributeOptionValue;
+        }
+    }
+
+    /**
+     * Load's and return's the EAV attribute option value with the passed entity type ID, code, store ID and value.
+     *
+     * @param string  $entityTypeId  The entity type ID of the EAV attribute to load the option value for
+     * @param string  $attributeCode The code of the EAV attribute option to load
+     * @param integer $storeId       The store ID of the attribute option to load
+     * @param string  $value         The value of the attribute option to load
+     *
+     * @return array The EAV attribute option value
+     */
+    public function findOneByEntityTypeIdAndAttributeCodeAndStoreIdAndValue($entityTypeId, $attributeCode, $storeId, $value)
+    {
+
+        // the parameters of the EAV attribute option to load
+        $params = array(
+            MemberNames::ENTITY_TYPE_ID => $entityTypeId,
+            MemberNames::ATTRIBUTE_CODE => $attributeCode,
+            MemberNames::STORE_ID       => $storeId,
+            MemberNames::VALUE          => $value
+        );
+
+        // prepare the cache key
+        $cacheKey = $this->cacheKey(SqlStatementKeys::EAV_ATTRIBUTE_OPTION_VALUE_BY_ENTITY_TYPE_ID_AND_ATTRIBUTE_CODE_AND_STORE_ID_AND_VALUE, $params);
+
+        // return the cached result if available
+        if ($this->isCached($cacheKey)) {
+            return $this->fromCache($cacheKey);
+        }
+
+        // load and return the EAV attribute option value with the passed parameters
+        $this->eavAttributeOptionValueByEntityTypeIdAndAttributeCodeAndStoreIdAndValueStmt->execute($params);
+
+        // query whether or not the result has been cached
+        if ($eavAttributeOptionValue = $this->eavAttributeOptionValueByEntityTypeIdAndAttributeCodeAndStoreIdAndValueStmt->fetch(\PDO::FETCH_ASSOC)) {
             // add the EAV attribute option value to the cache, register the cache key reference as well
             $this->toCache(
                 $eavAttributeOptionValue[MemberNames::VALUE_ID],

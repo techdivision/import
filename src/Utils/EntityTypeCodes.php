@@ -89,6 +89,13 @@ class EntityTypeCodes extends \ArrayObject
     const EAV_ATTRIBUTE = 'eav_attribute';
 
     /**
+     * Key for the attribute entity 'eav_attribute_set'.
+     *
+     * @var integer
+     */
+    const EAV_ATTRIBUTE_SET = 'eav_attribute_set';
+
+    /**
      * Construct a new entity type codes instance.
      *
      * @param array $entityTypeCodes The array with the additional entity type codes
@@ -106,6 +113,7 @@ class EntityTypeCodes extends \ArrayObject
                 EntityTypeCodes::CATALOG_PRODUCT_INVENTORY,
                 EntityTypeCodes::CATALOG_CATEGORY,
                 EntityTypeCodes::EAV_ATTRIBUTE,
+                EntityTypeCodes::EAV_ATTRIBUTE_SET,
                 EntityTypeCodes::CUSTOMER,
                 EntityTypeCodes::CUSTOMER_ADDRESS
             ),

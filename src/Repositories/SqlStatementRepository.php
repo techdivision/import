@@ -179,6 +179,10 @@ class SqlStatementRepository extends AbstractSqlStatementRepository
             'SELECT t1.* FROM catalog_product_link_attribute AS t1',
         SqlStatementKeys::EAV_ENTITY_TYPES =>
             'SELECT t1.* FROM eav_entity_type AS t1',
+        SqlStatementKeys::EAV_ENTITY_TYPE_BY_ENTITY_TYPE_CODE =>
+            'SELECT *
+               FROM eav_entity_type
+              WHERE entity_type_code = :entity_type_code',
         SqlStatementKeys::EAV_ATTRIBUTE_SET =>
             'SELECT t1.*
                FROM eav_attribute_set AS t1
@@ -187,10 +191,32 @@ class SqlStatementRepository extends AbstractSqlStatementRepository
             'SELECT t1.*
                FROM eav_attribute_group AS t1
               WHERE attribute_group_id = :attribute_group_id',
+        SqlStatementKeys::EAV_ATTRIBUTE_GROUP_BY_ENTITY_TYPE_CODE_AND_ATTRIBUTE_SET_NAME_AND_ATTRIBUTE_GROUP_NAME =>
+            'SELECT t1.*
+               FROM eav_attribute_group AS t1
+         INNER JOIN eav_entity_type t3
+                 ON t3.entity_type_code = :entity_type_code
+         INNER JOIN eav_attribute_set t2
+                 ON t2.attribute_set_name = :attribute_set_name
+                AND t2.entity_type_id = t3.entity_type_id
+                AND t1.attribute_set_id = t2.attribute_set_id
+              WHERE attribute_group_name = :attribute_group_name',
         SqlStatementKeys::EAV_ATTRIBUTE_SETS_BY_ENTITY_TYPE_ID =>
             'SELECT t1.*
                FROM eav_attribute_set AS t1
               WHERE entity_type_id = ?',
+        SqlStatementKeys::EAV_ATTRIBUTE_SET_BY_ENTITY_TYPE_CODE_AND_ATTRIBUTE_SET_NAME =>
+            'SELECT t1.*
+               FROM eav_attribute_set AS t1
+         INNER JOIN eav_entity_type t2
+                 ON t2.entity_type_code = :entity_type_code
+                AND t1.entity_type_id = t2.entity_type_id
+              WHERE t1.attribute_set_name = :attribute_set_name',
+        SqlStatementKeys::EAV_ATTRIBUTE_SET_BY_ENTITY_TYPE_ID_AND_ATTRIBUTE_SET_NAME =>
+            'SELECT *
+               FROM eav_attribute_set
+              WHERE entity_type_id = :entity_type_id
+                AND attribute_set_name = :attribute_set_name',
         SqlStatementKeys::EAV_ATTRIBUTE_GROUPS_BY_ATTRIBUTE_SET_ID =>
             'SELECT *
                FROM eav_attribute_group
@@ -233,6 +259,17 @@ class SqlStatementRepository extends AbstractSqlStatementRepository
                     eav_attribute_option t2,
                     eav_attribute_option_value t3
               WHERE t1.attribute_code = :attribute_code
+                AND t3.store_id = :store_id
+                AND t3.value = :value
+                AND t2.attribute_id = t1.attribute_id
+                AND t2.option_id = t3.option_id',
+        SqlStatementKeys::EAV_ATTRIBUTE_OPTION_VALUE_BY_ENTITY_TYPE_ID_AND_ATTRIBUTE_CODE_AND_STORE_ID_AND_VALUE =>
+            'SELECT t3.*
+               FROM eav_attribute t1,
+                    eav_attribute_option t2,
+                    eav_attribute_option_value t3
+              WHERE t1.attribute_code = :attribute_code
+                AND t1.entity_type_id = :entity_type_id
                 AND t3.store_id = :store_id
                 AND t3.value = :value
                 AND t2.attribute_id = t1.attribute_id

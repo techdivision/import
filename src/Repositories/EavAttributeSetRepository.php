@@ -50,6 +50,21 @@ class EavAttributeSetRepository extends AbstractRepository implements EavAttribu
     protected $eavAttributeSetsByEntityTypeIdStmt;
 
     /**
+     * The prepared statement to load an attribute set with the passed entity type ID and attribute set name.
+     *
+     * @var \PDOStatement
+     */
+    protected $eavAttributeSetByEntityTypeIdAndAttributeSetNameStmt;
+
+    /**
+     * The prepared statement to load an attribute set with the passed entity type code and attribute set name.
+     *
+     * @var \PDOStatement
+     */
+    protected $eavAttributeSetByEntityTypeCodeAndAttributeSetNameStmt;
+
+
+    /**
      * Initializes the repository's prepared statements.
      *
      * @return void
@@ -62,6 +77,10 @@ class EavAttributeSetRepository extends AbstractRepository implements EavAttribu
             $this->getConnection()->prepare($this->loadStatement(SqlStatementKeys::EAV_ATTRIBUTE_SET));
         $this->eavAttributeSetsByEntityTypeIdStmt =
             $this->getConnection()->prepare($this->loadStatement(SqlStatementKeys::EAV_ATTRIBUTE_SETS_BY_ENTITY_TYPE_ID));
+        $this->eavAttributeSetByEntityTypeIdAndAttributeSetNameStmt =
+            $this->getConnection()->prepare($this->loadStatement(SqlStatementKeys::EAV_ATTRIBUTE_SET_BY_ENTITY_TYPE_ID_AND_ATTRIBUTE_SET_NAME));
+        $this->eavAttributeSetByEntityTypeCodeAndAttributeSetNameStmt =
+            $this->getConnection()->prepare($this->loadStatement(SqlStatementKeys::EAV_ATTRIBUTE_SET_BY_ENTITY_TYPE_CODE_AND_ATTRIBUTE_SET_NAME));
     }
 
     /**
@@ -103,5 +122,49 @@ class EavAttributeSetRepository extends AbstractRepository implements EavAttribu
 
         // return the array with the attribute sets
         return $eavAttributeSets;
+    }
+
+    /**
+     * Load's and return's the EAV attribute set with the passed entity type ID and attribute set name.
+     *
+     * @param string $entityTypeId     The entity type ID of the EAV attribute set to load
+     * @param string $attributeSetName The attribute set name of the EAV attribute set to return
+     *
+     * @return array The EAV attribute set
+     */
+    public function findOneByEntityTypeIdAndAttributeSetName($entityTypeId, $attributeSetName)
+    {
+
+        // initialize the params
+        $params = array(
+            MemberNames::ENTITY_TYPE_ID     => $entityTypeId,
+            MemberNames::ATTRIBUTE_SET_NAME => $attributeSetName
+        );
+
+        // load and return the attribute set
+        $this->eavAttributeSetByEntityTypeIdAndAttributeSetNameStmt->execute($params);
+        return $this->eavAttributeSetByEntityTypeIdAndAttributeSetNameStmt->fetch(\PDO::FETCH_ASSOC);
+    }
+
+    /**
+     * Load's and return's the EAV attribute set with the passed entity type code and attribute set name.
+     *
+     * @param string $entityTypeCode   The entity type code of the EAV attribute set to load
+     * @param string $attributeSetName The attribute set name of the EAV attribute set to return
+     *
+     * @return array The EAV attribute set
+     */
+    public function findOneByEntityTypeCodeAndAttributeSetName($entityTypeCode, $attributeSetName)
+    {
+
+        // initialize the params
+        $params = array(
+            MemberNames::ENTITY_TYPE_CODE   => $entityTypeCode,
+            MemberNames::ATTRIBUTE_SET_NAME => $attributeSetName
+        );
+
+        // load and return the attribute set
+        $this->eavAttributeSetByEntityTypeCodeAndAttributeSetNameStmt->execute($params);
+        return $this->eavAttributeSetByEntityTypeCodeAndAttributeSetNameStmt->fetch(\PDO::FETCH_ASSOC);
     }
 }

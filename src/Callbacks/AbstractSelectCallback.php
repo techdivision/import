@@ -23,7 +23,6 @@ namespace TechDivision\Import\Callbacks;
 use TechDivision\Import\Utils\MemberNames;
 use TechDivision\Import\Utils\RegistryKeys;
 use TechDivision\Import\Utils\StoreViewCodes;
-use TechDivision\Import\Services\EavAwareProcessorInterface;
 use TechDivision\Import\Observers\AttributeCodeAndValueAwareObserverInterface;
 
 /**
@@ -35,25 +34,8 @@ use TechDivision\Import\Observers\AttributeCodeAndValueAwareObserverInterface;
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
  */
-abstract class AbstractSelectCallback extends AbstractCallback
+abstract class AbstractSelectCallback extends AbstractEavAwareCallback
 {
-
-    /**
-     * The EAV aware processor.
-     *
-     * @var \TechDivision\Import\Services\EavAwareProcessorInterface
-     */
-    protected $eavAwareProcessor;
-
-    /**
-     * Initialize the callback with the passed processor instance.
-     *
-     * @param \TechDivision\Import\Services\EavAwareProcessorInterface $eavAwareProcessor The processor instance
-     */
-    public function __construct(EavAwareProcessorInterface $eavAwareProcessor)
-    {
-        $this->eavAwareProcessor = $eavAwareProcessor;
-    }
 
     /**
      * Will be invoked by a observer it has been registered for.
@@ -76,7 +58,7 @@ abstract class AbstractSelectCallback extends AbstractCallback
         $storeId = $this->getStoreId(StoreViewCodes::ADMIN);
 
         // try to load the attribute option value and return the option ID
-        if ($eavAttributeOptionValue = $this->loadEavAttributeOptionValueByAttributeCodeAndStoreIdAndValue($attributeCode, $storeId, $attributeValue)) {
+        if ($eavAttributeOptionValue = $this->loadAttributeOptionValueByEntityTypeIdAndAttributeCodeAndStoreIdAndValue($this->getEntityTypeId(), $attributeCode, $storeId, $attributeValue)) {
             return $eavAttributeOptionValue[MemberNames::OPTION_ID];
         }
 
@@ -122,29 +104,5 @@ abstract class AbstractSelectCallback extends AbstractCallback
                 )
             )
         );
-    }
-
-    /**
-     * Return's the EAV aware processor instance.
-     *
-     * @return \TechDivision\Import\Services\EavAwareProcessorInterface The processor instance
-     */
-    protected function getEavAwareProcessor()
-    {
-        return $this->eavAwareProcessor;
-    }
-
-    /**
-     * Load's and return's the EAV attribute option value with the passed code, store ID and value.
-     *
-     * @param string  $attributeCode The code of the EAV attribute option to load
-     * @param integer $storeId       The store ID of the attribute option to load
-     * @param string  $value         The value of the attribute option to load
-     *
-     * @return array The EAV attribute option value
-     */
-    protected function loadEavAttributeOptionValueByAttributeCodeAndStoreIdAndValue($attributeCode, $storeId, $value)
-    {
-        return $this->getEavAwareProcessor()->loadEavAttributeOptionValueByAttributeCodeAndStoreIdAndValue($attributeCode, $storeId, $value);
     }
 }

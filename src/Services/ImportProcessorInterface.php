@@ -266,6 +266,15 @@ interface ImportProcessorInterface
     public function getEavAttributesByEntityTypeIdAndIsUserDefined($entityTypeId, $isUserDefined = 1);
 
     /**
+     * Return's an array with the availabe EAV attributes for the passed entity type.
+     *
+     * @param integer $entityTypeId The entity type ID of the EAV attributes to return
+     *
+     * @return array The array with the EAV attributes matching the passed entity type
+     */
+    public function getEavAttributesByEntityTypeId($entityTypeId);
+
+    /**
      * Return's an array with all available EAV entity types with the entity type code as key.
      *
      * @return array The available link types

@@ -40,6 +40,13 @@ class CommandNames extends \ArrayObject
     const IMPORT_ATTRIBUTES = 'import:attributes';
 
     /**
+     * The command name for the attribute set import.
+     *
+     * @var string
+     */
+    const IMPORT_ATTRIBUTES_SET = 'import:attributes:set';
+
+    /**
      * The command name for the category import.
      *
      * @var string
@@ -115,6 +122,7 @@ class CommandNames extends \ArrayObject
         $mergedCommandNames = array_merge(
             array(
                 CommandNames::IMPORT_ATTRIBUTES,
+                CommandNames::IMPORT_ATTRIBUTES_SET,
                 CommandNames::IMPORT_CATEGORIES,
                 CommandNames::IMPORT_PRODUCTS,
                 CommandNames::IMPORT_PRODUCTS_PRICE,

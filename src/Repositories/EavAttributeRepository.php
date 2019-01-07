@@ -223,6 +223,29 @@ class EavAttributeRepository extends AbstractRepository implements EavAttributeR
     }
 
     /**
+     * Return's an array with the available EAV attributes for the passed is entity type.
+     *
+     * @param integer $entityTypeId The entity type ID of the EAV attributes to return
+     *
+     * @return array The array with the EAV attributes matching the passed entity type
+     */
+    public function findAllByEntityTypeId($entityTypeId)
+    {
+
+        // initialize the array for the EAV attributes
+        $eavAttributes = array();
+
+        // execute the prepared statement and return the array with the EAV attributes
+        $this->eavAttributesByEntityTypeIdAndUserDefinedStmt->execute(array(MemberNames::ENTITY_TYPE_ID  => $entityTypeId));
+        foreach ($this->eavAttributesByEntityTypeIdAndUserDefinedStmt->fetchAll(\PDO::FETCH_ASSOC) as $eavAttribute) {
+            $eavAttributes[$eavAttribute[MemberNames::ATTRIBUTE_CODE]] = $eavAttribute;
+        }
+
+        // return the array with the EAV attributes
+        return $eavAttributes;
+    }
+
+    /**
      * Return's the first EAV attribute for the passed option value and store ID.
      *
      * @param string $optionValue The option value of the EAV attributes

@@ -57,7 +57,20 @@ interface EavAttributeOptionValueRepositoryInterface extends CachedRepositoryInt
      * @param string  $value         The value of the attribute option to load
      *
      * @return array The EAV attribute option value
-     * @deprecated Since 2.0.2, because multiple attributes wit the same attribute code, but differenct entity type code can be available
+     * @deprecated Since 2.0.2, because multiple attributes with the same attribute code, but differenct entity type code can be available
+     * @see \TechDivision\Import\Repositories\EavAttributeOptionValueRepositoryInterface::findOneByEntityTypeIdAndAttributeCodeAndStoreIdAndValue()
      */
     public function findOneByAttributeCodeAndStoreIdAndValue($attributeCode, $storeId, $value);
+
+    /**
+     * Load's and return's the EAV attribute option value with the passed entity type ID, code, store ID and value.
+     *
+     * @param string  $entityTypeId  The entity type ID of the EAV attribute to load the option value for
+     * @param string  $attributeCode The code of the EAV attribute option to load
+     * @param integer $storeId       The store ID of the attribute option to load
+     * @param string  $value         The value of the attribute option to load
+     *
+     * @return array The EAV attribute option value
+     */
+    public function findOneByEntityTypeIdAndAttributeCodeAndStoreIdAndValue($entityTypeId, $attributeCode, $storeId, $value);
 }

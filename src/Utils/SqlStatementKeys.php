@@ -123,6 +123,13 @@ class SqlStatementKeys
     const EAV_ENTITY_TYPES = 'eav_entity_types';
 
     /**
+     * The SQL statement to load the EAV attribute option value by its entity type ID, attribute code, store ID and value.
+     *
+     * @var string
+     */
+    const EAV_ENTITY_TYPE_BY_ENTITY_TYPE_CODE = 'eav_entity_type.by.entity_type_code';
+
+    /**
      * The SQL statement to load the EAV attribute set.
      *
      * @var string
@@ -135,6 +142,13 @@ class SqlStatementKeys
      * @var string
      */
     const EAV_ATTRIBUTE_GROUP = 'eav_attribute_group';
+
+    /**
+     * The SQL statement to load EAV attribute group with the passed entity type code, attribute set and attribute group name.
+     *
+     * @var string
+     */
+    const EAV_ATTRIBUTE_GROUP_BY_ENTITY_TYPE_CODE_AND_ATTRIBUTE_SET_NAME_AND_ATTRIBUTE_GROUP_NAME = 'eav_attribute_group.by.entity_type_code.and.attribute_set_name.and.attribute_group_name';
 
     /**
      * The SQL statement to load the attribute sets for a specific entity type.
@@ -205,6 +219,27 @@ class SqlStatementKeys
      * @var string
      */
     const EAV_ATTRIBUTE_OPTION_VALUE_BY_ATTRIBUTE_CODE_AND_STORE_ID_AND_VALUE = 'eav_attribute_option_value.by.attribute_code.and.store_id.and.value';
+
+    /**
+     * The SQL statement to load the EAV attribute option value by its entity type ID, attribute code, store ID and value.
+     *
+     * @var string
+     */
+    const EAV_ATTRIBUTE_OPTION_VALUE_BY_ENTITY_TYPE_ID_AND_ATTRIBUTE_CODE_AND_STORE_ID_AND_VALUE = 'eav_attribute_option_value.by.entity_type_id.and.attribute_code.and.store_id.and.value';
+
+    /**
+     * The SQL statement to load the EAV attribute set by the given entity type ID and attribute set name.
+     *
+     * @var string
+     */
+    const EAV_ATTRIBUTE_SET_BY_ENTITY_TYPE_ID_AND_ATTRIBUTE_SET_NAME = 'eav_attribute_set.by.entity_type_id.and.attribute_set_name';
+
+    /**
+     * The SQL statement to load the EAV attribute set by the given entity type code and attribute set name.
+     *
+     * @var string
+     */
+    const EAV_ATTRIBUTE_SET_BY_ENTITY_TYPE_CODE_AND_ATTRIBUTE_SET_NAME = 'eav_attribute_set.by.entity_type_code.and.attribute_set_name';
 
     /**
      * The SQL statement to load the Magento 2 configuration.

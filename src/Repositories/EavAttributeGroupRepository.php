@@ -50,6 +50,13 @@ class EavAttributeGroupRepository extends AbstractRepository implements EavAttri
     protected $eavAttributeGroupsByAttributeSetIdStmt;
 
     /**
+     * The prepared statement to load an attribute group for the given entity type code, attribute set + attribute group name.
+     *
+     * @var \PDOStatement
+     */
+    protected $eavAttributeGroupByEntityTypeCodeAndAttributeSetNameAndAttributeGroupNameStmt;
+
+    /**
      * Initializes the repository's prepared statements.
      *
      * @return void
@@ -62,6 +69,8 @@ class EavAttributeGroupRepository extends AbstractRepository implements EavAttri
             $this->getConnection()->prepare($this->loadStatement(SqlStatementKeys::EAV_ATTRIBUTE_GROUP));
         $this->eavAttributeGroupsByAttributeSetIdStmt =
             $this->getConnection()->prepare($this->loadStatement(SqlStatementKeys::EAV_ATTRIBUTE_GROUPS_BY_ATTRIBUTE_SET_ID));
+        $this->eavAttributeGroupByEntityTypeCodeAndAttributeSetNameAndAttributeGroupNameStmt =
+            $this->getConnection()->prepare($this->loadStatement(SqlStatementKeys::EAV_ATTRIBUTE_GROUP_BY_ENTITY_TYPE_CODE_AND_ATTRIBUTE_SET_NAME_AND_ATTRIBUTE_GROUP_NAME));
     }
 
     /**
@@ -103,5 +112,29 @@ class EavAttributeGroupRepository extends AbstractRepository implements EavAttri
 
         // return the array with the EAV attribute groups
         return $eavAttributeGroups;
+    }
+
+    /**
+     * Return's the EAV attribute group with the passed entity type code, attribute set and attribute group name.
+     *
+     * @param string $entityTypeCode     The entity type code of the EAV attribute group to return
+     * @param string $attributeSetName   The attribute set name of the EAV attribute group to return
+     * @param string $attributeGroupName The attribute group name of the EAV attribute group to return
+     *
+     * @return array The EAV attribute group
+     */
+    public function findOneByEntityTypeCodeAndAttributeSetNameAndAttributeGroupName($entityTypeCode, $attributeSetName, $attributeGroupName)
+    {
+
+        // initialize the params
+        $params = array(
+            MemberNames::ENTITY_TYPE_CODE     => $entityTypeCode,
+            MemberNames::ATTRIBUTE_SET_NAME   => $attributeSetName,
+            MemberNames::ATTRIBUTE_GROUP_NAME => $attributeGroupName
+        );
+
+        // execute the prepared statement and return the EAV attribute group with the passed params
+        $this->eavAttributeGroupByEntityTypeCodeAndAttributeSetNameAndAttributeGroupNameStmt->execute($params);
+        return $this->eavAttributeGroupByEntityTypeCodeAndAttributeSetNameAndAttributeGroupNameStmt->fetch(\PDO::FETCH_ASSOC);
     }
 }

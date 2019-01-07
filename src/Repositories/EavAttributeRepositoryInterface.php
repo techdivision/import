@@ -83,6 +83,15 @@ interface EavAttributeRepositoryInterface extends RepositoryInterface
     public function findAllByEntityTypeIdAndIsUserDefined($entityTypeId, $isUserDefined = 1);
 
     /**
+     * Return's an array with the available EAV attributes for the passed is entity type.
+     *
+     * @param integer $entityTypeId The entity type ID of the EAV attributes to return
+     *
+     * @return array The array with the EAV attributes matching the passed entity type
+     */
+    public function findAllByEntityTypeId($entityTypeId);
+
+    /**
      * Return's the first EAV attribute for the passed option value and store ID.
      *
      * @param string $optionValue The option value of the EAV attributes
