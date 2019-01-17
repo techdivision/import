@@ -2,7 +2,7 @@
 
 ## Bugfixes
 
-* Fix File Mission for create Folder 
+* Fix File permission for create Folder 
 
 ## Features
 
