@@ -60,7 +60,7 @@ class LeagueFilesystemAdapter implements FilesystemAdapterInterface
      *
      * @return boolean TRUE on success, else FALSE
      */
-    public function mkdir($pathname, $mode = 0700)
+    public function mkdir($pathname, $mode = 0755)
     {
         return $this->filesystem->createDir($pathname, array('visibility' => $mode === 0755 ? 'public' : 'private'));
     }

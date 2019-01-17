@@ -41,7 +41,7 @@ class PhpFilesystemAdapter implements FilesystemAdapterInterface
      * @return boolean TRUE on success, else FALSE
      * @link http://php.net/mkdir
      */
-    public function mkdir($pathname, $mode = 0700)
+    public function mkdir($pathname, $mode = 0755)
     {
         return mkdir($pathname, $mode, true);
     }

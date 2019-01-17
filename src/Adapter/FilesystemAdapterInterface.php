@@ -40,7 +40,7 @@ interface FilesystemAdapterInterface
      *
      * @return boolean TRUE on success, else FALSE
      */
-    public function mkdir($pathname, $mode = 0700);
+    public function mkdir($pathname, $mode = 0755);
 
     /**
      * Query whether or not the passed filename exists.
