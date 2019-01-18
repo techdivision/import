@@ -1,8 +1,18 @@
-# Version 5.0.1
+# Version 6.0.1
 
 ## Bugfixes
 
-* Fix File permission for create Folder 
+* Fix File permission for create folder
+
+## Features
+
+* None
+
+# Version 6.0.0
+
+## Bugfixes
+
+* Add methods to load attribute option values by entity type ID to replace methods without entity type ID
 
 ## Features
 
