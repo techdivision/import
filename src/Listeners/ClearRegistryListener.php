@@ -57,7 +57,8 @@ class ClearRegistryListener extends AbstractListener
     /**
      * Handle the event.
      *
-     * @param \League\Event\EventInterface $event The event that triggered the listener
+     * @param \League\Event\EventInterface              $event       The event that triggered the listener
+     * @param \TechDivision\Import\ApplicationInterface $application The application that triggered the listener
      *
      * @return void
      */
