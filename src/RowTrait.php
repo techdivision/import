@@ -49,6 +49,8 @@ trait RowTrait
     /**
      * Stop's observer execution on the actual row.
      *
+     * @param boolean $skip The flag to skip row exection or not
+     *
      * @return void
      */
     public function skipRow($skip = true)

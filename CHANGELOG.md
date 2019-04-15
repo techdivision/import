@@ -1,3 +1,13 @@
+# Version 7.0.1
+
+## Bugfixes
+
+* Fixed some PSR-2 errors
+
+## Features
+
+* None
+
 # Version 7.0.0
 
 ## Bugfixes

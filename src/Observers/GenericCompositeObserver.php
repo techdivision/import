@@ -110,6 +110,8 @@ class GenericCompositeObserver implements ObserverInterface
      * Adds the passed observer to the composites array with observers.
      *
      * @param \TechDivision\Import\Observers\ObserverInterface $observer The observer to add
+     *
+     * @return void
      */
     public function addObserver(ObserverInterface $observer)
     {
