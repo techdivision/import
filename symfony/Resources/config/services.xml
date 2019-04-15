@@ -121,20 +121,20 @@
             <argument type="service" id="import.repository.sql.statement"/>
         </service>
 
-        <service id="import.action.url.rewrite" class="TechDivision\Import\Actions\UrlRewriteAction">
+        <service id="import.action.url.rewrite" class="TechDivision\Import\Actions\GenericIdentifierAction">
             <argument type="service" id="import.action.processor.url.rewrite.product.create"/>
             <argument type="service" id="import.action.processor.url.rewrite.product.update"/>
             <argument type="service" id="import.action.processor.url.rewrite.product.delete"/>
         </service>
-        <service id="import.action.store" class="TechDivision\Import\Actions\StoreAction">
+        <service id="import.action.store" class="TechDivision\Import\Actions\GenericIdentifierAction">
             <argument type="service" id="import.action.processor.store.create"/>
             <argument type="service" id="import.action.processor.store.update"/>
         </service>
-        <service id="import.action.store.group" class="TechDivision\Import\Actions\StoreGroupAction">
+        <service id="import.action.store.group" class="TechDivision\Import\Actions\GenericIdentifierAction">
             <argument type="service" id="import.action.processor.store.group.create"/>
             <argument type="service" id="import.action.processor.store.group.update"/>
         </service>
-        <service id="import.action.store.website" class="TechDivision\Import\Actions\StoreWebsiteAction">
+        <service id="import.action.store.website" class="TechDivision\Import\Actions\GenericIdentifierAction">
             <argument type="service" id="import.action.processor.store.website.create"/>
             <argument type="service" id="import.action.processor.store.website.update"/>
         </service>
@@ -334,6 +334,20 @@
         </service>
         <service id="import.serializer.factory.csv.additional.attribute" class="TechDivision\Import\Serializers\AdditionalAttributeCsvSerializerFactory">
             <argument type="service" id="service_container"/>
+        </service>
+
+        <!-- 
+         ! The DI configuration for the listeners
+         !-->
+        <service id="import.listener.clear.registry" class="TechDivision\Import\Listeners\ClearRegistryListener">
+            <argument type="service" id="import.processor.registry"/>
+        </service>
+        <service id="import.listener.initialize.registry" class="TechDivision\Import\Listeners\InitializeRegistryListener">
+            <argument type="service" id="configuration"/>
+            <argument type="service" id="import.processor.registry"/>
+        </service>
+        <service id="import.listener.render.ansi.art" class="TechDivision\Import\Listeners\RenderAnsiArtListener">
+            <argument type="service" id="configuration"/>
         </service>
 
     </services>

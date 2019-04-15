@@ -49,6 +49,13 @@ interface OperationConfigurationInterface
     public function getName();
 
     /**
+     * Return's the array with the configured listeners.
+     *
+     * @return array The array with the listeners
+     */
+    public function getListeners();
+
+    /**
      * Return's the ArrayCollection with the operation's plugins.
      *
      * @return \Doctrine\Common\Collections\ArrayCollection The ArrayCollection with the operation's plugins

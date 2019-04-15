@@ -50,6 +50,20 @@ class EventNames
     }
 
     /**
+     * The event name for the event when the application will be setted up.
+     *
+     * @var string
+     */
+    const APP_SET_UP = 'app.set.up';
+
+    /**
+     * The event name for the event when the application will be teared down.
+     *
+     * @var string
+     */
+    const APP_TEAR_DOWN = 'app.tear.down';
+
+    /**
      * The event name for the event before the application start's the transaction (if single transaction mode has been activated).
      *
      * @var string

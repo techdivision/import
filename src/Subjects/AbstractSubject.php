@@ -107,13 +107,6 @@ abstract class AbstractSubject implements SubjectInterface, FilesystemSubjectInt
     protected $operationName ;
 
     /**
-     * The flag that stop's overserver execution on the actual row.
-     *
-     * @var boolean
-     */
-    protected $skipRow = false;
-
-    /**
      * The import adapter instance.
      *
      * @var \TechDivision\Import\Adapter\ImportAdapterInterface
@@ -325,16 +318,6 @@ abstract class AbstractSubject implements SubjectInterface, FilesystemSubjectInt
     public function getLineNumber()
     {
         return $this->lineNumber;
-    }
-
-    /**
-     * Stop's observer execution on the actual row.
-     *
-     * @return void
-     */
-    public function skipRow()
-    {
-        $this->skipRow = true;
     }
 
     /**
@@ -800,6 +783,7 @@ abstract class AbstractSubject implements SubjectInterface, FilesystemSubjectInt
         // process the observers
         foreach ($this->getObservers() as $observers) {
             // invoke the pre-import/import and post-import observers
+            /** @var \TechDivision\Import\Observers\ObserverInterface $observer */
             foreach ($observers as $observer) {
                 // query whether or not we have to skip the row
                 if ($this->skipRow) {
@@ -809,7 +793,7 @@ abstract class AbstractSubject implements SubjectInterface, FilesystemSubjectInt
                             sprintf(
                                 'Skip processing operation "%s" after observer "%s"',
                                 $this->operationName,
-                                $this->getConfiguration()->getId()
+                                get_class($observer)
                             )
                         )
                     );

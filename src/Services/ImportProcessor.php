@@ -40,6 +40,7 @@ use TechDivision\Import\Repositories\CoreConfigDataRepositoryInterface;
 use TechDivision\Import\Repositories\CategoryVarcharRepositoryInterface;
 use TechDivision\Import\Repositories\EavAttributeSetRepositoryInterface;
 use TechDivision\Import\Repositories\EavAttributeGroupRepositoryInterface;
+use TechDivision\Import\Actions\ActionInterface;
 
 /**
  * Processor implementation to load global data.
@@ -161,21 +162,21 @@ class ImportProcessor implements ImportProcessorInterface
     /**
      * The action for store CRUD methods.
      *
-     * @var \TechDivision\Import\Actions\StoreActionInterface
+     * @var \TechDivision\Import\Actions\ActionInterface
      */
     protected $storeAction;
 
     /**
      * The action for store group CRUD methods.
      *
-     * @var \TechDivision\Import\Actions\StoreGroupActionInterface
+     * @var \TechDivision\Import\Actions\ActionInterface
      */
     protected $storeGroupAction;
 
     /**
      * The action for store website CRUD methods.
      *
-     * @var \TechDivision\Import\Actions\StoreWebsiteActionInterface
+     * @var \TechDivision\Import\Actions\ActionInterface
      */
     protected $storeWebsiteAction;
 
@@ -196,9 +197,9 @@ class ImportProcessor implements ImportProcessorInterface
      * @param \TechDivision\Import\Repositories\LinkTypeRepositoryInterface          $linkTypeRepository          The repository to access link types
      * @param \TechDivision\Import\Repositories\LinkAttributeRepositoryInterface     $linkAttributeRepository     The repository to access link attributes
      * @param \TechDivision\Import\Repositories\CoreConfigDataRepositoryInterface    $coreConfigDataRepository    The repository to access the configuration
-     * @param \TechDivision\Import\Actions\StoreActionInterface                      $storeAction                 The action with the store CRUD methods
-     * @param \TechDivision\Import\Actions\StoreGroupActionInterface                 $storeGroupAction            The action with the store group CRUD methods
-     * @param \TechDivision\Import\Actions\StoreWebsiteActionInterface               $storeWebsiteAction          The action with the store website CRUD methods
+     * @param \TechDivision\Import\Actions\ActionInterface                           $storeAction                 The action with the store CRUD methods
+     * @param \TechDivision\Import\Actions\ActionInterface                           $storeGroupAction            The action with the store group CRUD methods
+     * @param \TechDivision\Import\Actions\ActionInterface                           $storeWebsiteAction          The action with the store website CRUD methods
      * @param \TechDivision\Import\Repositories\ImageTypeRepositoryInterface         $imageTypeRepository         The repository to access images types
      */
     public function __construct(
@@ -216,9 +217,9 @@ class ImportProcessor implements ImportProcessorInterface
         LinkTypeRepositoryInterface $linkTypeRepository,
         LinkAttributeRepositoryInterface $linkAttributeRepository,
         CoreConfigDataRepositoryInterface $coreConfigDataRepository,
-        StoreActionInterface $storeAction,
-        StoreGroupActionInterface $storeGroupAction,
-        StoreWebsiteActionInterface $storeWebsiteAction,
+        ActionInterface $storeAction,
+        ActionInterface $storeGroupAction,
+        ActionInterface $storeWebsiteAction,
         ImageTypeRepositoryInterface $imageTypeRepository
     ) {
         $this->setConnection($connection);
@@ -618,11 +619,11 @@ class ImportProcessor implements ImportProcessorInterface
     /**
      * Set's the action with the store CRUD methods.
      *
-     * @param \TechDivision\Import\Actions\StoreActionInterface $storeAction The action with the store CRUD methods
+     * @param \TechDivision\Import\Actions\ActionInterface $storeAction The action with the store CRUD methods
      *
      * @return void
      */
-    public function setStoreAction(StoreActionInterface $storeAction)
+    public function setStoreAction(ActionInterface $storeAction)
     {
         $this->storeAction = $storeAction;
     }
@@ -630,7 +631,7 @@ class ImportProcessor implements ImportProcessorInterface
     /**
      * Return's the action with the store CRUD methods.
      *
-     * @return \TechDivision\Import\Actions\StoreActionInterface The action instance
+     * @return \TechDivision\Import\Actions\ActionInterface The action instance
      */
     public function getStoreAction()
     {
@@ -640,11 +641,11 @@ class ImportProcessor implements ImportProcessorInterface
     /**
      * Set's the action with the store group CRUD methods.
      *
-     * @param \TechDivision\Import\Actions\StoreGroupActionInterface $storeGroupAction The action with the store group CRUD methods
+     * @param \TechDivision\Import\Actions\ActionInterface $storeGroupAction The action with the store group CRUD methods
      *
      * @return void
      */
-    public function setStoreGroupAction(StoreGroupActionInterface $storeGroupAction)
+    public function setStoreGroupAction(ActionInterface $storeGroupAction)
     {
         $this->storeGroupAction = $storeGroupAction;
     }
@@ -652,7 +653,7 @@ class ImportProcessor implements ImportProcessorInterface
     /**
      * Return's the action with the store group CRUD methods.
      *
-     * @return \TechDivision\Import\Actions\StoreGroupActionInterface The action instance
+     * @return \TechDivision\Import\Actions\ActionInterface The action instance
      */
     public function getStoreGroupAction()
     {
@@ -662,11 +663,11 @@ class ImportProcessor implements ImportProcessorInterface
     /**
      * Set's the action with the store website CRUD methods.
      *
-     * @param \TechDivision\Import\Actions\StoreWebsiteActionInterface $storeWebsiteAction The action with the store website CRUD methods
+     * @param \TechDivision\Import\Actions\ActionInterface $storeWebsiteAction The action with the store website CRUD methods
      *
      * @return void
      */
-    public function setStoreWebsiteAction(StoreWebsiteActionInterface $storeWebsiteAction)
+    public function setStoreWebsiteAction(ActionInterface $storeWebsiteAction)
     {
         $this->storeWebsiteAction = $storeWebsiteAction;
     }
@@ -674,7 +675,7 @@ class ImportProcessor implements ImportProcessorInterface
     /**
      * Return's the action with the store website CRUD methods.
      *
-     * @return \TechDivision\Import\Actions\StoreWebsiteActionInterface The action instance
+     * @return \TechDivision\Import\Actions\ActionInterface The action instance
      */
     public function getStoreWebsiteAction()
     {

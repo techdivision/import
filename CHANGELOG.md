@@ -1,3 +1,13 @@
+# Version 7.0.0
+
+## Bugfixes
+
+* None
+
+## Features
+
+* Refactoring tasks to make implementation more generic
+
 # Version 6.0.1
 
 ## Bugfixes

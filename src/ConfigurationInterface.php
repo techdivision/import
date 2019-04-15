@@ -79,6 +79,16 @@ interface ConfigurationInterface extends CsvConfigurationInterface, ParamsConfig
     public function getArchiveDir();
 
     /**
+     * Return's the database configuration with the passed ID.
+     *
+     * @param string $id The ID of the database connection to return
+     *
+     * @return \TechDivision\Import\Configuration\DatabaseConfigurationInterface The database configuration
+     * @throws \Exception Is thrown, if no database configuration is available
+     */
+    public function getDatabaseById($id);
+
+    /**
      * Return's the database configuration.
      *
      * @return \TechDivision\Import\Configuration\DatabaseConfigurationInterface The database configuration
@@ -92,6 +102,13 @@ interface ConfigurationInterface extends CsvConfigurationInterface, ParamsConfig
      * @return \Doctrine\Common\Collections\ArrayCollection The ArrayCollection with the operations
      */
     public function getOperations();
+
+    /**
+     * Return's the operation, initialize from the actual operation name.
+     *
+     * @return \TechDivision\Import\Configuration\OperationConfigurationInterface The operation instance
+     */
+    public function getOperation();
 
     /**
      * Return's the array with the plugins of the operation to use.

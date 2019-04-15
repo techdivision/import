@@ -97,6 +97,17 @@ interface ApplicationInterface extends ContainerInterface
     public function getContainer();
 
     /**
+     * Simple method that writes the passed method the the console and the
+     * system logger, if configured and a log level has been passed.
+     *
+     * @param string $msg      The message to log
+     * @param string $logLevel The log level to use
+     *
+     * @return void
+     */
+    public function log($msg, $logLevel = null);
+
+    /**
      * Persist the UUID of the actual import process to the PID file.
      *
      * @return void
@@ -126,10 +137,12 @@ interface ApplicationInterface extends ContainerInterface
     /**
      * Process the given operation.
      *
+     * @param string $serial The unique serial of the actual import process
+     *
      * @return void
      * @throws \Exception Is thrown if the operation can't be finished successfully
      */
-    public function process();
+    public function process($serial);
 
     /**
      * Stop processing the operation.

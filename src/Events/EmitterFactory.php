@@ -79,6 +79,16 @@ class EmitterFactory implements EmitterFactoryInterface
             $this->prepareListeners($emitter, $listeners);
         }
 
+        // load, initialize and add the configured listeners for the actual operation
+        /** @var \TechDivision\Import\Configuration\OperationConfigurationInterface $operation */
+        foreach ($this->configuration->getOperations() as $operation) {
+            if ($operation->equals($this->configuration->getOperation())) {
+                foreach ($operation->getListeners() as $listeners) {
+                    $this->prepareListeners($emitter, $listeners);
+                }
+            }
+        }
+
         // return the initialized emitter instance
         return $emitter;
     }

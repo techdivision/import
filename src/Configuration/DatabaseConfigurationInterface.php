@@ -66,4 +66,39 @@ interface DatabaseConfigurationInterface
      * @return boolean TRUE if this is the default datasource, else FALSE
      */
     public function isDefault();
+
+    /**
+     * Return's the DB name to use.
+     *
+     * @return string The DB name
+     */
+    public function getName();
+
+    /**
+     * Return's the DB timeout to use.
+     *
+     * @return string The DB timeout
+     */
+    public function getTimeout();
+
+    /**
+     * Return's the DB version to use.
+     *
+     * @return string The DB version
+     */
+    public function getVersion();
+
+    /**
+     * Return's the DB host to use.
+     *
+     * @return string The DB host
+     */
+    public function getHost();
+
+    /**
+     * Return's the DB port to use.
+     *
+     * @return integer The DB port
+     */
+    public function getPort();
 }

@@ -1,7 +1,7 @@
 <?php
 
 /**
- * TechDivision\Import\Actions\StoreGroupAction
+ * TechDivision\Import\Actions\GenericIdentifierAction
  *
  * NOTICE OF LICENSE
  *
@@ -23,16 +23,16 @@ namespace TechDivision\Import\Actions;
 use TechDivision\Import\Utils\EntityStatus;
 
 /**
- * An action implementation that provides CRUD functionality for store groups.
+ * An action implementation that provides CRUD functionality and returns the ID of
+ * the persisted entity for the `update` and `create` methods.
  *
- * @author     Tim Wagner <t.wagner@techdivision.com>
- * @copyright  2016 TechDivision GmbH <info@techdivision.com>
- * @license    http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
- * @link       https://github.com/techdivision/import-category
- * @link       http://www.techdivision.com
- * @deprecated Since version 7.0.0 use \TechDivision\Import\Actions\GenericIdentifierAction instead
+ * @author    Tim Wagner <t.wagner@techdivision.com>
+ * @copyright 2016 TechDivision GmbH <info@techdivision.com>
+ * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
+ * @link      https://github.com/techdivision/import-category
+ * @link      http://www.techdivision.com
  */
-class StoreGroupAction extends AbstractAction implements StoreGroupActionInterface
+class GenericIdentifierAction extends GenericAction
 {
 
     /**
