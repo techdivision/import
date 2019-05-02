@@ -429,7 +429,9 @@ class SqlStatementRepository extends AbstractSqlStatementRepository
                  ON main_table.attribute_id = additional_table.attribute_id
               WHERE (entity_type_code = \'catalog_product\')
                 AND (frontend_input = \'media_image\')
-           GROUP BY main_table.attribute_code'
+           GROUP BY main_table.attribute_code',
+        SqlStatementKeys::CUSTOMER_GROUPS =>
+            'SELECT * FROM customer_group'
     );
 
     /**

@@ -167,6 +167,13 @@ interface ImportProcessorInterface
     public function getCoreConfigDataRepository();
 
     /**
+     * Return's the repository to access the customer groups.
+     *
+     * @return \TechDivision\Import\Repositories\CustomerGroupRepositoryInterface The repository instance
+     */
+    public function getCustomerGroupRepository();
+
+    /**
      * Return's the action with the store CRUD methods.
      *
      * @return \TechDivision\Import\Actions\ActionInterface The action instance
@@ -360,6 +367,13 @@ interface ImportProcessorInterface
      * @return array The Magento 2 configuration
      */
     public function getCoreConfigData();
+
+    /**
+     * Returns the customer groups.
+     *
+     * @return array The customer groups
+     */
+    public function getCustomerGroups();
 
     /**
      * Persist's the passed store.

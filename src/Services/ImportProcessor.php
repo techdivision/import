@@ -22,10 +22,8 @@ namespace TechDivision\Import\Services;
 
 use TechDivision\Import\Utils\MemberNames;
 use TechDivision\Import\Utils\RegistryKeys;
+use TechDivision\Import\Actions\ActionInterface;
 use TechDivision\Import\Connection\ConnectionInterface;
-use TechDivision\Import\Actions\StoreActionInterface;
-use TechDivision\Import\Actions\StoreGroupActionInterface;
-use TechDivision\Import\Actions\StoreWebsiteActionInterface;
 use TechDivision\Import\Assembler\CategoryAssemblerInterface;
 use TechDivision\Import\Repositories\StoreRepositoryInterface;
 use TechDivision\Import\Repositories\CategoryRepositoryInterface;
@@ -40,7 +38,7 @@ use TechDivision\Import\Repositories\CoreConfigDataRepositoryInterface;
 use TechDivision\Import\Repositories\CategoryVarcharRepositoryInterface;
 use TechDivision\Import\Repositories\EavAttributeSetRepositoryInterface;
 use TechDivision\Import\Repositories\EavAttributeGroupRepositoryInterface;
-use TechDivision\Import\Actions\ActionInterface;
+use TechDivision\Import\Repositories\CustomerGroupRepositoryInterface;
 
 /**
  * Processor implementation to load global data.
@@ -160,6 +158,13 @@ class ImportProcessor implements ImportProcessorInterface
     protected $coreConfigDataRepository;
 
     /**
+     * The repository to access the customer groups.
+     *
+     * @var \TechDivision\Import\Repositories\CustomerGroupRepositoryInterface
+     */
+    protected $customerGroupRepository;
+
+    /**
      * The action for store CRUD methods.
      *
      * @var \TechDivision\Import\Actions\ActionInterface
@@ -197,6 +202,7 @@ class ImportProcessor implements ImportProcessorInterface
      * @param \TechDivision\Import\Repositories\LinkTypeRepositoryInterface          $linkTypeRepository          The repository to access link types
      * @param \TechDivision\Import\Repositories\LinkAttributeRepositoryInterface     $linkAttributeRepository     The repository to access link attributes
      * @param \TechDivision\Import\Repositories\CoreConfigDataRepositoryInterface    $coreConfigDataRepository    The repository to access the configuration
+     * @param \TechDivision\Import\Repositories\CustomerGroupRepositoryInterface     $customerGroupRepository     The repository to access the customer groups
      * @param \TechDivision\Import\Actions\ActionInterface                           $storeAction                 The action with the store CRUD methods
      * @param \TechDivision\Import\Actions\ActionInterface                           $storeGroupAction            The action with the store group CRUD methods
      * @param \TechDivision\Import\Actions\ActionInterface                           $storeWebsiteAction          The action with the store website CRUD methods
@@ -217,6 +223,7 @@ class ImportProcessor implements ImportProcessorInterface
         LinkTypeRepositoryInterface $linkTypeRepository,
         LinkAttributeRepositoryInterface $linkAttributeRepository,
         CoreConfigDataRepositoryInterface $coreConfigDataRepository,
+        CustomerGroupRepositoryInterface $customerGroupRepository,
         ActionInterface $storeAction,
         ActionInterface $storeGroupAction,
         ActionInterface $storeWebsiteAction,
@@ -240,6 +247,7 @@ class ImportProcessor implements ImportProcessorInterface
         $this->setStoreGroupAction($storeGroupAction);
         $this->setStoreWebsiteAction($storeWebsiteAction);
         $this->setImageTypeRepository($imageTypeRepository);
+        $this->setCustomerGroupRepository($customerGroupRepository);
     }
 
     /**
@@ -617,6 +625,28 @@ class ImportProcessor implements ImportProcessorInterface
     }
 
     /**
+     * Set's the repository to access the customer groups.
+     *
+     * @param \TechDivision\Import\Repositories\CustomerGroupRepositoryInterface $customerGroupRepository The repository to access the customer groups
+     *
+     * @return void
+     */
+    public function setCustomerGroupRepository(CustomerGroupRepositoryInterface $customerGroupRepository)
+    {
+        $this->customerGroupRepository = $customerGroupRepository;
+    }
+
+    /**
+     * Return's the repository to access the customer groups.
+     *
+     * @return \TechDivision\Import\Repositories\CustomerGroupRepositoryInterface The repository instance
+     */
+    public function getCustomerGroupRepository()
+    {
+        return $this->customerGroupRepository;
+    }
+
+    /**
      * Set's the action with the store CRUD methods.
      *
      * @param \TechDivision\Import\Actions\ActionInterface $storeAction The action with the store CRUD methods
@@ -920,6 +950,16 @@ class ImportProcessor implements ImportProcessorInterface
     }
 
     /**
+     * Returns the customer groups.
+     *
+     * @return array The customer groups
+     */
+    public function getCustomerGroups()
+    {
+        return $this->getCustomerGroupRepository()->findAll();
+    }
+
+    /**
      * Persist's the passed store.
      *
      * @param array $store The store to persist
@@ -971,13 +1011,14 @@ class ImportProcessor implements ImportProcessorInterface
         $globalData[RegistryKeys::STORES] = $this->getStores();
         $globalData[RegistryKeys::LINK_TYPES] = $this->getLinkTypes();
         $globalData[RegistryKeys::TAX_CLASSES] = $this->getTaxClasses();
+        $globalData[RegistryKeys::IMAGE_TYPES] = $this->getImageTypes();
         $globalData[RegistryKeys::DEFAULT_STORE] = $this->getDefaultStore();
         $globalData[RegistryKeys::STORE_WEBSITES] = $this->getStoreWebsites();
         $globalData[RegistryKeys::LINK_ATTRIBUTES] = $this->getLinkAttributes();
         $globalData[RegistryKeys::ROOT_CATEGORIES] = $this->getRootCategories();
+        $globalData[RegistryKeys::CUSTOMER_GROUPS] = $this->getCustomerGroups();
         $globalData[RegistryKeys::CORE_CONFIG_DATA] = $this->getCoreConfigData();
         $globalData[RegistryKeys::ENTITY_TYPES] = $eavEntityTypes = $this->getEavEntityTypes();
-        $globalData[RegistryKeys::IMAGE_TYPES] = $this->getImageTypes();
 
         // prepare the attribute sets
         $eavAttributes = array();

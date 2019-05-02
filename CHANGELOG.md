@@ -1,3 +1,16 @@
+# Version 8.0.0
+
+## Bugfixes
+
+* Fixed issue in CommandNames::isCommandName() method
+
+## Features
+
+* Add customer group repository functionality
+* Add utility class with Magento edition names
+* Add utility class to handle CE/EE primary key functionality
+* Add commands for importing MSI inventory + product tier prices
+
 # Version 7.0.1
 
 ## Bugfixes

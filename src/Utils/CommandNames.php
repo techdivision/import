@@ -82,11 +82,25 @@ class CommandNames extends \ArrayObject
     const IMPORT_PRODUCTS_INVENTORY = 'import:products:inventory';
 
     /**
+     * The command name for the product MSI inventory import.
+     *
+     * @var string
+     */
+    const IMPORT_PRODUCTS_INVENTORY_MSI = 'import:products:inventory:msi';
+
+    /**
      * The command name for the product price import.
      *
      * @var string
      */
     const IMPORT_PRODUCTS_PRICE = 'import:products:price';
+
+    /**
+     * The command name for the product tier price import.
+     *
+     * @var string
+     */
+    const IMPORT_PRODUCTS_TIER_PRICE = 'import:products:price:tier';
 
     /**
      * The command name for the command that creates an OK file.
@@ -149,6 +163,6 @@ class CommandNames extends \ArrayObject
      */
     public function isCommandName($commandName)
     {
-        return isset($this[$commandName]);
+        return in_array($commandName, (array) $this);
     }
 }

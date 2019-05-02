@@ -345,4 +345,11 @@ class SqlStatementKeys
      * @var string
      */
     const UPDATE_STORE_WEBSITE = 'update.store_website';
+
+    /**
+     * The SQL statement to load all customer groups.
+     *
+     * @var string
+     */
+    const CUSTOMER_GROUPS = 'customer_groups';
 }

@@ -13,6 +13,10 @@
 
         <service id="import.generator.core.config.data.uid" class="TechDivision\Import\Utils\Generators\CoreConfigDataUidGenerator"/>
 
+        <service id="import.util.primary.key" class="TechDivision\Import\Utils\PrimaryKeyUtil">
+            <argument type="service" id="configuration"/>
+        </service>
+
         <service id="import.repository.sql.statement" class="TechDivision\Import\Repositories\SqlStatementRepository"/>
         <service id="import.repository.category" class="TechDivision\Import\Repositories\CategoryRepository">
             <argument type="service" id="connection"/>
@@ -76,6 +80,10 @@
             <argument type="service" id="import.repository.sql.statement"/>
         </service>
         <service id="import.repository.image.type" class="TechDivision\Import\Repositories\ImageTypeRepository">
+            <argument type="service" id="connection"/>
+            <argument type="service" id="import.repository.sql.statement"/>
+        </service>
+        <service id="import.repository.customer.group" class="TechDivision\Import\Repositories\CustomerGroupRepository">
             <argument type="service" id="connection"/>
             <argument type="service" id="import.repository.sql.statement"/>
         </service>
@@ -161,6 +169,7 @@
             <argument type="service" id="import.repository.link.type"/>
             <argument type="service" id="import.repository.link.attribute"/>
             <argument type="service" id="import.repository.core.config.data"/>
+            <argument type="service" id="import.repository.customer.group"/>
             <argument type="service" id="import.action.store"/>
             <argument type="service" id="import.action.store.group"/>
             <argument type="service" id="import.action.store.website"/>

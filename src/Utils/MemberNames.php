@@ -328,4 +328,18 @@ class MemberNames
      * @var string
      */
     const ROOT_CATEGORY_ID = 'root_category_id';
+
+    /**
+     * Name for the member 'customer_group_code'.
+     *
+     * @var string
+     */
+    const CUSTOMER_GROUP_CODE = 'customer_group_code';
+
+    /**
+     * Name for the member 'row_id'.
+     *
+     * @var string
+     */
+    const ROW_ID = 'row_id';
 }

@@ -225,4 +225,11 @@ class RegistryKeys
      * @var string
      */
     const MISSING_OPTION_VALUES = 'missingOptionValues';
+
+    /**
+     * Key for the registry entry containing the customer groups.
+     *
+     * @var string
+     */
+    const CUSTOMER_GROUPS = 'customerGroups';
 }
