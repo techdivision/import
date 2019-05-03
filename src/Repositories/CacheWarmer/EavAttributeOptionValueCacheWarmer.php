@@ -61,8 +61,11 @@ class EavAttributeOptionValueCacheWarmer implements CacheWarmerInterface
     public function warm()
     {
 
+        // load the available EAV attribute option values
+        $eavAttributeOptionValues = $this->repository->findAll();
+
         // prepare the caches for the statements
-        foreach ($this->repository->findAll() as $eavAttributeOptionValue) {
+        foreach ($eavAttributeOptionValues as $eavAttributeOptionValue) {
             // prepare the cache key and add the option value to the cache
             $cacheKey1 = $this->repository->cacheKey(
                 SqlStatementKeys::EAV_ATTRIBUTE_OPTION_VALUE_BY_OPTION_ID_AND_STORE_ID,

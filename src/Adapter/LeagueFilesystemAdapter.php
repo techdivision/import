@@ -167,7 +167,10 @@ class LeagueFilesystemAdapter implements FilesystemAdapterInterface
         $files = array();
 
         // load the filenames of the passed directory
-        foreach ($this->filesystem->listContents($directory, $recursive) as $key => $file) {
+        $contents = $this->filesystem->listContents($directory, $recursive);
+
+        // prepare the array with the file names
+        foreach ($contents as $key => $file) {
             $files[$key] = $file['path'];
         }
 

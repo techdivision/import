@@ -69,8 +69,11 @@ class GenericCompositeObserver implements ObserverInterface
         // initialize the subject
         $this->setSubject($subject);
 
+        // load the observers
+        $observers = $this->getObservers();
+
         // process the observers
-        foreach ($this->getObservers() as $observer) {
+        foreach ($observers as $observer) {
             // query whether or not we have to skip the row
             if ($subject->rowHasToBeSkipped()) {
                 // log a debug message with the actual line nr/file information

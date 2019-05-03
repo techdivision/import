@@ -154,7 +154,10 @@ class PhpFilesystemAdapter implements FilesystemAdapterInterface
 
         // parse all subdirectories, if recursive parsing is wanted
         if ($recursive !== false) {
-            foreach (glob(dirname($pattern). DIRECTORY_SEPARATOR . '*', GLOB_ONLYDIR|GLOB_NOSORT|GLOB_BRACE) as $dir) {
+            // load the directories
+            $dirs = glob(dirname($pattern). DIRECTORY_SEPARATOR . '*', GLOB_ONLYDIR|GLOB_NOSORT|GLOB_BRACE);
+            // iterate over the subdirectories for its files
+            foreach ($dirs as $dir) {
                 $files = array_merge($files, $this->listContents($dir . DIRECTORY_SEPARATOR . basename($pattern), $recursive));
             }
         }

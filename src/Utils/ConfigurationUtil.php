@@ -73,9 +73,12 @@ class ConfigurationUtil
             $paramsInCamelCase[lcfirst(str_replace('-', '', ucwords($key, '-')))] = $value;
         }
 
+        // load the constructor's reflection parameters
+        $constructorParameters = $reflectionClass->getConstructor()->getParameters();
+
         // prepare the arguments by applying the values from the configuration
         /** @var \ReflectionParameter $reflectionParameter */
-        foreach ($reflectionClass->getConstructor()->getParameters() as $reflectionParameter) {
+        foreach ($constructorParameters as $reflectionParameter) {
             if (isset($paramsInCamelCase[$paramName = $reflectionParameter->getName()])) {
                 $initializedParams[$paramName] = $paramsInCamelCase[$paramName];
             } elseif ($reflectionParameter->isOptional()) {

@@ -502,8 +502,11 @@ abstract class AbstractSubject implements SubjectInterface, FilesystemSubjectInt
         // merge the header mappings with the values found in the configuration
         $this->headerMappings = array_merge($this->headerMappings, $this->getConfiguration()->getHeaderMappings());
 
+        // load the available callbacks from the configuration
+        $availableCallbacks = $this->getConfiguration()->getCallbacks();
+
         // merge the callback mappings the the one from the configuration file
-        foreach ($this->getConfiguration()->getCallbacks() as $callbackMappings) {
+        foreach ($availableCallbacks as $callbackMappings) {
             foreach ($callbackMappings as $attributeCode => $mappings) {
                 // write a log message, that default callback configuration will
                 // be overwritten with the one from the configuration file
@@ -780,8 +783,11 @@ abstract class AbstractSubject implements SubjectInterface, FilesystemSubjectInt
             return;
         }
 
+        // load the available observers
+        $availableObservers = $this->getObservers();
+
         // process the observers
-        foreach ($this->getObservers() as $observers) {
+        foreach ($availableObservers as $observers) {
             // invoke the pre-import/import and post-import observers
             /** @var \TechDivision\Import\Observers\ObserverInterface $observer */
             foreach ($observers as $observer) {

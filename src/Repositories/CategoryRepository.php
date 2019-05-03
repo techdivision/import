@@ -105,7 +105,12 @@ class CategoryRepository extends AbstractRepository implements CategoryRepositor
 
         // initialize the array with the store code as key
         $rootCategories = array();
-        foreach ($this->rootCategoriesStmt->fetchAll(\PDO::FETCH_ASSOC) as $category) {
+
+        // load the available root categories
+        $availableRootCategories = $this->rootCategoriesStmt->fetchAll(\PDO::FETCH_ASSOC);
+
+        // prepare the array with the root categories
+        foreach ($availableRootCategories as $category) {
             $rootCategories[$category[MemberNames::CODE]] = $category;
         }
 

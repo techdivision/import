@@ -48,18 +48,24 @@ class LoggerFactory
         LoggerConfigurationInterface $loggerConfiguration
     ) {
 
+        // load the available processors from the configuration
+        $availableProcessors = $loggerConfiguration->getProcessors();
+
         // initialize the processors
         $processors = array();
         /** @var \TechDivision\Import\Configuration\Logger\ProcessorConfigurationInterface $processorConfiguration */
-        foreach ($loggerConfiguration->getProcessors() as $processorConfiguration) {
+        foreach ($availableProcessors as $processorConfiguration) {
             $reflectionClass = new \ReflectionClass($processorConfiguration->getType());
             $processors[] = $reflectionClass->newInstanceArgs(ConfigurationUtil::prepareConstructorArgs($reflectionClass, $processorConfiguration->getParams()));
         }
 
+        // load the available handlers from the configuration
+        $availableHandlers = $loggerConfiguration->getHandlers();
+
         // initialize the handlers
         $handlers = array();
         /** @var \TechDivision\Import\Configuration\Logger\HandlerConfigurationInterface $handlerConfiguration */
-        foreach ($loggerConfiguration->getHandlers() as $handlerConfiguration) {
+        foreach ($availableHandlers as $handlerConfiguration) {
             // query whether or not, we've a swift mailer configuration
             if ($swiftMailerConfiguration = $handlerConfiguration->getSwiftMailer()) {
                 // load the factory that creates the swift mailer instance

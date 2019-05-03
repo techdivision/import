@@ -130,15 +130,21 @@ abstract class AbstractEavSubject extends AbstractSubject implements EavSubjectI
         // load the default frontend callback mappings from the child instance and merge with the one from the configuration
         $defaultFrontendInputCallbackMappings = $this->getDefaultFrontendInputCallbackMappings();
 
+        // load the available frontend input callbacks from the configuration
+        $availableFrontendInputCallbacks = $this->getConfiguration()->getFrontendInputCallbacks();
+
         // merge the default mappings with the one's found in the configuration
-        foreach ($this->getConfiguration()->getFrontendInputCallbacks() as $frontendInputCallbackMappings) {
+        foreach ($availableFrontendInputCallbacks as $frontendInputCallbackMappings) {
             foreach ($frontendInputCallbackMappings as $frontendInput => $frontentInputMappings) {
                 $defaultFrontendInputCallbackMappings[$frontendInput] = $frontentInputMappings;
             }
         }
 
+        // load the user defined EAV attributes
+        $eavUserDefinedAttributes = $this->getEavUserDefinedAttributes();
+
         // load the user defined attributes and add the callback mappings
-        foreach ($this->getEavUserDefinedAttributes() as $eavAttribute) {
+        foreach ($eavUserDefinedAttributes as $eavAttribute) {
             // load attribute code and frontend input type
             $attributeCode = $eavAttribute[MemberNames::ATTRIBUTE_CODE];
             $frontendInput = $eavAttribute[MemberNames::FRONTEND_INPUT];

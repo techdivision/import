@@ -70,8 +70,11 @@ class StoreWebsiteRepository extends AbstractRepository implements StoreWebsiteR
         // execute the prepared statement
         $this->storeWebsitesStmt->execute();
 
+        // load the available store websites
+        $availableStoreWebsites = $this->storeWebsitesStmt->fetchAll();
+
         // fetch the store websites and assemble them as array with the codes as key
-        foreach ($this->storeWebsitesStmt->fetchAll() as $storeWebsite) {
+        foreach ($availableStoreWebsites as $storeWebsite) {
             $storeWebsites[$storeWebsite[MemberNames::CODE]] = $storeWebsite;
         }
 

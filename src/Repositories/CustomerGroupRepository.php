@@ -72,8 +72,11 @@ class CustomerGroupRepository extends AbstractRepository implements CustomerGrou
         // execute the prepared statement
         $this->customerGroupsStmt->execute();
 
+        // load the available customer groups
+        $availableCustomerGroups = $this->customerGroupsStmt->fetchAll();
+
         // fetch the customer groups and assemble them as array with the codes as key
-        foreach ($this->customerGroupsStmt->fetchAll() as $customerGroup) {
+        foreach ($availableCustomerGroups as $customerGroup) {
             $customerGroups[$customerGroup[MemberNames::CUSTOMER_GROUP_CODE]] = $customerGroup;
         }
 
