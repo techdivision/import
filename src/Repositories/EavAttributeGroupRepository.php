@@ -105,8 +105,11 @@ class EavAttributeGroupRepository extends AbstractRepository implements EavAttri
         // load the attributes
         $this->eavAttributeGroupsByAttributeSetIdStmt->execute(array(MemberNames::ATTRIBUTE_SET_ID => $attributeSetId));
 
+        // load the available EAV attribute option groups
+        $availableEavAttributeGroups = $this->eavAttributeGroupsByAttributeSetIdStmt->fetchAll(\PDO::FETCH_ASSOC);
+
         // prepare the array with the attribute group names as keys
-        foreach ($this->eavAttributeGroupsByAttributeSetIdStmt->fetchAll(\PDO::FETCH_ASSOC) as $eavAttributeGroup) {
+        foreach ($availableEavAttributeGroups as $eavAttributeGroup) {
             $eavAttributeGroups[$eavAttributeGroup[MemberNames::ATTRIBUTE_GROUP_NAME]] = $eavAttributeGroup;
         }
 

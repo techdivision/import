@@ -168,7 +168,11 @@ abstract class AbstractBaseProcessor extends AbstractProcessor
      */
     public function init()
     {
-        foreach ($this->getStatements() as $name => $statement) {
+
+        // load the statements
+        $statements = $this->getStatements();
+
+        foreach ($statements as $name => $statement) {
             $this->addPreparedStatement($name, $this->getConnection()->prepare($statement));
         }
     }

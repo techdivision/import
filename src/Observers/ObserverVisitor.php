@@ -61,8 +61,12 @@ class ObserverVisitor implements ObserverVisitorInterface
      */
     public function visit(SubjectInterface $subject)
     {
+
+        // load the observers from the configuration
+        $availableObservers = $subject->getConfiguration()->getObservers();
+
         // prepare the observers
-        foreach ($subject->getConfiguration()->getObservers() as $observers) {
+        foreach ($availableObservers as $observers) {
             $this->prepareObservers($subject, $observers);
         }
     }

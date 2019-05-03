@@ -142,8 +142,11 @@ class SimpleFileResolver extends AbstractFileResolver
         // initialize the array
         $elements = array();
 
+        // load the pattern keys
+        $patternKeys = $this->getPatternKeys();
+
         // prepare the pattern values
-        foreach ($this->getPatternKeys() as $element) {
+        foreach ($patternKeys as $element) {
             $elements[] = sprintf('(?<%s>%s)', $element, $this->resolvePatternValue($element));
         }
 

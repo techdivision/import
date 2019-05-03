@@ -94,8 +94,11 @@ class CoreConfigDataRepository extends AbstractRepository implements CoreConfigD
         // execute the prepared statement
         $this->coreConfigDataStmt->execute();
 
+        // load the available core config data
+        $availableCoreConfigDatas = $this->coreConfigDataStmt->fetchAll(\PDO::FETCH_ASSOC);
+
         // create the array with the resolved category path as keys
-        foreach ($this->coreConfigDataStmt->fetchAll(\PDO::FETCH_ASSOC) as $coreConfigData) {
+        foreach ($availableCoreConfigDatas as $coreConfigData) {
             // prepare the unique identifier
             $uniqueIdentifier = $this->coreConfigDataUidGenerator->generate($coreConfigData);
             // append the config data value with the unique identifier

@@ -61,8 +61,12 @@ class CallbackVisitor implements CallbackVisitorInterface
      */
     public function visit(SubjectInterface $subject)
     {
+
+        // load the callback mappings
+        $callbackMappings = $subject->getCallbackMappings();
+
         // prepare the callbacks
-        foreach ($subject->getCallbackMappings() as $type => $callbacks) {
+        foreach ($callbackMappings as $type => $callbacks) {
             $this->prepareCallbacks($subject, $callbacks, $type);
         }
     }

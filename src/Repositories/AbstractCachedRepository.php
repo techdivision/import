@@ -97,7 +97,7 @@ abstract class AbstractCachedRepository extends AbstractRepository implements Ca
     }
 
     /**
-     * Resolve's the cache key recursive.
+     * Resolve's the cache key.
      *
      * @param string $from The cache key to resolve
      *
@@ -108,7 +108,7 @@ abstract class AbstractCachedRepository extends AbstractRepository implements Ca
 
         // query whether or not a reference exists
         if (isset($this->references[$from])) {
-            return $this->resolveReference($this->references[$from]);
+            return $this->references[$from];
         }
 
         // return the passed reference

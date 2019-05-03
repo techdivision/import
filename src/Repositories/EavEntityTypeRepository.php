@@ -78,8 +78,11 @@ class EavEntityTypeRepository extends AbstractRepository implements EavEntityTyp
         // try to load the EAV entity types
         $this->eavEntityTypeStmt->execute();
 
+        // load the available EAV entity types
+        $availableEntityTypes = $this->eavEntityTypeStmt->fetchAll(\PDO::FETCH_ASSOC);
+
         // prepare the EAV entity types => we need the entity type code as key
-        foreach ($this->eavEntityTypeStmt->fetchAll(\PDO::FETCH_ASSOC) as $eavEntityType) {
+        foreach ($availableEntityTypes as $eavEntityType) {
             $eavEntityTypes[$eavEntityType[MemberNames::ENTITY_TYPE_CODE]] = $eavEntityType;
         }
 

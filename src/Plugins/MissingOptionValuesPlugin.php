@@ -144,8 +144,11 @@ class MissingOptionValuesPlugin extends AbstractPlugin
                                    ->setTo($to = $swiftMailerConfiguration->getParam(SwiftMailerKeys::TO))
                                    ->setBody('The attached CSV file(s) contains the missing attribute option values');
 
+            // load the exported filenames
+            $exportedFilenames = $this->getExportAdapter()->getExportedFilenames();
+
             // attach the CSV files with the missing option values
-            foreach ($this->getExportAdapter()->getExportedFilenames() as $filename) {
+            foreach ($exportedFilenames as $filename) {
                 $message->attach(\Swift_Attachment::fromPath($filename));
             }
 
@@ -179,8 +182,11 @@ class MissingOptionValuesPlugin extends AbstractPlugin
             }
         }
 
+        // load the system loggers
+        $systemLoggers = $this->getSystemLoggers();
+
         // and and log a message that the missing option values has been exported
-        foreach ($this->getSystemLoggers() as $systemLogger) {
+        foreach ($systemLoggers as $systemLogger) {
             $systemLogger->error(
                 sprintf(
                     'Exported missing option values to file %s!',

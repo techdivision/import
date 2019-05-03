@@ -79,8 +79,11 @@ class StoreRepository extends AbstractRepository implements StoreRepositoryInter
         // execute the prepared statement
         $this->storesStmt->execute();
 
+        // load the available stores
+        $availableStores = $this->storesStmt->fetchAll();
+
         // fetch the stores and assemble them as array with the store code as key
-        foreach ($this->storesStmt->fetchAll() as $store) {
+        foreach ($availableStores as $store) {
             $stores[$store[MemberNames::CODE]] = $store;
         }
 
