@@ -84,7 +84,6 @@ class RenderAnsiArtListener extends AbstractListener
 
         // log the debug information, if debug mode is enabled
         if ($this->getConfiguration()->isDebugMode()) {
-            // load the application from the DI container
             // log the system's PHP configuration
             $application->log(sprintf('PHP version: %s', phpversion()), LogLevel::DEBUG);
             $application->log(sprintf('App version: %s', $application->getVersion()), LogLevel::DEBUG);

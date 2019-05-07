@@ -159,4 +159,11 @@ interface ApplicationInterface extends ContainerInterface
      * @return boolean TRUE if the process has been stopped, else FALSE
      */
     public function isStopped();
+
+    /**
+     * Returns the actual application version.
+     *
+     * @return string The application's version
+     */
+    public function getVersion();
 }
