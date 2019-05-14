@@ -12,7 +12,7 @@
  * PHP version 5
  *
  * @author    Tim Wagner <t.wagner@techdivision.com>
- * @copyright 2016 TechDivision GmbH <info@techdivision.com>
+ * @copyright 2019 TechDivision GmbH <info@techdivision.com>
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
@@ -27,7 +27,7 @@ use TechDivision\Import\Utils\DependencyInjectionKeys;
  * Plugin implementation to warm the repository caches.
  *
  * @author    Tim Wagner <t.wagner@techdivision.com>
- * @copyright 2016 TechDivision GmbH <info@techdivision.com>
+ * @copyright 2019 TechDivision GmbH <info@techdivision.com>
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
@@ -54,17 +54,17 @@ class CacheWarmerPlugin extends AbstractPlugin
     {
 
         // query whether or not additional cache warmers has been configured
-        if ($this->getPluginConfiguration()->hasParam(ConfigurationKeys::CACHE_WARMERS)) {
+        if ($this->getConfiguration()->isCacheEnabled() && $this->getPluginConfiguration()->hasParam(ConfigurationKeys::CACHE_WARMERS)) {
             // try ot load the cache warmers and merge them with the default ones
             $this->cacheWarmers = array_merge(
                 $this->cacheWarmers,
                 $this->getPluginConfiguration()->getParam(ConfigurationKeys::CACHE_WARMERS)
             );
-        }
 
-        // create the instances and warm the repository caches
-        foreach ($this->cacheWarmers as $id) {
-            $this->getApplication()->getContainer()->get($id)->warm();
+            // create the instances and warm the repository caches
+            foreach ($this->cacheWarmers as $id) {
+                $this->getApplication()->getContainer()->get($id)->warm();
+            }
         }
     }
 }

@@ -12,7 +12,7 @@
  * PHP version 5
  *
  * @author    Tim Wagner <t.wagner@techdivision.com>
- * @copyright 2016 TechDivision GmbH <info@techdivision.com>
+ * @copyright 2019 TechDivision GmbH <info@techdivision.com>
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
@@ -20,17 +20,26 @@
 
 namespace TechDivision\Import\Repositories;
 
+use TechDivision\Import\Repositories\CacheWarmer\CacheWarmerAwareRepositoryInterface;
+
 /**
  * The interface for a repository that loads EAV attribute option value data.
  *
  * @author    Tim Wagner <t.wagner@techdivision.com>
- * @copyright 2016 TechDivision GmbH <info@techdivision.com>
+ * @copyright 2019 TechDivision GmbH <info@techdivision.com>
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
  */
-interface EavAttributeOptionValueRepositoryInterface extends CachedRepositoryInterface
+interface EavAttributeOptionValueRepositoryInterface extends CacheWarmerAwareRepositoryInterface, RepositoryInterface
 {
+
+    /**
+     * Return's the primary key name of the entity.
+     *
+     * @return string The name of the entity's primary key
+     */
+    public function getPrimaryKeyName();
 
     /**
      * Load's and return's the available EAV attribute option values.

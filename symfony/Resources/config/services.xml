@@ -4,7 +4,7 @@
     xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <services>
-    
+
         <service id="configuration.import.plugin.archive" synthetic="true" />
         <service id="configuration.import.plugin.subject" synthetic="true" />
         <service id="configuration.import.plugin.global.data" synthetic="true" />
@@ -17,7 +17,32 @@
             <argument type="service" id="configuration"/>
         </service>
 
+        <!--
+         | The DI cache configuration
+         |-->
+
+        <service id="import.cache.array" class="TechDivision\Import\Cache\ArrayCache"/>
+        <service id="import.cache.adapter.generic" class="TechDivision\Import\Cache\GenericCacheAdapter">
+            <argument type="service" id="import.cache.array"/>
+        </service>
+        <service id="import.cache.adapter.configurable" class="TechDivision\Import\Cache\ConfigurableCacheAdapter">
+            <argument type="service" id="import.cache.array"/>
+            <argument type="service" id="configuration"/>
+        </service>
+        <service id="import.repository.cache.warmer.eav.attribute.option.value" class="TechDivision\Import\Repositories\CacheWarmer\EavAttributeOptionValueCacheWarmer">
+            <argument type="service" id="import.repository.eav.attribute.option.value"/>
+        </service>
+
+        <!--
+         | The repository configuration
+         |-->
+
         <service id="import.repository.sql.statement" class="TechDivision\Import\Repositories\SqlStatementRepository"/>
+        <service id="import.repository.eav.attribute.option.value" class="TechDivision\Import\Repositories\EavAttributeOptionValueRepository">
+            <argument type="service" id="connection"/>
+            <argument type="service" id="import.repository.sql.statement"/>
+            <argument type="service" id="import.cache.adapter.configurable"/>
+        </service>
         <service id="import.repository.category" class="TechDivision\Import\Repositories\CategoryRepository">
             <argument type="service" id="connection"/>
             <argument type="service" id="import.repository.sql.statement"/>
@@ -39,10 +64,6 @@
             <argument type="service" id="import.repository.sql.statement"/>
         </service>
         <service id="import.repository.eav.attribute.group" class="TechDivision\Import\Repositories\EavAttributeGroupRepository">
-            <argument type="service" id="connection"/>
-            <argument type="service" id="import.repository.sql.statement"/>
-        </service>
-        <service id="import.repository.eav.attribute.option.value" class="TechDivision\Import\Repositories\EavAttributeOptionValueRepository">
             <argument type="service" id="connection"/>
             <argument type="service" id="import.repository.sql.statement"/>
         </service>
@@ -86,10 +107,6 @@
         <service id="import.repository.customer.group" class="TechDivision\Import\Repositories\CustomerGroupRepository">
             <argument type="service" id="connection"/>
             <argument type="service" id="import.repository.sql.statement"/>
-        </service>
-
-        <service id="import.repository.cache.warmer.eav.attribute.option.value" class="TechDivision\Import\Repositories\CacheWarmer\EavAttributeOptionValueCacheWarmer">
-            <argument type="service" id="import.repository.eav.attribute.option.value"/>
         </service>
 
         <service id="import.action.processor.url.rewrite.product.create" class="TechDivision\Import\Actions\Processors\UrlRewriteCreateProcessor">
@@ -152,8 +169,9 @@
             <argument type="service" id="import.repository.category.varchar"/>
         </service>
 
-        <service id="import.processor.registry" class="TechDivision\Import\Services\RegistryProcessor"/>
-
+        <service id="import.processor.registry" class="TechDivision\Import\Services\RegistryProcessor">
+            <argument type="service" id="import.cache.adapter.generic"/>
+        </service>
         <service id="import.processor.import" class="TechDivision\Import\Services\ImportProcessor">
             <argument type="service" id="connection"/>
             <argument type="service" id="import.assembler.category"/>

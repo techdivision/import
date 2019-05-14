@@ -12,7 +12,7 @@
  * PHP version 5
  *
  * @author    Tim Wagner <t.wagner@techdivision.com>
- * @copyright 2016 TechDivision GmbH <info@techdivision.com>
+ * @copyright 2019 TechDivision GmbH <info@techdivision.com>
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
@@ -28,7 +28,7 @@ use TechDivision\Import\Repositories\EavAttributeOptionValueRepositoryInterface;
  * Cache warmer implementation to pre-load EAV attribute option value data.
  *
  * @author    Tim Wagner <t.wagner@techdivision.com>
- * @copyright 2016 TechDivision GmbH <info@techdivision.com>
+ * @copyright 2019 TechDivision GmbH <info@techdivision.com>
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
@@ -61,13 +61,17 @@ class EavAttributeOptionValueCacheWarmer implements CacheWarmerInterface
     public function warm()
     {
 
+        // load the cache adapter
+        /** @var \TechDivision\Import\Cache\CacheAdapterInterface $cacheAdapter */
+        $cacheAdapter = $this->repository->getCacheAdapter();
+
         // load the available EAV attribute option values
         $eavAttributeOptionValues = $this->repository->findAll();
 
         // prepare the caches for the statements
         foreach ($eavAttributeOptionValues as $eavAttributeOptionValue) {
             // prepare the cache key and add the option value to the cache
-            $cacheKey1 = $this->repository->cacheKey(
+            $cacheKey1 = $cacheAdapter->cacheKey(
                 SqlStatementKeys::EAV_ATTRIBUTE_OPTION_VALUE_BY_OPTION_ID_AND_STORE_ID,
                 array(
                     MemberNames::STORE_ID  => $eavAttributeOptionValue[MemberNames::STORE_ID],
@@ -76,7 +80,7 @@ class EavAttributeOptionValueCacheWarmer implements CacheWarmerInterface
             );
 
             // prepare the cache key and add the option value to the cache
-            $cacheKey2 = $this->repository->cacheKey(
+            $cacheKey2 = $cacheAdapter->cacheKey(
                 SqlStatementKeys::EAV_ATTRIBUTE_OPTION_VALUE_BY_ATTRIBUTE_CODE_AND_STORE_ID_AND_VALUE,
                 array(
                     MemberNames::ATTRIBUTE_CODE => $eavAttributeOptionValue[MemberNames::ATTRIBUTE_CODE],
@@ -85,15 +89,14 @@ class EavAttributeOptionValueCacheWarmer implements CacheWarmerInterface
                 )
             );
 
-            // add the EAV attribute option value to the cache
-            $this->repository->toCache(
-                $eavAttributeOptionValue[MemberNames::VALUE_ID],
-                $eavAttributeOptionValue,
-                array(
-                    $cacheKey1 => $eavAttributeOptionValue[MemberNames::VALUE_ID],
-                    $cacheKey2 => $eavAttributeOptionValue[MemberNames::VALUE_ID]
-                )
+            // prepare the unique cache key for the EAV attribute option value
+            $uniqueKey = $cacheAdapter->cacheKey(
+                EavAttributeOptionValueRepositoryInterface::class,
+                array($eavAttributeOptionValue[$this->repository->getPrimaryKeyName()])
             );
+
+            // add the EAV attribute option value to the cache
+            $cacheAdapter->toCache($uniqueKey, $eavAttributeOptionValue, array($cacheKey1 => $uniqueKey, $cacheKey2 => $uniqueKey));
         }
     }
 }

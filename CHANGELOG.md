@@ -1,3 +1,13 @@
+# Version 9.0.0
+
+## Bugfixes
+
+* None
+
+## Features
+
+* Refactor Cache Integration for PSR-6 compliance
+
 # Version 8.0.0
 
 ## Bugfixes

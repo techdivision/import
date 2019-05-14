@@ -104,4 +104,11 @@ class ConfigurationKeys
      * @var string
      */
     const CLEAN_UP_EMPTY_COLUMNS = 'clean-up-empty-columns';
+
+    /**
+     * Name for the configuration key 'cache-enabled',
+     *
+     * @var string
+     */
+    const CACHE_ENABLED = 'cache-enabled';
 }

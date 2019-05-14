@@ -12,7 +12,7 @@
  * PHP version 5
  *
  * @author    Tim Wagner <t.wagner@techdivision.com>
- * @copyright 2016 TechDivision GmbH <info@techdivision.com>
+ * @copyright 2019 TechDivision GmbH <info@techdivision.com>
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
@@ -20,11 +20,13 @@
 
 namespace TechDivision\Import\Services;
 
+use TechDivision\Import\Cache\CacheAdapterInterface;
+
 /**
  * Array based implementation of a registry.
  *
  * @author    Tim Wagner <t.wagner@techdivision.com>
- * @copyright 2016 TechDivision GmbH <info@techdivision.com>
+ * @copyright 2019 TechDivision GmbH <info@techdivision.com>
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
@@ -33,11 +35,21 @@ class RegistryProcessor implements RegistryProcessorInterface
 {
 
     /**
-     * A storage for the attributes.
+     * The cache adapter instance.
      *
-     * @var array
+     * @var \TechDivision\Import\Cache\CacheAdapterInterface
      */
-    protected $attributes = array();
+    protected $cacheAdapter;
+
+    /**
+     * Initialize the repository with the passed connection and utility class name.
+     *
+     * @param \TechDivision\Import\Cache\CacheAdapterInterface $cacheAdapter  The cache adapter instance
+     */
+    public function __construct(CacheAdapterInterface $cacheAdapter)
+    {
+        $this->cacheAdapter = $cacheAdapter;
+    }
 
     /**
      * Register the passed attribute under the specified key in the registry.
@@ -50,14 +62,7 @@ class RegistryProcessor implements RegistryProcessorInterface
      */
     public function setAttribute($key, $value)
     {
-
-        // query whether or not the key has already been used
-        if (isset($this->attributes[$key])) {
-            throw new \Exception(sprintf('Try to override data with key %s', $key));
-        }
-
-        // set the attribute in the registry
-        $this->attributes[$key] = $value;
+        $this->cacheAdapter->toCache($key, $value);
     }
 
     /**
@@ -69,9 +74,7 @@ class RegistryProcessor implements RegistryProcessorInterface
      */
     public function getAttribute($key)
     {
-        if (isset($this->attributes[$key])) {
-            return $this->attributes[$key];
-        }
+        return $this->cacheAdapter->fromCache($key);
     }
 
     /**
@@ -83,7 +86,7 @@ class RegistryProcessor implements RegistryProcessorInterface
      */
     public function hasAttribute($key)
     {
-        return isset($this->attributes[$key]);
+        return $this->cacheAdapter->isCached($key);
     }
 
     /**
@@ -95,9 +98,7 @@ class RegistryProcessor implements RegistryProcessorInterface
      */
     public function removeAttribute($key)
     {
-        if (isset($this->attributes[$key])) {
-            unset($this->attributes[$key]);
-        }
+        $this->cacheAdapter->flushCache($key);
     }
 
     /**
@@ -110,16 +111,7 @@ class RegistryProcessor implements RegistryProcessorInterface
      */
     public function raiseCounter($key, $counterName)
     {
-
-        // raise/initialize the value
-        if (isset($this->attributes[$key][$counterName])) {
-            $this->attributes[$key][$counterName]++;
-        } else {
-            $this->attributes[$key][$counterName] = 1;
-        }
-
-        // return the new value
-        return $this->attributes[$key][$counterName];
+        return $this->cacheAdapter->raiseCounter($key, $counterName);
     }
 
     /**
@@ -138,20 +130,6 @@ class RegistryProcessor implements RegistryProcessorInterface
      */
     public function mergeAttributesRecursive($key, array $attributes)
     {
-
-        // if the key not exists, simply add the new attributes
-        if (!isset($this->attributes[$key])) {
-            $this->attributes[$key] = $attributes;
-            return;
-        }
-
-        // if the key exists and the value is an array, merge it with the passed array
-        if (isset($this->attributes[$key]) && is_array($this->attributes[$key])) {
-            $this->attributes[$key] = array_replace_recursive($this->attributes[$key], $attributes);
-            return;
-        }
-
-        // throw an exception if the key exists, but the found value is not of type array
-        throw new \Exception(sprintf('Can\'t merge attributes, because value for key %s already exists, but is not of type array', $key));
+        return $this->cacheAdapter->mergeAttributesRecursive($key, $attributes);
     }
 }

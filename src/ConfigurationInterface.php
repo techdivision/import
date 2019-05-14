@@ -266,4 +266,11 @@ interface ConfigurationInterface extends CsvConfigurationInterface, ParamsConfig
      * @return boolean TRUE if the import should be wrapped in a single transation, else FALSE
      */
     public function isSingleTransaction();
+
+    /**
+     * Whether or not the cache functionality should be enabled.
+     *
+     * @return boolean TRUE if the cache has to be enabled, else FALSE
+     */
+    public function isCacheEnabled();
 }
