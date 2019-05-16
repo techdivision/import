@@ -49,7 +49,9 @@ class CommandNameToEntityTypeCode extends \ArrayObject
             array(
                 CommandNames::IMPORT_PRODUCTS                  => EntityTypeCodes::CATALOG_PRODUCT,
                 CommandNames::IMPORT_PRODUCTS_PRICE            => EntityTypeCodes::CATALOG_PRODUCT_PRICE,
+                CommandNames::IMPORT_PRODUCTS_TIER_PRICE       => EntityTypeCodes::CATALOG_PRODUCT,
                 CommandNames::IMPORT_PRODUCTS_INVENTORY        => EntityTypeCodes::CATALOG_PRODUCT_INVENTORY,
+                CommandNames::IMPORT_PRODUCTS_INVENTORY_MSI    => EntityTypeCodes::CATALOG_PRODUCT,
                 CommandNames::IMPORT_CATEGORIES                => EntityTypeCodes::CATALOG_CATEGORY,
                 CommandNames::IMPORT_ATTRIBUTES                => EntityTypeCodes::EAV_ATTRIBUTE,
                 CommandNames::IMPORT_CLEAR_PID_FILE            => EntityTypeCodes::NONE,
