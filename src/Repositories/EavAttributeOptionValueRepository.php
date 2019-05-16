@@ -184,7 +184,7 @@ class EavAttributeOptionValueRepository extends AbstractRepository implements Ea
             $uniqueKey = $this->cacheAdapter->cacheKey(
                 EavAttributeOptionValueRepositoryInterface::class,
                 array($eavAttributeOptionValue[$this->getPrimaryKeyName()])
-                );
+            );
             // add the EAV attribute option value to the cache, register the cache key reference as well
             $this->cacheAdapter->toCache($cacheKey, $eavAttributeOptionValue, array($cacheKey => $uniqueKey));
         }
@@ -231,7 +231,7 @@ class EavAttributeOptionValueRepository extends AbstractRepository implements Ea
             $uniqueKey = $this->cacheAdapter->cacheKey(
                 EavAttributeOptionValueRepositoryInterface::class,
                 array($eavAttributeOptionValue[$this->getPrimaryKeyName()])
-                );
+            );
             // add the EAV attribute option value to the cache, register the cache key reference as well
             $this->cacheAdapter->toCache($cacheKey, $eavAttributeOptionValue, array($cacheKey => $uniqueKey));
         }
@@ -278,7 +278,7 @@ class EavAttributeOptionValueRepository extends AbstractRepository implements Ea
             $uniqueKey = $this->cacheAdapter->cacheKey(
                 EavAttributeOptionValueRepositoryInterface::class,
                 array($eavAttributeOptionValue[$this->getPrimaryKeyName()])
-                );
+            );
             // add the EAV attribute option value to the cache, register the cache key reference as well
             $this->cacheAdapter->toCache($cacheKey, $eavAttributeOptionValue, array($cacheKey => $uniqueKey));
         }
