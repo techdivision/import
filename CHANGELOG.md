@@ -7,6 +7,7 @@
 ## Features
 
 * Refactor Cache Integration for PSR-6 compliance
+* Add additional events on plugin and subject level
 
 # Version 8.0.0
 

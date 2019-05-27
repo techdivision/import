@@ -54,7 +54,7 @@ interface CacheAdapterInterface
     /**
      * Inversion of the isCached() method.
      *
-     * @param string $cacheKey The cache key to query for
+     * @param string $key The cache key to query for
      *
      * @return boolean TRUE if the value is not available, else FALSE
      */
