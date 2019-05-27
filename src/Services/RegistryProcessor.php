@@ -44,7 +44,7 @@ class RegistryProcessor implements RegistryProcessorInterface
     /**
      * Initialize the repository with the passed connection and utility class name.
      *
-     * @param \TechDivision\Import\Cache\CacheAdapterInterface $cacheAdapter  The cache adapter instance
+     * @param \TechDivision\Import\Cache\CacheAdapterInterface $cacheAdapter The cache adapter instance
      */
     public function __construct(CacheAdapterInterface $cacheAdapter)
     {

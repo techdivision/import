@@ -85,6 +85,69 @@ class EventNames
     const APP_PROCESS_TRANSACTION_FAILURE = 'app.process.transaction.failure';
 
     /**
+     * The event name for the event that has to be fired before the plugin will be executed.
+     *
+     * @var string
+     */
+    const PLUGIN_PROCESS_START = 'plugin.process.start';
+
+    /**
+     * The event name for the event that has to be fired after the plugin has been executed.
+     *
+     * @var string
+     */
+    const PLUGIN_PROCESS_SUCCESS = 'plugin.process.success';
+
+    /**
+     * The event name for the event that has to be fired when the plugin throws an exception.
+     *
+     * @var string
+     */
+    const PLUGIN_PROCESS_FAILURE = 'plugin.process.failure';
+
+    /**
+     * The event name for the event that has to be fired before the subject's import method will be invoked.
+     *
+     * @var string
+     */
+    const SUBJECT_IMPORT_START = 'subject.import.start';
+
+    /**
+     * The event name for the event that has to be fired after the subject's import method has been invoked.
+     *
+     * @var string
+     */
+    const SUBJECT_IMPORT_SUCCESS = 'subject.import.success';
+
+    /**
+     * The event name for invoke the event that has to be fired when the subject's import method throws an exception.
+     *
+     * @var string
+     */
+    const SUBJECT_IMPORT_FAILURE = 'subject.import.failure';
+
+    /**
+     * The event name for the event that has to be fired before the subject's export method will be invoked.
+     *
+     * @var string
+     */
+    const SUBJECT_EXPORT_START = 'subject.export.start';
+
+    /**
+     * The event name for the event that has to be fired after the subject's export method has been invoked.
+     *
+     * @var string
+     */
+    const SUBJECT_EXPORT_SUCCESS = 'subject.export.success';
+
+    /**
+     * The event name for invoke the event that has to be fired when the subject's export method throws an exception.
+     *
+     * @var string
+     */
+    const SUBJECT_EXPORT_FAILURE = 'subject.export.failure';
+
+    /**
      * The event name for the event before an import artefact will be processed.
      *
      * @var string

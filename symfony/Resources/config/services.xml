@@ -251,6 +251,7 @@
             <argument type="service" id="import.visitor.callback"/>
             <argument type="service" id="import.visitor.observer"/>
             <argument type="service" id="import.subject.factory"/>
+            <argument type="service" id="import.events.emitter"/>
         </service>
         <service id="import.plugin.archive" class="TechDivision\Import\Plugins\ArchivePlugin">
             <argument type="service" id="import_app_simple.simple"/>

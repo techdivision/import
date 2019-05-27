@@ -51,7 +51,7 @@ class GenericCacheAdapter implements CacheAdapterInterface
     /**
      * Initialize the cache handler with the passed cache and configuration instances.
      * .
-     * @param \Psr\Cache\CacheItemPoolInterface           $cache         The cache instance
+     * @param \Psr\Cache\CacheItemPoolInterface $cache The cache instance
      */
     public function __construct(CacheItemPoolInterface $cache)
     {
@@ -93,7 +93,7 @@ class GenericCacheAdapter implements CacheAdapterInterface
     /**
      * Inversion of the isCached() method.
      *
-     * @param string $cacheKey The cache key to query for
+     * @param string $key The cache key to query for
      *
      * @return boolean TRUE if the value is not available, else FALSE
      */

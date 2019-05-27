@@ -34,7 +34,7 @@ use TechDivision\Import\Subjects\FileResolver\FileResolverFactoryInterface;
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
  */
-class SubjectPlugin extends AbstractPlugin
+class SubjectPlugin extends AbstractPlugin implements SubjectAwarePluginInterface
 {
 
     /**

@@ -35,6 +35,20 @@ interface PluginInterface
 {
 
     /**
+     * Return's the unique serial for this import process.
+     *
+     * @return string The unique serial
+     */
+    public function getSerial();
+
+    /**
+     * Return's the plugin configuration instance.
+     *
+     * @return \TechDivision\Import\Configuration\PluginConfigurationInterface The plugin configuration instance
+     */
+    public function getPluginConfiguration();
+
+    /**
      * Process the plugin functionality.
      *
      * @return void

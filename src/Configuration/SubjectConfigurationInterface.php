@@ -103,11 +103,26 @@ interface SubjectConfigurationInterface extends ParamsConfigurationInterface
     public function getId();
 
     /**
+     * Return's the subject's name or the ID, if the name is NOT set.
+     *
+     * @return string The subject's name
+     * @see \TechDivision\Import\Configuration\SubjectConfigurationInterface::getId()
+     */
+    public function getName();
+
+    /**
      * Return's the reference to the configuration instance.
      *
      * @return \TechDivision\Import\ConfigurationInterface The configuration instance
      */
     public function getConfiguration();
+
+    /**
+     * Return's the reference to the parent plugin configuration instance.
+     *
+     * @return \TechDivision\Import\ConfigurationInterface The parent plugin configuration instance
+     */
+    public function getPluginConfiguration();
 
     /**
      * Return's the prefix for the import files.
@@ -227,4 +242,11 @@ interface SubjectConfigurationInterface extends ParamsConfigurationInterface
      * @return array The custom image types
      */
     public function getImageTypes();
+
+    /**
+     * Return's the array with the configured listeners.
+     *
+     * @return array The array with the listeners
+     */
+    public function getListeners();
 }

@@ -77,7 +77,7 @@ abstract class AbstractPlugin implements PluginInterface
      *
      * @return \TechDivision\Import\Configuration\PluginConfigurationInterface The plugin configuration instance
      */
-    protected function getPluginConfiguration()
+    public function getPluginConfiguration()
     {
         return $this->pluginConfiguration;
     }
@@ -117,7 +117,7 @@ abstract class AbstractPlugin implements PluginInterface
      *
      * @return string The unique serial
      */
-    protected function getSerial()
+    public function getSerial()
     {
         return $this->getApplication()->getSerial();
     }

@@ -1,7 +1,7 @@
 <?php
 
 /**
- * TechDivision\Import\Configuration\PluginConfigurationInterface
+ * TechDivision\Import\Configuration\DefaultLibrariesConfigurationInterface
  *
  * NOTICE OF LICENSE
  *
@@ -21,7 +21,7 @@
 namespace TechDivision\Import\Configuration;
 
 /**
- * Interface for the plugin configuration implementation.
+ * The interface for the all configurations that are listener aware.
  *
  * @author    Tim Wagner <t.wagner@techdivision.com>
  * @copyright 2016 TechDivision GmbH <info@techdivision.com>
@@ -29,37 +29,8 @@ namespace TechDivision\Import\Configuration;
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
  */
-interface PluginConfigurationInterface extends ParamsConfigurationInterface
+interface ListenerAwareConfigurationInterface
 {
-
-    /**
-     * Return's the subject's unique DI identifier.
-     *
-     * @return string The subject's unique DI identifier
-     */
-    public function getId();
-
-    /**
-     * Return's the plugin's name or the ID, if the name is NOT set.
-     *
-     * @return string The plugin's name
-     * @see \TechDivision\Import\Configuration\PluginConfigurationInterface::getId()
-     */
-    public function getName();
-
-    /**
-     * Return's the ArrayCollection with the operation's subjects.
-     *
-     * @return \Doctrine\Common\Collections\ArrayCollection The ArrayCollection with the operation's subjects
-     */
-    public function getSubjects();
-
-    /**
-     * Return's the reference to the configuration instance.
-     *
-     * @return \TechDivision\Import\ConfigurationInterface The configuration instance
-     */
-    public function getConfiguration();
 
     /**
      * Return's the array with the configured listeners.
