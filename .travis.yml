@@ -1,11 +1,13 @@
 language: php
 
 php:
-  - 7.0
   - 5.6
+  - 7.0
+  - 7.1
+  - 7.2
+  - 7.3
   
 before_install:
-  - pecl install xdebug-2.5.5
   - phpenv rehash
   - wget https://scrutinizer-ci.com/ocular.phar
 
