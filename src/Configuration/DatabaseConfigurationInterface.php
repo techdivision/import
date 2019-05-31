@@ -33,6 +33,20 @@ interface DatabaseConfigurationInterface
 {
 
     /**
+     * The MySQL database type (default).
+     *
+     * @var string
+     */
+    const TYPE_MYSQL = 'mysql';
+
+    /**
+     * The Redis database type (for caching purposes).
+     *
+     * @var string
+     */
+    const TYPE_REDIS = 'redis';
+
+    /**
      * Return's the database identifier for this database connection.
      *
      * @return string The database identifier
@@ -101,4 +115,11 @@ interface DatabaseConfigurationInterface
      * @return integer The DB port
      */
     public function getPort();
+
+    /**
+     * Return's the DB type to use.
+     *
+     * @return string The DB type
+     */
+    public function getType();
 }

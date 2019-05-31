@@ -89,6 +89,15 @@ interface ConfigurationInterface extends CsvConfigurationInterface, ParamsConfig
     public function getDatabaseById($id);
 
     /**
+     * Return's the databases for the given type.
+     *
+     * @param string $type The database type to return the configurations for
+     *
+     * @return \Doctrine\Common\Collections\Collection The collection with the database configurations
+     */
+    public function getDatabasesByType($type);
+
+    /**
      * Return's the database configuration.
      *
      * @return \TechDivision\Import\Configuration\DatabaseConfigurationInterface The database configuration
