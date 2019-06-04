@@ -282,4 +282,11 @@ interface ConfigurationInterface extends CsvConfigurationInterface, ParamsConfig
      * @return boolean TRUE if the cache has to be enabled, else FALSE
      */
     public function isCacheEnabled();
+
+    /**
+     * Return's the serial from the commandline.
+     *
+     * @return string The serial
+     */
+    public function getSerial();
 }

@@ -21,7 +21,7 @@
          | The DI cache configuration
          |-->
 
-        <service id="import.cache.array" class="TechDivision\Import\Cache\ArrayCache"/>
+        <service id="import.cache.array" class="Cache\Adapter\PHPArray\ArrayCachePool"/>
         <service id="import.cache.adapter.generic" class="TechDivision\Import\Cache\GenericCacheAdapter">
             <argument type="service" id="import.cache.array"/>
         </service>
