@@ -64,7 +64,7 @@ class ClearRegistryListener extends AbstractListener
      */
     public function handle(EventInterface $event, ApplicationInterface $application = null)
     {
-        $this->getRegistryProcessor()->invalidateTags(array($application->getSerial()));
+        $this->getRegistryProcessor()->flushCache();
     }
 
     /**

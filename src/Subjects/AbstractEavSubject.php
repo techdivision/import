@@ -120,7 +120,7 @@ abstract class AbstractEavSubject extends AbstractSubject implements EavSubjectI
     {
 
         // load the status of the actual import
-        $status = $this->getRegistryProcessor()->getAttribute($serial);
+        $status = $this->getRegistryProcessor()->getAttribute(RegistryKeys::STATUS);
 
         // load the global data we've prepared initially
         $this->attributes = $status[RegistryKeys::GLOBAL_DATA][RegistryKeys::EAV_ATTRIBUTES];

@@ -484,7 +484,7 @@ abstract class AbstractSubject implements SubjectInterface, FilesystemSubjectInt
     {
 
         // load the status of the actual import
-        $status = $this->getRegistryProcessor()->getAttribute($serial);
+        $status = $this->getRegistryProcessor()->getAttribute(RegistryKeys::STATUS);
 
         // load the global data we've prepared initially
         $this->stores = $status[RegistryKeys::GLOBAL_DATA][RegistryKeys::STORES];
@@ -537,7 +537,7 @@ abstract class AbstractSubject implements SubjectInterface, FilesystemSubjectInt
 
         // update the source directory for the next subject
         $registryProcessor->mergeAttributesRecursive(
-            $serial,
+            RegistryKeys::STATUS,
             array(
                 RegistryKeys::SOURCE_DIRECTORY => $newSourceDir = $this->getNewSourceDir($serial),
                 RegistryKeys::FILES => array($this->getFilename() => array(RegistryKeys::STATUS => 1))
@@ -1263,7 +1263,7 @@ abstract class AbstractSubject implements SubjectInterface, FilesystemSubjectInt
 
         // raise the counter with the passed name
         return $this->getRegistryProcessor()->raiseCounter(
-            $this->getSerial(),
+            RegistryKeys::STATUS,
             $counterName
         );
     }
@@ -1280,7 +1280,7 @@ abstract class AbstractSubject implements SubjectInterface, FilesystemSubjectInt
 
         // merge the passed status
         $this->getRegistryProcessor()->mergeAttributesRecursive(
-            $this->getSerial(),
+            RegistryKeys::STATUS,
             $status
         );
     }

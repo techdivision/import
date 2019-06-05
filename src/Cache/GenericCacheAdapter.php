@@ -57,13 +57,6 @@ class GenericCacheAdapter implements CacheAdapterInterface
     protected $references = array();
 
     /**
-     * The array with the default tags, e. g. the actual serials import.
-     *
-     * @var array
-     */
-    protected $tags = array();
-
-    /**
      * Initialize the cache handler with the passed cache and configuration instances.
      * .
      * @param \Psr\Cache\CacheItemPoolInterface           $cache The cache instance
@@ -94,28 +87,6 @@ class GenericCacheAdapter implements CacheAdapterInterface
 
         // return the passed reference
         return $from;
-    }
-
-    /**
-     * Add the passed tag as default tag.
-     *
-     * @param string $tag The default tag to add
-     *
-     * @return void
-     */
-    public function addTag($tag)
-    {
-        $this->tags[] = $tag;
-    }
-
-    /**
-     * The default tags to use, e. g. the serial of the actual import.
-     *
-     * @return array The array with the default tags
-     */
-    public function getTags()
-    {
-        return $this->tags;
     }
 
     /**
@@ -181,12 +152,11 @@ class GenericCacheAdapter implements CacheAdapterInterface
      * @param string  $key        The cache key to use
      * @param mixed   $value      The value that has to be cached
      * @param array   $references An array with references to add
-     * @param array   $tags       An array with additional tags to use
      * @param boolean $override   Flag that allows to override an exising cache entry
      *
      * @return void
      */
-    public function toCache($key, $value, array $references = array(), array $tags = array(), $override = false)
+    public function toCache($key, $value, array $references = array(), $override = false)
     {
 
         // query whether or not the key has already been used
@@ -196,7 +166,7 @@ class GenericCacheAdapter implements CacheAdapterInterface
 
         // initialize the cache item
         $cacheItem = $this->cache->getItem($key);
-        $cacheItem->set($value)->setTags($tags);
+        $cacheItem->set($value);
 
         // set the attribute in the registry
         $this->cache->save($cacheItem);
@@ -228,18 +198,6 @@ class GenericCacheAdapter implements CacheAdapterInterface
     {
         $this->cache->clear();
         $this->references = array();
-    }
-
-    /**
-     * Invalidat the items for the passed tags.
-     *
-     * @param array $tags The tags to invalidate the items for
-     *
-     * @return void
-     */
-    public function invalidateTags(array $tags = array())
-    {
-        $this->cache->invalidateTags($tags);
     }
 
     /**
@@ -276,7 +234,7 @@ class GenericCacheAdapter implements CacheAdapterInterface
         }
 
         // set the counter value back to the cache item/cache
-        $this->toCache($key, array($counterName => ++$counter), array(), array(), true);
+        $this->toCache($key, array($counterName => ++$counter), array(), true);
 
         // return the new value
         return $counter;
@@ -307,7 +265,7 @@ class GenericCacheAdapter implements CacheAdapterInterface
 
         // if the key exists and the value is an array, merge it with the passed array
         if (is_array($value = $this->fromCache($key))) {
-            $this->toCache($key, array_replace_recursive($value, $attributes), array(), array(), true);
+            $this->toCache($key, array_replace_recursive($value, $attributes), array(), true);
             return;
         }
 

@@ -61,28 +61,6 @@ class ConfigurableCacheAdapter implements CacheAdapterInterface
     }
 
     /**
-     * Add the passed tag as default tag.
-     *
-     * @param string $tag The default tag to add
-     *
-     * @return void
-     */
-    public function addTag($tag)
-    {
-        $this->cacheAdapter->addTag($tag);;
-    }
-
-    /**
-     * The default tags to use, e. g. the serial of the actual import.
-     *
-     * @return array The array with the default tags
-     */
-    public function getTags()
-    {
-        return $this->cacheAdapter->getTags();
-    }
-
-    /**
      * Prepares a unique cache key for the passed query name and params.
      *
      * @param string $uniqueName A unique name used to prepare the cache key with
@@ -140,18 +118,6 @@ class ConfigurableCacheAdapter implements CacheAdapterInterface
     public function flushCache()
     {
         $this->cacheAdapter->flushCache();
-    }
-
-    /**
-     * Invalidat the items for the passed tags.
-     *
-     * @param array $tags The tags to invalidate the items for
-     *
-     * @return void
-     */
-    public function invalidateTags(array $tags = array())
-    {
-        $this->cacheAdapter->invalidateTags($tags);
     }
 
     /**
@@ -223,17 +189,16 @@ class ConfigurableCacheAdapter implements CacheAdapterInterface
      * @param string  $key        The cache key to use
      * @param mixed   $value      The value that has to be cached
      * @param array   $references An array with references to add
-     * @param array   $tags       An array with additional tags to use
      * @param boolean $override   Flag that allows to override an exising cache entry
      *
      * @return void
      */
-    public function toCache($key, $value, array $references = array(), array $tags = array(), $override = false)
+    public function toCache($key, $value, array $references = array(), $override = false)
     {
 
         // query whether or not the cache is enabled
         if ($this->configuration->isCacheEnabled()) {
-            $this->cacheAdapter->toCache($key, $value, $references, $tags, $override);
+            $this->cacheAdapter->toCache($key, $value, $references, $override);
         }
     }
 }

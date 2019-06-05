@@ -113,7 +113,7 @@ class SubjectPlugin extends AbstractPlugin implements SubjectAwarePluginInterfac
             }
 
             // and update it in the registry
-            $this->getRegistryProcessor()->mergeAttributesRecursive($this->getSerial(), $status);
+            $this->getRegistryProcessor()->mergeAttributesRecursive(RegistryKeys::STATUS, $status);
 
             // process all the subjects found in the system configuration
             /** @var \TechDivision\Import\Configuration\SubjectConfigurationInterface $subject */
@@ -123,7 +123,7 @@ class SubjectPlugin extends AbstractPlugin implements SubjectAwarePluginInterfac
 
             // update the number of imported bunches
             $this->getRegistryProcessor()->mergeAttributesRecursive(
-                $this->getSerial(),
+                RegistryKeys::STATUS,
                 array(RegistryKeys::BUNCHES => $this->bunches)
             );
 

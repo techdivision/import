@@ -50,7 +50,7 @@ class ArchivePlugin extends AbstractPlugin
         }
 
         // load the actual status
-        $status = $this->getRegistryProcessor()->getAttribute($this->getSerial());
+        $status = $this->getRegistryProcessor()->getAttribute(RegistryKeys::STATUS);
 
         // load the number of imported bunches from the status
         $bunches = $status[RegistryKeys::BUNCHES];

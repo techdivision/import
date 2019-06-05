@@ -88,7 +88,7 @@ class MissingOptionValuesPlugin extends AbstractPlugin
         clearstatcache();
 
         // load the actual status
-        $status = $this->getRegistryProcessor()->getAttribute($this->getSerial());
+        $status = $this->getRegistryProcessor()->getAttribute(RegistryKeys::STATUS);
 
         // query whether or not the configured source directory is available
         if (!is_dir($sourceDir = $status[RegistryKeys::SOURCE_DIRECTORY])) {
@@ -215,7 +215,7 @@ class MissingOptionValuesPlugin extends AbstractPlugin
     {
 
         // load the actual status
-        $status = $this->getRegistryProcessor()->getAttribute($this->getSerial());
+        $status = $this->getRegistryProcessor()->getAttribute(RegistryKeys::STATUS);
 
         // query whether or not the configured source directory is available
         if (!is_dir($sourceDir = $status[RegistryKeys::SOURCE_DIRECTORY])) {

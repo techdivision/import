@@ -20,8 +20,8 @@
 
 namespace TechDivision\Import\Subjects\FileResolver;
 
-use TechDivision\Import\ApplicationInterface;
 use TechDivision\Import\Utils\RegistryKeys;
+use TechDivision\Import\ApplicationInterface;
 use TechDivision\Import\Services\RegistryProcessorInterface;
 use TechDivision\Import\Configuration\SubjectConfigurationInterface;
 
@@ -188,7 +188,7 @@ abstract class AbstractFileResolver implements FileResolverInterface
     {
 
         // load the actual status
-        $status = $this->getRegistryProcessor()->getAttribute($serial);
+        $status = $this->getRegistryProcessor()->getAttribute(RegistryKeys::STATUS);
 
         // query whether or not the configured source directory is available
         if (!is_dir($sourceDir = $status[RegistryKeys::SOURCE_DIRECTORY])) {

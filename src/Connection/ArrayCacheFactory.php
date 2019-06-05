@@ -1,7 +1,7 @@
 <?php
 
 /**
- * TechDivision\Import\Plugins\GlobalDataPlugin
+ * TechDivision\Import\Connection\ArrayCacheFactory
  *
  * NOTICE OF LICENSE
  *
@@ -18,12 +18,12 @@
  * @link      http://www.techdivision.com
  */
 
-namespace TechDivision\Import\Plugins;
+namespace TechDivision\Import\Connection;
 
-use TechDivision\Import\Utils\RegistryKeys;
+use Cache\Adapter\PHPArray\ArrayCachePool;
 
 /**
- * Plugin that loads the global data.
+ * The array cache factory implementation.
  *
  * @author    Tim Wagner <t.wagner@techdivision.com>
  * @copyright 2016 TechDivision GmbH <info@techdivision.com>
@@ -31,25 +31,16 @@ use TechDivision\Import\Utils\RegistryKeys;
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
  */
-class GlobalDataPlugin extends AbstractPlugin
+class ArrayCacheFactory implements CacheFactoryInterface
 {
 
     /**
-     * Process the plugin functionality.
+     * Create's and return's the cache pool to use.
      *
-     * @return void
-     * @throws \Exception Is thrown, if the plugin can not be processed
+     * @return \Psr\Cache\CacheItemPoolInterface The initialized connection
      */
-    public function process()
+    public function createCachePool()
     {
-
-        // load the global data from the import processor
-        $globalData = $this->getImportProcessor()->getGlobalData();
-
-        // add the status with the global data
-        $this->getRegistryProcessor()->mergeAttributesRecursive(
-            RegistryKeys::STATUS,
-            array(RegistryKeys::GLOBAL_DATA => $globalData)
-        );
+        return new ArrayCachePool();
     }
 }

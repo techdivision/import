@@ -57,15 +57,14 @@ class RegistryProcessor implements RegistryProcessorInterface
      * @param string  $key        The cache key to use
      * @param mixed   $value      The value that has to be cached
      * @param array   $references An array with references to add
-     * @param array   $tags       An array with additional tags to use
      * @param boolean $override   Flag that allows to override an exising cache entry
      *
      * @return void
      * @throws \Exception Is thrown, if the key has already been used
      */
-    public function setAttribute($key, $value, array $references = array(), array $tags = array(), $override = false)
+    public function setAttribute($key, $value, array $references = array(), $override = false)
     {
-        $this->cacheAdapter->toCache($key, $value, $references, $tags, $override);
+        $this->cacheAdapter->toCache($key, $value, $references, $override);
     }
 
     /**
@@ -115,18 +114,6 @@ class RegistryProcessor implements RegistryProcessorInterface
     }
 
     /**
-     * Invalidate the items with the passed tags.
-     *
-     * @param array $tags The tags to invalidate the items for
-     *
-     * @return void
-     */
-    public function invalidateTags(array $tags = array())
-    {
-        $this->cacheAdapter->invalidateTags($tags);
-    }
-
-    /**
      * Raises the value for the attribute with the passed key by one.
      *
      * @param mixed $key         The key of the attribute to raise the value for
@@ -155,6 +142,6 @@ class RegistryProcessor implements RegistryProcessorInterface
      */
     public function mergeAttributesRecursive($key, array $attributes)
     {
-        return $this->cacheAdapter->mergeAttributesRecursive($key, $attributes);
+        $this->cacheAdapter->mergeAttributesRecursive($key, $attributes);
     }
 }
