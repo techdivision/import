@@ -56,6 +56,9 @@ class ConfigurableCacheAdapter extends GenericCacheAdapter
 
         // set the configuration instance
         $this->configuration = $configuration;
+
+        // add the serial from the configuration as tag
+        $this->addTag($configuration->getSerial());
     }
 
     /**
@@ -83,16 +86,17 @@ class ConfigurableCacheAdapter extends GenericCacheAdapter
      * @param string  $key        The cache key to use
      * @param mixed   $value      The value that has to be cached
      * @param array   $references An array with references to add
+     * @param array   $tags       An array with additional tags to use
      * @param boolean $override   Flag that allows to override an exising cache entry
      *
      * @return void
      */
-    public function toCache($key, $value, array $references = array(), $override = false)
+    public function toCache($key, $value, array $references = array(), array $tags = array(), $override = false)
     {
 
         // query whether or not the cache is enabled
         if ($this->configuration->isCacheEnabled()) {
-            parent::toCache($key, $value, $references, $override);
+            parent::toCache($key, $value, $references, $tags, $override);
         }
     }
 }

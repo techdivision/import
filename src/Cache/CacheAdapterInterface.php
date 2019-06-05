@@ -33,6 +33,22 @@ interface CacheAdapterInterface
 {
 
     /**
+     * Add the passed tag as default tag.
+     *
+     * @param string $tag The default tag to add
+     *
+     * @return void
+     */
+    public function addTag($tag);
+
+    /**
+     * The default tags to use, e. g. the serial of the actual import.
+     *
+     * @return array The array with the default tags
+     */
+    public function getTags();
+
+    /**
      * Prepares a unique cache key for the passed query name and params.
      *
      * @param string $uniqueName A unique name used to prepare the cache key with
@@ -76,11 +92,12 @@ interface CacheAdapterInterface
      * @param string  $key        The cache key to use
      * @param mixed   $value      The value that has to be cached
      * @param array   $references An array with references to add
+     * @param array   $tags       An array with additional tags to use
      * @param boolean $override   Flag that allows to override an exising cache entry
      *
      * @return void
      */
-    public function toCache($key, $value, array $references = array(), $override = false);
+    public function toCache($key, $value, array $references = array(), array $tags = array(), $override = false);
 
     /**
      * Returns a new cache item for the passed key
@@ -92,13 +109,29 @@ interface CacheAdapterInterface
     public function fromCache($key);
 
     /**
-     * Flush the cache, or the value with the passed key.
-     *
-     * @param mixed|null $key The key of the value to flush
+     * Flush the cache and remove the references.
      *
      * @return void
      */
-    public function flushCache($key = null);
+    public function flushCache();
+
+    /**
+     * Invalidat the items for the passed tags.
+     *
+     * @param array $tags The tags to invalidate the items for
+     *
+     * @return void
+     */
+    public function invalidateTags(array $tags = array());
+
+    /**
+     * Remove the item with the passed key and all its references from the cache.
+     *
+     * @param string $key The key of the cache item to Remove
+     *
+     * @return void
+     */
+    public function removeCache($key);
 
     /**
      * Raises the value for the attribute with the passed key by one.

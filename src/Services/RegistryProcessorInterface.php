@@ -35,13 +35,16 @@ interface RegistryProcessorInterface
     /**
      * Register the passed attribute under the specified key in the registry.
      *
-     * @param mixed $key   The key to register the value with
-     * @param mixed $value The value to be registered
+     * @param string  $key        The cache key to use
+     * @param mixed   $value      The value that has to be cached
+     * @param array   $references An array with references to add
+     * @param array   $tags       An array with additional tags to use
+     * @param boolean $override   Flag that allows to override an exising cache entry
      *
      * @return void
      * @throws \Exception Is thrown, if the key has already been used
      */
-    public function setAttribute($key, $value);
+    public function setAttribute($key, $value, array $references = array(), array $tags = array(), $override = false);
 
     /**
      * Return's the attribute with the passed key from the registry.
@@ -69,6 +72,22 @@ interface RegistryProcessorInterface
      * @return void
      */
     public function removeAttribute($key);
+
+    /**
+     * Flush the cache.
+     *
+     * @return void
+     */
+    public function flushCache();
+
+    /**
+     * Invalidate the items with the passed tags.
+     *
+     * @param array $tags The tags to invalidate the items for
+     *
+     * @return void
+     */
+    public function invalidateTags(array $tags = array());
 
     /**
      * Raises the value for the attribute with the passed key by one.

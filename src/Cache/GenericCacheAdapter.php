@@ -21,6 +21,7 @@
 namespace TechDivision\Import\Cache;
 
 use Psr\Cache\CacheItemPoolInterface;
+use Robo\Task\Composer\Remove;
 
 /**
  * Generic cache adapter implementation.
@@ -49,6 +50,13 @@ class GenericCacheAdapter implements CacheAdapterInterface
     protected $references = array();
 
     /**
+     * The array with the default tags, e. g. the actual serials import.
+     *
+     * @var array
+     */
+    protected $tags = array();
+
+    /**
      * Initialize the cache handler with the passed cache and configuration instances.
      * .
      * @param \Psr\Cache\CacheItemPoolInterface $cache The cache instance
@@ -56,6 +64,47 @@ class GenericCacheAdapter implements CacheAdapterInterface
     public function __construct(CacheItemPoolInterface $cache)
     {
         $this->cache = $cache;
+    }
+
+    /**
+     * Resolve's the cache key.
+     *
+     * @param string $from The cache key to resolve
+     *
+     * @return string The resolved reference
+     */
+    protected function resolveReference($from)
+    {
+
+        // query whether or not a reference exists
+        if (isset($this->references[$from])) {
+            return $this->references[$from];
+        }
+
+        // return the passed reference
+        return $from;
+    }
+
+    /**
+     * Add the passed tag as default tag.
+     *
+     * @param string $tag The default tag to add
+     *
+     * @return void
+     */
+    public function addTag($tag)
+    {
+        $this->tags[] = $tag;
+    }
+
+    /**
+     * The default tags to use, e. g. the serial of the actual import.
+     *
+     * @return array The array with the default tags
+     */
+    public function getTags()
+    {
+        return $this->tags;
     }
 
     /**
@@ -68,7 +117,7 @@ class GenericCacheAdapter implements CacheAdapterInterface
      */
     public function cacheKey($uniqueName, array $params)
     {
-        return sprintf('%s-%s', $uniqueName, implode('-', $params));
+        return str_replace('\\', '-', sprintf('%s-%s', $uniqueName, implode('-', $params)));
     }
 
     /**
@@ -116,35 +165,17 @@ class GenericCacheAdapter implements CacheAdapterInterface
     }
 
     /**
-     * Resolve's the cache key.
-     *
-     * @param string $from The cache key to resolve
-     *
-     * @return string The resolved reference
-     */
-    protected function resolveReference($from)
-    {
-
-        // query whether or not a reference exists
-        if (isset($this->references[$from])) {
-            return $this->references[$from];
-        }
-
-        // return the passed reference
-        return $from;
-    }
-
-    /**
      * Add the passed item to the cache.
      *
      * @param string  $key        The cache key to use
      * @param mixed   $value      The value that has to be cached
      * @param array   $references An array with references to add
+     * @param array   $tags       An array with additional tags to use
      * @param boolean $override   Flag that allows to override an exising cache entry
      *
      * @return void
      */
-    public function toCache($key, $value, array $references = array(), $override = false)
+    public function toCache($key, $value, array $references = array(), array $tags = array(), $override = false)
     {
 
         // query whether or not the key has already been used
@@ -154,7 +185,7 @@ class GenericCacheAdapter implements CacheAdapterInterface
 
         // initialize the cache item
         $cacheItem = $this->cache->getItem($key);
-        $cacheItem->set($value);
+        $cacheItem->set($value)->setTags(array_merge($this->getTags(), $tags));
 
         // set the attribute in the registry
         $this->cache->save($cacheItem);
@@ -178,23 +209,37 @@ class GenericCacheAdapter implements CacheAdapterInterface
     }
 
     /**
-     * Flush the cache, or the value with the passed key.
-     *
-     * @param mixed|null $key The key of the value to flush
+     * Flush the cache and remove the references.
      *
      * @return void
      */
-    public function flushCache($key = null)
+    public function flushCache()
     {
+        $this->cache->clear();
+        $this->references = array();
+    }
 
-        // flush the complete cache, if NO cache key has been passed
-        if ($key == null) {
-            $this->cache->clear();
-            $this->references = array();
-            return;
-        }
+    /**
+     * Invalidat the items for the passed tags.
+     *
+     * @param array $tags The tags to invalidate the items for
+     *
+     * @return void
+     */
+    public function invalidateTags(array $tags = array())
+    {
+        $this->cache->invalidateTags($tags);
+    }
 
-        // only flush the value with the passed cache key, also remove the reference
+    /**
+     * Remove the item with the passed key and all its references from the cache.
+     *
+     * @param string $key The key of the cache item to Remove
+     *
+     * @return void
+     */
+    public function removeCache($key)
+    {
         $this->cache->deleteItem($this->resolveReference($key));
         unset($this->references[$key]);
     }
@@ -220,7 +265,7 @@ class GenericCacheAdapter implements CacheAdapterInterface
         }
 
         // set the counter value back to the cache item/cache
-        $this->toCache($key, array($counterName => ++$counter), array(), true);
+        $this->toCache($key, array($counterName => ++$counter), array(), array(), true);
 
         // return the new value
         return $counter;
@@ -251,7 +296,7 @@ class GenericCacheAdapter implements CacheAdapterInterface
 
         // if the key exists and the value is an array, merge it with the passed array
         if (is_array($value = $this->fromCache($key))) {
-            $this->toCache($key, array_replace_recursive($value, $attributes), array(), true);
+            $this->toCache($key, array_replace_recursive($value, $attributes), array(), array(), true);
             return;
         }
 

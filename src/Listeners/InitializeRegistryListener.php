@@ -84,8 +84,11 @@ class InitializeRegistryListener extends AbstractListener
             RegistryKeys::MISSING_OPTION_VALUES => array()
         );
 
-        // append it to the registry
-        $this->getRegistryProcessor()->setAttribute($application->getSerial(), $status);
+        // load the serial from the application
+        $serial = $application->getSerial();
+
+        // register it in the registry (use the serial as tag also)
+        $this->getRegistryProcessor()->setAttribute($serial, $status, array(), array($serial));
     }
 
     /**
