@@ -21,7 +21,7 @@
 namespace TechDivision\Import\Cache;
 
 use Psr\Cache\CacheItemPoolInterface;
-use Robo\Task\Composer\Remove;
+use TechDivision\Import\ConfigurationInterface;
 
 /**
  * Generic cache adapter implementation.
@@ -34,6 +34,13 @@ use Robo\Task\Composer\Remove;
  */
 class GenericCacheAdapter implements CacheAdapterInterface
 {
+
+    /**
+     * The configuration instance.
+     *
+     * @var \TechDivision\Import\ConfigurationInterface
+     */
+    protected $configuration;
 
     /**
      * The cache for the query results.
@@ -59,11 +66,15 @@ class GenericCacheAdapter implements CacheAdapterInterface
     /**
      * Initialize the cache handler with the passed cache and configuration instances.
      * .
-     * @param \Psr\Cache\CacheItemPoolInterface $cache The cache instance
+     * @param \Psr\Cache\CacheItemPoolInterface           $cache The cache instance
+     * @param \TechDivision\Import\ConfigurationInterface $configuration The configuration instance
      */
-    public function __construct(CacheItemPoolInterface $cache)
+    public function __construct(CacheItemPoolInterface $cache, ConfigurationInterface $configuration)
     {
+
+        // set the cache and configuration instance
         $this->cache = $cache;
+        $this->configuration = $configuration;
     }
 
     /**
@@ -185,7 +196,7 @@ class GenericCacheAdapter implements CacheAdapterInterface
 
         // initialize the cache item
         $cacheItem = $this->cache->getItem($key);
-        $cacheItem->set($value)->setTags(array_merge($this->getTags(), $tags));
+        $cacheItem->set($value)->setTags($tags);
 
         // set the attribute in the registry
         $this->cache->save($cacheItem);

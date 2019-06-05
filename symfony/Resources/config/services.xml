@@ -21,12 +21,18 @@
          | The DI cache configuration
          |-->
 
-        <service id="import.cache.array" class="Cache\Adapter\PHPArray\ArrayCachePool"/>
+        <service id="import.cache.array" class="Cache\Adapter\PHPArray\ArrayCachePool">
+            <factory service="import.cache.factory.array" method="createCachePool"/>
+        </service>
+        <service id="import.cache.factory.array" class="TechDivision\Import\Cache\NamespacedArrayCachePoolFactory">
+            <argument type="service" id="configuration"/>
+        </service>
         <service id="import.cache.adapter.generic" class="TechDivision\Import\Cache\GenericCacheAdapter">
             <argument type="service" id="import.cache.array"/>
+            <argument type="service" id="configuration"/>
         </service>
         <service id="import.cache.adapter.configurable" class="TechDivision\Import\Cache\ConfigurableCacheAdapter">
-            <argument type="service" id="import.cache.array"/>
+            <argument type="service" id="import.cache.adapter.generic"/>
             <argument type="service" id="configuration"/>
         </service>
         <service id="import.repository.cache.warmer.eav.attribute.option.value" class="TechDivision\Import\Repositories\CacheWarmer\EavAttributeOptionValueCacheWarmer">
