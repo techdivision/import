@@ -20,6 +20,7 @@
 
 namespace TechDivision\Import\Repositories\CacheWarmer;
 
+use TechDivision\Import\Utils\CacheKeys;
 use TechDivision\Import\Utils\MemberNames;
 use TechDivision\Import\Utils\SqlStatementKeys;
 use TechDivision\Import\Repositories\EavAttributeOptionValueRepositoryInterface;
@@ -90,10 +91,7 @@ class EavAttributeOptionValueCacheWarmer implements CacheWarmerInterface
             );
 
             // prepare the unique cache key for the EAV attribute option value
-            $uniqueKey = $cacheAdapter->cacheKey(
-                EavAttributeOptionValueRepositoryInterface::class,
-                array($eavAttributeOptionValue[$this->repository->getPrimaryKeyName()])
-            );
+            $uniqueKey = array(CacheKeys::EAV_ATTRIBUTE_OPTION_VALUE => $eavAttributeOptionValue[$this->repository->getPrimaryKeyName()]);
 
             // add the EAV attribute option value to the cache
             $cacheAdapter->toCache($uniqueKey, $eavAttributeOptionValue, array($cacheKey1 => $uniqueKey, $cacheKey2 => $uniqueKey));

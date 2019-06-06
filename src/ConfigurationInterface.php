@@ -289,4 +289,27 @@ interface ConfigurationInterface extends CsvConfigurationInterface, ParamsConfig
      * @return string The serial
      */
     public function getSerial();
+
+    /**
+     * Return's the configuration for the caches.
+     *
+     * @return \Doctrine\Common\Collections\ArrayCollection The cache configurations
+     */
+    public function getCaches();
+
+    /**
+     * Return's the cache configuration for the passed type.
+     *
+     * @param string $type The cache type to return the configuation for
+     *
+     * @return \TechDivision\Import\Configuration\CacheConfigurationInterface The cache configuration
+     */
+    public function getCacheByType($type);
+
+    /**
+     * Return's the alias configuration.
+     *
+     * @return \Doctrine\Common\Collections\ArrayCollection The alias configuration
+     */
+    public function getAliases();
 }

@@ -1,7 +1,7 @@
 <?php
 
 /**
- * TechDivision\Import\Connection\ArrayCacheFactory
+ * TechDivision\Import\Utils\CacheKeys
  *
  * NOTICE OF LICENSE
  *
@@ -18,12 +18,10 @@
  * @link      http://www.techdivision.com
  */
 
-namespace TechDivision\Import\Connection;
-
-use Cache\Adapter\PHPArray\ArrayCachePool;
+namespace TechDivision\Import\Utils;
 
 /**
- * The array cache factory implementation.
+ * The interface for all utility class implementations to create cache keys.
  *
  * @author    Tim Wagner <t.wagner@techdivision.com>
  * @copyright 2016 TechDivision GmbH <info@techdivision.com>
@@ -31,16 +29,16 @@ use Cache\Adapter\PHPArray\ArrayCachePool;
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
  */
-class ArrayCacheFactory implements CacheFactoryInterface
+interface CacheKeyUtilInterface
 {
 
     /**
-     * Create's and return's the cache pool to use.
+     * Creates a unique cache key from the passed data.
      *
-     * @return \Psr\Cache\CacheItemPoolInterface The initialized connection
+     * @param mixed $data The date to create the cache key from
+     *
+     * @return string The generated cache key
+     * @throws \Exception Is thrown if the passed data is not supported to create a cache key from
      */
-    public function createCachePool()
-    {
-        return new ArrayCachePool();
-    }
+    public function cacheKey($data);
 }

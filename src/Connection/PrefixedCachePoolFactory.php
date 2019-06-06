@@ -1,7 +1,7 @@
 <?php
 
 /**
- * TechDivision\Import\Cache\NamespacedArrayCachePoolFactory
+ * TechDivision\Import\Connection\PrefixedCachePoolFactory
  *
  * NOTICE OF LICENSE
  *
@@ -18,14 +18,13 @@
  * @link      http://www.techdivision.com
  */
 
-namespace TechDivision\Import\Cache;
+namespace TechDivision\Import\Connection;
 
-use Cache\Namespaced\NamespacedCachePool;
-use Cache\Adapter\PHPArray\ArrayCachePool;
+use Cache\Prefixed\PrefixedCachePool;
 use TechDivision\Import\ConfigurationInterface;
 
 /**
- * Factory for namespaced array cache pool instances.
+ * Factory for prefixed array cache pool instances.
  *
  * @author    Tim Wagner <t.wagner@techdivision.com>
  * @copyright 2019 TechDivision GmbH <info@techdivision.com>
@@ -33,7 +32,7 @@ use TechDivision\Import\ConfigurationInterface;
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
  */
-class NamespacedArrayCachePoolFactory
+class PrefixedCachePoolFactory
 {
 
     /**
@@ -44,22 +43,31 @@ class NamespacedArrayCachePoolFactory
     protected $configuration;
 
     /**
+     * The cache factory instance.
+     *
+     * @var \TechDivision\Import\Connection\CachePoolFactoryInterface
+     */
+    protected $cachePoolFactory;
+
+    /**
      * Initialize the cache adapter factory with the passed configuration instances.
      * .
-     * @param \TechDivision\Import\ConfigurationInterface $configuration The configuration instance
+     * @param \TechDivision\Import\ConfigurationInterface               $configuration    The configuration instance
+     * @param \TechDivision\Import\Connection\CachePoolFactoryInterface $cachePoolFactory The cache factory instance
      */
-    public function __construct(ConfigurationInterface $configuration)
+    public function __construct(ConfigurationInterface $configuration, CachePoolFactoryInterface $cachePoolFactory)
     {
         $this->configuration = $configuration;
+        $this->cachePoolFactory = $cachePoolFactory;
     }
 
     /**
      * Creates and returns the cache pool instance.
      *
-     * @return \Cache\Namespaced\NamespacedCachePool The namespaced cache pool instance
+     * @return \Cache\Prefixed\PrefixedCachePool The prefixed cache pool instance
      */
     public function createCachePool()
     {
-        return new NamespacedCachePool(new ArrayCachePool(), $this->configuration->getSerial());
+        return new PrefixedCachePool($this->cachePoolFactory->createCachePool(), sprintf('%s_', $this->configuration->getSerial()));
     }
 }

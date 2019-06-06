@@ -1,7 +1,7 @@
 <?php
 
 /**
- * TechDivision\Import\Cache\PrefixedArrayCachePoolFactory
+ * TechDivision\Import\Connection\NamespacedArrayCachePoolFactory
  *
  * NOTICE OF LICENSE
  *
@@ -18,10 +18,9 @@
  * @link      http://www.techdivision.com
  */
 
-namespace TechDivision\Import\Cache;
+namespace TechDivision\Import\Connection;
 
 use Cache\Namespaced\NamespacedCachePool;
-use Cache\Adapter\PHPArray\ArrayCachePool;
 use TechDivision\Import\ConfigurationInterface;
 
 /**
@@ -33,7 +32,7 @@ use TechDivision\Import\ConfigurationInterface;
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
  */
-class PrefixedArrayCachePoolFactory
+class NamespacedCachePoolFactory implements CachePoolFactoryInterface
 {
 
     /**
@@ -44,13 +43,22 @@ class PrefixedArrayCachePoolFactory
     protected $configuration;
 
     /**
+     * The cache factory instance.
+     *
+     * @var \TechDivision\Import\Connection\CachePoolFactoryInterface
+     */
+    protected $cachePoolFactory;
+
+    /**
      * Initialize the cache adapter factory with the passed configuration instances.
      * .
-     * @param \TechDivision\Import\ConfigurationInterface $configuration The configuration instance
+     * @param \TechDivision\Import\ConfigurationInterface               $configuration    The configuration instance
+     * @param \TechDivision\Import\Connection\CachePoolFactoryInterface $cachePoolFactory The cache factory instance
      */
-    public function __construct(ConfigurationInterface $configuration)
+    public function __construct(ConfigurationInterface $configuration, CachePoolFactoryInterface $cachePoolFactory)
     {
         $this->configuration = $configuration;
+        $this->cachePoolFactory = $cachePoolFactory;
     }
 
     /**
@@ -60,6 +68,6 @@ class PrefixedArrayCachePoolFactory
      */
     public function createCachePool()
     {
-        return new NamespacedCachePool(new ArrayCachePool(), $this->configuration->getSerial());
+        return new NamespacedCachePool($this->cachePoolFactory->createCachePool(), $this->configuration->getSerial());
     }
 }

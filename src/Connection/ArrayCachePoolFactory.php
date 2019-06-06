@@ -1,7 +1,7 @@
 <?php
 
 /**
- * TechDivision\Import\Connection\CacheFactoryInterface
+ * TechDivision\Import\Connection\ArrayCachePoolFactory
  *
  * NOTICE OF LICENSE
  *
@@ -12,7 +12,7 @@
  * PHP version 5
  *
  * @author    Tim Wagner <t.wagner@techdivision.com>
- * @copyright 2016 TechDivision GmbH <info@techdivision.com>
+ * @copyright 2019 TechDivision GmbH <info@techdivision.com>
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
@@ -20,16 +20,18 @@
 
 namespace TechDivision\Import\Connection;
 
+use Cache\Adapter\PHPArray\ArrayCachePool;
+
 /**
- * The interface for all cache pool factory implementations.
+ * The simple array cache factory implementation.
  *
  * @author    Tim Wagner <t.wagner@techdivision.com>
- * @copyright 2016 TechDivision GmbH <info@techdivision.com>
+ * @copyright 2019 TechDivision GmbH <info@techdivision.com>
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
  */
-interface CacheFactoryInterface
+class ArrayCachePoolFactory implements CachePoolFactoryInterface
 {
 
     /**
@@ -37,5 +39,8 @@ interface CacheFactoryInterface
      *
      * @return \Psr\Cache\CacheItemPoolInterface The initialized connection
      */
-    public function createCachePool();
+    public function createCachePool()
+    {
+        return new ArrayCachePool();
+    }
 }

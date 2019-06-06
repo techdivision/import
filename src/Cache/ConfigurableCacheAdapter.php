@@ -21,6 +21,7 @@
 namespace TechDivision\Import\Cache;
 
 use TechDivision\Import\ConfigurationInterface;
+use TechDivision\Import\Utils\CacheTypes;
 
 /**
  * Configurable cache adapter implementation.
@@ -42,35 +43,53 @@ class ConfigurableCacheAdapter implements CacheAdapterInterface
     protected $cacheAdapter;
 
     /**
-     * The configuration instance.
+     * The TTL used to cache items.
      *
-     * @var \TechDivision\Import\ConfigurationInterface
+     * @var integer
      */
-    protected $configuration;
+    protected $ime = -1;
+
+    /**
+     * The flag if the cache is anabled or not.
+     *
+     * @var boolean
+     */
+    protected $enabled = true;
 
     /**
      * Initialize the cache handler with the passed cache and configuration instances.
      * .
      * @param \TechDivision\Import\Cache\CacheAdapterInterface $cacheAdapter  The cache instance
      * @param \TechDivision\Import\ConfigurationInterface      $configuration The configuration instance
+     * @param string                                           $type          The cache type to use
      */
-    public function __construct(CacheAdapterInterface $cacheAdapter, ConfigurationInterface $configuration)
-    {
+    public function __construct(
+        CacheAdapterInterface $cacheAdapter,
+        ConfigurationInterface $configuration,
+        $type = CacheTypes::TYPE_STATIC
+    ) {
+
+        // load the configuration for the passed cache type
+        $cacheConfiguration = $configuration->getCacheByType($type);
+
+        // initialize the ttl and the enabled flag
+        $this->time = $cacheConfiguration->getTime();
+        $this->enabled = $cacheConfiguration->isEnabled();
+
+        // set the cache adapter to use
         $this->cacheAdapter = $cacheAdapter;
-        $this->configuration = $configuration;
     }
 
     /**
-     * Prepares a unique cache key for the passed query name and params.
+     * Creates a unique cache key from the passed data.
      *
-     * @param string $uniqueName A unique name used to prepare the cache key with
-     * @param array  $params     The query params
+     * @param mixed $data The date to create the cache key from
      *
-     * @return string The prepared cache key
+     * @return string The generated cache key
      */
-    public function cacheKey($uniqueName, array $params)
+    public function cacheKey($data)
     {
-        return $this->cacheAdapter->cacheKey($uniqueName, $params);
+        return $this->cacheAdapter->cacheKey($data);
     }
 
     /**
@@ -175,7 +194,7 @@ class ConfigurableCacheAdapter implements CacheAdapterInterface
     {
 
         // query whether or not the item has been cached, and if yes if the cache is valid
-        if ($this->configuration->isCacheEnabled()) {
+        if ($this->enabled) {
             return $this->cacheAdapter->isCached($key);
         }
 
@@ -190,15 +209,16 @@ class ConfigurableCacheAdapter implements CacheAdapterInterface
      * @param mixed   $value      The value that has to be cached
      * @param array   $references An array with references to add
      * @param boolean $override   Flag that allows to override an exising cache entry
+     * @param integer $time       The TTL in seconds for the passed item
      *
      * @return void
      */
-    public function toCache($key, $value, array $references = array(), $override = false)
+    public function toCache($key, $value, array $references = array(), $override = false, $time = null)
     {
 
         // query whether or not the cache is enabled
-        if ($this->configuration->isCacheEnabled()) {
-            $this->cacheAdapter->toCache($key, $value, $references, $override);
+        if ($this->enabled) {
+            $this->cacheAdapter->toCache($key, $value, $references, $override, $time ? $time : $this->time);
         }
     }
 }

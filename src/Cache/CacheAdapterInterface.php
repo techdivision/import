@@ -31,16 +31,15 @@ namespace TechDivision\Import\Cache;
  */
 interface CacheAdapterInterface
 {
-
+    
     /**
-     * Prepares a unique cache key for the passed query name and params.
+     * Creates a unique cache key from the passed data.
      *
-     * @param string $uniqueName A unique name used to prepare the cache key with
-     * @param array  $params     The query params
+     * @param mixed $data The date to create the cache key from
      *
-     * @return string The prepared cache key
+     * @return string The generated cache key
      */
-    public function cacheKey($uniqueName, array $params);
+    public function cacheKey($data);
 
     /**
      * Query whether or not a cache value for the passed cache key is available.

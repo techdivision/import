@@ -22,6 +22,7 @@ namespace TechDivision\Import\Cache;
 
 use Psr\Cache\CacheItemPoolInterface;
 use TechDivision\Import\ConfigurationInterface;
+use TechDivision\Import\Utils\CacheKeyUtilInterface;
 
 /**
  * Generic cache adapter implementation.
@@ -36,11 +37,11 @@ class GenericCacheAdapter implements CacheAdapterInterface
 {
 
     /**
-     * The configuration instance.
+     * The serial of the actual import process.
      *
-     * @var \TechDivision\Import\ConfigurationInterface
+     * @var string
      */
-    protected $configuration;
+    protected $serial;
 
     /**
      * The cache for the query results.
@@ -57,17 +58,31 @@ class GenericCacheAdapter implements CacheAdapterInterface
     protected $references = array();
 
     /**
+     * The cache key utility instance.
+     *
+     * @var \TechDivision\Import\Utils\CacheKeyUtilInterface
+     */
+    protected $cacheKeyUtil;
+
+    /**
      * Initialize the cache handler with the passed cache and configuration instances.
      * .
-     * @param \Psr\Cache\CacheItemPoolInterface           $cache The cache instance
-     * @param \TechDivision\Import\ConfigurationInterface $configuration The configuration instance
+     * @param \Psr\Cache\CacheItemPoolInterface                $cache         The cache instance
+     * @param \TechDivision\Import\Utils\CacheKeyUtilInterface $cacheKeyUtil  The cache key utility instance
+     * @param \TechDivision\Import\ConfigurationInterface      $configuration The configuration instance
      */
-    public function __construct(CacheItemPoolInterface $cache, ConfigurationInterface $configuration)
-    {
+    public function __construct(
+        CacheItemPoolInterface $cache,
+        CacheKeyUtilInterface $cacheKeyUtil,
+        ConfigurationInterface $configuration
+    ) {
 
-        // set the cache and configuration instance
+        // load the serial of the actual import process
+        $this->serial = $configuration->getSerial();
+
+        // set the cache and the cache key utility instance
         $this->cache = $cache;
-        $this->configuration = $configuration;
+        $this->cacheKeyUtil = $cacheKeyUtil;
     }
 
     /**
@@ -90,16 +105,15 @@ class GenericCacheAdapter implements CacheAdapterInterface
     }
 
     /**
-     * Prepares a unique cache key for the passed query name and params.
+     * Creates a unique cache key from the passed data.
      *
-     * @param string $uniqueName A unique name used to prepare the cache key with
-     * @param array  $params     The query params
+     * @param mixed $data The date to create the cache key from
      *
-     * @return string The prepared cache key
+     * @return string The generated cache key
      */
-    public function cacheKey($uniqueName, array $params)
+    public function cacheKey($data)
     {
-        return str_replace('\\', '-', sprintf('%s-%s', $uniqueName, implode('-', $params)));
+        return $this->cacheKeyUtil->cacheKey($data);
     }
 
     /**
@@ -113,7 +127,7 @@ class GenericCacheAdapter implements CacheAdapterInterface
     {
 
         // query whether or not the item has been cached, and if yes if the cache is valid
-        if ($this->cache->hasItem($resolvedKey = $this->resolveReference($key))) {
+        if ($this->cache->hasItem($resolvedKey = $this->resolveReference($this->cacheKey($key)))) {
             return $this->cache->getItem($resolvedKey)->isHit();
         }
 
@@ -143,7 +157,7 @@ class GenericCacheAdapter implements CacheAdapterInterface
      */
     public function addReference($from, $to)
     {
-        $this->references[$from] = $to;
+        $this->references[$this->cacheKey($from)] = $this->cacheKey($to);
     }
 
     /**
@@ -153,27 +167,31 @@ class GenericCacheAdapter implements CacheAdapterInterface
      * @param mixed   $value      The value that has to be cached
      * @param array   $references An array with references to add
      * @param boolean $override   Flag that allows to override an exising cache entry
+     * @param integer $time       The TTL in seconds for the passed item
      *
      * @return void
      */
-    public function toCache($key, $value, array $references = array(), $override = false)
+    public function toCache($key, $value, array $references = array(), $override = false, $time = null)
     {
 
+        // create the unique cache key
+        $uniqueKey = $this->cacheKey($key);
+
         // query whether or not the key has already been used
-        if ($this->isCached($key) && $override === false) {
-            throw new \Exception(sprintf('Try to override data with key %s', $key));
+        if ($this->isCached($uniqueKey) && $override === false) {
+            throw new \Exception(sprintf('Try to override data with key %s', $uniqueKey));
         }
 
         // initialize the cache item
-        $cacheItem = $this->cache->getItem($key);
-        $cacheItem->set($value);
+        $cacheItem = $this->cache->getItem($uniqueKey);
+        $cacheItem->set($value)->expiresAfter($time)->setTags(array($this->serial));
 
         // set the attribute in the registry
         $this->cache->save($cacheItem);
 
         // also register the references if given
         foreach ($references as $from => $to) {
-            $this->references[$from] = $to;
+            $this->addReference($from, $to);
         }
     }
 
@@ -186,7 +204,7 @@ class GenericCacheAdapter implements CacheAdapterInterface
      */
     public function fromCache($key)
     {
-        return $this->cache->getItem($this->resolveReference($key))->get();
+        return $this->cache->getItem($this->resolveReference($this->cacheKey($key)))->get();
     }
 
     /**
@@ -196,7 +214,7 @@ class GenericCacheAdapter implements CacheAdapterInterface
      */
     public function flushCache()
     {
-        $this->cache->clear();
+        $this->cache->invalidateTag($this->serial);
         $this->references = array();
     }
 
@@ -209,8 +227,8 @@ class GenericCacheAdapter implements CacheAdapterInterface
      */
     public function removeCache($key)
     {
-        $this->cache->deleteItem($this->resolveReference($key));
-        unset($this->references[$key]);
+        $this->cache->deleteItem($this->resolveReference($uniqueKey = $this->cacheKey($key)));
+        unset($this->references[$uniqueKey]);
     }
 
     /**
