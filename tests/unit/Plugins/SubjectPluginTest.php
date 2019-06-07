@@ -25,6 +25,7 @@ use TechDivision\Import\ApplicationInterface;
 use TechDivision\Import\Configuration\SubjectConfigurationInterface;
 use TechDivision\Import\Subjects\FileResolver\FileResolverInterface;
 use TechDivision\Import\Subjects\FileResolver\FileResolverFactoryInterface;
+use TechDivision\Import\Utils\CacheKeys;
 
 /**
  * Test class for the subject plugin implementation.
@@ -129,7 +130,6 @@ class SubjectPluginTest extends \PHPUnit_Framework_TestCase
         // mock tha basic data
         $bunches = 0;
         $status = array();
-        $serial = uniqid();
 
         // mock the registry processor
         $mockRegistryProcessor = $this->getMockBuilder('TechDivision\Import\Services\RegistryProcessorInterface')
@@ -138,8 +138,8 @@ class SubjectPluginTest extends \PHPUnit_Framework_TestCase
         $mockRegistryProcessor->expects($this->exactly(2))
                               ->method('mergeAttributesRecursive')
                               ->withConsecutive(
-                                  array($serial, $status),
-                                  array($serial, array(RegistryKeys::BUNCHES => $bunches))
+                                  array(CacheKeys::STATUS, $status),
+                                  array(CacheKeys::STATUS, array(RegistryKeys::BUNCHES => $bunches))
                               )
                               ->willReturn(null);
 
@@ -158,9 +158,6 @@ class SubjectPluginTest extends \PHPUnit_Framework_TestCase
         $this->mockApplication->expects($this->exactly(2))
                               ->method('getRegistryProcessor')
                               ->willReturn($mockRegistryProcessor);
-        $this->mockApplication->expects($this->exactly(2))
-                              ->method('getSerial')
-                              ->willReturn($serial);
         $this->mockApplication->expects($this->once())
                               ->method('stop')
                               ->willReturn(null);
