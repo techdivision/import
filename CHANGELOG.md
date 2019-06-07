@@ -1,3 +1,13 @@
+# Version 10.0.0
+
+## Bugfixes
+
+* None
+
+## Features
+
+* Switch to http://www.php-cache.com as PSR-6 compliant cache implementation
+
 # Version 9.0.0
 
 ## Bugfixes
