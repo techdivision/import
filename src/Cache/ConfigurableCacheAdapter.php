@@ -47,7 +47,7 @@ class ConfigurableCacheAdapter implements CacheAdapterInterface
      *
      * @var integer
      */
-    protected $ime = -1;
+    protected $time = null;
 
     /**
      * The flag if the cache is anabled or not.
@@ -69,15 +69,15 @@ class ConfigurableCacheAdapter implements CacheAdapterInterface
         $type = CacheTypes::TYPE_STATIC
     ) {
 
-        // load the configuration for the passed cache type
-        $cacheConfiguration = $configuration->getCacheByType($type);
-
-        // initialize the ttl and the enabled flag
-        $this->time = $cacheConfiguration->getTime();
-        $this->enabled = $cacheConfiguration->isEnabled();
-
         // set the cache adapter to use
         $this->cacheAdapter = $cacheAdapter;
+
+        // load the configuration for the passed cache type
+        if ($cacheConfiguration = $configuration->getCacheByType($type)) {
+            // initialize the ttl and the enabled flag
+            $this->time = $cacheConfiguration->getTime();
+            $this->enabled = $cacheConfiguration->isEnabled();
+        }
     }
 
     /**

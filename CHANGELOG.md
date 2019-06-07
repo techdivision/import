@@ -1,3 +1,13 @@
+# Version 10.0.1
+
+## Bugfixes
+
+* Fixed invalid cache initialization on missing default configuration
+
+## Features
+
+* None
+
 # Version 10.0.0
 
 ## Bugfixes
