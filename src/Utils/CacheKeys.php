@@ -57,6 +57,13 @@ class CacheKeys
     const STATUS = 'status';
 
     /**
+     * The cache key for references.
+     *
+     * @var string
+     */
+    const REFERENCES = 'references';
+
+    /**
      * The cache key for EAV attribute option values.
      *
      * @var string

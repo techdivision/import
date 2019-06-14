@@ -36,7 +36,6 @@
         <service id="import.cache.adapter.generic" class="TechDivision\Import\Cache\GenericCacheAdapter">
             <argument type="service" id="import.cache.pool.array"/>
             <argument type="service" id="import.util.cache.key"/>
-            <argument type="service" id="configuration"/>
         </service>
         <service id="import.cache.adapter.static" class="TechDivision\Import\Cache\ConfigurableCacheAdapter">
             <argument type="service" id="import.cache.adapter.generic"/>
@@ -50,18 +49,8 @@
         </service>
         <service id="import.repository.cache.warmer.eav.attribute.option.value" class="TechDivision\Import\Repositories\CacheWarmer\EavAttributeOptionValueCacheWarmer">
             <argument type="service" id="import.repository.eav.attribute.option.value"/>
+            <argument type="service" id="import.repository.eav.entity.type"/>
         </service>
-        <!-- service id="import.cache.pool.prefixed.array" class="Cache\Prefixed\PrefixedCachePool">
-            <factory service="import.cache.pool.factory.prefixed" method="createCachePool"/>
-        </service>
-        <service id="import.cache.pool.factory.prefixed" class="TechDivision\Import\Connection\PrefixedCachePoolFactory">
-            <argument type="service" id="configuration"/>
-            <argument type="service" id="import.cache.pool.factory.array"/>
-        </service>
-        <service id="import.cache.pool.factory.namespaced" class="TechDivision\Import\Connection\NamespacedCachePoolFactory">
-            <argument type="service" id="configuration"/>
-            <argument type="service" id="import.cache.pool.factory.array"/>
-        </service -->
 
         <!--
          | The default DI aliases

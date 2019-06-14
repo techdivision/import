@@ -57,6 +57,13 @@ class ConfigurableCacheAdapter implements CacheAdapterInterface
     protected $enabled = true;
 
     /**
+     * The array with the default tags.
+     *
+     * @var string
+     */
+    protected $tags = array();
+
+    /**
      * Initialize the cache handler with the passed cache and configuration instances.
      * .
      * @param \TechDivision\Import\Cache\CacheAdapterInterface $cacheAdapter  The cache instance
@@ -71,6 +78,9 @@ class ConfigurableCacheAdapter implements CacheAdapterInterface
 
         // set the cache adapter to use
         $this->cacheAdapter = $cacheAdapter;
+
+        // append the serial to the array with the default tags
+        $this->tags = array_merge(array($configuration->getSerial()));
 
         // load the configuration for the passed cache type
         if ($cacheConfiguration = $configuration->getCacheByType($type)) {
@@ -136,7 +146,19 @@ class ConfigurableCacheAdapter implements CacheAdapterInterface
      */
     public function flushCache()
     {
-        $this->cacheAdapter->flushCache();
+        $this->invalidateTags($this->tags);
+    }
+
+    /**
+     * Invalidate the cache entries for the passed tags.
+     *
+     * @param array $tags The tags to invalidate the cache for
+     *
+     * @return void
+     */
+    public function invalidateTags(array $tags)
+    {
+        $this->cacheAdapter->invalidateTags($tags);
     }
 
     /**
@@ -208,17 +230,18 @@ class ConfigurableCacheAdapter implements CacheAdapterInterface
      * @param string  $key        The cache key to use
      * @param mixed   $value      The value that has to be cached
      * @param array   $references An array with references to add
+     * @param array   $tags       An array with tags to add
      * @param boolean $override   Flag that allows to override an exising cache entry
      * @param integer $time       The TTL in seconds for the passed item
      *
      * @return void
      */
-    public function toCache($key, $value, array $references = array(), $override = false, $time = null)
+    public function toCache($key, $value, array $references = array(), array $tags = array(), $override = false, $time = null)
     {
 
         // query whether or not the cache is enabled
         if ($this->enabled) {
-            $this->cacheAdapter->toCache($key, $value, $references, $override, $time ? $time : $this->time);
+            $this->cacheAdapter->toCache($key, $value, $references, array_merge($this->tags, $tags), $override, $time ? $time : $this->time);
         }
     }
 }

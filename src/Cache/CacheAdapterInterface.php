@@ -31,7 +31,7 @@ namespace TechDivision\Import\Cache;
  */
 interface CacheAdapterInterface
 {
-    
+
     /**
      * Creates a unique cache key from the passed data.
      *
@@ -75,11 +75,13 @@ interface CacheAdapterInterface
      * @param string  $key        The cache key to use
      * @param mixed   $value      The value that has to be cached
      * @param array   $references An array with references to add
+     * @param array   $tags       An array with tags to add
      * @param boolean $override   Flag that allows to override an exising cache entry
+     * @param integer $time       The TTL in seconds for the passed item
      *
      * @return void
      */
-    public function toCache($key, $value, array $references = array(), $override = false);
+    public function toCache($key, $value, array $references = array(), array $tags = array(), $override = false, $time = null);
 
     /**
      * Returns a new cache item for the passed key
@@ -96,6 +98,15 @@ interface CacheAdapterInterface
      * @return void
      */
     public function flushCache();
+
+    /**
+     * Invalidate the cache entries for the passed tags.
+     *
+     * @param array $tags The tags to invalidate the cache for
+     *
+     * @return void
+     */
+    public function invalidateTags(array $tags);
 
     /**
      * Remove the item with the passed key and all its references from the cache.

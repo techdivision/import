@@ -24,6 +24,7 @@ use TechDivision\Import\Utils\CacheKeys;
 use TechDivision\Import\Utils\MemberNames;
 use TechDivision\Import\Utils\SqlStatementKeys;
 use TechDivision\Import\Repositories\EavAttributeOptionValueRepositoryInterface;
+use TechDivision\Import\Repositories\EavEntityTypeRepositoryInterface;
 
 /**
  * Cache warmer implementation to pre-load EAV attribute option value data.
@@ -45,13 +46,24 @@ class EavAttributeOptionValueCacheWarmer implements CacheWarmerInterface
     protected $repository;
 
     /**
+     * The EAV entity type repository instance.
+     *
+     * @var \TechDivision\Import\Repositories\EavEntityTypeRepositoryInterface
+     */
+    protected $eavEntityTypeRepository;
+
+    /**
      * Initialize the cache warmer with the repository that has to be warmed.
      *
-     * @param \TechDivision\Import\Repositories\EavAttributeOptionValueRepositoryInterface $repository The repository to warm
+     * @param \TechDivision\Import\Repositories\EavAttributeOptionValueRepositoryInterface $repository              The repository to warm
+     * @param \TechDivision\Import\Repositories\EavEntityTypeRepositoryInterface           $eavEntityTypeRepository The EAV entity type repository instance
      */
-    public function __construct(EavAttributeOptionValueRepositoryInterface $repository)
-    {
+    public function __construct(
+        EavAttributeOptionValueRepositoryInterface $repository,
+        EavEntityTypeRepositoryInterface $eavEntityTypeRepository
+    ) {
         $this->repository = $repository;
+        $this->eavEntityTypeRepository = $eavEntityTypeRepository;
     }
 
     /**
@@ -69,32 +81,52 @@ class EavAttributeOptionValueCacheWarmer implements CacheWarmerInterface
         // load the available EAV attribute option values
         $eavAttributeOptionValues = $this->repository->findAll();
 
+        // load the available EAV entity types
+        $eavEntityTypes = $this->eavEntityTypeRepository->findAll();
+
         // prepare the caches for the statements
         foreach ($eavAttributeOptionValues as $eavAttributeOptionValue) {
+            // (re-)sinitialize the array for the cache keys
+            $cacheKeys = array();
+
+            // prepare the unique cache key for the EAV attribute option value
+            $uniqueKey = array(CacheKeys::EAV_ATTRIBUTE_OPTION_VALUE => $eavAttributeOptionValue[$this->repository->getPrimaryKeyName()]);
+
             // prepare the cache key and add the option value to the cache
-            $cacheKey1 = $cacheAdapter->cacheKey(
+            $cacheKeys[$cacheAdapter->cacheKey(
                 SqlStatementKeys::EAV_ATTRIBUTE_OPTION_VALUE_BY_OPTION_ID_AND_STORE_ID,
                 array(
                     MemberNames::STORE_ID  => $eavAttributeOptionValue[MemberNames::STORE_ID],
                     MemberNames::OPTION_ID => $eavAttributeOptionValue[MemberNames::OPTION_ID]
                 )
-            );
+            )] = $uniqueKey;
 
             // prepare the cache key and add the option value to the cache
-            $cacheKey2 = $cacheAdapter->cacheKey(
+            $cacheKeys[$cacheAdapter->cacheKey(
                 SqlStatementKeys::EAV_ATTRIBUTE_OPTION_VALUE_BY_ATTRIBUTE_CODE_AND_STORE_ID_AND_VALUE,
                 array(
                     MemberNames::ATTRIBUTE_CODE => $eavAttributeOptionValue[MemberNames::ATTRIBUTE_CODE],
                     MemberNames::STORE_ID       => $eavAttributeOptionValue[MemberNames::STORE_ID],
                     MemberNames::VALUE          => $eavAttributeOptionValue[MemberNames::VALUE]
                 )
-            );
+            )] = $uniqueKey;
 
-            // prepare the unique cache key for the EAV attribute option value
-            $uniqueKey = array(CacheKeys::EAV_ATTRIBUTE_OPTION_VALUE => $eavAttributeOptionValue[$this->repository->getPrimaryKeyName()]);
+            // prepare the cache key and add the option value to the cache
+            foreach ($eavEntityTypes as $eavEntityType) {
+                // prepare the cache key and add the option value to the cache
+                $cacheKeys[$cacheAdapter->cacheKey(
+                    SqlStatementKeys::EAV_ATTRIBUTE_OPTION_VALUE_BY_ENTITY_TYPE_ID_AND_ATTRIBUTE_CODE_AND_STORE_ID_AND_VALUE,
+                    array(
+                        MemberNames::ENTITY_TYPE_ID => $eavEntityType[MemberNames::ENTITY_TYPE_ID],
+                        MemberNames::ATTRIBUTE_CODE => $eavAttributeOptionValue[MemberNames::ATTRIBUTE_CODE],
+                        MemberNames::STORE_ID       => $eavAttributeOptionValue[MemberNames::STORE_ID],
+                        MemberNames::VALUE          => $eavAttributeOptionValue[MemberNames::VALUE]
+                    )
+                )] = $uniqueKey;
+            }
 
             // add the EAV attribute option value to the cache
-            $cacheAdapter->toCache($uniqueKey, $eavAttributeOptionValue, array($cacheKey1 => $uniqueKey, $cacheKey2 => $uniqueKey));
+            $cacheAdapter->toCache($uniqueKey, $eavAttributeOptionValue, $cacheKeys);
         }
     }
 }

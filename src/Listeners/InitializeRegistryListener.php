@@ -22,6 +22,7 @@ namespace TechDivision\Import\Listeners;
 
 use League\Event\EventInterface;
 use League\Event\AbstractListener;
+use TechDivision\Import\Utils\CacheKeys;
 use TechDivision\Import\Utils\RegistryKeys;
 use TechDivision\Import\ApplicationInterface;
 use TechDivision\Import\ConfigurationInterface;
@@ -84,8 +85,8 @@ class InitializeRegistryListener extends AbstractListener
             RegistryKeys::MISSING_OPTION_VALUES => array()
         );
 
-        // register it in the registry (use the serial as tag also)
-        $this->getRegistryProcessor()->setAttribute(RegistryKeys::STATUS, $status);
+        // register the status and the references in the registry (use the serial as tag also)
+        $this->getRegistryProcessor()->setAttribute(CacheKeys::STATUS, $status);
     }
 
     /**s

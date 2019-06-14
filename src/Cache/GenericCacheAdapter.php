@@ -21,11 +21,13 @@
 namespace TechDivision\Import\Cache;
 
 use Psr\Cache\CacheItemPoolInterface;
-use TechDivision\Import\ConfigurationInterface;
+use TechDivision\Import\Utils\CacheKeys;
 use TechDivision\Import\Utils\CacheKeyUtilInterface;
 
 /**
  * Generic cache adapter implementation.
+ *
+ * ATTENTION: Please be aware, that this cache adapter is NOT multiprocess or -threadsafe!
  *
  * @author    Tim Wagner <t.wagner@techdivision.com>
  * @copyright 2019 TechDivision GmbH <info@techdivision.com>
@@ -37,25 +39,11 @@ class GenericCacheAdapter implements CacheAdapterInterface
 {
 
     /**
-     * The serial of the actual import process.
-     *
-     * @var string
-     */
-    protected $serial;
-
-    /**
      * The cache for the query results.
      *
      * @var \Psr\Cache\CacheItemPoolInterface
      */
     protected $cache;
-
-    /**
-     * References that links to another cache entry.
-     *
-     * @var array
-     */
-    protected $references = array();
 
     /**
      * The cache key utility instance.
@@ -69,16 +57,11 @@ class GenericCacheAdapter implements CacheAdapterInterface
      * .
      * @param \Psr\Cache\CacheItemPoolInterface                $cache         The cache instance
      * @param \TechDivision\Import\Utils\CacheKeyUtilInterface $cacheKeyUtil  The cache key utility instance
-     * @param \TechDivision\Import\ConfigurationInterface      $configuration The configuration instance
      */
     public function __construct(
         CacheItemPoolInterface $cache,
-        CacheKeyUtilInterface $cacheKeyUtil,
-        ConfigurationInterface $configuration
+        CacheKeyUtilInterface $cacheKeyUtil
     ) {
-
-        // load the serial of the actual import process
-        $this->serial = $configuration->getSerial();
 
         // set the cache and the cache key utility instance
         $this->cache = $cache;
@@ -95,9 +78,15 @@ class GenericCacheAdapter implements CacheAdapterInterface
     protected function resolveReference($from)
     {
 
-        // query whether or not a reference exists
-        if (isset($this->references[$from])) {
-            return $this->references[$from];
+        // try to load the load the references
+        if ($this->cache->hasItem(CacheKeys::REFERENCES)) {
+            // load the array with references from the cache
+            $references = $this->cache->getItem(CacheKeys::REFERENCES)->get();
+
+            // query whether a reference is available
+            if (isset($references[$from])) {
+                return $references[$from];
+            }
         }
 
         // return the passed reference
@@ -157,7 +146,20 @@ class GenericCacheAdapter implements CacheAdapterInterface
      */
     public function addReference($from, $to)
     {
-        $this->references[$this->cacheKey($from)] = $this->cacheKey($to);
+
+        // initialize the array with references
+        $references = array();
+
+        // try to load the references from the cache
+        if ($this->isCached(CacheKeys::REFERENCES)) {
+            $references = $this->fromCache(CacheKeys::REFERENCES);
+        }
+
+        // add the reference to the array
+        $references[$this->cacheKey($from)] = $this->cacheKey($to);
+
+        // add the references back to the cache
+        $this->toCache(CacheKeys::REFERENCES, $references);
     }
 
     /**
@@ -166,12 +168,13 @@ class GenericCacheAdapter implements CacheAdapterInterface
      * @param string  $key        The cache key to use
      * @param mixed   $value      The value that has to be cached
      * @param array   $references An array with references to add
+     * @param array   $tags       An array with tags to add
      * @param boolean $override   Flag that allows to override an exising cache entry
      * @param integer $time       The TTL in seconds for the passed item
      *
      * @return void
      */
-    public function toCache($key, $value, array $references = array(), $override = false, $time = null)
+    public function toCache($key, $value, array $references = array(), array $tags = array(), $override = false, $time = null)
     {
 
         // create the unique cache key
@@ -179,12 +182,22 @@ class GenericCacheAdapter implements CacheAdapterInterface
 
         // query whether or not the key has already been used
         if ($this->isCached($uniqueKey) && $override === false) {
-            throw new \Exception(sprintf('Try to override data with key %s', $uniqueKey));
+            throw new \Exception(
+                sprintf(
+                    'Try to override data with key "%s"',
+                    $uniqueKey
+                )
+            );
         }
+
+        // prepend the tags with the cache key
+        array_walk($tags, function (&$tag) {
+            $tag = $this->cacheKey($tag);
+        });
 
         // initialize the cache item
         $cacheItem = $this->cache->getItem($uniqueKey);
-        $cacheItem->set($value)->expiresAfter($time)->setTags(array($this->serial));
+        $cacheItem->set($value)->expiresAfter($time)->setTags($tags);
 
         // set the attribute in the registry
         $this->cache->save($cacheItem);
@@ -214,8 +227,52 @@ class GenericCacheAdapter implements CacheAdapterInterface
      */
     public function flushCache()
     {
-        $this->cache->invalidateTag($this->serial);
-        $this->references = array();
+        $this->cache->clear();
+    }
+
+    /**
+     * Invalidate the cache entries for the passed tags.
+     *
+     * @param array $tags The tags to invalidate the cache for
+     *
+     * @return void
+     */
+    public function invalidateTags(array $tags)
+    {
+
+        // prepend the tags with the cache key
+        array_walk($tags, function (&$tag) {
+            $tag = $this->cacheKey($tag);
+        });
+
+        // query whether or not references are available
+        if ($this->isCached(CacheKeys::REFERENCES)) {
+            // load the array with references from the cache
+            $references = $this->fromCache(CacheKeys::REFERENCES);
+
+            // remove all the references of items that has one of the passed tags
+            foreach ($tags as $tag) {
+                foreach ($references as $from => $to) {
+                    // load the cache item for the referenced key
+                    $cacheItem = $this->cache->getItem($to);
+                    // query whether or not the cache item has the tag, if yes remove the reference
+                    if (in_array($tag, $cacheItem->getPreviousTags())) {
+                        unset($references[$from]);
+                    }
+                }
+            }
+
+            // query whether or not the references exists
+            if (sizeof($references) > 0) {
+                // set the array with references to the cache
+                $this->toCache(CacheKeys::REFERENCES, $references);
+            } else {
+                $this->removeCache(CacheKeys::REFERENCES);
+            }
+        }
+
+        // finally, invalidate the items with the passed tags
+        $this->cache->invalidateTags($tags);
     }
 
     /**
@@ -227,8 +284,22 @@ class GenericCacheAdapter implements CacheAdapterInterface
      */
     public function removeCache($key)
     {
+
+        // delete the item with the passed key
         $this->cache->deleteItem($this->resolveReference($uniqueKey = $this->cacheKey($key)));
-        unset($this->references[$uniqueKey]);
+
+        // query whether or not references are available
+        if ($this->isCached(CacheKeys::REFERENCES)) {
+            // load the array with references from the cache
+            $references = $this->fromCache(CacheKeys::REFERENCES);
+            // query whether or not the references exists
+            if (isset($references[$uniqueKey])) {
+                // remove the reference
+                unset($references[$uniqueKey]);
+                // set the array with references to the cache
+                $this->toCache(CacheKeys::REFERENCES, $references);
+            }
+        }
     }
 
     /**
@@ -252,7 +323,7 @@ class GenericCacheAdapter implements CacheAdapterInterface
         }
 
         // set the counter value back to the cache item/cache
-        $this->toCache($key, array($counterName => ++$counter), array(), true);
+        $this->toCache($key, array($counterName => ++$counter), array(), array(), true);
 
         // return the new value
         return $counter;
@@ -283,11 +354,16 @@ class GenericCacheAdapter implements CacheAdapterInterface
 
         // if the key exists and the value is an array, merge it with the passed array
         if (is_array($value = $this->fromCache($key))) {
-            $this->toCache($key, array_replace_recursive($value, $attributes), array(), true);
+            $this->toCache($key, array_replace_recursive($value, $attributes), array(), array(), true);
             return;
         }
 
         // throw an exception if the key exists, but the found value is not of type array
-        throw new \Exception(sprintf('Can\'t merge attributes, because value for key %s already exists, but is not of type array', $key));
+        throw new \Exception(
+            sprintf(
+                'Can\'t merge attributes, because value for key "%s" already exists, but is not of type array',
+                $key
+            )
+        );
     }
 }
