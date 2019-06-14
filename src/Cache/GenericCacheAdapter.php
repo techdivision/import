@@ -55,8 +55,8 @@ class GenericCacheAdapter implements CacheAdapterInterface
     /**
      * Initialize the cache handler with the passed cache and configuration instances.
      * .
-     * @param \Psr\Cache\CacheItemPoolInterface                $cache         The cache instance
-     * @param \TechDivision\Import\Utils\CacheKeyUtilInterface $cacheKeyUtil  The cache key utility instance
+     * @param \Psr\Cache\CacheItemPoolInterface                $cache        The cache instance
+     * @param \TechDivision\Import\Utils\CacheKeyUtilInterface $cacheKeyUtil The cache key utility instance
      */
     public function __construct(
         CacheItemPoolInterface $cache,

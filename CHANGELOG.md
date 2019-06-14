@@ -1,3 +1,13 @@
+# Version 11.0.0
+
+## Bugfixes
+
+* Fixed issue in SimpleFileResolver that causes an exception when old CSV files without a .ok file are available in the source directory
+
+## Features
+
+* Refactor cache integration to optimize in multiprocess and -threaed environments
+
 # Version 10.0.1
 
 ## Bugfixes

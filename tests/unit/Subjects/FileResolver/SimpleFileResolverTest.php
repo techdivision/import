@@ -20,12 +20,11 @@
 
 namespace TechDivision\Import\Plugins;
 
+use TechDivision\Import\Utils\BunchKeys;
 use TechDivision\Import\ApplicationInterface;
 use TechDivision\Import\Services\RegistryProcessorInterface;
-use TechDivision\Import\Subjects\FileResolver\SimpleFileResolver;
 use TechDivision\Import\Configuration\SubjectConfigurationInterface;
 use TechDivision\Import\Configuration\Subject\FileResolverConfigurationInterface;
-use TechDivision\Import\Utils\BunchKeys;
 
 /**
  * Test class for the simple file resolver implementation.
@@ -42,7 +41,7 @@ class SimpleFileResolverTest extends \PHPUnit_Framework_TestCase
     /**
      * The file resolver instance we want to test.
      *
-     * @var \TechDivision\Import\Subjects\FileResolver\SimpleFileResolver
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $simpleFileResolver;
 
@@ -63,7 +62,15 @@ class SimpleFileResolverTest extends \PHPUnit_Framework_TestCase
         $mockRegistryProcessor = $this->getMockBuilder(RegistryProcessorInterface::class)->getMock();
 
         // initialize the simple file resolver instance
-        $this->simpleFileResolver = new SimpleFileResolver($mockApplication, $mockRegistryProcessor);
+        $this->simpleFileResolver = $this->getMockBuilder('TechDivision\Import\Subjects\FileResolver\SimpleFileResolver')
+                                         ->setMethods(array('getSourceDir'))
+                                         ->setConstructorArgs(array($mockApplication, $mockRegistryProcessor))
+                                         ->getMock();
+
+        // mock the source directory which will be set by invoking the loadFiles() method
+        $this->simpleFileResolver->expects($this->any())
+                                 ->method('getSourceDir')
+                                 ->willReturn(__DIR__ . DIRECTORY_SEPARATOR . '_files');
     }
 
     /**
@@ -77,13 +84,13 @@ class SimpleFileResolverTest extends \PHPUnit_Framework_TestCase
         // initialize the prefix and the actual date
         $suffix = 'csv';
         $prefix = 'magento-import';
-        $actualDate = date('Ymd');
+        $directory = __DIR__ . DIRECTORY_SEPARATOR . '_files';
 
         // prepare some files which are NOT part of a bunch
         $data = array(
-            array(sprintf('import/add-update/%s_%s-172_01.%s', $prefix, $actualDate, $suffix), true),
-            array(sprintf('import/add-update/%s_%s-173_02.%s', $prefix, $actualDate, $suffix), false),
-            array(sprintf('import/add-update/%s_%s-174_03.%s', $prefix, $actualDate, $suffix), false),
+            array($directory . DIRECTORY_SEPARATOR . sprintf('%s_20190614-172_01.%s', $prefix, $suffix), true),
+            array($directory . DIRECTORY_SEPARATOR . sprintf('%s_20190614-173_02.%s', $prefix, $suffix), false),
+            array($directory . DIRECTORY_SEPARATOR . sprintf('%s_20190614-174_03.%s', $prefix, $suffix), false),
         );
 
         // mock a file resolver configuration instance
@@ -138,13 +145,13 @@ class SimpleFileResolverTest extends \PHPUnit_Framework_TestCase
         // initialize the prefix and the actual date
         $suffix = 'csv';
         $prefix = 'magento-import';
-        $actualDate = date('Ymd');
+        $directory = __DIR__ . DIRECTORY_SEPARATOR . '_files';
 
         // prepare some files which are NOT part of a bunch
         $data = array(
-            array(sprintf('import/add-update/%s_%s-172_01.%s', $prefix, $actualDate, $suffix), true),
-            array(sprintf('import/add-update/%s_%s-172_02.%s', $prefix, $actualDate, $suffix), true),
-            array(sprintf('import/add-update/%s_%s-172_03.%s', $prefix, $actualDate, $suffix), true),
+            array($directory . DIRECTORY_SEPARATOR . sprintf('%s_20190614-172_01.%s', $prefix, $suffix), true),
+            array($directory . DIRECTORY_SEPARATOR . sprintf('%s_20190614-172_02.%s', $prefix, $suffix), true),
+            array($directory . DIRECTORY_SEPARATOR . sprintf('%s_20190614-172_03.%s', $prefix, $suffix), true),
         );
 
         // mock a file resolver configuration instance
@@ -177,6 +184,82 @@ class SimpleFileResolverTest extends \PHPUnit_Framework_TestCase
         $mockSubjectConfiguration->expects($this->any())
             ->method('getFileResolver')
             ->willReturn($mockFileResolverConfiguration);
+
+        // initialize the file resolver
+        $this->simpleFileResolver->setSubjectConfiguration($mockSubjectConfiguration);
+
+        // make sure, that the file IS part of the bunch
+        foreach ($data as $row) {
+            list ($filename, $result) = $row;
+            $this->assertSame($result, $this->simpleFileResolver->shouldBeHandled($filename));
+        }
+    }
+
+    /**
+     * Test's if the only the files belonging to a bunch and an apropriate OK file exists, will be imported.
+     *
+     * @return void
+     */
+    public function testShouldBeHandledWithOkFileNeededAndFourBunchesAndTwoOkFiles()
+    {
+
+        // initialize the prefix and the actual date
+        $suffix = 'csv';
+        $prefix = 'magento-import';
+        $directory = __DIR__ . DIRECTORY_SEPARATOR . '_files';
+
+        // prepare some files which are NOT part of a bunch
+        $data = array(
+            array($directory . DIRECTORY_SEPARATOR . sprintf('%s_20190614-171_01.%s', $prefix, $suffix), false),
+            array($directory . DIRECTORY_SEPARATOR . sprintf('%s_20190614-171_02.%s', $prefix, $suffix), false),
+            array($directory . DIRECTORY_SEPARATOR . sprintf('%s_20190614-171_03.%s', $prefix, $suffix), false),
+            array($directory . DIRECTORY_SEPARATOR . sprintf('%s_20190614-172_01.%s', $prefix, $suffix), true),
+            array($directory . DIRECTORY_SEPARATOR . sprintf('%s_20190614-172_02.%s', $prefix, $suffix), true),
+            array($directory . DIRECTORY_SEPARATOR . sprintf('%s_20190614-172_03.%s', $prefix, $suffix), true),
+            array($directory . DIRECTORY_SEPARATOR . sprintf('%s_20190614-173_01.%s', $prefix, $suffix), false),
+            array($directory . DIRECTORY_SEPARATOR . sprintf('%s_20190614-173_02.%s', $prefix, $suffix), false),
+            array($directory . DIRECTORY_SEPARATOR . sprintf('%s_20190614-173_03.%s', $prefix, $suffix), false),
+            array($directory . DIRECTORY_SEPARATOR . sprintf('%s_20190614-174_01.%s', $prefix, $suffix), true),
+            array($directory . DIRECTORY_SEPARATOR . sprintf('%s_20190614-174_02.%s', $prefix, $suffix), true),
+            array($directory . DIRECTORY_SEPARATOR . sprintf('%s_20190614-174_03.%s', $prefix, $suffix), true)
+        );
+
+        // mock a file resolver configuration instance
+        $mockFileResolverConfiguration = $this->getMockBuilder(FileResolverConfigurationInterface::class)->getMock();
+
+        // mock the file resolver configuration methods
+        $mockFileResolverConfiguration->expects($this->any())
+            ->method('getElementSeparator')
+            ->willReturn('_');
+        $mockFileResolverConfiguration->expects($this->any())
+            ->method('getPatternElements')
+            ->willReturn(BunchKeys::getAllKeys());
+        $mockFileResolverConfiguration->expects($this->any())
+            ->method('getSuffix')
+            ->willReturn($suffix);
+        $mockFileResolverConfiguration->expects($this->any())
+            ->method('getPrefix')
+            ->willReturn($prefix);
+        $mockFileResolverConfiguration->expects($this->any())
+            ->method('getFilename')
+            ->willReturn('.*');
+        $mockFileResolverConfiguration->expects($this->any())
+            ->method('getCounter')
+            ->willReturn('\d+');
+        $mockFileResolverConfiguration->expects($this->any())
+            ->method('getOkFileSuffix')
+            ->willReturn('ok');
+
+        // mock a subject configuration instance
+        $mockSubjectConfiguration = $this->getMockBuilder(SubjectConfigurationInterface::class)->getMock();
+
+        // mock the subject configuration methods
+        $mockSubjectConfiguration->expects($this->any())
+            ->method('getFileResolver')
+            ->willReturn($mockFileResolverConfiguration);
+        $mockSubjectConfiguration->expects($this->any())
+            ->method('isOkFileNeeded')
+            ->willReturn(true);
 
         // initialize the file resolver
         $this->simpleFileResolver->setSubjectConfiguration($mockSubjectConfiguration);
