@@ -302,8 +302,51 @@ class SimpleFileResolver extends AbstractFileResolver
             }
         }
 
-        // stop processing, if the filename doesn't match
-        return (boolean) $result;
+        // initialize the flag: we assume that the file is in an OK file
+        $inOkFile = true;
+
+        // query whether or not the subject requests an OK file
+        if ($this->getSubjectConfiguration()->isOkFileNeeded()) {
+            // try to load the expected OK filenames
+            if (sizeof($okFilenames = $this->getOkFilenames()) === 0) {
+                // stop processing, because the needed OK file is NOT available
+                return false;
+            }
+
+            // reset the flag: assumption from initialization is invalid now
+            $inOkFile = false;
+
+            // iterate over the found OK filenames (should usually be only one, but could be more)
+            foreach ($okFilenames as $okFilename) {
+                // if the OK filename matches the CSV filename AND the OK file is empty
+                if ($this->isEqualFilename($filename, $okFilename) && filesize($okFilename) === 0) {
+                    $inOkFile = true;
+                    break;
+                }
+
+                // load the OK file content
+                $okFileLines = file($okFilename);
+
+                // remove line breaks
+                array_walk($okFileLines, function (&$line) {
+                    $line = trim($line, PHP_EOL);
+                });
+
+                // query whether or not the OK file contains the filename
+                if (in_array(basename($filename), $okFileLines)) {
+                    $inOkFile = true;
+                    break;
+                }
+            }
+
+            // reset the matches because we've a new bunch
+            if ($inOkFile === false) {
+                $this->reset();
+            }
+        }
+
+        // stop processing, because the filename doesn't match the subjects pattern
+        return ((boolean) $result && $inOkFile);
     }
 
     /**
