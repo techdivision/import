@@ -20,27 +20,25 @@
 
 namespace TechDivision\Import\Cache;
 
-use Psr\Cache\CacheItemPoolInterface;
-use TechDivision\Import\Utils\CacheKeys;
 use TechDivision\Import\Utils\CacheKeyUtilInterface;
 
 /**
- * Generic cache adapter that wrappes any PSR-6 compatible cache implementation and can be
- * used in a distributed environment.
+ * Local cache adapter implementation.
  *
- * If you're searching for a maximum performance consider using the LocalCacheAdapter
- * implementation.
+ * This cache adapter guarantees maximum performance but can eventually not be used
+ * in a distributed environemnt where you want to use e. g. Redis for caching.
  *
- * ATTENTION: Please be aware, that this cache adapter is NOT multiprocess or -threadsafe!
+ * If you are in a distributed environment, have a look at the GenericCacheAdapter
+ * that can wrap any PSR-6 compatible cache implementations.
  *
  * @author    Tim Wagner <t.wagner@techdivision.com>
  * @copyright 2019 TechDivision GmbH <info@techdivision.com>
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
- * @see       \TechDivision\Import\Cache\LocalCacheAdapter
+ * @see       \TechDivision\Import\Cache\GenericCacheAdapter
  */
-class GenericCacheAdapter implements CacheAdapterInterface
+class LocalCacheAdapter implements CacheAdapterInterface
 {
 
     /**
@@ -51,11 +49,25 @@ class GenericCacheAdapter implements CacheAdapterInterface
     use CacheAdapterTrait;
 
     /**
+     * The array with the tags.
+     *
+     * @var array
+     */
+    protected $tags = array();
+
+    /**
      * The cache for the query results.
      *
-     * @var \Psr\Cache\CacheItemPoolInterface
+     * @var array
      */
-    protected $cache;
+    protected $cache = array();
+
+    /**
+     * References that links to another cache entry.
+     *
+     * @var array
+     */
+    protected $references = array();
 
     /**
      * The cache key utility instance.
@@ -66,43 +78,12 @@ class GenericCacheAdapter implements CacheAdapterInterface
 
     /**
      * Initialize the cache handler with the passed cache and configuration instances.
-     * .
-     * @param \Psr\Cache\CacheItemPoolInterface                $cache        The cache instance
+     *
      * @param \TechDivision\Import\Utils\CacheKeyUtilInterface $cacheKeyUtil The cache key utility instance
      */
-    public function __construct(
-        CacheItemPoolInterface $cache,
-        CacheKeyUtilInterface $cacheKeyUtil
-    ) {
-
-        // set the cache and the cache key utility instance
-        $this->cache = $cache;
-        $this->cacheKeyUtil = $cacheKeyUtil;
-    }
-
-    /**
-     * Resolve's the cache key.
-     *
-     * @param string $from The cache key to resolve
-     *
-     * @return string The resolved reference
-     */
-    protected function resolveReference($from)
+    public function __construct(CacheKeyUtilInterface $cacheKeyUtil)
     {
-
-        // try to load the load the references
-        if ($this->cache->hasItem(CacheKeys::REFERENCES)) {
-            // load the array with references from the cache
-            $references = $this->cache->getItem(CacheKeys::REFERENCES)->get();
-
-            // query whether a reference is available
-            if (isset($references[$from])) {
-                return $references[$from];
-            }
-        }
-
-        // return the passed reference
-        return $from;
+        $this->cacheKeyUtil = $cacheKeyUtil;
     }
 
     /**
@@ -128,8 +109,8 @@ class GenericCacheAdapter implements CacheAdapterInterface
     {
 
         // query whether or not the item has been cached, and if yes if the cache is valid
-        if ($this->cache->hasItem($resolvedKey = $this->resolveReference($this->cacheKey($key)))) {
-            return $this->cache->getItem($resolvedKey)->isHit();
+        if (isset($this->cache[$resolvedKey = $this->resolveReference($this->cacheKey($key))])) {
+            return $this->cache[$resolvedKey];
         }
 
         // return FALSE in all other cases
@@ -158,20 +139,26 @@ class GenericCacheAdapter implements CacheAdapterInterface
      */
     public function addReference($from, $to)
     {
+        $this->references[$this->cacheKey($from)] = $this->cacheKey($to);
+    }
 
-        // initialize the array with references
-        $references = array();
+    /**
+     * Resolve's the cache key.
+     *
+     * @param string $from The cache key to resolve
+     *
+     * @return string The resolved reference
+     */
+    protected function resolveReference($from)
+    {
 
-        // try to load the references from the cache
-        if ($this->isCached(CacheKeys::REFERENCES)) {
-            $references = $this->fromCache(CacheKeys::REFERENCES);
+        // query whether or not a reference exists
+        if (isset($this->references[$from])) {
+            return $this->references[$from];
         }
 
-        // add the reference to the array
-        $references[$this->cacheKey($from)] = $this->cacheKey($to);
-
-        // add the references back to the cache
-        $this->toCache(CacheKeys::REFERENCES, $references);
+        // return the passed reference
+        return $from;
     }
 
     /**
@@ -189,11 +176,8 @@ class GenericCacheAdapter implements CacheAdapterInterface
     public function toCache($key, $value, array $references = array(), array $tags = array(), $override = false, $time = null)
     {
 
-        // create the unique cache key
-        $uniqueKey = $this->cacheKey($key);
-
         // query whether or not the key has already been used
-        if ($this->isCached($uniqueKey) && $override === false) {
+        if (isset($this->cache[$this->resolveReference($uniqueKey = $this->cacheKey($key))]) && $override === false) {
             throw new \Exception(
                 sprintf(
                     'Try to override data with key "%s"',
@@ -202,17 +186,18 @@ class GenericCacheAdapter implements CacheAdapterInterface
             );
         }
 
+        // set the attribute in the registry
+        $this->cache[$uniqueKey] = $value;
+
         // prepend the tags with the cache key
         array_walk($tags, function (&$tag) {
             $tag = $this->cacheKey($tag);
         });
 
-        // initialize the cache item
-        $cacheItem = $this->cache->getItem($uniqueKey);
-        $cacheItem->set($value)->expiresAfter($time)->setTags($tags);
-
-        // set the attribute in the registry
-        $this->cache->save($cacheItem);
+        // tag the unique key
+        foreach ($tags as $tag) {
+            $this->tags[$tag][] = $uniqueKey;
+        }
 
         // also register the references if given
         foreach ($references as $from => $to) {
@@ -229,7 +214,9 @@ class GenericCacheAdapter implements CacheAdapterInterface
      */
     public function fromCache($key)
     {
-        return $this->cache->getItem($this->resolveReference($this->cacheKey($key)))->get();
+        if (isset($this->cache[$uniqueKey = $this->resolveReference($this->cacheKey($key))])) {
+            return $this->cache[$uniqueKey];
+        }
     }
 
     /**
@@ -239,7 +226,9 @@ class GenericCacheAdapter implements CacheAdapterInterface
      */
     public function flushCache()
     {
-        $this->cache->clear();
+        $this->tags = array();
+        $this->cache = array();
+        $this->references = array();
     }
 
     /**
@@ -257,34 +246,16 @@ class GenericCacheAdapter implements CacheAdapterInterface
             $tag = $this->cacheKey($tag);
         });
 
-        // query whether or not references are available
-        if ($this->isCached(CacheKeys::REFERENCES)) {
-            // load the array with references from the cache
-            $references = $this->fromCache(CacheKeys::REFERENCES);
-
-            // remove all the references of items that has one of the passed tags
-            foreach ($tags as $tag) {
-                foreach ($references as $from => $to) {
-                    // load the cache item for the referenced key
-                    $cacheItem = $this->cache->getItem($to);
-                    // query whether or not the cache item has the tag, if yes remove the reference
-                    if (in_array($tag, $cacheItem->getPreviousTags())) {
-                        unset($references[$from]);
+        // remove all the references of items that has one of the passed tags
+        foreach ($tags as $tag) {
+            if (isset($this->tags[$tag])) {
+                foreach ($this->tags[$tag] as $to) {
+                    if ($from = array_search($to, $this->references)) {
+                        unset($this->references[$from]);
                     }
                 }
             }
-
-            // query whether or not the references exists
-            if (sizeof($references) > 0) {
-                // set the array with references to the cache
-                $this->toCache(CacheKeys::REFERENCES, $references);
-            } else {
-                $this->removeCache(CacheKeys::REFERENCES);
-            }
         }
-
-        // finally, invalidate the items with the passed tags
-        $this->cache->invalidateTags($tags);
     }
 
     /**
@@ -298,19 +269,11 @@ class GenericCacheAdapter implements CacheAdapterInterface
     {
 
         // delete the item with the passed key
-        $this->cache->deleteItem($this->resolveReference($uniqueKey = $this->cacheKey($key)));
+        unset($this->cache[$this->resolveReference($uniqueKey = $this->cacheKey($key))]);
 
-        // query whether or not references are available
-        if ($this->isCached(CacheKeys::REFERENCES)) {
-            // load the array with references from the cache
-            $references = $this->fromCache(CacheKeys::REFERENCES);
-            // query whether or not the references exists
-            if (isset($references[$uniqueKey])) {
-                // remove the reference
-                unset($references[$uniqueKey]);
-                // set the array with references to the cache
-                $this->toCache(CacheKeys::REFERENCES, $references);
-            }
+        // query whether or not the references exists and has to be removed
+        if (isset($this->references[$uniqueKey])) {
+            unset($this->references[$uniqueKey]);
         }
     }
 }
