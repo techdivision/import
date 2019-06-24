@@ -1,3 +1,13 @@
+# Version 11.1.0
+
+## Bugfixes
+
+* None
+
+## Features
+
+* Add LocalCacheAdapter implementation for maximum performance and declare it as the default one
+
 # Version 11.0.0
 
 ## Bugfixes
