@@ -1,3 +1,13 @@
+# Version 12.0.0
+
+## Bugfixes
+
+* Fixed issue when renaming images with the same filename withing one import process
+
+## Features
+
+* None
+
 # Version 11.1.0
 
 ## Bugfixes
