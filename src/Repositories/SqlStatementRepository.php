@@ -419,7 +419,9 @@ class SqlStatementRepository extends AbstractSqlStatementRepository
                     is_default = :is_default
               WHERE website_id = :website_id',
         SqlStatementKeys::IMAGE_TYPES =>
-            'SELECT main_table.attribute_code
+            'SELECT main_table.attribute_code,
+                    main_table.attribute_id,
+                    main_table.is_user_defined
                FROM eav_attribute AS main_table
          INNER JOIN eav_entity_type AS entity_type
                  ON main_table.entity_type_id = entity_type.entity_type_id
@@ -429,7 +431,11 @@ class SqlStatementRepository extends AbstractSqlStatementRepository
                  ON main_table.attribute_id = additional_table.attribute_id
               WHERE (entity_type_code = \'catalog_product\')
                 AND (frontend_input = \'media_image\')
-           GROUP BY main_table.attribute_code',
+           GROUP BY main_table.attribute_code,
+                    main_table.attribute_id,
+                    main_table.is_user_defined
+           ORDER BY main_table.is_user_defined,
+                    main_table.attribute_id',
         SqlStatementKeys::CUSTOMER_GROUPS =>
             'SELECT * FROM customer_group'
     );

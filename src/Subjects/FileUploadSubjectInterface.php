@@ -33,6 +33,52 @@ interface FileUploadSubjectInterface extends FilesystemSubjectInterface
 {
 
     /**
+     * Adds the mapping from the filename => new filename.
+     *
+     * @param string $filename    The filename
+     * @param string $newFilename The new filename
+     *
+     * @return string The mapped filename
+     */
+    public function addImageMapping($filename, $newFilename);
+
+    /**
+     * Returns the mapped filename (which is the new filename).
+     *
+     * @param string $filename The filename to map
+     *
+     * @return string The mapped filename
+     */
+    public function getImageMapping($filename);
+
+    /**
+     * Returns TRUE, if the passed filename has already been mapped.
+     *
+     * @param string $filename The filename to query for
+     *
+     * @return boolean TRUE if the filename has already been mapped, else FALSE
+     */
+    public function imageHasBeenMapped($filename);
+
+    /**
+     * Returns TRUE, if the passed filename has NOT been mapped yet.
+     *
+     * @param string $filename The filename to query for
+     *
+     * @return boolean TRUE if the filename has NOT been mapped yet, else FALSE
+     */
+    public function imageHasNotBeenMapped($filename);
+
+    /**
+     * Returns the original filename for passed one (which is the new filename).
+     *
+     * @param string $newFilename The new filename to return the original one for
+     *
+     * @return string The original filename
+     */
+    public function getInversedImageMapping($newFilename);
+
+    /**
      * Return's the flag to copy images or not.
      *
      * @return boolean The flag
@@ -54,9 +100,9 @@ interface FileUploadSubjectInterface extends FilesystemSubjectInterface
     public function getImagesFileDir();
 
     /**
-     * Get new file name if the same is already exists.
+     * Get new file name, if a filename with the same name already exists.
      *
-     * @param string $targetFilename The name of the exisising files
+     * @param string $targetFilename The name of target file
      *
      * @return string The new filename
      */
