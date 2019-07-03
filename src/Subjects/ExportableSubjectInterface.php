@@ -35,6 +35,13 @@ interface ExportableSubjectInterface
 {
 
     /**
+     * Return's the artefacts for post-processing.
+     *
+     * @return array The artefacts
+     */
+    public function getArtefacts();
+
+    /**
      * Set's the exporter adapter instance.
      *
      * @param \TechDivision\Import\Adapter\ExportAdapterInterface $exportAdapter The exporter adapter instance

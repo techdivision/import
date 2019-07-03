@@ -68,7 +68,7 @@ class SubjectFactoryTest extends \PHPUnit_Framework_TestCase
             ->getMock();
         $mockFilesystemAdapterConfiguration->expects($this->any())
             ->method('getId')
-            ->willReturn($filesystemAdapterId = 'import.a.random.filesystem.adapter.id');
+            ->willReturn('import.a.random.filesystem.adapter.id');
 
         // mock the subject configuration
         $mockSubjectConfiguration = $this->getMockBuilder('TechDivision\Import\Configuration\SubjectConfigurationInterface')

@@ -2,10 +2,12 @@
 
 ## Bugfixes
 
+* Fixed issue with invalid return value of LocalCacheAdapter::isCached($key) method
 * Fixed issue when renaming images with the same filename withing one import process
 
 ## Features
 
+* Optimize SQL to load image types in the optimal order for further processing
 * Impovements to significantly lower the memory footprint in production mode
 
 # Version 11.1.0

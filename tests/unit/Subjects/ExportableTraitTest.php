@@ -37,7 +37,7 @@ class ExportableTraitTest extends \PHPUnit_Framework_TestCase
     /**
      * The exportable trait that has to be tested.
      *
-     * @var \TechDivision\Import\Subjects\ExportableTrait
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $exportableTrait;
 
@@ -86,11 +86,56 @@ class ExportableTraitTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * Test the addArtefacts() method with orginial data has been serialized.
+     * Test the addArtefacts() method with orginial data has NOT been serialized in production mode.
      *
      * @return void
      */
-    public function testAddArtefactsWithWithOriginalData()
+    public function testAddArtefactsWithoutOriginalDataInProuctionMode()
+    {
+
+        // set last entity ID
+        $this->exportableTrait->setLastEntityId($lastEntityId = 1000);
+
+        // initialize the artefact type
+        $type = 'product-variants';
+
+        // initialize the artefacts to import
+        $artefacts = array(
+            array(
+                ColumnKeys::ORIGINAL_DATA  => array(
+                    ColumnKeys::ORIGINAL_FILENAME     => 'product-import_20170101123000_01.csv',
+                    ColumnKeys::ORIGINAL_LINE_NUMBER  => 2,
+                    ColumnKeys::ORIGINAL_COLUMN_NAMES => array('col1', 'col2')
+                ),
+                ColumnKeys::ATTRIBUTE_CODE => 'a_attribute_code',
+                ColumnKeys::VALUE          => 1001
+            )
+        );
+
+        // prepare the expected result
+        $expectedArtefacts = array();
+        foreach ($artefacts as $key => $artefact) {
+            $expectedArtefacts[$key] = $artefact;
+            $expectedArtefacts[$key][ColumnKeys::ORIGINAL_DATA] = null;
+        }
+
+        // initialize the artefacts to import
+        $artfactsToCompare = array(
+            $type => array($lastEntityId => $expectedArtefacts)
+        );
+
+        // assert that the original data has been serialized
+        $this->assertNull($this->exportableTrait->addArtefacts($type, $artefacts));
+        $this->assertCount(1, $this->exportableTrait->getArtefacts());
+        $this->assertSame($artfactsToCompare, $this->exportableTrait->getArtefacts());
+    }
+
+    /**
+     * Test the addArtefacts() method with orginial data has been serialized in debug mode.
+     *
+     * @return void
+     */
+    public function testAddArtefactsWithOriginalDataInDebugMode()
     {
 
         // set last entity ID
@@ -125,6 +170,12 @@ class ExportableTraitTest extends \PHPUnit_Framework_TestCase
         $artfactsToCompare = array(
             $type => array($lastEntityId => $expectedArtefacts)
         );
+
+        // activate debug mode
+        $this->exportableTrait
+             ->expects($this->any())
+             ->method('isDebugMode')
+             ->willReturn(true);
 
         // assert that the original data has been serialized
         $this->assertNull($this->exportableTrait->addArtefacts($type, $artefacts));

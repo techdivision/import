@@ -20,13 +20,12 @@
 
 namespace TechDivision\Import\Subjects;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use TechDivision\Import\Utils\LoggerKeys;
 use TechDivision\Import\Utils\MemberNames;
 use TechDivision\Import\Utils\RegistryKeys;
 use TechDivision\Import\Utils\EntityTypeCodes;
 use TechDivision\Import\Utils\Generators\CoreConfigDataUidGenerator;
-use Doctrine\Common\Collections\ArrayCollection;
-use TechDivision\Import\Subjects\I18n\DateConverterInterface;
 use TechDivision\Import\Configuration\Subject\DateConverterConfigurationInterface;
 
 /**
