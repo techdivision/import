@@ -1,3 +1,13 @@
+# Version 12.0.1
+
+## Bugfixes
+
+* Add missing method MissingOptionValuesPlugin::isDebugMode()
+
+## Features
+
+* None
+
 # Version 12.0.0
 
 ## Bugfixes

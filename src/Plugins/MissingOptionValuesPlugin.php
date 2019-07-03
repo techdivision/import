@@ -70,6 +70,16 @@ class MissingOptionValuesPlugin extends AbstractPlugin
     }
 
     /**
+     * Queries whether or not debug mode is enabled or not, default is TRUE.
+     *
+     * @return boolean TRUE if debug mode is enabled, else FALSE
+     */
+    public function isDebugMode()
+    {
+        return $this->getConfiguration()->isDebugMode();
+    }
+
+    /**
      * Process the plugin functionality.
      *
      * @return void
