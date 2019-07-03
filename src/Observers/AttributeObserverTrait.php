@@ -129,13 +129,15 @@ trait AttributeObserverTrait
         }
 
         // remove all the empty values from the row, expected the columns has to be cleaned-up
-        return array_filter(
-            $this->row,
-            function ($value, $key) {
-                return ($value !== null && $value !== '') || in_array($key, $this->cleanUpEmptyColumnKeys);
-            },
-            ARRAY_FILTER_USE_BOTH
-        );
+        foreach ($this->row as $key => $value) {
+            // query whether or not the value is empty AND the column has NOT to be cleaned-up
+            if (($value === null || $value === '') && in_array($key, $this->cleanUpEmptyColumnKeys) === false) {
+                unset($this->row[$key]);
+            }
+        }
+
+        // finally return the clean row
+        return $this->row;
     }
 
     /**

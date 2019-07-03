@@ -40,7 +40,7 @@ trait ExportableTrait
      *
      * @var array
      */
-    protected $artefacs = array();
+    protected $artefacts = array();
 
     /**
      * The export adapter instance.
@@ -61,9 +61,19 @@ trait ExportableTrait
      *
      * @return array The artefacts
      */
-    public function getArtefacts()
+    protected function getArtefacts()
     {
-        return $this->artefacs;
+        return $this->artefacts;
+    }
+
+    /**
+     * Reset the array with the artefacts to free the memory.
+     *
+     * @return void
+     */
+    protected function resetArtefacts()
+    {
+        $this->artefacts = array();
     }
 
     /**
@@ -85,12 +95,13 @@ trait ExportableTrait
             return;
         }
 
-        // serialize the original data
-        array_walk($artefacts, function (&$artefact) {
-            if (isset($artefact[ColumnKeys::ORIGINAL_DATA])) {
-                $artefact[ColumnKeys::ORIGINAL_DATA] = serialize($artefact[ColumnKeys::ORIGINAL_DATA]);
+        // serialize the original data, if we're in debug mode
+        $keys = array_keys($artefacts);
+        foreach ($keys as $key) {
+            if (isset($artefacts[$key][ColumnKeys::ORIGINAL_DATA])) {
+                $artefacts[$key][ColumnKeys::ORIGINAL_DATA] = $this->isDebugMode() ? serialize($artefacts[$key][ColumnKeys::ORIGINAL_DATA]) : null;
             }
-        });
+        }
 
         // query whether or not, existing artefacts has to be overwritten
         if ($override === true) {
@@ -112,7 +123,7 @@ trait ExportableTrait
     protected function overrideArtefacts($type, array $artefacts)
     {
         foreach ($artefacts as $key => $artefact) {
-            $this->artefacs[$type][$this->getLastEntityId()][$key] = $artefact;
+            $this->artefacts[$type][$this->getLastEntityId()][$key] = $artefact;
         }
     }
 
@@ -128,7 +139,7 @@ trait ExportableTrait
     protected function appendArtefacts($type, array $artefacts)
     {
         foreach ($artefacts as $artefact) {
-            $this->artefacs[$type][$this->getLastEntityId()][] = $artefact;
+            $this->artefacts[$type][$this->getLastEntityId()][] = $artefact;
         }
     }
 
@@ -145,16 +156,17 @@ trait ExportableTrait
     {
 
         // query whether or not, artefacts for the passed params are available
-        if (isset($this->artefacs[$type][$entityId])) {
+        if (isset($this->artefacts[$type][$entityId])) {
             // load the artefacts
-            $artefacts = $this->artefacs[$type][$entityId];
+            $artefacts = $this->artefacts[$type][$entityId];
 
-            // unserialize the original data
-            array_walk($artefacts, function (&$artefact) {
-                if (isset($artefact[ColumnKeys::ORIGINAL_DATA])) {
-                    $artefact[ColumnKeys::ORIGINAL_DATA] = unserialize($artefact[ColumnKeys::ORIGINAL_DATA]);
+            // unserialize the original data, if we're in debug mode, if we're in debug mode
+            $keys = array_keys($artefacts);
+            foreach ($keys as $key) {
+                if (isset($artefacts[$key][ColumnKeys::ORIGINAL_DATA])) {
+                    $artefacts[$key][ColumnKeys::ORIGINAL_DATA] = $this->isDebugMode() ? unserialize($artefacts[$key][ColumnKeys::ORIGINAL_DATA]) : null;
                 }
-            });
+            }
 
             // return the artefacts
             return $artefacts;
@@ -180,7 +192,7 @@ trait ExportableTrait
      */
     public function hasArtefactsByTypeAndEntityId($type, $entityId)
     {
-        return isset($this->artefacs[$type][$entityId]);
+        return isset($this->artefacts[$type][$entityId]);
     }
 
     /**
@@ -214,7 +226,7 @@ trait ExportableTrait
     }
 
     /**
-     * Export's the artefacts to CSV files.
+     * Export's the artefacts to CSV files and resets the array with the artefacts to free the memory.
      *
      * @param integer $timestamp The timestamp part of the original import file
      * @param string  $counter   The counter part of the origin import file
@@ -223,7 +235,12 @@ trait ExportableTrait
      */
     public function export($timestamp, $counter)
     {
+
+        // export the artefacts
         $this->getExportAdapter()->export($this->getArtefacts(), $this->getTargetDir(), $timestamp, $counter);
+
+        // reset the artefacts
+        $this->resetArtefacts();
     }
 
     /**
@@ -269,4 +286,11 @@ trait ExportableTrait
     {
         return $this->lastEntityId;
     }
+
+    /**
+     * Queries whether or not debug mode is enabled or not, default is TRUE.
+     *
+     * @return boolean TRUE if debug mode is enabled, else FALSE
+     */
+    abstract public function isDebugMode();
 }

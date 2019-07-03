@@ -51,13 +51,6 @@ interface ExportableSubjectInterface
     public function getExportAdapter();
 
     /**
-     * Return's the artefacts for post-processing.
-     *
-     * @return array The artefacts
-     */
-    public function getArtefacts();
-
-    /**
      * Return the artefacts for the passed type and entity ID.
      *
      * @param string $type     The artefact type, e. g. configurable
@@ -91,7 +84,7 @@ interface ExportableSubjectInterface
     public function newArtefact(array $columns, array $originalColumnNames = array());
 
     /**
-     * Export's the artefacts to CSV files.
+     * Export's the artefacts to CSV files and resets the array with the artefacts to free the memory.
      *
      * @param integer $timestamp The timestamp part of the original import file
      * @param string  $counter   The counter part of the origin import file

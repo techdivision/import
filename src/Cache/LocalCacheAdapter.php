@@ -107,14 +107,7 @@ class LocalCacheAdapter implements CacheAdapterInterface
      */
     public function isCached($key)
     {
-
-        // query whether or not the item has been cached, and if yes if the cache is valid
-        if (isset($this->cache[$resolvedKey = $this->resolveReference($this->cacheKey($key))])) {
-            return $this->cache[$resolvedKey];
-        }
-
-        // return FALSE in all other cases
-        return false;
+        return isset($this->cache[$this->resolveReference($this->cacheKey($key))]);
     }
 
     /**

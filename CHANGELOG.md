@@ -6,7 +6,7 @@
 
 ## Features
 
-* None
+* Impovements to significantly lower the memory footprint in production mode
 
 # Version 11.1.0
 
