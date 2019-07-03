@@ -190,7 +190,7 @@ class FileUploadTraitTest extends \PHPUnit_Framework_TestCase
      * @return void
      *
      * @expectedException \Exception
-     * @expectedExceptionMessage Media file pub/images/a/b/test.jpg not available
+     * @expectedExceptionMessage Media file "pub/images/a/b/test.jpg" is not available
      */
     public function testUploadFileWithNotExistingFile()
     {

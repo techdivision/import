@@ -61,7 +61,7 @@ trait ExportableTrait
      *
      * @return array The artefacts
      */
-    protected function getArtefacts()
+    public function getArtefacts()
     {
         return $this->artefacts;
     }
