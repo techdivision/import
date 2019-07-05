@@ -243,8 +243,13 @@ class LocalCacheAdapter implements CacheAdapterInterface
         foreach ($tags as $tag) {
             if (isset($this->tags[$tag])) {
                 foreach ($this->tags[$tag] as $to) {
+                    // clean-up the references that reference to the key
                     if ($from = array_search($to, $this->references)) {
                         unset($this->references[$from]);
+                    }
+                    // clean-up the cache entry itself
+                    if (isset($this->cache[$to])) {
+                        unset($this->cache[$to]);
                     }
                 }
             }

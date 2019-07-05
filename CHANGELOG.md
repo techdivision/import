@@ -1,3 +1,13 @@
+# Version 12.0.2
+
+## Bugfixes
+
+* Fixed issue in LocalCacheAdapter::invalidateTags() method that leads to inconsistent cache data
+
+## Features
+
+* None
+
 # Version 12.0.1
 
 ## Bugfixes
