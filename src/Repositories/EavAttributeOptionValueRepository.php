@@ -169,7 +169,7 @@ class EavAttributeOptionValueRepository extends AbstractRepository implements Ea
         );
 
         // prepare the cache key
-        $cacheKey = $this->cacheAdapter->cacheKey(SqlStatementKeys::EAV_ATTRIBUTE_OPTION_VALUE_BY_OPTION_ID_AND_STORE_ID, $params);
+        $cacheKey = $this->cacheAdapter->cacheKey(array(SqlStatementKeys::EAV_ATTRIBUTE_OPTION_VALUE_BY_OPTION_ID_AND_STORE_ID => $params));
 
         // query whether or not the item has already been cached
         if ($this->cacheAdapter->isCached($cacheKey)) {
@@ -213,7 +213,7 @@ class EavAttributeOptionValueRepository extends AbstractRepository implements Ea
         );
 
         // prepare the cache key
-        $cacheKey = $this->cacheAdapter->cacheKey(SqlStatementKeys::EAV_ATTRIBUTE_OPTION_VALUE_BY_ATTRIBUTE_CODE_AND_STORE_ID_AND_VALUE, $params);
+        $cacheKey = $this->cacheAdapter->cacheKey(array(SqlStatementKeys::EAV_ATTRIBUTE_OPTION_VALUE_BY_ATTRIBUTE_CODE_AND_STORE_ID_AND_VALUE => $params));
 
         // return the cached result if available
         if ($this->cacheAdapter->isCached($cacheKey)) {
@@ -257,7 +257,7 @@ class EavAttributeOptionValueRepository extends AbstractRepository implements Ea
         );
 
         // prepare the cache key
-        $cacheKey = $this->cacheAdapter->cacheKey(SqlStatementKeys::EAV_ATTRIBUTE_OPTION_VALUE_BY_ENTITY_TYPE_ID_AND_ATTRIBUTE_CODE_AND_STORE_ID_AND_VALUE, $params);
+        $cacheKey = $this->cacheAdapter->cacheKey(array(SqlStatementKeys::EAV_ATTRIBUTE_OPTION_VALUE_BY_ENTITY_TYPE_ID_AND_ATTRIBUTE_CODE_AND_STORE_ID_AND_VALUE => $params));
 
         // return the cached result if available
         if ($this->cacheAdapter->isCached($cacheKey)) {

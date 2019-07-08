@@ -94,20 +94,24 @@ class EavAttributeOptionValueCacheWarmer implements CacheWarmerInterface
 
             // prepare the cache key and add the option value to the cache
             $cacheKeys[$cacheAdapter->cacheKey(
-                SqlStatementKeys::EAV_ATTRIBUTE_OPTION_VALUE_BY_OPTION_ID_AND_STORE_ID,
                 array(
-                    MemberNames::STORE_ID  => $eavAttributeOptionValue[MemberNames::STORE_ID],
-                    MemberNames::OPTION_ID => $eavAttributeOptionValue[MemberNames::OPTION_ID]
+                    SqlStatementKeys::EAV_ATTRIBUTE_OPTION_VALUE_BY_OPTION_ID_AND_STORE_ID =>
+                    array(
+                        MemberNames::STORE_ID  => $eavAttributeOptionValue[MemberNames::STORE_ID],
+                        MemberNames::OPTION_ID => $eavAttributeOptionValue[MemberNames::OPTION_ID]
+                    )
                 )
             )] = $uniqueKey;
 
             // prepare the cache key and add the option value to the cache
             $cacheKeys[$cacheAdapter->cacheKey(
-                SqlStatementKeys::EAV_ATTRIBUTE_OPTION_VALUE_BY_ATTRIBUTE_CODE_AND_STORE_ID_AND_VALUE,
                 array(
-                    MemberNames::ATTRIBUTE_CODE => $eavAttributeOptionValue[MemberNames::ATTRIBUTE_CODE],
-                    MemberNames::STORE_ID       => $eavAttributeOptionValue[MemberNames::STORE_ID],
-                    MemberNames::VALUE          => $eavAttributeOptionValue[MemberNames::VALUE]
+                    SqlStatementKeys::EAV_ATTRIBUTE_OPTION_VALUE_BY_ATTRIBUTE_CODE_AND_STORE_ID_AND_VALUE =>
+                    array(
+                        MemberNames::ATTRIBUTE_CODE => $eavAttributeOptionValue[MemberNames::ATTRIBUTE_CODE],
+                        MemberNames::STORE_ID       => $eavAttributeOptionValue[MemberNames::STORE_ID],
+                        MemberNames::VALUE          => $eavAttributeOptionValue[MemberNames::VALUE]
+                    )
                 )
             )] = $uniqueKey;
 
@@ -115,12 +119,14 @@ class EavAttributeOptionValueCacheWarmer implements CacheWarmerInterface
             foreach ($eavEntityTypes as $eavEntityType) {
                 // prepare the cache key and add the option value to the cache
                 $cacheKeys[$cacheAdapter->cacheKey(
-                    SqlStatementKeys::EAV_ATTRIBUTE_OPTION_VALUE_BY_ENTITY_TYPE_ID_AND_ATTRIBUTE_CODE_AND_STORE_ID_AND_VALUE,
                     array(
-                        MemberNames::ENTITY_TYPE_ID => $eavEntityType[MemberNames::ENTITY_TYPE_ID],
-                        MemberNames::ATTRIBUTE_CODE => $eavAttributeOptionValue[MemberNames::ATTRIBUTE_CODE],
-                        MemberNames::STORE_ID       => $eavAttributeOptionValue[MemberNames::STORE_ID],
-                        MemberNames::VALUE          => $eavAttributeOptionValue[MemberNames::VALUE]
+                        SqlStatementKeys::EAV_ATTRIBUTE_OPTION_VALUE_BY_ENTITY_TYPE_ID_AND_ATTRIBUTE_CODE_AND_STORE_ID_AND_VALUE =>
+                        array(
+                            MemberNames::ENTITY_TYPE_ID => $eavEntityType[MemberNames::ENTITY_TYPE_ID],
+                            MemberNames::ATTRIBUTE_CODE => $eavAttributeOptionValue[MemberNames::ATTRIBUTE_CODE],
+                            MemberNames::STORE_ID       => $eavAttributeOptionValue[MemberNames::STORE_ID],
+                            MemberNames::VALUE          => $eavAttributeOptionValue[MemberNames::VALUE]
+                        )
                     )
                 )] = $uniqueKey;
             }
