@@ -1,3 +1,13 @@
+# Version 12.0.3
+
+## Bugfixes
+
+* Fixed issue in cache warmer functionality
+
+## Features
+
+* None
+
 # Version 12.0.2
 
 ## Bugfixes

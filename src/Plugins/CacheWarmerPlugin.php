@@ -54,12 +54,14 @@ class CacheWarmerPlugin extends AbstractPlugin
     {
 
         // query whether or not additional cache warmers has been configured
-        if ($this->getConfiguration()->isCacheEnabled() && $this->getPluginConfiguration()->hasParam(ConfigurationKeys::CACHE_WARMERS)) {
+        if ($this->getConfiguration()->isCacheEnabled()) {
             // try ot load the cache warmers and merge them with the default ones
-            $this->cacheWarmers = array_merge(
-                $this->cacheWarmers,
-                $this->getPluginConfiguration()->getParam(ConfigurationKeys::CACHE_WARMERS)
-            );
+            if ($this->getPluginConfiguration()->hasParam(ConfigurationKeys::CACHE_WARMERS)) {
+                $this->cacheWarmers = array_merge(
+                    $this->cacheWarmers,
+                    $this->getPluginConfiguration()->getParam(ConfigurationKeys::CACHE_WARMERS)
+                );
+            }
 
             // create the instances and warm the repository caches
             foreach ($this->cacheWarmers as $id) {
