@@ -1,3 +1,13 @@
+# Version 12.0.5
+
+## Bugfixes
+
+* Remove unnecessary dependency to ramsey/uuid
+
+## Features
+
+* None
+
 # Version 12.0.4
 
 ## Bugfixes
