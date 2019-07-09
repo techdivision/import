@@ -87,6 +87,8 @@ class ConfigurableCacheAdapter implements CacheAdapterInterface
             // initialize the ttl and the enabled flag
             $this->time = $cacheConfiguration->getTime();
             $this->enabled = $cacheConfiguration->isEnabled();
+        } else {
+            $this->enabled = ($configuration->isCacheEnabled() || $type === CacheTypes::TYPE_STATIC);
         }
     }
 

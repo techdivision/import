@@ -1,3 +1,13 @@
+# Version 12.0.4
+
+## Bugfixes
+
+* Fixed issue with ignored --cache-enabled option when not cache configuration is available
+
+## Features
+
+* None
+
 # Version 12.0.3
 
 ## Bugfixes
