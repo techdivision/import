@@ -1,3 +1,13 @@
+# Version 12.0.6
+
+## Bugfixes
+
+* Add missing command mapping for attribute set import
+
+## Features
+
+* None
+
 # Version 12.0.5
 
 ## Bugfixes
