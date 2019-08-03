@@ -1,3 +1,13 @@
+# Version 12.0.7
+
+## Bugfixes
+
+* None
+
+## Features
+
+* Make ZIP archive created by Archive flat (remove directory structure)
+
 # Version 12.0.6
 
 ## Bugfixes

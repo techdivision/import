@@ -108,7 +108,7 @@ class ArchivePlugin extends AbstractPlugin
 
         // iterate through all files and add them to the ZIP archive
         foreach ($fileIterator as $filename) {
-            $archive->addFile($filename);
+            $archive->addFile($filename, basename($filename));
         }
 
         // save the ZIP archive
