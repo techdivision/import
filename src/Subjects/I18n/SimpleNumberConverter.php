@@ -107,11 +107,20 @@ class SimpleNumberConverter implements NumberConverterInterface
      */
     public function convert($number)
     {
+        return $this->getFormatter()->format($this->parse($number));
+    }
 
-        // initialize the formatter instance with the source locale
-        $formatter = \NumberFormatter::create($this->getNumberConverterConfiguration()->getLocale(), \NumberFormatter::DECIMAL);
-
-        // parse, format and return the value
-        return $this->getFormatter()->format($formatter->parse($number));
+    /**
+     * Parse a string into a number using the current formatter rules.
+     *
+     * @param string  $value    The value to be converted
+     * @param integer $type     The formatting type to use, by default NumberFormatter::TYPE_DOUBLE is used
+     * @param integer $position The offset in the string at which to begin parsing, on return this value will hold the offset at which parsing ended
+     *
+     * @return float The value of the parsed number or FALSE on error
+     */
+    public function parse($value, $type = \NumberFormatter::TYPE_DOUBLE, &$position = null)
+    {
+        return \NumberFormatter::create($this->getNumberConverterConfiguration()->getLocale(), \NumberFormatter::DECIMAL)->parse($value, $type, $position);
     }
 }

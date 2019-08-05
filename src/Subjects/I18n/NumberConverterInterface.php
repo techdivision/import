@@ -58,4 +58,15 @@ interface NumberConverterInterface
      * @return float The float value of the number
      */
     public function convert($number);
+
+    /**
+     * Parse a string into a number using the current formatter rules.
+     *
+     * @param string  $value    The value to be converted
+     * @param integer $type     The formatting type to use, by default NumberFormatter::TYPE_DOUBLE is used
+     * @param integer $position The offset in the string at which to begin parsing, on return this value will hold the offset at which parsing ended
+     *
+     * @return float The value of the parsed number or FALSE on error
+     */
+    public function parse($value, $type = \NumberFormatter::TYPE_DOUBLE, &$position = null);
 }

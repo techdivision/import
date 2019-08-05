@@ -1,3 +1,14 @@
+# Version 13.0.0
+
+## Bugfixes
+
+* Fixed issue when formatting decimals greater than 999
+
+## Features
+
+* Add Magento Edition + Version output to RenderAnsiArtListener implementation
+* Extend NumberConverterInterface + DateConverterInterface as well as implementations
+
 # Version 12.0.7
 
 ## Bugfixes

@@ -76,16 +76,17 @@ class SimpleDateConverter implements DateConverterInterface
     /**
      * Converts the passed date into a Magento 2 compatible date format.
      *
-     * @param string $date The date to convert
+     * @param string $date   The date to convert
+     * @param string $format The date format to convert to
      *
      * @return string The converted date
      */
-    public function convert($date)
+    public function convert($date, $format = 'Y-m-d H:i:s')
     {
 
         // create a DateTime instance from the passed value
         if ($dateTime = \DateTime::createFromFormat($this->getDateConverterConfiguration()->getSourceDateFormat(), $date)) {
-            return $dateTime->format('Y-m-d H:i:s');
+            return $dateTime->format($format);
         }
 
         // return NULL, if the passed value is NOT a valid date

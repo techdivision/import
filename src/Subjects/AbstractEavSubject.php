@@ -34,8 +34,15 @@ use TechDivision\Import\Utils\EntityTypeCodes;
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
  */
-abstract class AbstractEavSubject extends AbstractSubject implements EavSubjectInterface
+abstract class AbstractEavSubject extends AbstractSubject implements EavSubjectInterface, NumberConverterSubjectInterface
 {
+
+    /**
+     * The trait that provides number converting functionality.
+     *
+     * @var \TechDivision\Import\Subjects\NumberConverterTrait
+     */
+    use NumberConverterTrait;
 
     /**
      * The available EAV attributes, grouped by their attribute set and the attribute set name as keys.
@@ -211,17 +218,19 @@ abstract class AbstractEavSubject extends AbstractSubject implements EavSubjectI
 
         // cast the value to a valid timestamp
         if ($backendType === BackendTypeKeys::BACKEND_TYPE_DATETIME) {
-            return \DateTime::createFromFormat($this->getConfiguration()->getDateConverter()->getSourceDateFormat(), $value)->format('Y-m-d H:i:s');
+            return $this->getDateConverter()->convert($value);
         }
 
-        // cast the value to a float value
-        if ($backendType === BackendTypeKeys::BACKEND_TYPE_FLOAT) {
-            return (float) $value;
+        // cast the value to a float/deicmal value
+        if ($backendType === BackendTypeKeys::BACKEND_TYPE_FLOAT ||
+            $backendType === BackendTypeKeys::BACKEND_TYPE_DECIMAL
+        ) {
+            return (float) $this->getNumberConverter()->parse($value);
         }
 
         // cast the value to an integer
         if ($backendType === BackendTypeKeys::BACKEND_TYPE_INT) {
-            return (int) $value;
+            return (integer) $value;
         }
 
         // we don't need to cast strings

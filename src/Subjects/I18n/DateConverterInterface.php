@@ -53,9 +53,10 @@ interface DateConverterInterface
     /**
      * Converts the passed date into a Magento 2 compatible date format.
      *
-     * @param string $date The date to convert
+     * @param string $date   The date to convert
+     * @param string $format The date format to convert to
      *
      * @return string The converted date
      */
-    public function convert($date);
+    public function convert($date, $format = 'Y-m-d H:i:s');
 }

@@ -84,9 +84,11 @@ class RenderAnsiArtListener extends AbstractListener
 
         // log the debug information, if debug mode is enabled
         if ($this->getConfiguration()->isDebugMode()) {
-            // log the system's PHP configuration
-            $application->log(sprintf('PHP version: %s', phpversion()), LogLevel::DEBUG);
-            $application->log(sprintf('App version: %s', $application->getVersion()), LogLevel::DEBUG);
+            // log the Magento + the system's PHP configuration
+            $application->log(sprintf('Magento Edition: %s', $this->getConfiguration()->getMagentoEdition()), LogLevel::DEBUG);
+            $application->log(sprintf('Magento Version: %s', $this->getConfiguration()->getMagentoVersion()), LogLevel::DEBUG);
+            $application->log(sprintf('PHP Version: %s', phpversion()), LogLevel::DEBUG);
+            $application->log(sprintf('App Version: %s', $application->getVersion()), LogLevel::DEBUG);
             $application->log('-------------------- Loaded Extensions -----------------------', LogLevel::DEBUG);
             $application->log(implode(', ', $loadedExtensions = get_loaded_extensions()), LogLevel::DEBUG);
             $application->log('--------------------------------------------------------------', LogLevel::DEBUG);

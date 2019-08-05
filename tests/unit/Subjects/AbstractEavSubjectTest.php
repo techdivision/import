@@ -25,6 +25,11 @@ use TechDivision\Import\Utils\MemberNames;
 use TechDivision\Import\Utils\EntityTypeCodes;
 use TechDivision\Import\Utils\BackendTypeKeys;
 use TechDivision\Import\Utils\FrontendInputTypes;
+use TechDivision\Import\Subjects\I18n\SimpleDateConverter;
+use TechDivision\Import\Subjects\I18n\SimpleNumberConverter;
+use TechDivision\Import\Configuration\SubjectConfigurationInterface;
+use TechDivision\Import\Configuration\Subject\DateConverterConfigurationInterface;
+use TechDivision\Import\Configuration\Subject\NumberConverterConfigurationInterface;
 
 /**
  * Test class for the abstract EAV subject implementation.
@@ -367,6 +372,59 @@ class AbstractEavSubjectTest extends AbstractTest
      */
     public function testCastValueByBackendType($backendType, $value, $expected)
     {
+
+        // initialize the date converter configuation
+        $dateConverterConfiguration = $this->getMockBuilder(DateConverterConfigurationInterface::class)
+            ->setMethods(get_class_methods(DateConverterConfigurationInterface::class))
+            ->getMock();
+        $dateConverterConfiguration
+            ->expects($this->any())
+            ->method('getSourceDateFormat')
+            ->willReturn('n/d/y, g:i A');
+
+        // initialize the number converter configuation
+        $numberConverterConfiguration = $this->getMockBuilder(NumberConverterConfigurationInterface::class)
+            ->setMethods(get_class_methods(NumberConverterConfigurationInterface::class))
+            ->getMock();
+        $numberConverterConfiguration
+            ->expects($this->any())
+            ->method('getLocale')
+            ->willReturn('en_US');
+
+        // initialize the subject configuration
+        $subjectConfiguration = $this->getMockBuilder(SubjectConfigurationInterface::class)
+            ->setMethods(get_class_methods(SubjectConfigurationInterface::class))
+            ->getMock();
+        $subjectConfiguration
+            ->expects($this->any())
+            ->method('getNumberConverter')
+            ->willReturn($numberConverterConfiguration);
+        $subjectConfiguration
+            ->expects($this->any())
+            ->method('getDateConverter')
+            ->willReturn($dateConverterConfiguration);
+
+        // initialize the date converter
+        $dateConverter = $this->getMockBuilder(SimpleDateConverter::class)
+            ->setMethods(array('getSubjectConfiguration'))
+            ->getMock();
+        $dateConverter
+            ->expects($this->any())
+            ->method('getSubjectConfiguration')
+            ->willReturn($subjectConfiguration);
+
+        // initialize the number converter
+        $numberConverter = $this->getMockBuilder(SimpleNumberConverter::class)
+            ->setMethods(array('getSubjectConfiguration'))
+            ->getMock();
+        $numberConverter
+            ->expects($this->any())
+            ->method('getSubjectConfiguration')
+            ->willReturn($subjectConfiguration);
+
+        // set number and datetime converter instances
+        $this->abstractEavSubject->setDateConverter($dateConverter);
+        $this->abstractEavSubject->setNumberConverter($numberConverter);
 
         // cast the passed values
         $this->assertSame($expected, $this->abstractEavSubject->castValueByBackendType($backendType, $value));
