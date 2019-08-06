@@ -1,3 +1,13 @@
+# Version 13.0.1
+
+## Bugfixes
+
+* Fixed issue when formatting float/decimals on a localized system
+
+## Features
+
+* None
+
 # Version 13.0.0
 
 ## Bugfixes

@@ -349,8 +349,20 @@ class AbstractEavSubjectTest extends AbstractTest
         return array(
             array(BackendTypeKeys::BACKEND_TYPE_DATETIME, '10/21/16, 9:10 AM', '2016-10-21 09:10:00'),
             array(BackendTypeKeys::BACKEND_TYPE_DATETIME, '10/21/16, 9:10 PM', '2016-10-21 21:10:00'),
-            array(BackendTypeKeys::BACKEND_TYPE_FLOAT, '101.00', 101.00),
-            array(BackendTypeKeys::BACKEND_TYPE_FLOAT, '0.99', 0.99),
+            array(BackendTypeKeys::BACKEND_TYPE_FLOAT, '1,001,001.98', '1001001.98'),
+            array(BackendTypeKeys::BACKEND_TYPE_FLOAT, '1,001.98', '1001.98'),
+            array(BackendTypeKeys::BACKEND_TYPE_FLOAT, '1,102.8', '1102.8'),
+            array(BackendTypeKeys::BACKEND_TYPE_FLOAT, '0.8234', '0.8234'),
+            array(BackendTypeKeys::BACKEND_TYPE_FLOAT, '102.8', '102.8'),
+            array(BackendTypeKeys::BACKEND_TYPE_FLOAT, '101.00', '101'),
+            array(BackendTypeKeys::BACKEND_TYPE_FLOAT, '0.99', '0.99'),
+            array(BackendTypeKeys::BACKEND_TYPE_FLOAT, '1.001.001,98', '1001001.98', 'de_DE'),
+            array(BackendTypeKeys::BACKEND_TYPE_FLOAT, '1.001,98', '1001.98', 'de_DE'),
+            array(BackendTypeKeys::BACKEND_TYPE_FLOAT, '1.102,8', '1102.8', 'de_DE'),
+            array(BackendTypeKeys::BACKEND_TYPE_FLOAT, '0,8234', '0.8234', 'de_DE'),
+            array(BackendTypeKeys::BACKEND_TYPE_FLOAT, '102,8', '102.8', 'de_DE'),
+            array(BackendTypeKeys::BACKEND_TYPE_FLOAT, '101,00', '101', 'de_DE'),
+            array(BackendTypeKeys::BACKEND_TYPE_FLOAT, '0,99', '0.99', 'de_DE'),
             array(BackendTypeKeys::BACKEND_TYPE_INT, '101', 101),
             array(BackendTypeKeys::BACKEND_TYPE_INT, '1', 1),
             array(BackendTypeKeys::BACKEND_TYPE_INT, '0', 0),
@@ -370,7 +382,7 @@ class AbstractEavSubjectTest extends AbstractTest
      *
      * @dataProvider backendTypeProvider()
      */
-    public function testCastValueByBackendType($backendType, $value, $expected)
+    public function testCastValueByBackendType($backendType, $value, $expected, $sourceLocale = 'en_US')
     {
 
         // initialize the date converter configuation
@@ -389,7 +401,7 @@ class AbstractEavSubjectTest extends AbstractTest
         $numberConverterConfiguration
             ->expects($this->any())
             ->method('getLocale')
-            ->willReturn('en_US');
+            ->willReturn($sourceLocale);
 
         // initialize the subject configuration
         $subjectConfiguration = $this->getMockBuilder(SubjectConfigurationInterface::class)

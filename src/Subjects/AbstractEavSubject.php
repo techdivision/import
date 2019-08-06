@@ -221,11 +221,13 @@ abstract class AbstractEavSubject extends AbstractSubject implements EavSubjectI
             return $this->getDateConverter()->convert($value);
         }
 
-        // cast the value to a float/deicmal value
+        // cast the value to a string that represents the float/decimal value, because
+        // PHP will cast float values implicitly to the system locales format when
+        // rendering as string, e. g. with echo
         if ($backendType === BackendTypeKeys::BACKEND_TYPE_FLOAT ||
             $backendType === BackendTypeKeys::BACKEND_TYPE_DECIMAL
         ) {
-            return (float) $this->getNumberConverter()->parse($value);
+            return (string) $this->getNumberConverter()->parse($value);
         }
 
         // cast the value to an integer
