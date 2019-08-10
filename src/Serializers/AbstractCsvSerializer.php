@@ -58,7 +58,7 @@ abstract class AbstractCsvSerializer implements SerializerInterface, Configurati
      *
      * @return \TechDivision\Import\Configuration\CsvConfigurationInterface The configuration
      */
-    protected function getConfiguration()
+    public function getConfiguration()
     {
         return $this->configuration;
     }

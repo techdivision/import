@@ -73,4 +73,11 @@ interface SerializerInterface
      * @return array The unserialized values
      */
     public function unserialize($serialized = null);
+
+    /**
+     * Returns the configuration to un-/serialize the additional attributes.
+     *
+     * @return \TechDivision\Import\Configuration\CsvConfigurationInterface The configuration
+     */
+    public function getConfiguration();
 }
