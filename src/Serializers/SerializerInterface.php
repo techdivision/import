@@ -37,10 +37,9 @@ interface SerializerInterface
      * with the also passed delimiter.
      *
      * @param string|null $value     The value to extract
-     * @param string|null $delimiter The delimiter used to extrace the elements
+     * @param string|null $delimiter The delimiter used to extract the elements
      *
      * @return array|null The exploded values
-     * @see \TechDivision\Import\Serializers\ValueCsvSerializer::unserialize()
      */
     public function explode($value = null, $delimiter = null);
 
@@ -49,35 +48,36 @@ interface SerializerInterface
      * with the also passed delimiter.
      *
      * @param array|null  $value     The values to compact
-     * @param string|null $delimiter The delimiter use to implode the values
+     * @param string|null $delimiter The delimiter used to implode the values
      *
      * @return string|null The compatected value
-     * @see \TechDivision\Import\Serializers\ValueCsvSerializer::serialize()
      */
     public function implode(array $value = null, $delimiter = null);
 
     /**
      * Serializes the elements of the passed array.
      *
-     * @param array|null $unserialized The serialized data
+     * @param array|null  $unserialized The serialized data
+     * @param string|null $delimiter    The delimiter used to serialize the values
      *
      * @return string The serialized array
      */
-    public function serialize(array $unserialized = null);
+    public function serialize(array $unserialized = null, $delimiter = null);
 
     /**
      * Unserializes the elements of the passed string.
      *
      * @param string|null $serialized The value to unserialize
+     * @param string|null $delimiter  The delimiter used to unserialize the elements
      *
      * @return array The unserialized values
      */
-    public function unserialize($serialized = null);
+    public function unserialize($serialized = null, $delimiter = null);
 
     /**
      * Returns the configuration to un-/serialize the additional attributes.
      *
      * @return \TechDivision\Import\Configuration\CsvConfigurationInterface The configuration
      */
-    public function getConfiguration();
+    public function getCsvConfiguration();
 }

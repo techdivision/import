@@ -385,6 +385,8 @@
          !-->
         <service id="import.serializer.csv.value" class="TechDivision\Import\Serializers\ValueCsvSerializer"/>
         <service id="import.serializer.csv.additional.attribute" class="TechDivision\Import\Serializers\AdditionalAttributeCsvSerializer">
+            <argument type="service" id="configuration"/>
+            <argument type="service" id="import.processor.import"/>
             <argument type="service" id="import.serializer.factory.csv.value"/>
         </service>
         <service id="import.serializer.factory.csv.value" class="TechDivision\Import\Serializers\ValueCsvSerializerFactory">

@@ -62,14 +62,14 @@ class ValueCsvSerializer extends AbstractCsvSerializer
     }
 
     /**
-     * Serializes the elements of the passed array by using the
-     * instances CSV configuration options.
+     * Serializes the elements of the passed array.
      *
-     * @param array|null $unserialized The serialized data
+     * @param array|null  $unserialized The serialized data
+     * @param string|null $delimiter    The delimiter used to serialize the values
      *
-     * @return string|null The serialized array
+     * @return string The serialized array
      */
-    public function serialize(array $unserialized = null)
+    public function serialize(array $unserialized = null, $delimiter = null)
     {
 
         // do nothing, if the passed value is empty or NULL
@@ -78,12 +78,12 @@ class ValueCsvSerializer extends AbstractCsvSerializer
         }
 
         // load the global configuration
-        $configuration = $this->getConfiguration();
+        $csvConfiguration = $this->getCsvConfiguration();
 
         // initializet delimiter, enclosure and escape char
-        $delimiter = $this->getDelimiter() ? $this->getDelimiter() : $configuration->getDelimiter();
-        $enclosure = $configuration->getEnclosure();
-        $escape = $configuration->getEscape();
+        $delimiter = $this->getDelimiter() ? $this->getDelimiter() : $csvConfiguration->getDelimiter();
+        $enclosure = $csvConfiguration->getEnclosure();
+        $escape = $csvConfiguration->getEscape();
 
         // create hte callback method to enclose/escape the values
         $callback = function ($value) use ($enclosure, $escape) {
@@ -95,14 +95,14 @@ class ValueCsvSerializer extends AbstractCsvSerializer
     }
 
     /**
-     * Unserializes the elements of the passed value by using the
-     * instances CSV configuration options.
+     * Unserializes the elements of the passed string.
      *
      * @param string|null $serialized The value to unserialize
+     * @param string|null $delimiter  The delimiter used to unserialize the elements
      *
-     * @return array|null The exploded values
+     * @return array The unserialized values
      */
-    public function unserialize($serialized = null)
+    public function unserialize($serialized = null, $delimiter = null)
     {
 
         // do nothing, if the passed value is empty or NULL
@@ -111,12 +111,12 @@ class ValueCsvSerializer extends AbstractCsvSerializer
         }
 
         // load the global configuration
-        $configuration = $this->getConfiguration();
+        $csvConfiguration = $this->getCsvConfiguration();
 
         // initializet delimiter, enclosure and escape char
-        $delimiter = $this->getDelimiter() ? $this->getDelimiter() : $configuration->getDelimiter();
-        $enclosure = $configuration->getEnclosure();
-        $escape = $configuration->getEscape();
+        $delimiter = $this->getDelimiter() ? $this->getDelimiter() : $csvConfiguration->getDelimiter();
+        $enclosure = $csvConfiguration->getEnclosure();
+        $escape = $csvConfiguration->getEscape();
 
         // parse and return the found data as array
         return str_getcsv($serialized, $delimiter, $enclosure, $escape);
@@ -127,7 +127,7 @@ class ValueCsvSerializer extends AbstractCsvSerializer
      * with the also passed delimiter.
      *
      * @param string|null $value     The value to extract
-     * @param string|null $delimiter The delimiter used to extrace the elements
+     * @param string|null $delimiter The delimiter used to extract the elements
      *
      * @return array|null The exploded values
      * @see \TechDivision\Import\Serializers\ValueCsvSerializer::unserialize()

@@ -20,6 +20,10 @@
 
 namespace TechDivision\Import\Serializers;
 
+use TechDivision\Import\ConfigurationInterface;
+use TechDivision\Import\Utils\EntityTypeCodes;
+use TechDivision\Import\Utils\MemberNames;
+use TechDivision\Import\Utils\FrontendInputTypes;
 use TechDivision\Import\Configuration\CsvConfigurationInterface;
 
 /**
@@ -35,22 +39,109 @@ abstract class AbstractSerializerTest extends \PHPUnit_Framework_TestCase
 {
 
     /**
-     * The default CSV configuration values.
+     * The default configuration values.
      *
      * @var array
      */
     protected $defaultConfiguration = array(
-        'getDelimiter' => ',',
-        'getEnclosure' => '"',
-        'getEscape' => '\\'
+        'getEntityTypeCode'         => EntityTypeCodes::CATALOG_PRODUCT,
+        'getMultipleFieldDelimiter' => ',',
+        'getMultipleValueDelimiter' => '|'
     );
 
     /**
-     * Create and return a mock CSV configuration instance.
+     * The default CSV configuration values.
+     *
+     * @var array
+     */
+    protected $defaultCsvConfiguration = array(
+        'getDelimiter' => ',',
+        'getEnclosure' => '"',
+        'getEscape'    => '\\'
+    );
+
+    /**
+     * Returns the array with virtual entity types for testing purposes.
+     *
+     * @param array $entityTypes An array with additional entity types to merge
+     *
+     * @return array The array with the entity types
+     */
+    protected function getEntityTypes(array $entityTypes = array())
+    {
+        return array_merge(
+            array(
+                EntityTypeCodes::CATALOG_PRODUCT => array(
+                    MemberNames::ENTITY_TYPE_ID   => 4,
+                    MemberNames::ENTITY_TYPE_CODE => EntityTypeCodes::CATALOG_PRODUCT
+                )
+            ),
+            $entityTypes
+        );
+    }
+
+    /**
+     * Returns an array with virtual attributes for testing purposes.
+     *
+     * @param array $attributes An array with additional attributes to merge
+     *
+     * @return array The array with the attributes
+     */
+    protected function getAttributes(array $attributes = array())
+    {
+        return array_merge(
+            array(
+                'ac_01' => array(
+                    MemberNames::ATTRIBUTE_CODE => 'ac_01',
+                    MemberNames::ENTITY_TYPE_ID => 4,
+                    MemberNames::FRONTEND_INPUT => 'text'
+                ),
+                'ac_02' => array(
+                    MemberNames::ATTRIBUTE_CODE => 'ac_02',
+                    MemberNames::ENTITY_TYPE_ID => 4,
+                    MemberNames::FRONTEND_INPUT => 'text'
+                ),
+                'delivery_date_1' => array(
+                    MemberNames::ATTRIBUTE_CODE => 'delivery_date_1',
+                    MemberNames::ENTITY_TYPE_ID => 4,
+                    MemberNames::FRONTEND_INPUT => 'text'
+                ),
+                'my_boolean_attribute' => array(
+                    MemberNames::ATTRIBUTE_CODE => 'my_boolean_attribute',
+                    MemberNames::ENTITY_TYPE_ID => 4,
+                    MemberNames::FRONTEND_INPUT => FrontendInputTypes::BOOLEAN
+                ),
+                'my_select_attribute' => array(
+                    MemberNames::ATTRIBUTE_CODE => 'my_select_attribute',
+                    MemberNames::ENTITY_TYPE_ID => 4,
+                    MemberNames::FRONTEND_INPUT => FrontendInputTypes::SELECT
+                ),
+                'my_multiselect_attribute' => array(
+                    MemberNames::ATTRIBUTE_CODE => 'my_multiselect_attribute',
+                    MemberNames::ENTITY_TYPE_ID => 4,
+                    MemberNames::FRONTEND_INPUT => FrontendInputTypes::MULTISELECT
+                ),
+                'DMEU_Application' => array(
+                    MemberNames::ATTRIBUTE_CODE => 'DMEU_Application',
+                    MemberNames::ENTITY_TYPE_ID => 4,
+                    MemberNames::FRONTEND_INPUT => 'text'
+                ),
+                'DMEU_BulletText2' => array(
+                    MemberNames::ATTRIBUTE_CODE => 'DMEU_BulletText2',
+                    MemberNames::ENTITY_TYPE_ID => 4,
+                    MemberNames::FRONTEND_INPUT => 'text'
+                )
+            ),
+            $attributes
+        );
+    }
+
+    /**
+     * Create and return a mock configuration instance.
      *
      * @param array $configuration The configuration to use (will override with the default one)
      *
-     * @return \TechDivision\Import\Configuration\CsvConfigurationInterface The configuration instance
+     * @return \TechDivision\Import\ConfigurationInterface The configuration instance
      */
     protected function getMockConfiguration(array $configuration = array())
     {
@@ -59,7 +150,7 @@ abstract class AbstractSerializerTest extends \PHPUnit_Framework_TestCase
         $configuration = array_merge($this->defaultConfiguration, $configuration);
 
         // create a mock configuration instance
-        $mockConfiguration = $this->getMockBuilder(CsvConfigurationInterface::class)->getMock();
+        $mockConfiguration = $this->getMockBuilder(ConfigurationInterface::class)->getMock();
 
         // mock the methods
         foreach ($configuration as $methodName => $returnValue) {
@@ -71,5 +162,33 @@ abstract class AbstractSerializerTest extends \PHPUnit_Framework_TestCase
 
         // return the mock configuration
         return $mockConfiguration;
+    }
+
+    /**
+     * Create and return a mock CSV configuration instance.
+     *
+     * @param array $csvConfiguration The CSV configuration to use (will override with the default one)
+     *
+     * @return \TechDivision\Import\Configuration\CsvConfigurationInterface The configuration instance
+     */
+    protected function getMockCsvConfiguration(array $csvConfiguration = array())
+    {
+
+        // merge the default configuration with the passed on
+        $csvConfiguration = array_merge($this->defaultCsvConfiguration, $csvConfiguration);
+
+        // create a mock configuration instance
+        $mockCsvConfiguration = $this->getMockBuilder(CsvConfigurationInterface::class)->getMock();
+
+        // mock the methods
+        foreach ($csvConfiguration as $methodName => $returnValue) {
+            // mock the methods
+            $mockCsvConfiguration->expects($this->any())
+                ->method($methodName)
+                ->willReturn($returnValue);
+        }
+
+        // return the mock configuration
+        return $mockCsvConfiguration;
     }
 }

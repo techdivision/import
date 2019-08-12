@@ -39,7 +39,7 @@ abstract class AbstractCsvSerializer implements SerializerInterface, Configurati
      *
      * @var \TechDivision\Import\Configuration\CsvConfigurationInterface
      */
-    private $configuration;
+    private $csvConfiguration;
 
     /**
      * Passes the configuration and initializes the serializer.
@@ -50,7 +50,7 @@ abstract class AbstractCsvSerializer implements SerializerInterface, Configurati
      */
     public function init(CsvConfigurationInterface $configuration)
     {
-        $this->configuration = $configuration;
+        $this->csvConfiguration = $configuration;
     }
 
     /**
@@ -58,8 +58,8 @@ abstract class AbstractCsvSerializer implements SerializerInterface, Configurati
      *
      * @return \TechDivision\Import\Configuration\CsvConfigurationInterface The configuration
      */
-    public function getConfiguration()
+    public function getCsvConfiguration()
     {
-        return $this->configuration;
+        return $this->csvConfiguration;
     }
 }

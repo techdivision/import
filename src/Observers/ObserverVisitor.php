@@ -94,7 +94,16 @@ class ObserverVisitor implements ObserverVisitorInterface
             if (is_array($observer)) {
                 $this->prepareObservers($subject, $observer, $type);
             } else {
-                $subject->registerObserver($this->container->get($observer), $type);
+                // create the instance of the observer/factory
+                $instance = $this->container->get($observer);
+                // query whether or not a factory has been specified
+                if ($instance instanceof ObserverInterface) {
+                    $subject->registerObserver($instance, $type);
+                } elseif ($instance instanceof ObserverFactoryInterface) {
+                    $subject->registerObserver($instance->createObserver($subject), $type);
+                } else {
+                    throw new \InvalidArgumentException();
+                }
             }
         }
     }

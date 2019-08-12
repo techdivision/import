@@ -21,6 +21,10 @@
 namespace TechDivision\Import\Serializers;
 
 use TechDivision\Import\Configuration\CsvConfigurationInterface;
+use TechDivision\Import\Utils\FrontendInputTypes;
+use TechDivision\Import\Utils\MemberNames;
+use TechDivision\Import\ConfigurationInterface;
+use TechDivision\Import\Services\ImportProcessorInterface;
 
 /**
  * Serializer implementation that un-/serializes the additional product attribues found in the CSV file
@@ -50,13 +54,56 @@ class AdditionalAttributeCsvSerializer extends AbstractCsvSerializer
     private $valueCsvSerializer;
 
     /**
+     * The entity type from the configuration.
+     *
+     * @var array
+     */
+    private $entityType;
+
+    /**
+     *  The configuration instance.
+     *
+     * @var \TechDivision\Import\ConfigurationInterface
+     */
+    private $configuration;
+
+    /**
+     * The convert processor instance.
+     *
+     * @var \TechDivision\Import\Services\ImportProcessorInterface
+     */
+    private $importProcessor;
+
+    /**
      * Initialize the serializer with the passed CSV value serializer factory.
      *
+     * @param \TechDivision\Import\ConfigurationInterface                                   $configuration             The configuration instance
+     * @param \TechDivision\Import\Services\ImportProcessorInterface                        $converterProcessor        The processor instance
      * @param \TechDivision\Import\Serializers\ConfigurationAwareSerializerFactoryInterface $valueCsvSerializerFactory The CSV value serializer factory
      */
-    public function __construct(ConfigurationAwareSerializerFactoryInterface $valueCsvSerializerFactory)
-    {
+    public function __construct(
+        ConfigurationInterface $configuration,
+        ImportProcessorInterface $importProcessor,
+        ConfigurationAwareSerializerFactoryInterface $valueCsvSerializerFactory
+    ) {
+
+        // set the passed instances
+        $this->configuration = $configuration;
+        $this->importProcessor = $importProcessor;
         $this->valueCsvSerializerFactory = $valueCsvSerializerFactory;
+
+        // load the entity type for the entity type defined in the configuration
+        $this->entityType = $importProcessor->getEavEntityTypeByEntityTypeCode($configuration->getEntityTypeCode());
+    }
+
+    /**
+     * Returns the configuration instance.
+     *
+     * @return \TechDivision\Import\ConfigurationInterface The configuration instance
+     */
+    protected function getConfiguration()
+    {
+        return $this->configuration;
     }
 
     /**
@@ -92,6 +139,117 @@ class AdditionalAttributeCsvSerializer extends AbstractCsvSerializer
     }
 
     /**
+     * Returns the import processor instance.
+     *
+     * @return \TechDivision\Import\Services\ImportProcessorInterface The import processor instance
+     */
+    protected function getImportProcessor()
+    {
+        return $this->importProcessor;
+    }
+
+    /**
+     * Returns entity type ID mapped from the configuration.
+     *
+     * @return integer The mapped entity type ID
+     */
+    protected function getEntityTypeId()
+    {
+        return $this->entityType[MemberNames::ENTITY_TYPE_ID];
+    }
+
+    /**
+     * Returns the multiple value delimiter from the configuration.
+     *
+     * @return string The multiple value delimiter
+     */
+    protected function getMultipleValueDelimiter()
+    {
+        return $this->getConfiguration()->getMultipleValueDelimiter();
+    }
+
+    /**
+     * Returns the multiple field delimiter from the configuration.
+     *
+     * @return string The multiple field delimiter
+     */
+    protected function getMultipleFieldDelimiter()
+    {
+        return $this->getConfiguration()->getMultipleFieldDelimiter();
+    }
+
+    /**
+     * Loads and returns the attribute with the passed code from the database.
+     *
+     * @param string $attributeCode The code of the attribute to return
+     *
+     * @return array The attribute
+     */
+    protected function loadAttributeByAttributeCode($attributeCode)
+    {
+        return $this->getImportProcessor()->getEavAttributeByEntityTypeIdAndAttributeCode($this->getEntityTypeId(), $attributeCode);
+    }
+
+    /**
+     * Packs the passed value according to the frontend input type of the attribute with the passed code.
+     *
+     * @param string $attributeCode The code of the attribute to pack the passed value for
+     * @param mixed  $value         The value to pack
+     *
+     * @return string The packed value
+     */
+    protected function pack($attributeCode, $value)
+    {
+
+        // load the attibute with the passed code
+        $attribute = $this->loadAttributeByAttributeCode($attributeCode);
+
+        // pack the value according to the attribute's frontend input type
+        switch ($attribute[MemberNames::FRONTEND_INPUT]) {
+            case FrontendInputTypes::MULTISELECT:
+                return implode($this->getMultipleValueDelimiter(), $value);
+                break;
+
+            case FrontendInputTypes::BOOLEAN:
+                return $value === true ? 'true' : 'false';
+                break;
+
+            default:
+                return $value;
+        }
+    }
+
+    /**
+     * Unpacks the passed value according to the frontend input type of the attribute with the passed code.
+     *
+     * @param string $attributeCode The code of the attribute to pack the passed value for
+     * @param string $value         The value to unpack
+     *
+     * @return mixed The unpacked value
+     */
+    protected function unpack($attributeCode, $value)
+    {
+
+        // load the attibute with the passed code
+        $attribute = $this->loadAttributeByAttributeCode($attributeCode);
+
+        // unpack the value according to the attribute's frontend input type
+        switch ($attribute[MemberNames::FRONTEND_INPUT]) {
+
+            case FrontendInputTypes::MULTISELECT:
+                return explode($this->getMultipleValueDelimiter(), $value);
+                break;
+
+            case FrontendInputTypes::BOOLEAN:
+                return filter_var($value, FILTER_VALIDATE_BOOLEAN);
+                break;
+
+            default:
+                return $value;
+        }
+    }
+
+    /**
      * Passes the configuration and initializes the serializer.
      *
      * @param \TechDivision\Import\Configuration\CsvConfigurationInterface $configuration The CSV configuration
@@ -112,55 +270,57 @@ class AdditionalAttributeCsvSerializer extends AbstractCsvSerializer
      * Unserializes the elements of the passed string.
      *
      * @param string|null $serialized The value to unserialize
+     * @param string|null $delimiter  The delimiter used to unserialize the elements
      *
      * @return array The unserialized values
      * @see \TechDivision\Import\Serializers\SerializerInterface::unserialize()
      */
-    public function unserialize($serialized = null)
+    public function unserialize($serialized = null, $delimiter = null)
     {
 
-        // initialize the array for the unserialized additional attributes
-        $attributes = array();
+        // initialize the array for the attributes
+        $attrs = array();
 
         // explode the additional attributes
-        if ($additionalAttributes = $this->explode($serialized)) {
-            // iterate over the attributes and append them to the row
+        $additionalAttributes = $this->getValueCsvSerializer()->unserialize($serialized, $delimiter ? $delimiter : $this->getMultipleFieldDelimiter());
+
+        // iterate over the attributes and append them to the row
+        if (is_array($additionalAttributes)) {
             foreach ($additionalAttributes as $additionalAttribute) {
                 // explode attribute code/option value from the attribute
-                list ($attributeCode, $optionValue) = explode('=', $additionalAttribute);
-
-                // extract the key/value pairs into an array
-                $attributes[$attributeCode] = $optionValue;
+                list ($attributeCode, $optionValue) = $this->explode($additionalAttribute, '=');
+                $attrs[$attributeCode] = $this->unpack($attributeCode, $optionValue);
             }
         }
 
-        // return the array with the unserialized additional attributes
-        return $attributes;
+        // return the extracted array with the additional attributes
+        return $attrs;
     }
 
     /**
      * Serializes the elements of the passed array.
      *
-     * @param array|null $unserialized The serialized data
+     * @param array|null  $unserialized The serialized data
+     * @param string|null $delimiter    The delimiter used to serialize the values
      *
      * @return string The serialized array
      * @see \TechDivision\Import\Serializers\SerializerInterface::serialize()
      */
-    public function serialize(array $unserialized = null)
+    public function serialize(array $unserialized = null, $delimiter = null)
     {
 
-        // initialize the array
-        $attributes = array();
+        // initialize the array for the attributes
+        $attrs = array();
 
+        // iterate over the attributes and append them to the row
         if (is_array($unserialized)) {
-            // serialize the key/value pairs into the array
-            foreach ($unserialized as $attributeCode => $attributeValue) {
-                $attributes[] = implode('=', array($attributeCode, $attributeValue));
+            foreach ($unserialized as $attributeCode => $optionValue) {
+                $attrs[] = sprintf('%s=%s', $attributeCode, $this->pack($attributeCode, $optionValue));
             }
         }
 
-        // serialize the array itself
-        return $this->implode($attributes);
+        // implode the array with the packed additional attributes and return it
+        return $this->getValueCsvSerializer()->serialize($attrs, $delimiter ? $delimiter : $this->getMultipleFieldDelimiter());
     }
 
     /**
@@ -175,7 +335,7 @@ class AdditionalAttributeCsvSerializer extends AbstractCsvSerializer
      */
     public function explode($value = null, $delimiter = null)
     {
-        return $this->getValueCsvSerializer()->explode($value, $delimiter);
+        return $this->getValueCsvSerializer()->explode($value, $delimiter ? $delimiter : $this->getMultipleFieldDelimiter());
     }
 
     /**
@@ -190,6 +350,6 @@ class AdditionalAttributeCsvSerializer extends AbstractCsvSerializer
      */
     public function implode(array $value = null, $delimiter = null)
     {
-        return $this->getValueCsvSerializer()->implode($value, $delimiter);
+        return $this->getValueCsvSerializer()->implode($value, $delimiter ? $delimiter : $this->getMultipleFieldDelimiter());
     }
 }

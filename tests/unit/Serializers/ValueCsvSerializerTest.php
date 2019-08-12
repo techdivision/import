@@ -51,7 +51,7 @@ class ValueCsvSerializerTest extends AbstractSerializerTest
 
         // create and initialize the CSV value serializer
         $this->valueCsvSerializer = new ValueCsvSerializer();
-        $this->valueCsvSerializer->init($this->getMockConfiguration());
+        $this->valueCsvSerializer->init($this->getMockCsvConfiguration());
     }
 
     /**

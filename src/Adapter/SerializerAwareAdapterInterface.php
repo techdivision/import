@@ -20,7 +20,7 @@
 
 namespace TechDivision\Import\Adapter;
 
-use TechDivision\Import\Serializers\SerializerInterface;
+use TechDivision\Import\Serializers\SerializerAwareInterface;
 
 /**
  * The interface for all adapters that provides serializer functionality.
@@ -31,24 +31,8 @@ use TechDivision\Import\Serializers\SerializerInterface;
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
  */
-interface SerializerAwareAdapterInterface
+interface SerializerAwareAdapterInterface extends SerializerAwareInterface
 {
-
-    /**
-     * Sets the serializer instance.
-     *
-     * @param \TechDivision\Import\Serializers\SerializerInterface $serializer The serializer instance
-     *
-     * @return void
-     */
-    public function setSerializer(SerializerInterface $serializer);
-
-    /**
-     * Returns the serializer instance.
-     *
-     * @return \TechDivision\Import\Serializers\SerializerInterface The serializer instance
-     */
-    public function getSerializer();
 
     /**
      * Extracts the elements of the passed value by exploding them

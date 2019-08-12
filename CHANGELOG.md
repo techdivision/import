@@ -1,3 +1,13 @@
+# Version 14.0.0
+
+## Bugfixes
+
+* None
+
+## Features
+
+* Extend additional attribute serializer functionality
+
 # Version 13.0.1
 
 ## Bugfixes
