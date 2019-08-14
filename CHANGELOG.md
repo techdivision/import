@@ -7,6 +7,7 @@
 ## Features
 
 * Extend additional attribute serializer functionality
+* Extend observer and callback instanciation with the possibility to use a factory
 
 # Version 13.0.1
 

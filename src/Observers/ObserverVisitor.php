@@ -97,12 +97,19 @@ class ObserverVisitor implements ObserverVisitorInterface
                 // create the instance of the observer/factory
                 $instance = $this->container->get($observer);
                 // query whether or not a factory has been specified
-                if ($instance instanceof ObserverInterface) {
-                    $subject->registerObserver($instance, $type);
-                } elseif ($instance instanceof ObserverFactoryInterface) {
+                if ($instance instanceof ObserverFactoryInterface) {
                     $subject->registerObserver($instance->createObserver($subject), $type);
+                } elseif ($instance instanceof ObserverInterface) {
+                    $subject->registerObserver($instance, $type);
                 } else {
-                    throw new \InvalidArgumentException();
+                    throw new \InvalidArgumentException(
+                        sprintf(
+                            'Instance of "%s" doesn\'t implement interface "%s" or "%s"',
+                            $observer,
+                            ObserverFactoryInterface::class,
+                            ObserverInterface::class
+                        )
+                    );
                 }
             }
         }
