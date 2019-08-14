@@ -78,7 +78,7 @@ class AdditionalAttributeCsvSerializer extends AbstractCsvSerializer
      * Initialize the serializer with the passed CSV value serializer factory.
      *
      * @param \TechDivision\Import\ConfigurationInterface                                   $configuration             The configuration instance
-     * @param \TechDivision\Import\Services\ImportProcessorInterface                        $converterProcessor        The processor instance
+     * @param \TechDivision\Import\Services\ImportProcessorInterface                        $importProcessor           The processor instance
      * @param \TechDivision\Import\Serializers\ConfigurationAwareSerializerFactoryInterface $valueCsvSerializerFactory The CSV value serializer factory
      */
     public function __construct(
@@ -235,7 +235,6 @@ class AdditionalAttributeCsvSerializer extends AbstractCsvSerializer
 
         // unpack the value according to the attribute's frontend input type
         switch ($attribute[MemberNames::FRONTEND_INPUT]) {
-
             case FrontendInputTypes::MULTISELECT:
                 return explode($this->getMultipleValueDelimiter(), $value);
                 break;

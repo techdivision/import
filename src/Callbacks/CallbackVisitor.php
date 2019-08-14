@@ -99,7 +99,7 @@ class CallbackVisitor implements CallbackVisitorInterface
                 // query whether or not a factory has been specified
                 if ($instance instanceof CallbackFactoryInterface) {
                     $subject->registerCallback($instance->createCallback($subject), $type);
-                } elseif($instance instanceof CallbackInterface) {
+                } elseif ($instance instanceof CallbackInterface) {
                     $subject->registerCallback($instance, $type);
                 } else {
                     throw new \InvalidArgumentException(
