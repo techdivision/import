@@ -241,7 +241,7 @@ class SqlStatementRepository extends AbstractSqlStatementRepository
             'SELECT t1.*
                FROM eav_attribute AS t1
          INNER JOIN eav_attribute_option_value AS t2
-                 ON t2.value = :value
+                 ON t2.value = BINARY :value
                 AND t2.store_id = :store_id
          INNER JOIN eav_attribute_option AS t3
                  ON t3.option_id = t2.option_id
@@ -260,7 +260,7 @@ class SqlStatementRepository extends AbstractSqlStatementRepository
                     eav_attribute_option_value t3
               WHERE t1.attribute_code = :attribute_code
                 AND t3.store_id = :store_id
-                AND t3.value = :value
+                AND t3.value = BINARY :value
                 AND t2.attribute_id = t1.attribute_id
                 AND t2.option_id = t3.option_id',
         SqlStatementKeys::EAV_ATTRIBUTE_OPTION_VALUE_BY_ENTITY_TYPE_ID_AND_ATTRIBUTE_CODE_AND_STORE_ID_AND_VALUE =>
@@ -271,7 +271,7 @@ class SqlStatementRepository extends AbstractSqlStatementRepository
               WHERE t1.attribute_code = :attribute_code
                 AND t1.entity_type_id = :entity_type_id
                 AND t3.store_id = :store_id
-                AND t3.value = :value
+                AND t3.value = BINARY :value
                 AND t2.attribute_id = t1.attribute_id
                 AND t2.option_id = t3.option_id',
         SqlStatementKeys::EAV_ATTRIBUTE_OPTION_VALUE_BY_OPTION_ID_AND_STORE_ID =>
