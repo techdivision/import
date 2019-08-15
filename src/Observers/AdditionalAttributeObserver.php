@@ -71,7 +71,7 @@ class AdditionalAttributeObserver extends AbstractObserver
             // load the subject instance
             $subject = $this->getSubject();
             // explode the additional attributes
-            $additionalAttributes = $subject->explode($additionalAttributes);
+            $additionalAttributes = $subject->explode($additionalAttributes, $this->getMultipleFieldDelimiter());
             // iterate over the attributes and append them to the row
             foreach ($additionalAttributes as $additionalAttribute) {
                 // explode attribute code/option value from the attribute

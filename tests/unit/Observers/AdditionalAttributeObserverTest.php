@@ -120,6 +120,9 @@ class AdditionalAttributeObserverTest extends \PHPUnit_Framework_TestCase
         $mockSubject->expects($this->exactly(2))
                     ->method('getLineNumber')
                     ->willReturn($lineNumber);
+        $mockSubject->expects($this->once())
+                    ->method('getMultipleFieldDelimiter')
+                    ->willReturn($multipleFieldDelimiter = ',');
         $mockSubject->expects($this->any())
                     ->method('hasHeader')
                     ->withConsecutive(
@@ -146,7 +149,7 @@ class AdditionalAttributeObserverTest extends \PHPUnit_Framework_TestCase
         $mockSubject->expects($this->exactly(3))
                     ->method('explode')
                     ->withConsecutive(
-                        array(sprintf('%s=%s,%s=%s', $col1, $val1, $col2, $val2)),
+                        array(sprintf('%s=%s,%s=%s', $col1, $val1, $col2, $val2), $multipleFieldDelimiter),
                         array(sprintf('%s=%s', $col1, $val1)),
                         array(sprintf('%s=%s', $col2, $val2))
                     )
@@ -338,6 +341,9 @@ class AdditionalAttributeObserverTest extends \PHPUnit_Framework_TestCase
         $mockSubject->expects($this->exactly(11))
             ->method('getLineNumber')
             ->willReturn($lineNumber);
+        $mockSubject->expects($this->once())
+            ->method('getMultipleFieldDelimiter')
+            ->willReturn($multipleFieldDelimiter = ',');
         $mockSubject->expects($this->exactly(12))
             ->method('hasHeader')
             ->withConsecutive(
@@ -405,7 +411,8 @@ class AdditionalAttributeObserverTest extends \PHPUnit_Framework_TestCase
                         $col9, $val9,
                         $col10, $val10,
                         $col11, $val11
-                    )
+                    ),
+                    $multipleFieldDelimiter
                 ),
                 array(sprintf('%s=%s', $col1, $val1)),
                 array(sprintf('%s=%s', $col2, $val2)),
