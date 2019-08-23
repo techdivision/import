@@ -275,9 +275,11 @@ trait AttributeObserverTrait
 
                 // query whether or not the entity's value has to be persisted or deleted. if the value is
                 // an empty string and the status is UPDATE, then the value exists and has to be deleted
-                if ($value[MemberNames::VALUE] === '' && $value[EntityStatus::MEMBER_NAME] === EntityStatus::STATUS_UPDATE) {
+                // We need to user $attributeValue instead of $value[MemberNames::VALUE] in cases where
+                // value was casted by attribute type. E.g. special_price = 0 if value is empty string in CSV
+                if ($attributeValue === '' && $value[EntityStatus::MEMBER_NAME] === EntityStatus::STATUS_UPDATE) {
                     $this->$deleteMethod(array(MemberNames::VALUE_ID => $value[MemberNames::VALUE_ID]));
-                } elseif ($value[MemberNames::VALUE] !== '' && $value[MemberNames::VALUE] !== null) {
+                } elseif ($attributeValue !== '' && $value[MemberNames::VALUE] !== null) {
                     $this->$persistMethod($value);
                 } else {
                     // log a debug message, because this should never happen
