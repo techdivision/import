@@ -1,3 +1,23 @@
+# Version 14.0.2
+
+## Bugfixes
+
+* Invoke flushCache() instead of invlidateTags() method when finally cleaning cache
+
+## Features
+
+* None
+
+# Version 14.0.1
+
+## Bugfixes
+
+* Fix for invalid type casting e.g. for special_price
+
+## Features
+
+* None
+
 # Version 14.0.0
 
 ## Bugfixes

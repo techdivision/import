@@ -148,7 +148,7 @@ class ConfigurableCacheAdapter implements CacheAdapterInterface
      */
     public function flushCache()
     {
-        $this->invalidateTags($this->tags);
+        $this->cacheAdapter->flushCache();
     }
 
     /**
