@@ -73,4 +73,14 @@ class ValueCsvSerializerTest extends AbstractSerializerTest
     {
         $this->assertEquals(array('ac_,01','ov_01'), $this->valueCsvSerializer->unserialize('"ac_,01","ov_01"'));
     }
+
+    /**
+     * Tests if the unserialize() method returns the serialized value for a multiselect attribute which values that contains commas.
+     *
+     * @return void
+     */
+    public function testUnserializeMultiselectValueWithValuesContainingCommasWithSuccess()
+    {
+        $this->assertEquals(array('attr1=ac_,01|ac_,02','attr2=ov_01'), $this->valueCsvSerializer->unserialize('"attr1=ac_,01|ac_,02","attr2=ov_01"'));
+    }
 }

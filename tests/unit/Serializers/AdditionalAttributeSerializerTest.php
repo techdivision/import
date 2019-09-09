@@ -148,6 +148,50 @@ class AdditionalAttributeCsvSerializerTest extends AbstractSerializerTest
     }
 
     /**
+     * Tests if the unserialize() method with enclosed simple values for a boolean, select and multiselect attribute.
+     *
+     * @return void
+     */
+    public function testUnserializeWithValueDelimiter()
+    {
+
+        // initialize the serialized value
+        $value = '"my_boolean_attribute=true","my_select_attribute=selected_value_01","my_multiselect_attribute=multiselected_value_01|multiselected_value_02"';
+
+        // initialize the expected result
+        $values = array(
+            'my_boolean_attribute'     => true,
+            'my_select_attribute'      => 'selected_value_01',
+            'my_multiselect_attribute' => array('multiselected_value_01', 'multiselected_value_02'),
+        );
+
+        // unserialize the value and assert the result
+        $this->assertSame($values, $this->additionalAttributeSerializer->unserialize($value));
+    }
+
+    /**
+     * Tests if the unserialize() method with partially enclosed values for a boolean, select and multiselect attribute that may contain a comma.
+     *
+     * @return void
+     */
+    public function testUnserializeWithPartialValueDelimiterAndValuesWithComma()
+    {
+
+        // initialize the serialized value
+        $value = 'my_boolean_attribute=true,"my_select_attribute=selected_value,01","my_multiselect_attribute=multiselected_value,01|multiselected_value,02"';
+
+        // initialize the expected result
+        $values = array(
+            'my_boolean_attribute'     => true,
+            'my_select_attribute'      => 'selected_value,01',
+            'my_multiselect_attribute' => array('multiselected_value,01', 'multiselected_value,02'),
+        );
+
+        // unserialize the value and assert the result
+        $this->assertSame($values, $this->additionalAttributeSerializer->unserialize($value));
+    }
+
+    /**
      * Tests if the serialize() method with simple values for a boolean, select and multiselect attribute.
      *
      * @return void
