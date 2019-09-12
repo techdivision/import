@@ -110,7 +110,7 @@ class EavAttributeOptionValueCacheWarmer implements CacheWarmerInterface
                     array(
                         MemberNames::ATTRIBUTE_CODE => $eavAttributeOptionValue[MemberNames::ATTRIBUTE_CODE],
                         MemberNames::STORE_ID       => $eavAttributeOptionValue[MemberNames::STORE_ID],
-                        MemberNames::VALUE          => $eavAttributeOptionValue[MemberNames::VALUE]
+                        MemberNames::VALUE          => $eavAttributeOptionValue[MemberNames::VALUE] ?? ''
                     )
                 )
             )] = $uniqueKey;
@@ -125,7 +125,7 @@ class EavAttributeOptionValueCacheWarmer implements CacheWarmerInterface
                             MemberNames::ENTITY_TYPE_ID => $eavEntityType[MemberNames::ENTITY_TYPE_ID],
                             MemberNames::ATTRIBUTE_CODE => $eavAttributeOptionValue[MemberNames::ATTRIBUTE_CODE],
                             MemberNames::STORE_ID       => $eavAttributeOptionValue[MemberNames::STORE_ID],
-                            MemberNames::VALUE          => $eavAttributeOptionValue[MemberNames::VALUE]
+                            MemberNames::VALUE          => $eavAttributeOptionValue[MemberNames::VALUE] ?? ''
                         )
                     )
                 )] = $uniqueKey;
