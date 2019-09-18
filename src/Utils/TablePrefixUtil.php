@@ -1,7 +1,7 @@
 <?php
 
 /**
- * TechDivision\Import\Utils\PrimaryKeyUtil
+ * TechDivision\Import\Utils\TablePrefixUtil
  *
  * NOTICE OF LICENSE
  *
@@ -23,7 +23,7 @@ namespace TechDivision\Import\Utils;
 use TechDivision\Import\ConfigurationInterface;
 
 /**
- * Utility class for edition based primary key handling.
+ * Utility class for table prefix handling.
  *
  * @author    Tim Wagner <t.wagner@techdivision.com>
  * @copyright 2019 TechDivision GmbH <info@techdivision.com>
@@ -31,7 +31,7 @@ use TechDivision\Import\ConfigurationInterface;
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
  */
-class PrimaryKeyUtil implements PrimaryKeyUtilInterface
+class TablePrefixUtil implements TablePrefixUtilInterface
 {
 
     /**
@@ -40,16 +40,6 @@ class PrimaryKeyUtil implements PrimaryKeyUtilInterface
      * @var \TechDivision\Import\ConfigurationInterface
      */
     protected $configuration;
-
-    /**
-     * The mapping for the edition to primary key member name.
-     *
-     * @var array
-     */
-    protected $editionPrimaryKeyMemberNameMappings = array(
-        EditionNamesInterface::EE => MemberNames::ROW_ID,
-        EditionNamesInterface::CE => MemberNames::ENTITY_ID
-    );
 
     /**
      * Construct a new instance.
@@ -62,24 +52,23 @@ class PrimaryKeyUtil implements PrimaryKeyUtilInterface
     }
 
     /**
-     * Returns the primary key member name for the actual Magento edition.
+     * Returns the prefixed table name.
      *
-     * @return string The primary key member name
-     * @throws \Exception Is thrown if the edition is not supported/available
+     * @param string $tableName The table name to prefix
+     *
+     * @return string The prefixed table name
+     * @throws \Exception Is thrown if the table name can't be prefixed
      */
-    public function getPrimaryKeyMemberName()
+    public function getPrefixedTableName($tableName)
     {
 
-        // make sure the edition name is in upper cases
-        $editionName = strtoupper($this->configuration->getMagentoEdition());
-
-        // return the primary key member name for the actual edition
-        if (isset($this->editionPrimaryKeyMemberNameMappings[$editionName])) {
-            return $this->editionPrimaryKeyMemberNameMappings[$editionName];
+        // try to load the table prefix from the configuration
+        if ($tablePrefix = $this->configuration->getDatabase()->getTablePrefix()) {
+            $tableName = sprintf('%s%s', $tablePrefix, $tableName);
         }
 
-        // throw an exception if the edition is NOT supported/available
-        throw new \Exception(sprintf('Found not supported/available Magento edition name "%s"', $editionName));
+        // return the prefixed table name
+        return $tableName;
     }
 
     /**
@@ -91,6 +80,6 @@ class PrimaryKeyUtil implements PrimaryKeyUtilInterface
      */
     public function compile($statement)
     {
-        return preg_replace(sprintf('/\$\{%s:(.*)\}/U', PrimaryKeyUtilInterface::TOKEN), $this->getPrimaryKeyMemberName(), $statement);
+        return preg_replace_callback(sprintf('/\$\{%s:(.*)\}/U', TablePrefixUtilInterface::TOKEN), function (array $matches) { return $this->getPrefixedTableName($matches[1]); }, $statement);
     }
 }

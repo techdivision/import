@@ -129,4 +129,11 @@ interface DatabaseConfigurationInterface
      * @return string The DB type
      */
     public function getType();
+
+    /**
+     * Return's the DB table prefix to use.
+     *
+     * @return string The DB table prefix
+     */
+    public function getTablePrefix();
 }

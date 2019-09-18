@@ -1,7 +1,7 @@
 <?php
 
 /**
- * TechDivision\Import\Repositories\SqlStatementRepositoryInterface
+ * TechDivision\Import\Utils\TablePrefixUtilInterface
  *
  * NOTICE OF LICENSE
  *
@@ -12,40 +12,40 @@
  * PHP version 5
  *
  * @author    Tim Wagner <t.wagner@techdivision.com>
- * @copyright 2016 TechDivision GmbH <info@techdivision.com>
+ * @copyright 2019 TechDivision GmbH <info@techdivision.com>
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
  */
 
-namespace TechDivision\Import\Repositories;
+namespace TechDivision\Import\Utils;
 
 /**
- * Interface for the SQL repository classes, containing the SQL statements to use.
+ * Interface for table prefix utility implementations.
  *
  * @author    Tim Wagner <t.wagner@techdivision.com>
- * @copyright 2016 TechDivision GmbH <info@techdivision.com>
+ * @copyright 2019 TechDivision GmbH <info@techdivision.com>
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
  */
-interface SqlStatementRepositoryInterface
+interface TablePrefixUtilInterface extends SqlCompilerInterface
 {
 
     /**
-     * The variable name for the PK.
+     * The token used to identifiy a primary key column.
      *
      * @var string
      */
-    const PK_MEMBER_NAME = 'pk_member_name';
+    const TOKEN = 'table';
 
     /**
-     * Returns the SQL statement with the passed ID.
+     * Returns the prefixed table name.
      *
-     * @param string $id The ID of the SQL statement to return
+     * @param string $tableName The table name to prefix
      *
-     * @return string The SQL statement
-     * @throws \Exception Is thrown, if the SQL statement with the passed key cannot be found
+     * @return string The prefixed table name
+     * @throws \Exception Is thrown if the table name can't be prefixed
      */
-    public function load($id);
+    public function getPrefixedTableName($tableName);
 }

@@ -73,24 +73,4 @@ interface FileResolverInterface
      * @throws \Exception Is thrown, when the source directory is NOT available
      */
     public function loadFiles($serial);
-
-    /**
-     * Queries whether or not, the passed filename should be handled by the subject.
-     *
-     * @param string $filename The filename to query for
-     *
-     * @return boolean TRUE if the file should be handled, else FALSE
-     */
-    public function shouldBeHandled($filename);
-
-    /**
-     * Query whether or not, the passed CSV filename is in the OK file. If the filename was found,
-     * the OK file will be cleaned-up.
-     *
-     * @param string $filename The filename to be cleaned-up
-     *
-     * @return void
-     * @throws \Exception Is thrown, if the passed filename is NOT in the OK file or the OK can not be cleaned-up
-     */
-    public function cleanUpOkFile($filename);
 }

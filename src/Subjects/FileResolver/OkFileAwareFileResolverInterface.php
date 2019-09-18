@@ -1,7 +1,7 @@
 <?php
 
 /**
- * TechDivision\Import\Utils\PrimaryKeyUtilInterface
+ * TechDivision\Import\Subjects\FileResolver\OkFileAwareFileResolverInterface
  *
  * NOTICE OF LICENSE
  *
@@ -18,10 +18,10 @@
  * @link      http://www.techdivision.com
  */
 
-namespace TechDivision\Import\Utils;
+namespace TechDivision\Import\Subjects\FileResolver;
 
 /**
- * Interface for an utility class for edition based primary key handling.
+ * Interface for all OK file aware resolver implementations.
  *
  * @author    Tim Wagner <t.wagner@techdivision.com>
  * @copyright 2019 TechDivision GmbH <info@techdivision.com>
@@ -29,21 +29,17 @@ namespace TechDivision\Import\Utils;
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
  */
-interface PrimaryKeyUtilInterface extends SqlCompilerInterface
+interface OkFileAwareFileResolverInterface extends FileResolverInterface
 {
 
     /**
-     * The token used to identifiy a primary key column.
+     * Query whether or not, the passed CSV filename is in the OK file. If the filename was found,
+     * the OK file will be cleaned-up.
      *
-     * @var string
-     */
-    const TOKEN = 'pk';
-
-    /**
-     * Returns the primary key member name for the actual Magento edition.
+     * @param string $filename The filename to be cleaned-up
      *
-     * @return string The primary key member name
-     * @throws \Exception Is thrown if the edition is not supported/available
+     * @return void
+     * @throws \Exception Is thrown, if the passed filename is NOT in the OK file or the OK can not be cleaned-up
      */
-    public function getPrimaryKeyMemberName();
+    public function cleanUpOkFile($filename);
 }

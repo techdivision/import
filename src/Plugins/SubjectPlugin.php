@@ -22,8 +22,10 @@ namespace TechDivision\Import\Plugins;
 
 use TechDivision\Import\Utils\RegistryKeys;
 use TechDivision\Import\ApplicationInterface;
+use TechDivision\Import\Exceptions\MissingOkFileException;
 use TechDivision\Import\Configuration\SubjectConfigurationInterface;
 use TechDivision\Import\Subjects\FileResolver\FileResolverFactoryInterface;
+use TechDivision\Import\Exceptions\MissingFilesException;
 
 /**
  * Plugin that processes the subjects.
@@ -127,28 +129,30 @@ class SubjectPlugin extends AbstractPlugin implements SubjectAwarePluginInterfac
                 array(RegistryKeys::BUNCHES => $this->bunches)
             );
 
-            // stop the application if we don't process ANY bunch
+            // stop the application, because we didn't process any file
             if ($this->bunches === 0) {
-                $this->getApplication()->stop(
+                throw new MissingFilesException(
                     sprintf(
-                        'Operation %s has been stopped by %s, because no import files can be found in directory %s',
+                        'Operation %s has been stopped because no import files can be found in directory %s',
                         $this->getConfiguration()->getOperationName(),
-                        get_class($this),
                         $this->getConfiguration()->getSourceDir()
                     )
                 );
             }
 
-            // finally, if a PID has been set (because CSV files has been found),
-            // remove it from the PID file to unlock the importer
-            $this->unlock();
+        } catch (MissingOkFileException $mofe) {
+            // stop the application if we can't find the mandatory OK file
+            $this->getApplication()->stop($mofe->getMessage());
+        } catch (MissingFilesException $mfe) {
+            // stop the application if can't find at least one file to process
+            $this->getApplication()->stop($mfe->getMessage());
         } catch (\Exception $e) {
-            // finally, if a PID has been set (because CSV files has been found),
-            // remove it from the PID file to unlock the importer
-            $this->unlock();
-
             // re-throw the exception
             throw $e;
+        } finally {
+            // finally, if a PID has been set, remove it
+            // from the PID file to unlock the importer
+            $this->unlock();
         }
     }
 
@@ -177,17 +181,10 @@ class SubjectPlugin extends AbstractPlugin implements SubjectAwarePluginInterfac
 
         // iterate through all CSV files and process the subjects
         foreach ($files as $filename) {
-            // query whether or not that the file is part of the actual bunch
-            if ($fileResolver->shouldBeHandled($filename)) {
-                // clean-up the OK file, if needed
-                $fileResolver->cleanUpOkFile($filename);
-
-                // initialize the subject and import the bunch
-                $this->subjectExecutor->execute($subject, $fileResolver->getMatches(), $serial, $filename);
-
-                // raise the number of the imported bunches
-                $bunches++;
-            }
+            // initialize the subject and import the bunch
+            $this->subjectExecutor->execute($subject, $fileResolver->getMatches(), $serial, $filename);
+            // raise the number of the imported bunches
+            $bunches++;
         }
 
         // raise the bunch number by the imported bunches
@@ -198,7 +195,7 @@ class SubjectPlugin extends AbstractPlugin implements SubjectAwarePluginInterfac
 
         // and and log a message that the subject has been processed
         $this->getSystemLogger()->debug(
-            sprintf('Successfully processed subject %s with %d bunch(es)!', $subject->getId(), $bunches)
+            sprintf('Successfully processed subject %s with %d bunches)!', $subject->getId(), $bunches)
         );
     }
 }

@@ -24,11 +24,22 @@
         <service id="import.util.primary.key" class="TechDivision\Import\Utils\PrimaryKeyUtil">
             <argument type="service" id="configuration"/>
         </service>
+        <service id="import.util.table.prefix" class="TechDivision\Import\Utils\TablePrefixUtil">
+            <argument type="service" id="configuration"/>
+        </service>
+
+        <service id="import.util.sql.compilers" class="\ArrayObject">
+            <call method="append">
+                <argument id="import.util.primary.key" type="service"/>
+            </call>
+            <call method="append">
+                <argument id="import.util.table.prefix" type="service"/>
+            </call>
+        </service>
 
         <!--
          | The DI cache configuration
          |-->
-
         <service id="import.cache.pool.factory.array" class="TechDivision\Import\Connection\ArrayCachePoolFactory"/>
         <service id="import.cache.pool.array" class="Cache\Adapter\PHPArray\ArrayCachePool">
             <factory service="import.cache.pool.factory.array" method="createCachePool"/>
@@ -58,7 +69,6 @@
         <!--
          | The default DI aliases
          |-->
-
         <service id="cache.adapter" alias="import.cache.adapter.local"/>
         <service id="cache.static" alias="import.cache.adapter.static"/>
         <service id="cache.configurable" alias="import.cache.adapter.configurable"/>
@@ -66,8 +76,9 @@
         <!--
          | The repository configuration
          |-->
-
-        <service id="import.repository.sql.statement" class="TechDivision\Import\Repositories\SqlStatementRepository"/>
+        <service id="import.repository.sql.statement" class="TechDivision\Import\Repositories\SqlStatementRepository">
+            <argument type="service" id="import.util.sql.compilers"/>
+        </service>
         <service id="import.repository.eav.attribute.option.value" class="TechDivision\Import\Repositories\EavAttributeOptionValueRepository">
             <argument type="service" id="connection"/>
             <argument type="service" id="import.repository.sql.statement"/>
@@ -231,6 +242,10 @@
             <argument type="service" id="service_container"/>
         </service>
         <service id="import.subject.file.resolver.simple" class="TechDivision\Import\Subjects\FileResolver\SimpleFileResolver">
+            <argument type="service" id="import_app_simple.simple"/>
+            <argument type="service" id="import.processor.registry"/>
+        </service>
+        <service id="import.subject.file.resolver.ok.file.aware" class="TechDivision\Import\Subjects\FileResolver\OkFileAwareFileResolver">
             <argument type="service" id="import_app_simple.simple"/>
             <argument type="service" id="import.processor.registry"/>
         </service>

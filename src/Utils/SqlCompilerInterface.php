@@ -1,7 +1,7 @@
 <?php
 
 /**
- * TechDivision\Import\Utils\PrimaryKeyUtilInterface
+ * TechDivision\Import\Utils\SqlCompilerInterface
  *
  * NOTICE OF LICENSE
  *
@@ -21,7 +21,7 @@
 namespace TechDivision\Import\Utils;
 
 /**
- * Interface for an utility class for edition based primary key handling.
+ * Interface for all SQL compiler implementations.
  *
  * @author    Tim Wagner <t.wagner@techdivision.com>
  * @copyright 2019 TechDivision GmbH <info@techdivision.com>
@@ -29,21 +29,15 @@ namespace TechDivision\Import\Utils;
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
  */
-interface PrimaryKeyUtilInterface extends SqlCompilerInterface
+interface SqlCompilerInterface
 {
 
     /**
-     * The token used to identifiy a primary key column.
+     * Compiles the passed SQL statement.
      *
-     * @var string
-     */
-    const TOKEN = 'pk';
-
-    /**
-     * Returns the primary key member name for the actual Magento edition.
+     * @param string $statement The SQL statement to compile
      *
-     * @return string The primary key member name
-     * @throws \Exception Is thrown if the edition is not supported/available
+     * @return string The compiled SQL statement
      */
-    public function getPrimaryKeyMemberName();
+    public function compile($statement);
 }

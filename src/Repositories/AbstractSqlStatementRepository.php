@@ -37,7 +37,24 @@ abstract class AbstractSqlStatementRepository implements SqlStatementRepositoryI
      *
      * @var array
      */
-    protected $preparedStatements = array();
+    private $preparedStatements = array();
+
+    /**
+     * The array with the compiler instances.
+     *
+     * @var \IteratorAggregate<\TechDivision\Import\Utils\SqlCompilerInterface>
+     */
+    private $compilers = array();
+
+    /**
+     * Initializes the SQL statement repository with the primary key and table prefix utility.
+     *
+     * @param \IteratorAggregate<\TechDivision\Import\Utils\SqlCompilerInterface> $compilers The array with the compiler instances
+     */
+    public function __construct(\IteratorAggregate $compilers)
+    {
+        $this->compilers = $compilers;
+    }
 
     /**
      * Returns the SQL statement with the passed ID.
@@ -57,5 +74,26 @@ abstract class AbstractSqlStatementRepository implements SqlStatementRepositoryI
 
         // throw an exception if NOT available
         throw new \Exception(sprintf('Can\'t find SQL statement with ID %s', $id));
+    }
+
+    /**
+     * Compiles the passed SQL statements.
+     *
+     * @param array $statements The SQL statements to compile
+     *
+     * @return void
+     */
+    protected function compile(array $statements)
+    {
+
+        // iterate over all statements and compile them
+        foreach ($statements as $key => $statement) {
+            // compile the statement
+            foreach ($this->compilers as $compiler) {
+                $statement = $compiler->compile($statement);
+            }
+            // add the comiled statemnent to the list
+            $this->preparedStatements[$key] = $statement;
+        }
     }
 }
