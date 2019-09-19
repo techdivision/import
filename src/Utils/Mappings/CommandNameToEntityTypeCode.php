@@ -55,6 +55,8 @@ class CommandNameToEntityTypeCode extends \ArrayObject
                 CommandNames::IMPORT_CATEGORIES                => EntityTypeCodes::CATALOG_CATEGORY,
                 CommandNames::IMPORT_ATTRIBUTES                => EntityTypeCodes::EAV_ATTRIBUTE,
                 CommandNames::IMPORT_ATTRIBUTES_SET            => EntityTypeCodes::EAV_ATTRIBUTE_SET,
+                CommandNames::IMPORT_CUSTOMERS                 => EntityTypeCodes::CUSTOMER,
+                CommandNames::IMPORT_CUSTOMERS_ADDRESS         => EntityTypeCodes::CUSTOMER_ADDRESS,
                 CommandNames::IMPORT_CLEAR_PID_FILE            => EntityTypeCodes::NONE,
                 CommandNames::IMPORT_CREATE_OK_FILE            => EntityTypeCodes::NONE,
                 CommandNames::IMPORT_CREATE_CONFIGURATION_FILE => EntityTypeCodes::NONE
