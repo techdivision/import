@@ -42,19 +42,6 @@ interface EavAwareProcessorInterface
     public function loadEavEntityTypeByEntityTypeCode($entityTypeCode);
 
     /**
-     * Load's and return's the EAV attribute option value with the passed code, store ID and value.
-     *
-     * @param string  $attributeCode The code of the EAV attribute option to load
-     * @param integer $storeId       The store ID of the attribute option to load
-     * @param string  $value         The value of the attribute option to load
-     *
-     * @return array The EAV attribute option value
-     * @deprecated Since 5.0.0
-     * @see \TechDivision\Import\Services\EavAwareProcessorInterface::loadAttributeOptionValueByEntityTypeIdAndAttributeCodeAndStoreIdAndValue()
-     */
-    public function loadEavAttributeOptionValueByAttributeCodeAndStoreIdAndValue($attributeCode, $storeId, $value);
-
-    /**
      * Load's and return's the EAV attribute option value with the passed entity type ID, code, store ID and value.
      *
      * @param string  $entityTypeId  The entity type ID of the EAV attribute to load the option value for
