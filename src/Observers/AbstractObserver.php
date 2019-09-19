@@ -106,7 +106,6 @@ abstract class AbstractObserver implements ObserverInterface
      * @param array $headers The array with the header row
      *
      * @return void
-     * @deprecated Will be removed with version 1.0.0, use subject method instead
      *
      * @codeCoverageIgnore
      */
@@ -119,7 +118,6 @@ abstract class AbstractObserver implements ObserverInterface
      * Return's the array containing header row.
      *
      * @return array The array with the header row
-     * @deprecated Will be removed with version 1.0.0, use subject method instead
      *
      * @codeCoverageIgnore
      */
@@ -132,7 +130,6 @@ abstract class AbstractObserver implements ObserverInterface
      * Return's the RegistryProcessor instance to handle the running threads.
      *
      * @return \TechDivision\Import\Services\RegistryProcessorInterface The registry processor instance
-     * @deprecated Will be removed with version 1.0.0, use subject method instead
      *
      * @codeCoverageIgnore
      */
@@ -151,7 +148,6 @@ abstract class AbstractObserver implements ObserverInterface
      * @param string|null $lineNumber The line number used to create the suffx
      *
      * @return string The message with the appended exception suffix
-     * @deprecated Will be removed with version 1.0.0, use subject method instead
      *
      * @codeCoverageIgnore
      */
@@ -169,7 +165,6 @@ abstract class AbstractObserver implements ObserverInterface
      * @param string     $className  The class name of the exception type we want to wrap the parent one
      *
      * @return \Exception the wrapped exception
-     * @deprecated Will be removed with version 1.0.0, use subject method instead
      *
      * @codeCoverageIgnore
      */
@@ -185,7 +180,6 @@ abstract class AbstractObserver implements ObserverInterface
      * Queries whether or not debug mode is enabled or not, default is TRUE.
      *
      * @return boolean TRUE if debug mode is enabled, else FALSE
-     * @deprecated Will be removed with version 1.0.0, use subject method instead
      *
      * @codeCoverageIgnore
      */
@@ -198,7 +192,6 @@ abstract class AbstractObserver implements ObserverInterface
      * Stop's observer execution on the actual row.
      *
      * @return void
-     * @deprecated Will be removed with version 1.0.0, use subject method instead
      *
      * @codeCoverageIgnore
      */
@@ -211,7 +204,6 @@ abstract class AbstractObserver implements ObserverInterface
      * Return's the name of the file to import.
      *
      * @return string The filename
-     * @deprecated Will be removed with version 1.0.0, use subject method instead
      *
      * @codeCoverageIgnore
      */
@@ -224,7 +216,6 @@ abstract class AbstractObserver implements ObserverInterface
      * Return's the actual line number.
      *
      * @return integer The line number
-     * @deprecated Will be removed with version 1.0.0, use subject method instead
      *
      * @codeCoverageIgnore
      */
@@ -252,7 +243,6 @@ abstract class AbstractObserver implements ObserverInterface
      * Return's the array with the system logger instances.
      *
      * @return array The logger instance
-     * @deprecated Will be removed with version 1.0.0, use subject method instead
      *
      * @codeCoverageIgnore
      */
@@ -265,7 +255,6 @@ abstract class AbstractObserver implements ObserverInterface
      * Return's the multiple field delimiter character to use, default value is comma (,).
      *
      * @return string The multiple field delimiter character
-     * @deprecated Will be removed with version 1.0.0, use subject method instead
      *
      * @codeCoverageIgnore
      */
@@ -278,7 +267,6 @@ abstract class AbstractObserver implements ObserverInterface
      * Return's the multiple value delimiter character to use, default value is comma (|).
      *
      * @return string The multiple value delimiter character
-     * @deprecated Will be removed with version 1.0.0, use subject method instead
      *
      * @codeCoverageIgnore
      */
@@ -308,7 +296,6 @@ abstract class AbstractObserver implements ObserverInterface
      *
      * @return mixed The header value
      * @throws \InvalidArgumentException Is thrown, if the header with the passed name is NOT available
-     * @deprecated Will be removed with version 1.0.0, use subject method instead
      *
      * @codeCoverageIgnore
      */
@@ -323,7 +310,6 @@ abstract class AbstractObserver implements ObserverInterface
      * @param string $name The header name to add
      *
      * @return integer The new headers position
-     * @deprecated Will be removed with version 1.0.0, use subject method instead
      *
      * @codeCoverageIgnore
      */
@@ -336,7 +322,6 @@ abstract class AbstractObserver implements ObserverInterface
      * Return's the ID of the product that has been created recently.
      *
      * @return string The entity Id
-     * @deprecated Will be removed with version 1.0.0, use subject method instead
      *
      * @codeCoverageIgnore
      */
@@ -349,7 +334,6 @@ abstract class AbstractObserver implements ObserverInterface
      * Return's the source date format to use.
      *
      * @return string The source date format
-     * @deprecated Will be removed with version 1.0.0, use subject method instead
      *
      * @codeCoverageIgnore
      */
@@ -379,7 +363,6 @@ abstract class AbstractObserver implements ObserverInterface
      * @param string $storeViewCode The store view code
      *
      * @return void
-     * @deprecated Will be removed with version 1.0.0, use subject method instead
      *
      * @codeCoverageIgnore
      */
@@ -394,7 +377,6 @@ abstract class AbstractObserver implements ObserverInterface
      * @param string|null $default The default value to return, if the store view code has not been set
      *
      * @return string The store view code
-     * @deprecated Will be removed with version 1.0.0, use subject method instead
      *
      * @codeCoverageIgnore
      */
@@ -407,7 +389,6 @@ abstract class AbstractObserver implements ObserverInterface
      * Prepare's the store view code in the subject.
      *
      * @return void
-     * @deprecated Will be removed with version 1.0.0, use subject method instead
      *
      * @codeCoverageIgnore
      */
@@ -423,7 +404,6 @@ abstract class AbstractObserver implements ObserverInterface
      *
      * @return integer The ID of the store with the passed ID
      * @throws \Exception Is thrown, if the store with the actual code is not available
-     * @deprecated Will be removed with version 1.0.0, use subject method instead
      *
      * @codeCoverageIgnore
      */
@@ -440,7 +420,6 @@ abstract class AbstractObserver implements ObserverInterface
      *
      * @return integer The ID of the actual store
      * @throws \Exception Is thrown, if the store with the actual code is not available
-     * @deprecated Will be removed with version 1.0.0, use subject method instead
      *
      * @codeCoverageIgnore
      */
@@ -456,7 +435,6 @@ abstract class AbstractObserver implements ObserverInterface
      * @param string|null $value The value to format
      *
      * @return string The formatted date
-     * @deprecated Will be removed with version 1.0.0, use subject method instead
      *
      * @codeCoverageIgnore
      */
@@ -473,7 +451,6 @@ abstract class AbstractObserver implements ObserverInterface
      * @param string|null $delimiter The delimiter used to extrace the elements
      *
      * @return array The exploded values
-     * @deprecated Will be removed with version 1.0.0, use subject method instead
      *
      * @codeCoverageIgnore
      */
@@ -492,7 +469,6 @@ abstract class AbstractObserver implements ObserverInterface
      *
      * @return mixed The configuration value
      * @throws \Exception Is thrown, if nor a value can be found or a default value has been passed
-     * @deprecated Will be removed with version 1.0.0, use subject method instead
      *
      * @codeCoverageIgnore
      */
