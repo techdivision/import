@@ -20,12 +20,13 @@
 
 namespace TechDivision\Import\Plugins;
 
+use TechDivision\Import\Utils\CacheKeys;
 use TechDivision\Import\Utils\RegistryKeys;
 use TechDivision\Import\ApplicationInterface;
 use TechDivision\Import\Configuration\SubjectConfigurationInterface;
+use TechDivision\Import\Subjects\SubjectExecutorInterface;
 use TechDivision\Import\Subjects\FileResolver\FileResolverInterface;
 use TechDivision\Import\Subjects\FileResolver\FileResolverFactoryInterface;
-use TechDivision\Import\Utils\CacheKeys;
 
 /**
  * Test class for the subject plugin implementation.
