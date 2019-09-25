@@ -29,7 +29,7 @@ namespace TechDivision\Import\Configuration;
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
  */
-interface PluginConfigurationInterface extends ParamsConfigurationInterface
+interface PluginConfigurationInterface extends ParamsConfigurationInterface, ImportAdapterAwareConfigurationInterface, ExportAdapterAwareConfigurationInterface
 {
 
     /**
@@ -67,4 +67,18 @@ interface PluginConfigurationInterface extends ParamsConfigurationInterface
      * @return array The array with the listeners
      */
     public function getListeners();
+
+    /**
+     * Return's the import adapter configuration instance.
+     *
+     * @return \TechDivision\Import\Configuration\Subject\ImportAdapterConfigurationInterface The import adapter configuration instance
+     */
+    public function getImportAdapter();
+
+    /**
+     * Return's the export adapter configuration instance.
+     *
+     * @return \TechDivision\Import\Configuration\Subject\ExportAdapterConfigurationInterface The export adapter configuration instance
+     */
+    public function getExportAdapter();
 }

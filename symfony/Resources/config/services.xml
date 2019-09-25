@@ -292,7 +292,11 @@
         <!--
          | The DI configuration for the plugins
          |-->
-        <service id="import.plugin.subject.executor" class="TechDivision\Import\Plugins\SubjectExecutor">
+        <service id="import.plugin.executor" class="TechDivision\Import\Plugins\PluginExecutor">
+            <argument type="service" id="import.plugin.factory"/>
+            <argument type="service" id="import.events.emitter"/>
+        </service>
+        <service id="import.plugin.subject.executor" class="TechDivision\Import\Subjects\SubjectExecutor">
             <argument type="service" id="import.visitor.callback"/>
             <argument type="service" id="import.visitor.observer"/>
             <argument type="service" id="import.subject.factory"/>
@@ -423,6 +427,20 @@
         </service>
         <service id="import.listener.render.ansi.art" class="TechDivision\Import\Listeners\RenderAnsiArtListener">
             <argument type="service" id="configuration"/>
+        </service>
+
+        <!-- 
+         ! The DI configuration for the modules
+         !-->
+        <service id="import.modules" class="\ArrayObject">
+            <call method="append">
+                <argument id="import.module.plugin" type="service"/>
+            </call>
+        </service>
+        <service id="import.module.plugin" class="TechDivision\Import\Modules\PluginModule">
+            <argument type="service" id="import_app_simple.simple"/>
+            <argument type="service" id="configuration"/>
+            <argument type="service" id="import.plugin.executor"/>
         </service>
 
     </services>

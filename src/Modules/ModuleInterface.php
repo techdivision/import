@@ -1,7 +1,7 @@
 <?php
 
 /**
- * TechDivision\Import\Configuration\ListenerAwareConfigurationInterface
+ * TechDivision\Import\Modules\ModuleInterface
  *
  * NOTICE OF LICENSE
  *
@@ -12,30 +12,30 @@
  * PHP version 5
  *
  * @author    Tim Wagner <t.wagner@techdivision.com>
- * @copyright 2016 TechDivision GmbH <info@techdivision.com>
+ * @copyright 2019 TechDivision GmbH <info@techdivision.com>
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
  */
 
-namespace TechDivision\Import\Configuration;
+namespace TechDivision\Import\Modules;
 
 /**
- * The interface for the all configurations that are listener aware.
+ * Interface for generic module implementations.
  *
  * @author    Tim Wagner <t.wagner@techdivision.com>
- * @copyright 2016 TechDivision GmbH <info@techdivision.com>
+ * @copyright 2019 TechDivision GmbH <info@techdivision.com>
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
  */
-interface ListenerAwareConfigurationInterface
+interface ModuleInterface
 {
 
     /**
-     * Return's the array with the configured listeners.
+     * Inovkes the plug-in functionality.
      *
-     * @return array The array with the listeners
+     * @return void
      */
-    public function getListeners();
+    public function process();
 }

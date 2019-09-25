@@ -20,9 +20,9 @@
 
 namespace TechDivision\Import\Adapter;
 
-use Symfony\Component\DependencyInjection\ContainerInterface;
-use TechDivision\Import\Configuration\SubjectConfigurationInterface;
 use TechDivision\Import\Utils\DependencyInjectionKeys;
+use Symfony\Component\DependencyInjection\ContainerInterface;
+use TechDivision\Import\Configuration\ExportAdapterAwareConfigurationInterface;
 
 /**
  * Factory for all CSV export adapter implementations.
@@ -56,15 +56,15 @@ class CsvExportAdapterFactory implements ExportAdapterFactoryInterface
     /**
      * Creates and returns the export adapter for the subject with the passed configuration.
      *
-     * @param \TechDivision\Import\Configuration\SubjectConfigurationInterface $subjectConfiguration The subject configuration
+     * @param \TechDivision\Import\Configuration\ExportAdapterAwareConfigurationInterface $configuration The subject configuration
      *
      * @return \TechDivision\Import\Adapter\ExportAdapterInterface The export adapter instance
      */
-    public function createExportAdapter(SubjectConfigurationInterface $subjectConfiguration)
+    public function createExportAdapter(ExportAdapterAwareConfigurationInterface $configuration)
     {
 
         // load the export adapter configuration
-        $exportAdapterConfiguration = $subjectConfiguration->getExportAdapter();
+        $exportAdapterConfiguration = $configuration->getExportAdapter();
 
         // load the serializer factory instance
         $serializerFactory = $this->container->get($exportAdapterConfiguration->getSerializer()->getId());

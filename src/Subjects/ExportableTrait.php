@@ -160,7 +160,7 @@ trait ExportableTrait
             // load the artefacts
             $artefacts = $this->artefacts[$type][$entityId];
 
-            // unserialize the original data, if we're in debug mode, if we're in debug mode
+            // unserialize the original data, if we're in debug mode
             $keys = array_keys($artefacts);
             foreach ($keys as $key) {
                 if (isset($artefacts[$key][ColumnKeys::ORIGINAL_DATA])) {

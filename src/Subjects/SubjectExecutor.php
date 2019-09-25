@@ -1,7 +1,7 @@
 <?php
 
 /**
- * TechDivision\Import\Plugins\SubjectExecutor
+ * TechDivision\Import\Subjects\SubjectExecutor
  *
  * NOTICE OF LICENSE
  *
@@ -18,16 +18,14 @@
  * @link      http://www.techdivision.com
  */
 
-namespace TechDivision\Import\Plugins;
+namespace TechDivision\Import\Subjects;
 
+use League\Event\EmitterInterface;
 use TechDivision\Import\Utils\BunchKeys;
+use TechDivision\Import\Utils\EventNames;
 use TechDivision\Import\Callbacks\CallbackVisitorInterface;
 use TechDivision\Import\Observers\ObserverVisitorInterface;
-use TechDivision\Import\Subjects\SubjectFactoryInterface;
-use TechDivision\Import\Subjects\ExportableSubjectInterface;
 use TechDivision\Import\Configuration\SubjectConfigurationInterface;
-use League\Event\EmitterInterface;
-use TechDivision\Import\Utils\EventNames;
 
 /**
  * The subject executor instance.

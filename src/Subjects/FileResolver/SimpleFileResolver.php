@@ -76,9 +76,14 @@ class SimpleFileResolver extends AbstractFileResolver
      *
      * @return void
      */
-    protected function addMatch($name, $match)
+    protected function addMatch(array $match)
     {
-        $this->matches[strtolower($name)] = $match;
+
+        array_walk($match, function(&$val, &$key) {
+            strtolower($key);
+        });
+
+        $this->matches[] = $match;
     }
 
     /**
@@ -90,8 +95,11 @@ class SimpleFileResolver extends AbstractFileResolver
      */
     protected function getMatch($name)
     {
-        if (isset($this->matches[$name])) {
-            return $this->matches[$name];
+
+        $lastMatch = $this->matches[sizeof($this->matches) - 1];
+
+        if (isset($lastMatch[$name])) {
+            return $lastMatch[$name];
         }
     }
 
@@ -192,9 +200,7 @@ class SimpleFileResolver extends AbstractFileResolver
 
         // update the matches, if the pattern matches
         if ($result = preg_match($this->preparePattern(), $filename, $matches)) {
-            foreach ($matches as $name => $match) {
-                $this->addMatch($name, $match);
-            }
+            $this->addMatch($matches);
         }
 
         // stop processing, because the filename doesn't match the subjects pattern
@@ -218,6 +224,6 @@ class SimpleFileResolver extends AbstractFileResolver
      */
     public function getMatches()
     {
-        return array_merge(array(BunchKeys::FILENAME => date('Ymd-His'), BunchKeys::COUNTER => 1), $this->matches);
+        return $this->matches;
     }
 }

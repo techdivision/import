@@ -7,6 +7,7 @@
 ## Features
 
 * Remove deprecated classes and methods
+* Add techdivision/import#146
 * Add techdivision/import-cli-simple#216
 
 # Version 14.0.2

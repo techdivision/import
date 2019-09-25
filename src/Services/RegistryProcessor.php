@@ -101,7 +101,7 @@ class RegistryProcessor implements RegistryProcessorInterface
      */
     public function removeAttribute($key)
     {
-        $this->cacheAdapter->removeAttribute($key);
+        $this->cacheAdapter->removeCache($key);
     }
 
     /**

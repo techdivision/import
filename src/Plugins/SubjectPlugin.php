@@ -22,10 +22,11 @@ namespace TechDivision\Import\Plugins;
 
 use TechDivision\Import\Utils\RegistryKeys;
 use TechDivision\Import\ApplicationInterface;
-use TechDivision\Import\Exceptions\MissingOkFileException;
-use TechDivision\Import\Configuration\SubjectConfigurationInterface;
-use TechDivision\Import\Subjects\FileResolver\FileResolverFactoryInterface;
 use TechDivision\Import\Exceptions\MissingFilesException;
+use TechDivision\Import\Exceptions\MissingOkFileException;
+use TechDivision\Import\Subjects\SubjectExecutorInterface;
+use TechDivision\Import\Subjects\FileResolver\FileResolverFactoryInterface;
+use TechDivision\Import\Configuration\SubjectConfigurationInterface;
 
 /**
  * Plugin that processes the subjects.
@@ -56,7 +57,7 @@ class SubjectPlugin extends AbstractPlugin implements SubjectAwarePluginInterfac
     /**
      * The subject executor instance.
      *
-     * @var \TechDivision\Import\Plugins\SubjectExecutorInterface
+     * @var \TechDivision\Import\Subjects\SubjectExecutorInterface
      */
     protected $subjectExecutor;
 
@@ -71,7 +72,7 @@ class SubjectPlugin extends AbstractPlugin implements SubjectAwarePluginInterfac
      * Initializes the plugin with the application instance.
      *
      * @param \TechDivision\Import\ApplicationInterface                               $application         The application instance
-     * @param \TechDivision\Import\Plugins\SubjectExecutorInterface                   $subjectExecutor     The subject executor instance
+     * @param \TechDivision\Import\Subjects\SubjectExecutorInterface                  $subjectExecutor     The subject executor instance
      * @param \TechDivision\Import\Subjects\FileResolver\FileResolverFactoryInterface $fileResolverFactory The file resolver instance
      */
     public function __construct(
@@ -179,10 +180,13 @@ class SubjectPlugin extends AbstractPlugin implements SubjectAwarePluginInterfac
         // load the files
         $files = $fileResolver->loadFiles($serial = $this->getSerial());
 
+        // load the matches (must match the number of the found files)
+        $matches = $fileResolver->getMatches();
+
         // iterate through all CSV files and process the subjects
-        foreach ($files as $filename) {
+        foreach ($files as $key => $filename) {
             // initialize the subject and import the bunch
-            $this->subjectExecutor->execute($subject, $fileResolver->getMatches(), $serial, $filename);
+            $this->subjectExecutor->execute($subject, $matches[$key], $serial, $filename);
             // raise the number of the imported bunches
             $bunches++;
         }

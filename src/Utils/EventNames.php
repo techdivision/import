@@ -106,6 +106,27 @@ class EventNames
     const PLUGIN_PROCESS_FAILURE = 'plugin.process.failure';
 
     /**
+     * The event name for the event that has to be fired before the plugin's export method will be invoked.
+     *
+     * @var string
+     */
+    const PLUGIN_EXPORT_START = 'plugin.export.start';
+
+    /**
+     * The event name for the event that has to be fired after the plugin's export method has been invoked.
+     *
+     * @var string
+     */
+    const PLUGIN_EXPORT_SUCCESS = 'plugin.export.success';
+
+    /**
+     * The event name for invoke the event that has to be fired when the plugin's export method throws an exception.
+     *
+     * @var string
+     */
+    const PLUGIN_EXPORT_FAILURE = 'plugin.export.failure';
+
+    /**
      * The event name for the event that has to be fired before the subject's import method will be invoked.
      *
      * @var string

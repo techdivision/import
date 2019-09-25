@@ -23,6 +23,7 @@ namespace TechDivision\Import\Plugins;
 use TechDivision\Import\Utils\LoggerKeys;
 use TechDivision\Import\ApplicationInterface;
 use TechDivision\Import\Configuration\PluginConfigurationInterface;
+use TechDivision\Import\Adapter\ImportAdapterInterface;
 
 /**
  * Abstract plugin implementation.
@@ -49,6 +50,13 @@ abstract class AbstractPlugin implements PluginInterface
      * @var \TechDivision\Import\Configuration\PluginConfigurationInterface
      */
     protected $pluginConfiguration;
+
+    /**
+     * The import adapter instance.
+     *
+     * @var \TechDivision\Import\Adapter\ImportAdapterInterface
+     */
+    protected $importAdapter;
 
     /**
      * Initializes the plugin with the application instance.
@@ -83,6 +91,38 @@ abstract class AbstractPlugin implements PluginInterface
     }
 
     /**
+     * Return's the unique serial for this import process.
+     *
+     * @return string The unique serial
+     */
+    public function getSerial()
+    {
+        return $this->getApplication()->getSerial();
+    }
+
+    /**
+     * Set's the import adapter instance.
+     *
+     * @param \TechDivision\Import\Adapter\ImportAdapterInterface $importAdapter The import adapter instance
+     *
+     * @return void
+     */
+    public function setImportAdapter(ImportAdapterInterface $importAdapter)
+    {
+        $this->importAdapter = $importAdapter;
+    }
+
+    /**
+     * Return's the import adapter instance.
+     *
+     * @return \TechDivision\Import\Adapter\ImportAdapterInterface The import adapter instance
+     */
+    public function getImportAdapter()
+    {
+        return $this->importAdapter;
+    }
+
+    /**
      * Return's the application instance.
      *
      * @return \TechDivision\Import\ApplicationInterface The application instance
@@ -110,16 +150,6 @@ abstract class AbstractPlugin implements PluginInterface
     protected function getImportProcessor()
     {
         return $this->getApplication()->getImportProcessor();
-    }
-
-    /**
-     * Return's the unique serial for this import process.
-     *
-     * @return string The unique serial
-     */
-    public function getSerial()
-    {
-        return $this->getApplication()->getSerial();
     }
 
     /**

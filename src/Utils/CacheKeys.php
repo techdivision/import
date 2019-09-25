@@ -64,6 +64,13 @@ class CacheKeys
     const REFERENCES = 'references';
 
     /**
+     * The cache key for artefacts.
+     *
+     * @var string
+     */
+    const ARTEFACTS = 'artefacts';
+
+    /**
      * The cache key for EAV attribute option values.
      *
      * @var string

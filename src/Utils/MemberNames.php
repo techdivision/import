@@ -342,4 +342,11 @@ class MemberNames
      * @var string
      */
     const ROW_ID = 'row_id';
+
+    /**
+     * Name for the member 'url_key'.
+     *
+     * @var string
+     */
+    const URL_KEY = 'url_key';
 }

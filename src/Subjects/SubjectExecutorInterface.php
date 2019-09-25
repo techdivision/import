@@ -1,7 +1,7 @@
 <?php
 
 /**
- * TechDivision\Import\Plugins\SubjectExecutorInterface
+ * TechDivision\Import\Subjects\SubjectExecutorInterface
  *
  * NOTICE OF LICENSE
  *
@@ -18,7 +18,7 @@
  * @link      http://www.techdivision.com
  */
 
-namespace TechDivision\Import\Plugins;
+namespace TechDivision\Import\Subjects;
 
 use TechDivision\Import\Configuration\SubjectConfigurationInterface;
 

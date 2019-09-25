@@ -1,7 +1,7 @@
 <?php
 
 /**
- * TechDivision\Import\Configuration\ListenerAwareConfigurationInterface
+ * TechDivision\Import\Plugins\PluginExecutor
  *
  * NOTICE OF LICENSE
  *
@@ -12,30 +12,34 @@
  * PHP version 5
  *
  * @author    Tim Wagner <t.wagner@techdivision.com>
- * @copyright 2016 TechDivision GmbH <info@techdivision.com>
+ * @copyright 2019 TechDivision GmbH <info@techdivision.com>
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
  */
 
-namespace TechDivision\Import\Configuration;
+namespace TechDivision\Import\Plugins;
+
+use TechDivision\Import\Configuration\PluginConfigurationInterface;
 
 /**
- * The interface for the all configurations that are listener aware.
+ * The  interface for all plugin executor instances.
  *
  * @author    Tim Wagner <t.wagner@techdivision.com>
- * @copyright 2016 TechDivision GmbH <info@techdivision.com>
+ * @copyright 2019 TechDivision GmbH <info@techdivision.com>
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
  */
-interface ListenerAwareConfigurationInterface
+interface PluginExecutorInterface
 {
 
     /**
-     * Return's the array with the configured listeners.
+     * Executes the plugin with the passed configuration.
      *
-     * @return array The array with the listeners
+     * @param \TechDivision\Import\Configuration\PluginConfigurationInterface $plugin The message with the plugin information
+     *
+     * @return void
      */
-    public function getListeners();
+    public function execute(PluginConfigurationInterface $plugin);
 }

@@ -20,7 +20,7 @@
 
 namespace TechDivision\Import\Adapter;
 
-use TechDivision\Import\Configuration\SubjectConfigurationInterface;
+use TechDivision\Import\Configuration\ExportAdapterAwareConfigurationInterface;
 
 /**
  * Interface for all CSV export adapter factory implementations.
@@ -37,9 +37,9 @@ interface ExportAdapterFactoryInterface
     /**
      * Creates and returns the export adapter for the subject with the passed configuration.
      *
-     * @param \TechDivision\Import\Configuration\SubjectConfigurationInterface $subjectConfiguration The subject configuration
+     * @param \TechDivision\Import\Configuration\ExportAdapterAwareConfigurationInterface $configuration The subject configuration
      *
      * @return \TechDivision\Import\Adapter\ExportAdapterInterface The export adapter instance
      */
-    public function createExportAdapter(SubjectConfigurationInterface $subjectConfiguration);
+    public function createExportAdapter(ExportAdapterAwareConfigurationInterface $configuration);
 }
