@@ -134,8 +134,8 @@ class SubjectPlugin extends AbstractPlugin implements SubjectAwarePluginInterfac
             if ($this->bunches === 0) {
                 throw new MissingFilesException(
                     sprintf(
-                        'Operation %s has been stopped because no import files can be found in directory %s',
-                        $this->getConfiguration()->getOperationName(),
+                        'Operations %s has been stopped because no import files can be found in directory %s',
+                        implode(' > ', $this->getConfiguration()->getOperationNames()),
                         $this->getConfiguration()->getSourceDir()
                     )
                 );

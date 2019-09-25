@@ -100,13 +100,6 @@ abstract class AbstractSubject implements SubjectInterface, FilesystemSubjectInt
     protected $lineNumber = 0;
 
     /**
-     * The actual operation name.
-     *
-     * @var string
-     */
-    protected $operationName ;
-
-    /**
      * The import adapter instance.
      *
      * @var \TechDivision\Import\Adapter\ImportAdapterInterface
@@ -274,28 +267,6 @@ abstract class AbstractSubject implements SubjectInterface, FilesystemSubjectInt
     public function getFilename()
     {
         return $this->filename;
-    }
-
-    /**
-     * Set's the actual operation name.
-     *
-     * @param string $operationName The actual operation name
-     *
-     * @return void
-     */
-    public function setOperationName($operationName)
-    {
-        $this->operationName = $operationName;
-    }
-
-    /**
-     * Return's the actual operation name.
-     *
-     * @return string
-     */
-    public function getOperationName()
-    {
-        return $this->operationName;
     }
 
     /**
@@ -486,15 +457,14 @@ abstract class AbstractSubject implements SubjectInterface, FilesystemSubjectInt
         // load the status of the actual import
         $status = $this->getRegistryProcessor()->getAttribute(RegistryKeys::STATUS);
 
-        // load the global data we've prepared initially
-        $this->stores = $status[RegistryKeys::GLOBAL_DATA][RegistryKeys::STORES];
-        $this->defaultStore = $status[RegistryKeys::GLOBAL_DATA][RegistryKeys::DEFAULT_STORE];
-        $this->storeWebsites  = $status[RegistryKeys::GLOBAL_DATA][RegistryKeys::STORE_WEBSITES];
-        $this->rootCategories = $status[RegistryKeys::GLOBAL_DATA][RegistryKeys::ROOT_CATEGORIES];
-        $this->coreConfigData = $status[RegistryKeys::GLOBAL_DATA][RegistryKeys::CORE_CONFIG_DATA];
-
-        // initialize the operation name
-        $this->operationName = $this->getConfiguration()->getConfiguration()->getOperationName();
+        // load the global data, if prepared initially
+        if (isset($status[RegistryKeys::GLOBAL_DATA])) {
+            $this->stores = $status[RegistryKeys::GLOBAL_DATA][RegistryKeys::STORES];
+            $this->defaultStore = $status[RegistryKeys::GLOBAL_DATA][RegistryKeys::DEFAULT_STORE];
+            $this->storeWebsites  = $status[RegistryKeys::GLOBAL_DATA][RegistryKeys::STORE_WEBSITES];
+            $this->rootCategories = $status[RegistryKeys::GLOBAL_DATA][RegistryKeys::ROOT_CATEGORIES];
+            $this->coreConfigData = $status[RegistryKeys::GLOBAL_DATA][RegistryKeys::CORE_CONFIG_DATA];
+        }
 
         // merge the callback mappings with the mappings from the child instance
         $this->callbackMappings = array_merge($this->callbackMappings, $this->getDefaultCallbackMappings());
@@ -798,7 +768,7 @@ abstract class AbstractSubject implements SubjectInterface, FilesystemSubjectInt
                         $this->appendExceptionSuffix(
                             sprintf(
                                 'Skip processing operation "%s" after observer "%s"',
-                                $this->operationName,
+                                implode(' > ', $this->getConfiguration()->getConfiguration()->getOperationNames()),
                                 get_class($observer)
                             )
                         )
@@ -837,7 +807,7 @@ abstract class AbstractSubject implements SubjectInterface, FilesystemSubjectInt
             $this->appendExceptionSuffix(
                 sprintf(
                     'Successfully processed operation "%s"',
-                    $this->operationName
+                    implode(' > ', $this->getConfiguration()->getConfiguration()->getOperationNames())
                 )
             )
         );

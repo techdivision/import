@@ -23,6 +23,7 @@ namespace TechDivision\Import;
 use TechDivision\Import\Configuration\CsvConfigurationInterface;
 use TechDivision\Import\Configuration\ParamsConfigurationInterface;
 use TechDivision\Import\Configuration\DatabaseConfigurationInterface;
+use TechDivision\Import\Configuration\OperationConfigurationInterface;
 
 /**
  * The interface for the import configuration.
@@ -58,11 +59,32 @@ interface ConfigurationInterface extends CsvConfigurationInterface, ParamsConfig
     public function getEntityTypeCode();
 
     /**
-     * Return's the operation name that has to be used.
+     * Add's the operation with the passed name ot the operations that has to be executed.
      *
-     * @return string The operation name that has to be used
+     * If the operation name has already been added, it'll not be added again.
+     *
+     * @param string  $operationName The operation to be executed
+     * @param boolean $prepend       TRUE if the operation name should be prepended, else FALSE
+     *
+     * @return void
      */
-    public function getOperationName();
+    public function addOperationName($operationName, $prepend = false);
+
+    /**
+     * Return's the operation names that has to be used.
+     *
+     * @return array The operation names that has to be used
+     */
+    public function getOperationNames();
+
+    /**
+     * Queries whether or not the passed operation has to be exceuted or not.
+     *
+     * @param \TechDivision\Import\Configuration\OperationConfigurationInterface $operation The operation to query for
+     *
+     * @return boolean TRUE if the operation has to be executed, else FALSE
+     */
+    public function inOperationNames(OperationConfigurationInterface $operation);
 
     /**
      * Return's the TRUE if the import artefacts have to be archived.
@@ -111,13 +133,6 @@ interface ConfigurationInterface extends CsvConfigurationInterface, ParamsConfig
      * @return \Doctrine\Common\Collections\ArrayCollection The ArrayCollection with the operations
      */
     public function getOperations();
-
-    /**
-     * Return's the operation, initialize from the actual operation name.
-     *
-     * @return \TechDivision\Import\Configuration\OperationConfigurationInterface The operation instance
-     */
-    public function getOperation();
 
     /**
      * Return's the array with the plugins of the operation to use.
@@ -312,4 +327,29 @@ interface ConfigurationInterface extends CsvConfigurationInterface, ParamsConfig
      * @return \Doctrine\Common\Collections\ArrayCollection The alias configuration
      */
     public function getAliases();
+
+    /**
+     * Set's the prefix for the move files subject.
+     *
+     * @param string $moveFilesPrefix The prefix for the move files subject
+     *
+     * @return void
+     */
+    public function setMoveFilesPrefix($moveFilesPrefix);
+
+    /**
+     * Return's the prefix for the move files subject.
+     *
+     * @return string The prefix for the move files subject
+     *
+     * @return string The prefix for the move files subject
+     */
+    public function getMoveFilesPrefix();
+
+    /**
+     * Whether or not the files should be moved from the source to the target directory.
+     *
+     * @return TRUE if the files should be moved, FALSE otherwise
+     */
+    public function shouldMoveFiles();
 }

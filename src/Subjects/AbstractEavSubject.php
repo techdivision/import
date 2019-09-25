@@ -129,10 +129,12 @@ abstract class AbstractEavSubject extends AbstractSubject implements EavSubjectI
         // load the status of the actual import
         $status = $this->getRegistryProcessor()->getAttribute(RegistryKeys::STATUS);
 
-        // load the global data we've prepared initially
-        $this->attributes = $status[RegistryKeys::GLOBAL_DATA][RegistryKeys::EAV_ATTRIBUTES];
-        $this->attributeSets = $status[RegistryKeys::GLOBAL_DATA][RegistryKeys::ATTRIBUTE_SETS];
-        $this->userDefinedAttributes = $status[RegistryKeys::GLOBAL_DATA][RegistryKeys::EAV_USER_DEFINED_ATTRIBUTES];
+        // load the global data, if prepared initially
+        if (isset($status[RegistryKeys::GLOBAL_DATA])) {
+            $this->attributes = $status[RegistryKeys::GLOBAL_DATA][RegistryKeys::EAV_ATTRIBUTES];
+            $this->attributeSets = $status[RegistryKeys::GLOBAL_DATA][RegistryKeys::ATTRIBUTE_SETS];
+            $this->userDefinedAttributes = $status[RegistryKeys::GLOBAL_DATA][RegistryKeys::EAV_USER_DEFINED_ATTRIBUTES];
+        }
 
         // load the default frontend callback mappings from the child instance and merge with the one from the configuration
         $defaultFrontendInputCallbackMappings = $this->getDefaultFrontendInputCallbackMappings();

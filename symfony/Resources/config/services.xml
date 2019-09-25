@@ -249,6 +249,11 @@
             <argument type="service" id="import_app_simple.simple"/>
             <argument type="service" id="import.processor.registry"/>
         </service>
+        <service id="import.subject.file.resolver.move.files" class="TechDivision\Import\Subjects\FileResolver\MoveFilesFileResolver">
+            <argument type="service" id="import_app_simple.simple"/>
+            <argument type="service" id="import.processor.registry"/>
+            <argument type="service" id="configuration"/>
+        </service>
 
         <!--
          | The DI configuration for the number converters and their factories

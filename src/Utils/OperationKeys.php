@@ -50,6 +50,20 @@ class OperationKeys
     }
 
     /**
+     * The key for 'move-files' operation.
+     *
+     * @var string
+     */
+    const MOVE_FILES = 'move-files';
+
+    /**
+     * The key for 'convert' operation.
+     *
+     * @var string
+     */
+    const CONVERT = 'convert';
+
+    /**
      * The key for 'add-update' operation.
      *
      * @var string

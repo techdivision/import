@@ -88,8 +88,8 @@ class EmitterFactory implements EmitterFactoryInterface
         // load, initialize and add the configured listeners for the actual operation
         /** @var \TechDivision\Import\Configuration\OperationConfigurationInterface $operation */
         foreach ($availableOperations as $operation) {
-            // we only want to load the listeners for the operation that has been invoked
-            if ($operation->equals($this->configuration->getOperation())) {
+            // we only want to load the listeners for operations that have been invoked
+            if ($this->configuration->inOperationNames($operation)) {
                 // load the operation's listeners
                 $this->loadListeners($operation);
                 // load the operation's registered plugins

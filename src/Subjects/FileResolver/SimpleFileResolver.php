@@ -79,10 +79,12 @@ class SimpleFileResolver extends AbstractFileResolver
     protected function addMatch(array $match)
     {
 
+        // lowercase all values of the passed match
         array_walk($match, function(&$val, &$key) {
             strtolower($key);
         });
 
+        // add the match
         $this->matches[] = $match;
     }
 
@@ -96,10 +98,18 @@ class SimpleFileResolver extends AbstractFileResolver
     protected function getMatch($name)
     {
 
-        $lastMatch = $this->matches[sizeof($this->matches) - 1];
+        // create the key of the last match
+        $key = sizeof($this->matches) - 1;
 
-        if (isset($lastMatch[$name])) {
-            return $lastMatch[$name];
+        // query whether or not a match is available
+        if (isset($this->matches[$key])) {
+            // load the last match
+            $lastMatch = $this->matches[$key];
+
+            // query whether or not a value with the passed key is available
+            if (isset($lastMatch[$name])) {
+                return $lastMatch[$name];
+            }
         }
     }
 

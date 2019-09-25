@@ -105,7 +105,7 @@ class RenderAnsiArtListener extends AbstractListener
                 'Now start import with serial %s [%s => %s]',
                 $application->getSerial(),
                 $this->getConfiguration()->getEntityTypeCode(),
-                $this->getConfiguration()->getOperationName()
+                implode(' > ', $this->getConfiguration()->getOperationNames())
             ),
             LogLevel::INFO
         );
