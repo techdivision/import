@@ -9,6 +9,7 @@
 * Remove deprecated classes and methods
 * Add techdivision/import#146
 * Add techdivision/import-cli-simple#216
+* Add techdivision/import-configuration-jms#25
 
 # Version 14.0.2
 

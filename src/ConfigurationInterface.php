@@ -135,6 +135,13 @@ interface ConfigurationInterface extends CsvConfigurationInterface, ParamsConfig
     public function getOperations();
 
     /**
+     * Return's an array with the configurations of the operations that has to be executed.
+     *
+     * @return \TechDivision\Import\Configuration\OperationConfigurationInterface[] The operations
+     */
+    public function getOperationsToExecute();
+
+    /**
      * Return's the array with the plugins of the operation to use.
      *
      * @return \Doctrine\Common\Collections\ArrayCollection The ArrayCollection with the plugins
@@ -352,4 +359,20 @@ interface ConfigurationInterface extends CsvConfigurationInterface, ParamsConfig
      * @return TRUE if the files should be moved, FALSE otherwise
      */
     public function shouldMoveFiles();
+
+    /**
+     * Set's the flag that whether the configuration files have to be compiled or not.
+     *
+     * @param boolean $compile TRUE if the configuration files have to be compiled, else FALSE
+     *
+     * return void
+     */
+    public function setCompile($compile);
+
+    /**
+     * Whether or not the configuration files have to be compiled or not.
+     *
+     * @return TRUE if the configuration files have to be compiled, FALSE otherwise
+     */
+    public function shouldCompile();
 }

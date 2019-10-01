@@ -21,6 +21,7 @@
 namespace TechDivision\Import\Plugins;
 
 use TechDivision\Import\Configuration\PluginConfigurationInterface;
+use TechDivision\Import\Adapter\ImportAdapterInterface;
 
 /**
  * The interface for all plugins.
@@ -35,26 +36,19 @@ interface PluginInterface
 {
 
     /**
-     * Return's the unique serial for this import process.
-     *
-     * @return string The unique serial
-     */
-    public function getSerial();
-
-    /**
-     * Return's the plugin configuration instance.
-     *
-     * @return \TechDivision\Import\Configuration\PluginConfigurationInterface The plugin configuration instance
-     */
-    public function getPluginConfiguration();
-
-    /**
      * Process the plugin functionality.
      *
      * @return void
      * @throws \Exception Is thrown, if the plugin can not be processed
      */
     public function process();
+
+    /**
+     * Return's the unique serial for this import process.
+     *
+     * @return string The unique serial
+     */
+    public function getSerial();
 
     /**
      *  Set's the plugin configuration instance.
@@ -64,4 +58,34 @@ interface PluginInterface
      * @return void
      */
     public function setPluginConfiguration(PluginConfigurationInterface $pluginConfiguration);
+
+    /**
+     * Return's the plugin configuration instance.
+     *
+     * @return \TechDivision\Import\Configuration\PluginConfigurationInterface The plugin configuration instance
+     */
+    public function getPluginConfiguration();
+
+    /**
+     * Set's the import adapter instance.
+     *
+     * @param \TechDivision\Import\Adapter\ImportAdapterInterface $importAdapter The import adapter instance
+     *
+     * @return void
+     */
+    public function setImportAdapter(ImportAdapterInterface $importAdapter);
+
+    /**
+     * Return's the import adapter instance.
+     *
+     * @return \TechDivision\Import\Adapter\ImportAdapterInterface The import adapter instance
+     */
+    public function getImportAdapter();
+
+    /**
+     * Return's the plugin's execution context configuration.
+     *
+     * @return \TechDivision\Import\Configuration\ExecutionContextConfigurationInterface The execution context configuration to use
+     */
+    public function getExecutionContext();
 }

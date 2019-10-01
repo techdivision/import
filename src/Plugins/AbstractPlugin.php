@@ -123,6 +123,16 @@ abstract class AbstractPlugin implements PluginInterface
     }
 
     /**
+     * Return's the plugin's execution context configuration.
+     *
+     * @return \TechDivision\Import\Configuration\ExecutionContextConfigurationInterface The execution context configuration to use
+     */
+    public function getExecutionContext()
+    {
+        return $this->getPluginConfiguration()->getExecutionContext();
+    }
+
+    /**
      * Return's the application instance.
      *
      * @return \TechDivision\Import\ApplicationInterface The application instance

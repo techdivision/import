@@ -81,4 +81,27 @@ interface PluginConfigurationInterface extends ParamsConfigurationInterface, Imp
      * @return \TechDivision\Import\Configuration\Subject\ExportAdapterConfigurationInterface The export adapter configuration instance
      */
     public function getExportAdapter();
+
+    /**
+     * Return's the execution context configuration for the actualy plugin configuration.
+     *
+     * @return \TechDivision\Import\Configuration\ExecutionContextConfigurationInterface The execution context to use
+     */
+    public function getExecutionContext();
+
+    /**
+     * Set's the configuration of the operation the plugin has been configured for.
+     *
+     * @param \\TechDivision\Import\Configuration\OperationConfigurationInterface $operationConfiguration The operation configuration
+     *
+     * @return void
+     */
+    public function setOperationConfiguration(OperationConfigurationInterface $operationConfiguration);
+
+    /**
+     * Return's the configuration of the operation the plugin has been configured for.
+     *
+     * @return \TechDivision\Import\Configuration\OperationConfigurationInterface The operation configuration
+     */
+    public function getOperationConfiguration();
 }

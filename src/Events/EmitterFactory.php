@@ -82,27 +82,24 @@ class EmitterFactory implements EmitterFactoryInterface
         // load the listener configuration from the configuration
         $this->loadListeners($this->configuration);
 
-        // load the available operations from the configuration
-        $availableOperations = $this->configuration->getOperations();
+        // load the operations that has to be executed from the configuration
+        $operations = $this->configuration->getOperationsToExecute();
 
         // load, initialize and add the configured listeners for the actual operation
         /** @var \TechDivision\Import\Configuration\OperationConfigurationInterface $operation */
-        foreach ($availableOperations as $operation) {
-            // we only want to load the listeners for operations that have been invoked
-            if ($this->configuration->inOperationNames($operation)) {
-                // load the operation's listeners
-                $this->loadListeners($operation);
-                // load the operation's registered plugins
-                /** @var \TechDivision\Import\Configuration\PluginConfigurationInterface $plugin */
-                foreach ($operation->getPlugins() as $plugin) {
-                    // load the plugin listeners
-                    $this->loadListeners($plugin, $pluginName = $plugin->getName());
-                    // load the plugin's registered subjects
-                    /** @var \TechDivision\Import\Configuration\SubjectConfigurationInterface $subject */
-                    foreach ($plugin->getSubjects() as $subject) {
-                        // load the subject listeners
-                        $this->loadListeners($subject, sprintf('%s.%s', $pluginName, $subject->getName()));
-                    }
+        foreach ($operations as $operation) {
+            // load the operation's listeners
+            $this->loadListeners($operation);
+            // load the operation's registered plugins
+            /** @var \TechDivision\Import\Configuration\PluginConfigurationInterface $plugin */
+            foreach ($operation->getPlugins() as $plugin) {
+                // load the plugin listeners
+                $this->loadListeners($plugin, $pluginName = $plugin->getName());
+                // load the plugin's registered subjects
+                /** @var \TechDivision\Import\Configuration\SubjectConfigurationInterface $subject */
+                foreach ($plugin->getSubjects() as $subject) {
+                    // load the subject listeners
+                    $this->loadListeners($subject, sprintf('%s.%s', $pluginName, $subject->getName()));
                 }
             }
         }

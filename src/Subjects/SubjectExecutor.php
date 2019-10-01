@@ -92,7 +92,7 @@ class SubjectExecutor implements SubjectExecutorInterface
     /**
      * Executes the passed subject.
      *
-     * @param \TechDivision\Import\Configuration\SubjectConfigurationInterface $subject  The message with the subject information
+     * @param \TechDivision\Import\Configuration\SubjectConfigurationInterface $subject  The subject configuration instance
      * @param array                                                            $matches  The bunch matches
      * @param string                                                           $serial   The UUID of the actual import
      * @param string                                                           $pathname The path to the file to import

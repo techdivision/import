@@ -68,4 +68,20 @@ interface OperationConfigurationInterface
      * @return string The operation name
      */
     public function __toString();
+
+    /**
+     * Set's the execution context configuration for the actualy plugin configuration.
+     *
+     * @param \TechDivision\Import\Configuration\ExecutionContextConfigurationInterface $executionContext The execution context to use
+     *
+     * @return void
+     */
+    public function setExecutionContext(ExecutionContextConfigurationInterface $executionContext);
+
+    /**
+     * Return's the execution context configuration for the actualy plugin configuration.
+     *
+     * @return \TechDivision\Import\Configuration\ExecutionContextConfigurationInterface The execution context to use
+     */
+    public function getExecutionContext();
 }

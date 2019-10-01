@@ -30,6 +30,7 @@ use TechDivision\Import\Utils\ColumnKeys;
 use TechDivision\Import\Utils\EventNames;
 use TechDivision\Import\Utils\MemberNames;
 use TechDivision\Import\Utils\RegistryKeys;
+use TechDivision\Import\Utils\EntityTypeCodes;
 use TechDivision\Import\Utils\Generators\GeneratorInterface;
 use TechDivision\Import\Callbacks\CallbackInterface;
 use TechDivision\Import\Observers\ObserverInterface;
@@ -107,11 +108,18 @@ abstract class AbstractSubject implements SubjectInterface, FilesystemSubjectInt
     protected $importAdapter;
 
     /**
-     * The system configuration.
+     * The subject configuration.
      *
      * @var \TechDivision\Import\Configuration\SubjectConfigurationInterface
      */
     protected $configuration;
+
+    /**
+     * The plugin configuration.
+     *
+     * @var \TechDivision\Import\Configuration\PluginConfigurationInterface
+     */
+    protected $pluginConfiguration;
 
     /**
      * The RegistryProcessor instance to handle running threads.
@@ -216,6 +224,20 @@ abstract class AbstractSubject implements SubjectInterface, FilesystemSubjectInt
      * @var \League\Event\EmitterInterface
      */
     protected $emitter;
+
+    /**
+     * Mapping for the virtual entity type code to the real Magento 2 EAV entity type code.
+     *
+     * @var array
+     */
+    protected $entityTypeCodeMappings = array(
+        EntityTypeCodes::EAV_ATTRIBUTE                 => EntityTypeCodes::CATALOG_PRODUCT,
+        EntityTypeCodes::EAV_ATTRIBUTE_SET             => EntityTypeCodes::CATALOG_PRODUCT,
+        EntityTypeCodes::CATALOG_PRODUCT_PRICE         => EntityTypeCodes::CATALOG_PRODUCT,
+        EntityTypeCodes::CATALOG_PRODUCT_INVENTORY     => EntityTypeCodes::CATALOG_PRODUCT,
+        EntityTypeCodes::CATALOG_PRODUCT_INVENTORY_MSI => EntityTypeCodes::CATALOG_PRODUCT,
+        EntityTypeCodes::CATALOG_PRODUCT_TIER_PRICE    => EntityTypeCodes::CATALOG_PRODUCT
+    );
 
     /**
      * Initialize the subject instance.
@@ -336,6 +358,16 @@ abstract class AbstractSubject implements SubjectInterface, FilesystemSubjectInt
     public function isDebugMode()
     {
         return $this->getConfiguration()->isDebugMode();
+    }
+
+    /**
+     * Return's the subject's execution context configuration.
+     *
+     * @return \TechDivision\Import\Configuration\ExecutionContextConfigurationInterface The execution context configuration to use
+     */
+    public function getExecutionContext()
+    {
+        return $this->getConfiguration()->getPluginConfiguration()->getExecutionContext();
     }
 
     /**
@@ -1253,5 +1285,25 @@ abstract class AbstractSubject implements SubjectInterface, FilesystemSubjectInt
             RegistryKeys::STATUS,
             $status
         );
+    }
+
+    /**
+     * Return's the entity type code to be used.
+     *
+     * @return string The entity type code to be used
+     */
+    public function getEntityTypeCode()
+    {
+
+        // load the configuration specific entity type code from the plugin configuration
+        $entityTypeCode = $this->getExecutionContext()->getEntityTypeCode();
+
+        // try to map the entity type code
+        if (isset($this->entityTypeCodeMappings[$entityTypeCode])) {
+            $entityTypeCode = $this->entityTypeCodeMappings[$entityTypeCode];
+        }
+
+        // return the (mapped) entity type code
+        return $entityTypeCode;
     }
 }
