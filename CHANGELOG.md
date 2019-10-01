@@ -11,6 +11,26 @@
 * Add techdivision/import-cli-simple#216
 * Add techdivision/import-configuration-jms#25
 
+# Version 14.0.4
+
+## Bugfixes
+
+* Bugfixing invalid delimiter parameter usage for ValueCsvSerializer::serialize() and ValueCsvSerializer::unserialize() methods
+
+## Features
+
+* None
+
+# Version 14.0.3
+
+## Bugfixes
+
+* Bugfix for attribute import with empty option labels
+
+## Features
+
+* None
+
 # Version 14.0.2
 
 ## Bugfixes

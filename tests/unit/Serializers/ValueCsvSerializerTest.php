@@ -83,4 +83,35 @@ class ValueCsvSerializerTest extends AbstractSerializerTest
     {
         $this->assertEquals(array('attr1=ac_,01|ac_,02','attr2=ov_01'), $this->valueCsvSerializer->unserialize('"attr1=ac_,01|ac_,02","attr2=ov_01"'));
     }
+
+    /**
+     * Tests if the unserialize() method returns the serialized value from a string with categories that contains double qoutes and a slash.
+     *
+     * @return void
+     */
+    public function testUnserializeCategoriesWithSlashAndDoubleQuotes()
+    {
+        $this->assertEquals(
+            array('Default Category', 'Etiketten und Prüfplaketten', 'Prüfplaketten', 'Prüfplaketten "Nächster Prüftermin / Geprüft"'),
+            $this->valueCsvSerializer->unserialize('Default Category/Etiketten und Prüfplaketten/Prüfplaketten/"Prüfplaketten ""Nächster Prüftermin / Geprüft"""', '/')
+        );
+    }
+
+    /**
+     * Tests if the unserialize() method returns the serialized value from a column with categories that contains double qoutes and a slash.
+     *
+     * @return void
+     */
+    public function testUnserializeCategoriesFromAColumnWithSlashAndDoubleQuotes()
+    {
+
+        // first extract the the column value (simulating what happens when column will be extracted with $this->getValue(ColumnKeys::CATEGORIES) from the CSV file)
+        $column = $this->valueCsvSerializer->unserialize('"Default Category/Etiketten und Prüfplaketten/Prüfplaketten/""Prüfplaketten """"Nächster Prüftermin / Geprüft"""""""');
+
+        // explode the columns
+        $this->assertEquals(
+            array('Default Category', 'Etiketten und Prüfplaketten', 'Prüfplaketten', 'Prüfplaketten "Nächster Prüftermin / Geprüft"'),
+            $this->valueCsvSerializer->unserialize(array_shift($column), '/')
+        );
+    }
 }
