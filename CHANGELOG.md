@@ -1,3 +1,13 @@
+# Version 14.0.3
+
+## Bugfixes
+
+* Bugfixing invalid delimiter parameter usage for ValueCsvSerializer::serialize() and ValueCsvSerializer::unserialize() methods
+
+## Features
+
+* None
+
 # Version 14.0.2
 
 ## Bugfixes

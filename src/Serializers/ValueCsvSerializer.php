@@ -58,7 +58,7 @@ class ValueCsvSerializer extends AbstractCsvSerializer
      */
     protected function getDelimiter()
     {
-        return $this->delimiter;
+        return $this->delimiter ? $this->delimiter : $this->getCsvConfiguration()->getDelimiter();
     }
 
     /**
@@ -77,11 +77,13 @@ class ValueCsvSerializer extends AbstractCsvSerializer
             return;
         }
 
+        // initialize the delimiter char
+        $delimiter = $delimiter ? $delimiter : $this->getDelimiter();
+
         // load the global configuration
         $csvConfiguration = $this->getCsvConfiguration();
 
-        // initializet delimiter, enclosure and escape char
-        $delimiter = $this->getDelimiter() ? $this->getDelimiter() : $csvConfiguration->getDelimiter();
+        // initialize the enclosure and escape char
         $enclosure = $csvConfiguration->getEnclosure();
         $escape = $csvConfiguration->getEscape();
 
@@ -110,11 +112,13 @@ class ValueCsvSerializer extends AbstractCsvSerializer
             return;
         }
 
+        // initialize the delimiter char
+        $delimiter = $delimiter ? $delimiter : $this->getDelimiter();
+
         // load the global configuration
         $csvConfiguration = $this->getCsvConfiguration();
 
-        // initializet delimiter, enclosure and escape char
-        $delimiter = $this->getDelimiter() ? $this->getDelimiter() : $csvConfiguration->getDelimiter();
+        // initialize the enclosure and escape char
         $enclosure = $csvConfiguration->getEnclosure();
         $escape = $csvConfiguration->getEscape();
 
