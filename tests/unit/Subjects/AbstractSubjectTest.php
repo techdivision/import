@@ -26,7 +26,6 @@ use TechDivision\Import\Utils\LoggerKeys;
 use TechDivision\Import\Utils\MemberNames;
 use TechDivision\Import\Utils\RegistryKeys;
 use TechDivision\Import\Utils\StoreViewCodes;
-use TechDivision\Import\Utils\CacheKeys;
 
 /**
  * Test class for the abstract subject implementation.
@@ -116,7 +115,7 @@ class AbstractSubjectTest extends AbstractTest
              ->expects($this->once())
              ->method('mergeAttributesRecursive')
              ->with(
-                 CacheKeys::STATUS,
+                 RegistryKeys::STATUS,
                  array(
                      RegistryKeys::SOURCE_DIRECTORY => sprintf('%s/%s', $targetDir, $this->serial),
                      RegistryKeys::FILES => array($filename = 'var/tmp/testfile.csv' => array(RegistryKeys::STATUS => 1))
@@ -818,7 +817,7 @@ class AbstractSubjectTest extends AbstractTest
              ->getRegistryProcessor()
              ->expects($this->once())
              ->method('raiseCounter')
-             ->with(CacheKeys::STATUS, $counterName = 'testCounter')
+             ->with(RegistryKeys::COUNTERS, $counterName = 'testCounter')
              ->willReturn($newCounterValue = 1);
 
         // set the serial first
@@ -841,7 +840,7 @@ class AbstractSubjectTest extends AbstractTest
              ->getRegistryProcessor()
              ->expects($this->once())
              ->method('mergeAttributesRecursive')
-             ->with(CacheKeys::STATUS, $status = array('test' => 'test'))
+             ->with(RegistryKeys::STATUS, $status = array('test' => 'test'))
              ->willReturn(null);
 
         // set the serial first
