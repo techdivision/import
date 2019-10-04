@@ -1,3 +1,13 @@
+# Version 14.0.6
+
+## Bugfixes
+
+* Fixed PHPUnit tests
+
+## Features
+
+* None
+
 # Version 14.0.5
 
 ## Bugfixes
