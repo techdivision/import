@@ -120,6 +120,13 @@ class RegistryKeys
     const ATTRIBUTE_GROUPS = 'attributeGroups';
 
     /**
+     * Key for the registry entry containing the counters.
+     *
+     * @var string
+     */
+    const COUNTERS = 'counters';
+
+    /**
      * Key for the registry entry containing the eav attributes.
      *
      * @var string

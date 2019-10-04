@@ -1265,7 +1265,7 @@ abstract class AbstractSubject implements SubjectInterface, FilesystemSubjectInt
 
         // raise the counter with the passed name
         return $this->getRegistryProcessor()->raiseCounter(
-            RegistryKeys::STATUS,
+            RegistryKeys::COUNTERS,
             $counterName
         );
     }
@@ -1281,7 +1281,7 @@ abstract class AbstractSubject implements SubjectInterface, FilesystemSubjectInt
     {
 
         // merge the passed status
-        $this->getRegistryProcessor()->mergeAttributesRecursive(
+        return $this->getRegistryProcessor()->mergeAttributesRecursive(
             RegistryKeys::STATUS,
             $status
         );

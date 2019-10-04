@@ -11,6 +11,16 @@
 * Add techdivision/import-cli-simple#216
 * Add techdivision/import-configuration-jms#25
 
+# Version 14.0.5
+
+## Bugfixes
+
+* Fixed invalid CacheAdapterTrait::raiseCounter() method that overrides import status
+
+## Features
+
+* None
+
 # Version 14.0.4
 
 ## Bugfixes

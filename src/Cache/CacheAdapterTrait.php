@@ -90,12 +90,16 @@ trait CacheAdapterTrait
 
         // raise/initialize the value
         if ($this->isCached($key)) {
+            // try to load the array with the counters from the cache
             $value = $this->fromCache($key);
-            $counter = $value[$counterName];
+            // query whether or not a counter is available and try to load it
+            if (is_array($value) && isset($value[$counterName])) {
+                $counter = $value[$counterName];
+            }
         }
 
         // set the counter value back to the cache item/cache
-        $this->toCache($key, array($counterName => ++$counter), array(), array(), true);
+        $this->mergeAttributesRecursive($key, array($counterName => ++$counter));
 
         // return the new value
         return $counter;
