@@ -363,7 +363,7 @@ abstract class AbstractSubject implements SubjectInterface, FilesystemSubjectInt
     /**
      * Return's the subject's execution context configuration.
      *
-     * @return \TechDivision\Import\Configuration\ExecutionContextConfigurationInterface The execution context configuration to use
+     * @return \TechDivision\Import\ExecutionContextInterface The execution context configuration to use
      */
     public function getExecutionContext()
     {

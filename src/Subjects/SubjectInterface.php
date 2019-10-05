@@ -405,4 +405,18 @@ interface SubjectInterface
      * @return string The message with the appended exception suffix
      */
     public function appendExceptionSuffix($message = null, $filename = null, $lineNumber = null);
+
+    /**
+     * Return's the entity type code to be used.
+     *
+     * @return string The entity type code to be used
+     */
+    public function getEntityTypeCode();
+
+    /**
+     * Return's the subject's execution context configuration.
+     *
+     * @return \TechDivision\Import\ExecutionContextInterface The execution context configuration to use
+     */
+    public function getExecutionContext();
 }

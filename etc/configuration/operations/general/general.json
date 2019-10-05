@@ -1,0 +1,49 @@
+{
+  "operations": {
+    "general": {
+      "general": [
+        {
+          "name": "move-files",
+          "plugins": [
+            {
+              "id": "import.plugin.subject",
+              "subjects": [
+                {
+                  "id": "import.subject.move.files",
+                  "file-resolver": {
+                    "id": "import.subject.file.resolver.move.files"
+                  },
+                  "ok-file-needed": true
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "archive-artefacts",
+          "plugins": [
+            {
+              "id": "import.plugin.archive"
+            }
+          ]
+        },
+        {
+          "name": "global-data",
+          "plugins": [
+            {
+              "id": "import.plugin.global.data"
+            }
+          ]
+        },
+        {
+          "name": "cache-warmer",
+          "plugins": [
+            {
+              "id": "import.plugin.cache.warmer"
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

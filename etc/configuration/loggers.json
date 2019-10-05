@@ -1,0 +1,30 @@
+{
+  "loggers": [
+    {
+      "name": "system",
+      "channel-name": "logger/system",
+      "type": "Monolog\\Logger",
+      "handlers": [
+        {
+          "type": "Monolog\\Handler\\ErrorLogHandler",
+          "formatter": {
+            "type": "Monolog\\Formatter\\LineFormatter",
+            "params": [
+              {
+                "format": "[%datetime%] %channel%.%level_name%: %message% %context% %extra%",
+                "date-format": "Y-m-d H:i:s",
+                "allow-inline-line-breaks": true,
+                "ignore-empty-context-and-extra": true
+              }
+            ]
+          }
+        }
+      ],
+      "processors": [
+        {
+          "type": "Monolog\\Processor\\MemoryPeakUsageProcessor"
+        }
+      ]
+    }
+  ]
+}

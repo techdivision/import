@@ -23,7 +23,6 @@ namespace TechDivision\Import;
 use TechDivision\Import\Configuration\CsvConfigurationInterface;
 use TechDivision\Import\Configuration\ParamsConfigurationInterface;
 use TechDivision\Import\Configuration\DatabaseConfigurationInterface;
-use TechDivision\Import\Configuration\OperationConfigurationInterface;
 
 /**
  * The interface for the import configuration.
@@ -78,15 +77,6 @@ interface ConfigurationInterface extends CsvConfigurationInterface, ParamsConfig
     public function getOperationNames();
 
     /**
-     * Queries whether or not the passed operation has to be exceuted or not.
-     *
-     * @param \TechDivision\Import\Configuration\OperationConfigurationInterface $operation The operation to query for
-     *
-     * @return boolean TRUE if the operation has to be executed, else FALSE
-     */
-    public function inOperationNames(OperationConfigurationInterface $operation);
-
-    /**
      * Return's the TRUE if the import artefacts have to be archived.
      *
      * @return boolean TRUE if the import artefacts have to be archived
@@ -128,26 +118,18 @@ interface ConfigurationInterface extends CsvConfigurationInterface, ParamsConfig
     public function getDatabase();
 
     /**
+     * Return's the ArrayCollection with the configured shortcuts.
+     *
+     * @return \Doctrine\Common\Collections\ArrayCollection The ArrayCollection with the shortcuts
+     */
+    public function getShortcuts();
+
+    /**
      * Return's the ArrayCollection with the configured operations.
      *
      * @return \Doctrine\Common\Collections\ArrayCollection The ArrayCollection with the operations
      */
     public function getOperations();
-
-    /**
-     * Return's an array with the configurations of the operations that has to be executed.
-     *
-     * @return \TechDivision\Import\Configuration\OperationConfigurationInterface[] The operations
-     */
-    public function getOperationsToExecute();
-
-    /**
-     * Return's the array with the plugins of the operation to use.
-     *
-     * @return \Doctrine\Common\Collections\ArrayCollection The ArrayCollection with the plugins
-     * @throws \Exception Is thrown, if no plugins are available for the actual operation
-     */
-    public function getPlugins();
 
     /**
      * Return's the Magento installation directory.
@@ -375,4 +357,18 @@ interface ConfigurationInterface extends CsvConfigurationInterface, ParamsConfig
      * @return TRUE if the configuration files have to be compiled, FALSE otherwise
      */
     public function shouldCompile();
+
+    /**
+     * Set's the shortcut that maps the operation names that has to be executed.
+     *
+     * @param string $shortcut The shortcut
+     */
+    public function setShortcut($shortcut);
+
+    /**
+     * Return's the shortcut that maps the operation names that has to be executed.
+     *
+     * @return string The shortcut
+     */
+    public function getShortcut();
 }

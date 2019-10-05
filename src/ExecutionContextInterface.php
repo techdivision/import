@@ -1,7 +1,7 @@
 <?php
 
 /**
- * TechDivision\Import\Configuration\ExecutionContext
+ * TechDivision\Import\ExecutionContextInterface
  *
  * NOTICE OF LICENSE
  *
@@ -12,23 +12,23 @@
  * PHP version 5
  *
  * @author    Tim Wagner <t.wagner@techdivision.com>
- * @copyright 2016 TechDivision GmbH <info@techdivision.com>
+ * @copyright 2019 TechDivision GmbH <info@techdivision.com>
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link      https://github.com/techdivision/import-configuration-jms
  * @link      http://www.techdivision.com
  */
-namespace TechDivision\Import\Configuration;
+namespace TechDivision\Import;
 
 /**
  * Interface for implementations that contains data about the actual execution context.
  *
  * @author    Tim Wagner <t.wagner@techdivision.com>
- * @copyright 2016 TechDivision GmbH <info@techdivision.com>
+ * @copyright 2019 TechDivision GmbH <info@techdivision.com>
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link      https://github.com/techdivision/import-configuration-jms
  * @link      http://www.techdivision.com
  */
-interface ExecutionContextConfigurationInterface
+interface ExecutionContextInterface
 {
 
     /**
@@ -36,7 +36,7 @@ interface ExecutionContextConfigurationInterface
      *
      * @return string The Magento Edition
      */
-    public function getMagentoEditiion();
+    public function getMagentoEdition();
 
     /**
      * Return's the Entity Type Code to use in the actual execution context.

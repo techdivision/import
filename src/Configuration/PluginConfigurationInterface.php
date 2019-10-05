@@ -85,7 +85,7 @@ interface PluginConfigurationInterface extends ParamsConfigurationInterface, Imp
     /**
      * Return's the execution context configuration for the actualy plugin configuration.
      *
-     * @return \TechDivision\Import\Configuration\ExecutionContextConfigurationInterface The execution context to use
+     * @return \TechDivision\Import\ExecutionContextInterface The execution context to use
      */
     public function getExecutionContext();
 

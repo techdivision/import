@@ -83,16 +83,6 @@ abstract class AbstractEavAwareCallback extends AbstractCallback
     }
 
     /**
-     * Returns the configured entity type code.
-     *
-     * @return string The entity type code from the configuration
-     */
-    protected function getEntityTypeCode()
-    {
-        return $this->getConfiguration()->getEntityTypeCode();
-    }
-
-    /**
      * Returns the entity type ID for the configured entity type code.
      *
      * @return integer The entity type ID of the configured entity type

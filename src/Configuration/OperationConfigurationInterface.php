@@ -20,6 +20,8 @@
 
 namespace TechDivision\Import\Configuration;
 
+use TechDivision\Import\ExecutionContextInterface;
+
 /**
  * Interface for the operation configuration implementation.
  *
@@ -72,16 +74,16 @@ interface OperationConfigurationInterface
     /**
      * Set's the execution context configuration for the actualy plugin configuration.
      *
-     * @param \TechDivision\Import\Configuration\ExecutionContextConfigurationInterface $executionContext The execution context to use
+     * @param \TechDivision\Import\ExecutionContextInterface $executionContext The execution context to use
      *
      * @return void
      */
-    public function setExecutionContext(ExecutionContextConfigurationInterface $executionContext);
+    public function setExecutionContext(ExecutionContextInterface $executionContext);
 
     /**
      * Return's the execution context configuration for the actualy plugin configuration.
      *
-     * @return \TechDivision\Import\Configuration\ExecutionContextConfigurationInterface The execution context to use
+     * @return \TechDivision\Import\ExecutionContextInterface The execution context to use
      */
     public function getExecutionContext();
 }

@@ -33,6 +33,13 @@ class CommandNames extends \ArrayObject
 {
 
     /**
+     * The command name for import that executes multiple operations.
+     *
+     * @var string
+     */
+    const IMPORT_EXECUTE = 'import:execute';
+
+    /**
      * The command name for the attribute import.
      *
      * @var string
@@ -135,6 +142,7 @@ class CommandNames extends \ArrayObject
         // merge the command names with the passed ones
         $mergedCommandNames = array_merge(
             array(
+                CommandNames::IMPORT_EXECUTE,
                 CommandNames::IMPORT_ATTRIBUTES,
                 CommandNames::IMPORT_ATTRIBUTES_SET,
                 CommandNames::IMPORT_CATEGORIES,

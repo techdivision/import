@@ -22,8 +22,8 @@ namespace TechDivision\Import\Events;
 
 use League\Event\Emitter;
 use League\Event\EmitterInterface;
-use TechDivision\Import\ConfigurationInterface;
 use Symfony\Component\DependencyInjection\TaggedContainerInterface;
+use TechDivision\Import\ConfigurationManagerInterface;
 use TechDivision\Import\Configuration\ListenerAwareConfigurationInterface;
 
 /**
@@ -41,9 +41,9 @@ class EmitterFactory implements EmitterFactoryInterface
     /**
      * The configuration instance.
      *
-     * @var \TechDivision\Import\ConfigurationInterface
+     * @var \TechDivision\Import\ConfigurationManagerInterface
      */
-    protected $configuration;
+    protected $configurationManager;
 
     /**
      * The DI container builder instance.
@@ -62,13 +62,13 @@ class EmitterFactory implements EmitterFactoryInterface
     /**
      * The constructor to initialize the instance.
      *
-     * @param \TechDivision\Import\ConfigurationInterface                     $configuration The configuration instance
+     * @param \TechDivision\Import\ConfigurationManagerInterface              $configurationManager The configuration instance
      * @param \Symfony\Component\DependencyInjection\TaggedContainerInterface $container     The container instance
      */
-    public function __construct(ConfigurationInterface $configuration, TaggedContainerInterface $container)
+    public function __construct(ConfigurationManagerInterface $configurationManager, TaggedContainerInterface $container)
     {
         $this->container = $container;
-        $this->configuration = $configuration;
+        $this->configurationManager = $configurationManager;
     }
 
     /**
@@ -80,10 +80,10 @@ class EmitterFactory implements EmitterFactoryInterface
     {
 
         // load the listener configuration from the configuration
-        $this->loadListeners($this->configuration);
+        $this->loadListeners($this->configurationManager->getConfiguration());
 
         // load the operations that has to be executed from the configuration
-        $operations = $this->configuration->getOperationsToExecute();
+        $operations = $this->configurationManager->getOperations();
 
         // load, initialize and add the configured listeners for the actual operation
         /** @var \TechDivision\Import\Configuration\OperationConfigurationInterface $operation */

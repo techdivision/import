@@ -59,7 +59,8 @@ class CommandNameToEntityTypeCode extends \ArrayObject
                 CommandNames::IMPORT_CUSTOMERS_ADDRESS         => EntityTypeCodes::CUSTOMER_ADDRESS,
                 CommandNames::IMPORT_CLEAR_PID_FILE            => EntityTypeCodes::NONE,
                 CommandNames::IMPORT_CREATE_OK_FILE            => EntityTypeCodes::NONE,
-                CommandNames::IMPORT_CREATE_CONFIGURATION_FILE => EntityTypeCodes::NONE
+                CommandNames::IMPORT_CREATE_CONFIGURATION_FILE => EntityTypeCodes::NONE,
+                CommandNames::IMPORT_EXECUTE                   => EntityTypeCodes::NONE
             ),
             $mappings
         );

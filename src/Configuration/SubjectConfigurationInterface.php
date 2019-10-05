@@ -249,4 +249,11 @@ interface SubjectConfigurationInterface extends ParamsConfigurationInterface, Im
      * @return array The array with the listeners
      */
     public function getListeners();
+
+    /**
+     * Return's the execution context configuration for the actualy plugin configuration.
+     *
+     * @return \TechDivision\Import\ExecutionContextInterface The execution context to use
+     */
+    public function getExecutionContext();
 }

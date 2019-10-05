@@ -21,7 +21,7 @@
 namespace TechDivision\Import\Modules;
 
 use TechDivision\Import\ApplicationInterface;
-use TechDivision\Import\ConfigurationInterface;
+use TechDivision\Import\ConfigurationManagerInterface;
 use TechDivision\Import\Plugins\PluginExecutorInterface;
 
 /**
@@ -44,13 +44,6 @@ class PluginModule implements ModuleInterface
     protected $application;
 
     /**
-     * The configuration instance.
-     *
-     * @var \TechDivision\Import\ConfigurationInterface
-     */
-    protected $configuration;
-
-    /**
      * The plugin executor instance.
      *
      * @var \TechDivision\Import\Plugins\PluginExecutorInterface
@@ -58,21 +51,28 @@ class PluginModule implements ModuleInterface
     protected $pluginExecutor;
 
     /**
+     * The configuration manager instance.
+     *
+     * @var \TechDivision\Import\ConfigurationInterface
+     */
+    protected $configurationManager;
+
+    /**
      * Initializes the module with the application, configuration and plug-in executor instance.
      *
-     * @param \TechDivision\Import\ApplicationInterface            $application    The application instance
-     * @param \TechDivision\Import\ConfigurationInterface          $configuration  The configuration instance
-     * @param \TechDivision\Import\Plugins\PluginExecutorInterface $pluginExecutor The plug-in executor instance
+     * @param \TechDivision\Import\ApplicationInterface            $application          The application instance
+     * @param \TechDivision\Import\ConfigurationManagerInterface   $configurationManager The configuration manager instance
+     * @param \TechDivision\Import\Plugins\PluginExecutorInterface $pluginExecutor       The plug-in executor instance
      */
     public function __construct(
         ApplicationInterface $application,
-        ConfigurationInterface $configuration,
+        ConfigurationManagerInterface $configurationManager,
         PluginExecutorInterface $pluginExecutor
     ) {
 
         // initialize the application, the configuration and the plugin executor
         $this->application = $application;
-        $this->configuration = $configuration;
+        $this->configurationManager = $configurationManager;
         $this->pluginExecutor = $pluginExecutor;
     }
 
@@ -87,13 +87,13 @@ class PluginModule implements ModuleInterface
     }
 
     /**
-     * Return's the configuration instance.
+     * Return's the configuration manager instance.
      *
-     * @return \TechDivision\Import\ConfigurationInterface The configuration instance
+     * @return \TechDivision\Import\ConfigurationInterface The configuration manager instance
      */
-    protected function getConfiguration()
+    protected function getConfigurationManager()
     {
-        return $this->configuration;
+        return $this->configurationManager;
     }
 
     /**
@@ -116,7 +116,7 @@ class PluginModule implements ModuleInterface
 
         // process the plugins defined in the configuration
         /** @var \TechDivision\Import\Configuration\PluginConfigurationInterface $pluginConfiguration */
-        foreach ($this->getConfiguration()->getPlugins() as $pluginConfiguration) {
+        foreach ($this->getConfigurationManager()->getPlugins() as $pluginConfiguration) {
             // query whether or not the operation has been stopped
             if ($this->getApplication()->isStopped()) {
                 break;

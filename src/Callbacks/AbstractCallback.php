@@ -84,6 +84,16 @@ abstract class AbstractCallback implements CallbackInterface
     }
 
     /**
+     * Returns the configured entity type code.
+     *
+     * @return string The entity type code from the configuration
+     */
+    protected function getEntityTypeCode()
+    {
+        return $this->getSubject()->getEntityTypeCode();
+    }
+
+    /**
      * Append's the exception suffix containing filename and line number to the
      * passed message. If no message has been passed, only the suffix will be
      * returned.
