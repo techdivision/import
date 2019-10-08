@@ -78,6 +78,13 @@ class RegistryKeys
     const SOURCE_DIRECTORY = 'sourceDirectory';
 
     /**
+     * Key for the target directory of the actual subject.
+     *
+     * @var string
+     */
+    const TARGET_DIRECTORY = 'targetDirectory';
+
+    /**
      * Key for the registry entry containing the global data.
      *
      * @var string

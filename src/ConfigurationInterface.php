@@ -318,47 +318,6 @@ interface ConfigurationInterface extends CsvConfigurationInterface, ParamsConfig
     public function getAliases();
 
     /**
-     * Set's the prefix for the move files subject.
-     *
-     * @param string $moveFilesPrefix The prefix for the move files subject
-     *
-     * @return void
-     */
-    public function setMoveFilesPrefix($moveFilesPrefix);
-
-    /**
-     * Return's the prefix for the move files subject.
-     *
-     * @return string The prefix for the move files subject
-     *
-     * @return string The prefix for the move files subject
-     */
-    public function getMoveFilesPrefix();
-
-    /**
-     * Whether or not the files should be moved from the source to the target directory.
-     *
-     * @return TRUE if the files should be moved, FALSE otherwise
-     */
-    public function shouldMoveFiles();
-
-    /**
-     * Set's the flag that whether the configuration files have to be compiled or not.
-     *
-     * @param boolean $compile TRUE if the configuration files have to be compiled, else FALSE
-     *
-     * return void
-     */
-    public function setCompile($compile);
-
-    /**
-     * Whether or not the configuration files have to be compiled or not.
-     *
-     * @return TRUE if the configuration files have to be compiled, FALSE otherwise
-     */
-    public function shouldCompile();
-
-    /**
      * Set's the shortcut that maps the operation names that has to be executed.
      *
      * @param string $shortcut The shortcut

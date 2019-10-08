@@ -24,6 +24,7 @@ use TechDivision\Import\Utils\LoggerKeys;
 use TechDivision\Import\ApplicationInterface;
 use TechDivision\Import\Configuration\PluginConfigurationInterface;
 use TechDivision\Import\Adapter\ImportAdapterInterface;
+use TechDivision\Import\Utils\RegistryKeys;
 
 /**
  * Abstract plugin implementation.
@@ -125,11 +126,31 @@ abstract class AbstractPlugin implements PluginInterface
     /**
      * Return's the plugin's execution context configuration.
      *
-     * @return \TechDivision\Import\Configuration\ExecutionContextConfigurationInterface The execution context configuration to use
+     * @return \TechDivision\Import\ExecutionContextInterface The execution context configuration to use
      */
     public function getExecutionContext()
     {
         return $this->getPluginConfiguration()->getExecutionContext();
+    }
+
+    /**
+     * Return's the target directory for the artefact export.
+     *
+     * @return string The target directory for the artefact export
+     */
+    public function getTargetDir()
+    {
+
+        // load the status from the registry processor
+        $status = $this->getRegistryProcessor()->getAttribute(RegistryKeys::STATUS);
+
+        // query whether or not a target directory (mandatory) has been configured
+        if (isset($status[RegistryKeys::TARGET_DIRECTORY])) {
+            return $status[RegistryKeys::TARGET_DIRECTORY];
+        }
+
+        // throw an exception if the root category is NOT available
+        throw new \Exception(sprintf('Can\'t find a target directory in status data for import %s', $this->getSerial()));
     }
 
     /**

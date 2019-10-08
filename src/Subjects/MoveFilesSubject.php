@@ -20,6 +20,8 @@
 
 namespace TechDivision\Import\Subjects;
 
+use TechDivision\Import\Utils\RegistryKeys;
+
 /**
  * The subject implementation to move the files to their target directory.
  *
@@ -31,6 +33,37 @@ namespace TechDivision\Import\Subjects;
  */
 class MoveFilesSubject extends AbstractSubject
 {
+
+    /**
+     * Clean up the global data after importing the variants.
+     *
+     * @param string $serial The serial of the actual import
+     *
+     * @return void
+     */
+    public function tearDown($serial)
+    {
+
+        // load the registry processor
+        $registryProcessor = $this->getRegistryProcessor();
+
+        // update target and source directory for the next subject
+        $registryProcessor->mergeAttributesRecursive(
+            RegistryKeys::STATUS,
+            array(
+                RegistryKeys::TARGET_DIRECTORY => $newSourceDir = $this->getNewSourceDir($serial),
+                RegistryKeys::SOURCE_DIRECTORY => $newSourceDir
+            )
+        );
+
+        // log a debug message with the new source directory
+        $this->getSystemLogger()->debug(
+            sprintf('Subject %s successfully updated source directory to %s', get_class($this), $newSourceDir)
+        );
+
+        // invoke the parent method
+        parent::tearDown($serial);
+    }
 
     /**
      * Return's the header mappings for the actual entity.
@@ -50,6 +83,19 @@ class MoveFilesSubject extends AbstractSubject
     public function getDefaultFrontendInputCallbackMappings()
     {
         return array();
+    }
+
+    /**
+     * Return's the next source directory, which will be the target directory
+     * of this subject, in most cases.
+     *
+     * @param string $serial The serial of the actual import
+     *
+     * @return string The new source directory
+     */
+    public function getNewSourceDir($serial)
+    {
+        return sprintf('%s/%s', $this->getConfiguration()->getSourceDir(), $serial);
     }
 
     /**

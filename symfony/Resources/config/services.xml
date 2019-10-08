@@ -38,6 +38,16 @@
         </service>
 
         <!--
+         | The DI loader configuration
+         |-->
+        <service id="import.loader.artefacts" class="TechDivision\Import\Loaders\ArtefactsLoader">
+            <argument type="service" id="import.processor.registry"/>
+        </service>
+        <service id="import.loader.source.and.target.dir" class="TechDivision\Import\Loaders\SourceAndTargetDirLoader">
+            <argument type="service" id="import.processor.registry"/>
+        </service>
+
+        <!--
          | The DI cache configuration
          |-->
         <service id="import.cache.pool.factory.array" class="TechDivision\Import\Connection\ArrayCachePoolFactory"/>
@@ -307,6 +317,12 @@
             <argument type="service" id="import.subject.factory"/>
             <argument type="service" id="import.events.emitter"/>
         </service>
+        <service id="import.plugin.initialize" class="TechDivision\Import\Plugins\VoidPlugin">
+            <argument type="service" id="import_app_simple.simple"/>
+        </service>
+        <service id="import.plugin.clean.up" class="TechDivision\Import\Plugins\VoidPlugin">
+            <argument type="service" id="import_app_simple.simple"/>
+        </service>
         <service id="import.plugin.archive" class="TechDivision\Import\Plugins\ArchivePlugin">
             <argument type="service" id="import_app_simple.simple"/>
         </service>
@@ -369,6 +385,7 @@
         <!--
          | The DI configuration for the filesystem adapter
          |-->
+        <service id="import.adapter.filesystem.php" class="TechDivision\Import\Adapter\PhpFilesystemAdapter"/>
         <service id="import.adapter.filesystem.factory.php" class="TechDivision\Import\Adapter\PhpFilesystemAdapterFactory"/>
         <service id="import.adapter.filesystem.factory.league" class="TechDivision\Import\Adapter\LeagueFilesystemAdapterFactory"/>
 
@@ -426,9 +443,21 @@
         <service id="import.listener.clear.registry" class="TechDivision\Import\Listeners\ClearRegistryListener">
             <argument type="service" id="import.processor.registry"/>
         </service>
+        <service id="import.listener.clear.artefacts" class="TechDivision\Import\Listeners\ClearArtefactsListener">
+            <argument type="service" id="import.adapter.filesystem.php"/>
+            <argument type="service" id="import.loader.artefacts"/>
+        </service>
+        <service id="import.listener.clear.directories" class="TechDivision\Import\Listeners\ClearDirectoriesListener">
+            <argument type="service" id="import.adapter.filesystem.php"/>
+            <argument type="service" id="import.loader.source.and.target.dir"/>
+        </service>
         <service id="import.listener.initialize.registry" class="TechDivision\Import\Listeners\InitializeRegistryListener">
             <argument type="service" id="configuration"/>
             <argument type="service" id="import.processor.registry"/>
+        </service>
+        <service id="import.listener.initialize.directories" class="TechDivision\Import\Listeners\InitializeDirectoriesListener">
+            <argument type="service" id="import.adapter.filesystem.php"/>
+            <argument type="service" id="import.loader.source.and.target.dir"/>
         </service>
         <service id="import.listener.render.ansi.art" class="TechDivision\Import\Listeners\RenderAnsiArtListener">
             <argument type="service" id="configuration"/>

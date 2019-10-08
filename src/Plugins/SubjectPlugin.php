@@ -22,7 +22,6 @@ namespace TechDivision\Import\Plugins;
 
 use TechDivision\Import\Utils\RegistryKeys;
 use TechDivision\Import\ApplicationInterface;
-use TechDivision\Import\Exceptions\MissingFilesException;
 use TechDivision\Import\Exceptions\MissingOkFileException;
 use TechDivision\Import\Subjects\SubjectExecutorInterface;
 use TechDivision\Import\Subjects\FileResolver\FileResolverFactoryInterface;
@@ -130,23 +129,9 @@ class SubjectPlugin extends AbstractPlugin implements SubjectAwarePluginInterfac
                 array(RegistryKeys::BUNCHES => $this->bunches)
             );
 
-            // stop the application, because we didn't process any file
-            if ($this->bunches === 0) {
-                throw new MissingFilesException(
-                    sprintf(
-                        'Operations %s has been stopped because no import files can be found in directory %s',
-                        implode(' > ', $this->getConfiguration()->getOperationNames()),
-                        $this->getConfiguration()->getSourceDir()
-                    )
-                );
-            }
-
         } catch (MissingOkFileException $mofe) {
             // stop the application if we can't find the mandatory OK file
             $this->getApplication()->stop($mofe->getMessage());
-        } catch (MissingFilesException $mfe) {
-            // stop the application if can't find at least one file to process
-            $this->getApplication()->stop($mfe->getMessage());
         } catch (\Exception $e) {
             // re-throw the exception
             throw $e;

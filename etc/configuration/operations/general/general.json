@@ -3,23 +3,6 @@
     "general": {
       "general": [
         {
-          "name": "move-files",
-          "plugins": [
-            {
-              "id": "import.plugin.subject",
-              "subjects": [
-                {
-                  "id": "import.subject.move.files",
-                  "file-resolver": {
-                    "id": "import.subject.file.resolver.move.files"
-                  },
-                  "ok-file-needed": true
-                }
-              ]
-            }
-          ]
-        },
-        {
           "name": "archive-artefacts",
           "plugins": [
             {
@@ -40,6 +23,55 @@
           "plugins": [
             {
               "id": "import.plugin.cache.warmer"
+            }
+          ]
+        },
+        {
+          "name": "initialize",
+          "plugins": [
+            {
+              "id": "import.plugin.initialize",
+              "listeners": [
+                {
+                  "plugin.process.success": [
+                    "import.listener.initialize.registry"
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "clean-up",
+          "plugins": [
+            {
+              "id": "import.plugin.clean.up",
+              "listeners": [
+                {
+                  "plugin.process.success": [
+                    "import.listener.clear.artefacts",
+                    "import.listener.clear.directories",
+                    "import.listener.clear.registry"
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "move-files",
+          "plugins": [
+            {
+              "id": "import.plugin.subject",
+              "subjects": [
+                {
+                  "id": "import.subject.move.files",
+                  "file-resolver": {
+                    "id": "import.subject.file.resolver.move.files"
+                  },
+                  "ok-file-needed": true
+                }
+              ]
             }
           ]
         }

@@ -24,7 +24,6 @@ use League\Event\EventInterface;
 use League\Event\AbstractListener;
 use TechDivision\Import\Utils\CacheKeys;
 use TechDivision\Import\Utils\RegistryKeys;
-use TechDivision\Import\ApplicationInterface;
 use TechDivision\Import\ConfigurationInterface;
 use TechDivision\Import\Services\RegistryProcessorInterface;
 
@@ -69,12 +68,11 @@ class InitializeRegistryListener extends AbstractListener
     /**
      * Handle the event.
      *
-     * @param \League\Event\EventInterface              $event       The event that triggered the listener
-     * @param \TechDivision\Import\ApplicationInterface $application The application instance
+     * @param \League\Event\EventInterface $event The event that triggered the listener
      *
      * @return void
      */
-    public function handle(EventInterface $event, ApplicationInterface $application = null)
+    public function handle(EventInterface $event)
     {
 
         // initialize the status
@@ -82,6 +80,7 @@ class InitializeRegistryListener extends AbstractListener
             RegistryKeys::STATUS                => 1,
             RegistryKeys::BUNCHES               => 0,
             RegistryKeys::SOURCE_DIRECTORY      => $this->getConfiguration()->getSourceDir(),
+            RegistryKeys::TARGET_DIRECTORY      => $this->getConfiguration()->getTargetDir(),
             RegistryKeys::MISSING_OPTION_VALUES => array()
         );
 

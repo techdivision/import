@@ -177,17 +177,6 @@ interface SubjectInterface
      * @return string The target directory for the artefact export
      */
     public function getTargetDir();
-
-    /**
-     * Return's the next source directory, which will be the target directory
-     * of this subject, in most cases.
-     *
-     * @param string $serial The serial of the actual import
-     *
-     * @return string The new source directory
-     */
-    public function getNewSourceDir($serial);
-
     /**
      * Set's the import adapter instance.
      *

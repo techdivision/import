@@ -1,7 +1,7 @@
 <?php
 
 /**
- * TechDivision\Import\Listeners\ClearRegistryListener
+ * TechDivision\Import\Loaders\SourceAndTargetDirLoader
  *
  * NOTICE OF LICENSE
  *
@@ -18,14 +18,13 @@
  * @link      http://www.techdivision.com
  */
 
-namespace TechDivision\Import\Listeners;
+namespace TechDivision\Import\Loaders;
 
-use League\Event\EventInterface;
-use League\Event\AbstractListener;
+use TechDivision\Import\Utils\RegistryKeys;
 use TechDivision\Import\Services\RegistryProcessorInterface;
 
 /**
- * An listener implementation that initializes the registry.
+ * Loader for the source and target directory.
  *
  * @author    Tim Wagner <t.wagner@techdivision.com>
  * @copyright 2019 TechDivision GmbH <info@techdivision.com>
@@ -33,18 +32,18 @@ use TechDivision\Import\Services\RegistryProcessorInterface;
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
  */
-class ClearRegistryListener extends AbstractListener
+class SourceAndTargetDirLoader implements LoaderInterface
 {
 
     /**
-     * The RegistryProcessor instance to handle running threads.
+     * The registry processor instance.
      *
      * @var \TechDivision\Import\Services\RegistryProcessorInterface
      */
     protected $registryProcessor;
 
     /**
-     * Initializes the event.
+     * Construct that initializes the iterator with the registry processor instance.
      *
      * @param \TechDivision\Import\Services\RegistryProcessorInterface $registryProcessor The registry processor instance
      */
@@ -54,21 +53,40 @@ class ClearRegistryListener extends AbstractListener
     }
 
     /**
-     * Handle the event.
+     * Loads and returns data.
      *
-     * @param \League\Event\EventInterface $event The event that triggered the listener
-     *
-     * @return void
+     * @return \ArrayAccess The array with the data
      */
-    public function handle(EventInterface $event)
+    public function load()
     {
-        $this->getRegistryProcessor()->flushCache();
+
+        // initialize the array for the directories that has to be cleared
+        $directories = array();
+
+        // load the actual status
+        $status = $this->getRegistryProcessor()->getAttribute(RegistryKeys::STATUS);
+
+        // query whether or not the configured source directory is available
+        if (is_dir($sourceDir = $status[RegistryKeys::SOURCE_DIRECTORY])) {
+            $directories[] = $sourceDir;
+        }
+
+        // query whether or not the configured target directory is available
+        if (is_dir($targetDir = $status[RegistryKeys::TARGET_DIRECTORY])) {
+            // query whether or not the directory has already been added
+            if (in_array($targetDir, $directories) === false) {
+                $directories[] = $targetDir;
+            }
+        }
+
+        // return the directories to be cleared
+        return $directories;
     }
 
     /**
-     * Return's the RegistryProcessor instance to handle the running threads.
+     * Return's the registry processor instance.
      *
-     * @return \TechDivision\Import\Services\RegistryProcessor The registry processor instance
+     * @return \TechDivision\Import\Services\RegistryProcessorInterface The processor instance
      */
     protected function getRegistryProcessor()
     {

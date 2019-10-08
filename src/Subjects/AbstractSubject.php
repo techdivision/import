@@ -38,6 +38,7 @@ use TechDivision\Import\Adapter\ImportAdapterInterface;
 use TechDivision\Import\Exceptions\WrappedColumnException;
 use TechDivision\Import\Services\RegistryProcessorInterface;
 use TechDivision\Import\Configuration\SubjectConfigurationInterface;
+use TechDivision\Import\Services\RegistryProcessor;
 
 /**
  * An abstract subject implementation.
@@ -541,14 +542,13 @@ abstract class AbstractSubject implements SubjectInterface, FilesystemSubjectInt
         $registryProcessor->mergeAttributesRecursive(
             RegistryKeys::STATUS,
             array(
-                RegistryKeys::SOURCE_DIRECTORY => $newSourceDir = $this->getNewSourceDir($serial),
                 RegistryKeys::FILES => array($this->getFilename() => array(RegistryKeys::STATUS => 1))
             )
         );
 
         // log a debug message with the new source directory
         $this->getSystemLogger()->debug(
-            sprintf('Subject %s successfully updated source directory to %s', get_class($this), $newSourceDir)
+            sprintf('Subject %s successfully updated status data for import %s', get_class($this), $serial)
         );
     }
 
@@ -559,20 +559,17 @@ abstract class AbstractSubject implements SubjectInterface, FilesystemSubjectInt
      */
     public function getTargetDir()
     {
-        return $this->getNewSourceDir($this->getSerial());
-    }
 
-    /**
-     * Return's the next source directory, which will be the target directory
-     * of this subject, in most cases.
-     *
-     * @param string $serial The serial of the actual import
-     *
-     * @return string The new source directory
-     */
-    public function getNewSourceDir($serial)
-    {
-        return sprintf('%s/%s', $this->getConfiguration()->getTargetDir(), $serial);
+        // load the status from the registry processor
+        $status = $this->getRegistryProcessor()->getAttribute(RegistryKeys::STATUS);
+
+        // query whether or not a target directory (mandatory) has been configured
+        if (isset($status[RegistryKeys::TARGET_DIRECTORY])) {
+            return $status[RegistryKeys::TARGET_DIRECTORY];
+        }
+
+        // throw an exception if the root category is NOT available
+        throw new \Exception(sprintf('Can\'t find a target directory in status data for import %s', $this->getSerial()));
     }
 
     /**

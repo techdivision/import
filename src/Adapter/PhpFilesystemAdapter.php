@@ -29,7 +29,7 @@ namespace TechDivision\Import\Adapter;
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
  */
-class PhpFilesystemAdapter implements FilesystemAdapterInterface
+class PhpFilesystemAdapter implements PhpFilesystemAdapterInterface
 {
 
     /**
@@ -164,5 +164,41 @@ class PhpFilesystemAdapter implements FilesystemAdapterInterface
 
         // return the array with the files matching the glob pattern
         return $files;
+    }
+
+    /**
+     * Removes the passed directory recursively.
+     *
+     * @param string  $src        Name of the directory to remove
+     * @param boolean $recursive TRUE if the directory has to be deleted recursive, else FALSE
+     *
+     * @return void
+     * @throws \Exception Is thrown, if the directory can not be removed
+     */
+    public function removeDir($src, $recursive = false)
+    {
+
+        // open the directory
+        $dir = opendir($src);
+
+        // remove files/folders recursively
+        while (false !== ($file = readdir($dir))) {
+            if (($file != '.') && ($file != '..')) {
+                $full = $src . '/' . $file;
+                if (is_dir($full)) {
+                    $recursive ?? $this->removeDir($full, $recursive);
+                } else {
+                    if (!unlink($full)) {
+                        throw new \Exception(sprintf('Can\'t remove file %s', $full));
+                    }
+                }
+            }
+        }
+
+        // close handle and remove directory itself
+        closedir($dir);
+        if (!rmdir($src)) {
+            throw new \Exception(sprintf('Can\'t remove directory %s', $src));
+        }
     }
 }

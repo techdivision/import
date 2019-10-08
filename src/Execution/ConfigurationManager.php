@@ -104,7 +104,7 @@ class ConfigurationManager implements ConfigurationManagerInterface
                 // query whether or not the operation has to be executed or nt
                 if ($shortcutName === $shortcut) {
                     foreach ($opNames as $operationName) {
-                        $operationNames[] = $operationName;
+                        $configuration->addOperationName($operationNames[] = $operationName);
                     }
                 }
             }

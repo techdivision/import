@@ -81,7 +81,7 @@ class ArchivePlugin extends AbstractPlugin
         // query whether or not the specified archive directory already exists
         if ($archiveDir === null) {
             // try to initialize a default archive directory by concatenating 'archive' to the target directory
-            $archiveDir = sprintf('%s/archive', $this->getConfiguration()->getTargetDir());
+            $archiveDir = sprintf('var/archive');
         }
 
         // query whether or not the archive directory already exists
@@ -107,15 +107,15 @@ class ArchivePlugin extends AbstractPlugin
         $archive->open($archiveFile = sprintf('%s/%s.zip', $archiveDir, $this->getSerial()), \ZipArchive::CREATE);
 
         // iterate through all files and add them to the ZIP archive
+        /** @var \SplFileInfo $filename */
         foreach ($fileIterator as $filename) {
-            $archive->addFile($filename, basename($filename));
+            if ($filename->isFile()) {
+                $archive->addFile($filename, basename($filename));
+            }
         }
 
         // save the ZIP archive
         $archive->close();
-
-        // finally remove the directory with the imported files
-        $this->removeDir($sourceDir);
 
         // and and log a message that the import artefacts have been archived
         $this->getSystemLogger()->info(sprintf('Successfully archived imported files to %s!', $archiveFile));
