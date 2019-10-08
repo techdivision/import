@@ -102,6 +102,22 @@ class ValueCsvSerializerTest extends AbstractSerializerTest
      *
      * @return void
      */
+    public function testUnserializeProductCategoryNameSeparatedWithComma()
+    {
+        $this->assertEquals(
+            array(
+                'Default Category/Etiketten und Prüfplaketten/Prüfplaketten/Prüfvorschriften - BGV, DGUV etc.',
+                'Default Category/Sicherheitskennzeichnung und Rettungszeichen/Verbotsschilder/Verbotszeichen neue "ASR A1.3, EN ISO 7010"'
+            ),
+            $this->valueCsvSerializer->unserialize('"Default Category/Etiketten und Prüfplaketten/Prüfplaketten/Prüfvorschriften - BGV, DGUV etc.","Default Category/Sicherheitskennzeichnung und Rettungszeichen/Verbotsschilder/Verbotszeichen neue ""ASR A1.3, EN ISO 7010"""')
+        );
+    }
+
+    /**
+     * Tests if the unserialize() method returns the serialized value from a string with categories that contains double qoutes and a slash.
+     *
+     * @return void
+     */
     public function testUnserializeCategoriesWithSlashAndDoubleQuotes()
     {
         $this->assertEquals(
@@ -118,7 +134,7 @@ class ValueCsvSerializerTest extends AbstractSerializerTest
     public function testUnserializeCategoriesFromAColumnWithSlash()
     {
 
-        // first extract the the column value (simulating what happens when column will be extracted with $this->getValue(ColumnKeys::CATEGORIES) from the CSV file)
+        // first extract the the column value (simulating what happens when column will be extracted with $this->getValue(ColumnKeys::PATH) from the CSV file)
         $column = $this->valueCsvSerializer->unserialize('"Default Category/Sicherheitskennzeichnung und Rettungszeichen/Gefahrstoffkennzeichnung/""Gefahrstoffetiketten gemäß GHS-/CLP"""');
 
         $this->assertEquals(
@@ -135,13 +151,34 @@ class ValueCsvSerializerTest extends AbstractSerializerTest
     public function testUnserializeCategoriesFromAColumnWithSlashAndDoubleQuotes()
     {
 
-        // first extract the the column value (simulating what happens when column will be extracted with $this->getValue(ColumnKeys::CATEGORIES) from the CSV file)
+        // first extract the the column value (simulating what happens when column will be extracted with $this->getValue(ColumnKeys::PATH) from the CSV file)
         $column = $this->valueCsvSerializer->unserialize('"Default Category/Etiketten und Prüfplaketten/Prüfplaketten/""Prüfplaketten """"Nächster Prüftermin / Geprüft"""""""');
 
         // explode the columns
         $this->assertEquals(
             array('Default Category', 'Etiketten und Prüfplaketten', 'Prüfplaketten', 'Prüfplaketten "Nächster Prüftermin / Geprüft"'),
             $this->valueCsvSerializer->unserialize(array_shift($column), '/')
+        );
+    }
+
+    /**
+     * Tests if the unserialize() method returns the serialized value from a string with categories that contains double qoutes and a slash.
+     *
+     * @return void
+     */
+    public function testUnserializeProductCategoryFromAColumnWithComma()
+    {
+
+        // first extract the the column value (simulating what happens when column will be extracted with $this->getValue(ColumnKeys::CATEGORIES) from the CSV file)
+        $column = $this->valueCsvSerializer->unserialize('"""Default Category/Etiketten und Prüfplaketten/Prüfplaketten/Prüfvorschriften - BGV, DGUV etc."",""Default Category/Sicherheitskennzeichnung und Rettungszeichen/Verbotsschilder/Verbotszeichen neue """"ASR A1.3, EN ISO 7010"""""""');
+
+        // explode the columns
+        $this->assertEquals(
+            array(
+                'Default Category/Etiketten und Prüfplaketten/Prüfplaketten/Prüfvorschriften - BGV, DGUV etc.',
+                'Default Category/Sicherheitskennzeichnung und Rettungszeichen/Verbotsschilder/Verbotszeichen neue "ASR A1.3, EN ISO 7010"'
+            ),
+            $this->valueCsvSerializer->unserialize(array_shift($column))
         );
     }
 }

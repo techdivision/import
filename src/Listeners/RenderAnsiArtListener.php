@@ -91,6 +91,8 @@ class RenderAnsiArtListener extends AbstractListener
             $application->log(sprintf('App Version: %s', $application->getVersion()), LogLevel::DEBUG);
             $application->log('-------------------- Loaded Extensions -----------------------', LogLevel::DEBUG);
             $application->log(implode(', ', $loadedExtensions = get_loaded_extensions()), LogLevel::DEBUG);
+            $application->log('------------------- Executed Operations ----------------------', LogLevel::DEBUG);
+            $application->log(implode(' > ', $this->getConfiguration()->getOperationNames()), LogLevel::DEBUG);
             $application->log('--------------------------------------------------------------', LogLevel::DEBUG);
 
             // write a warning for low performance, if XDebug extension is activated
@@ -99,14 +101,18 @@ class RenderAnsiArtListener extends AbstractListener
             }
         }
 
+        // prepare the operation name and the entity type code
+        $operationName = sprintf('custom');
+        $entityTypeCode = $this->getConfiguration()->getEntityTypeCode();
+
+        // replace the operation name with the shortcut, iv available
+        if ($shortcut = $this->getConfiguration()->getShortcut()) {
+            $operationName = $shortcut;
+        }
+
         // log a message that import has been started
         $application->log(
-            sprintf(
-                'Now start import with serial %s [%s => %s]',
-                $application->getSerial(),
-                $this->getConfiguration()->getEntityTypeCode(),
-                implode(' > ', $this->getConfiguration()->getOperationNames())
-            ),
+            sprintf('Now start import with serial %s [%s => %s]', $application->getSerial(), $entityTypeCode, $operationName),
             LogLevel::INFO
         );
     }
