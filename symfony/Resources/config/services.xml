@@ -459,7 +459,11 @@
             <argument type="service" id="import.adapter.filesystem.php"/>
             <argument type="service" id="import.loader.source.and.target.dir"/>
         </service>
-        <service id="import.listener.render.ansi.art" class="TechDivision\Import\Listeners\RenderAnsiArtListener">
+        <service id="import.listener.render.ansi.art" class="TechDivision\Import\Listeners\RenderAnsiArtListener"/>
+        <service id="import.listener.render.debug.info" class="TechDivision\Import\Listeners\RenderDebugInfoListener">
+            <argument type="service" id="configuration"/>
+        </service>
+        <service id="import.listener.render.operation.info" class="TechDivision\Import\Listeners\RenderOperationInfoListener">
             <argument type="service" id="configuration"/>
         </service>
 

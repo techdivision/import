@@ -2,7 +2,9 @@
   "listeners": [
     {
       "app.set.up": [
-        "import.listener.render.ansi.art"
+        "import.listener.render.ansi.art",
+        "import.listener.render.operation.info",
+        "import.listener.render.debug.info"
       ]
     }
   ]
