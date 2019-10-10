@@ -87,13 +87,16 @@ class ValueCsvSerializer extends AbstractCsvSerializer
         $enclosure = $csvConfiguration->getEnclosure();
         $escape = $csvConfiguration->getEscape();
 
-        // create hte callback method to enclose/escape the values
-        $callback = function ($value) use ($enclosure, $escape) {
-            return $enclosure . str_replace($escape, $escape . $escape, $value) . $enclosure;
-        };
+        // serialize the passed array into memory and rewind the stream
+        $length = fputcsv($fp = fopen('php://memory', 'w'), $unserialized, $delimiter, $enclosure, $escape);
+        rewind($fp);
 
-        // implode and return the enclosed/escaped values
-        return implode($delimiter, array_map($callback, $unserialized));
+        // load the serialized value - cut off the newnline char
+        $serialized = trim(fread($fp, $length), PHP_EOL);
+        fclose($fp);
+
+        // return the serialized value
+        return $serialized;
     }
 
     /**

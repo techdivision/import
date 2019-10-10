@@ -92,7 +92,7 @@ class AdditionalAttributeCsvSerializerTest extends AbstractSerializerTest
      */
     public function testSerializeWithSuccess()
     {
-        $this->assertEquals('"ac_01=ov_01","ac_02=ov_02"', $this->additionalAttributeSerializer->serialize(array('ac_01' => 'ov_01', 'ac_02' => 'ov_02')));
+        $this->assertEquals('ac_01=ov_01,ac_02=ov_02', $this->additionalAttributeSerializer->serialize(array('ac_01' => 'ov_01', 'ac_02' => 'ov_02')));
     }
 
     /**
@@ -200,7 +200,7 @@ class AdditionalAttributeCsvSerializerTest extends AbstractSerializerTest
     {
 
         // initialize the expected result
-        $value = '"my_boolean_attribute=true","my_select_attribute=selected_value_01","my_multiselect_attribute=multiselected_value_01|multiselected_value_02"';
+        $value = 'my_boolean_attribute=true,my_select_attribute=selected_value_01,my_multiselect_attribute=multiselected_value_01|multiselected_value_02';
 
         // initialize the array with the values to serializer
         $values = array(

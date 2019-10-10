@@ -131,6 +131,13 @@ class CommandNames extends \ArrayObject
     const IMPORT_CLEAR_PID_FILE = 'import:clear:pid-file';
 
     /**
+     * The command name for the command that converts a value for the target column.
+     *
+     * @var string
+     */
+    const IMPORT_CONVERT_VALUE = 'import:convert:value';
+
+    /**
      * Construct a new command names instance.
      *
      * @param array $commandNames The array with the additional command names
@@ -153,7 +160,8 @@ class CommandNames extends \ArrayObject
                 CommandNames::IMPORT_CREATE_CONFIGURATION_FILE,
                 CommandNames::IMPORT_CLEAR_PID_FILE,
                 CommandNames::IMPORT_CUSTOMERS,
-                CommandNames::IMPORT_CUSTOMERS_ADDRESS
+                CommandNames::IMPORT_CUSTOMERS_ADDRESS,
+                CommandNames::IMPORT_CONVERT_VALUE
             ),
             $commandNames
         );
