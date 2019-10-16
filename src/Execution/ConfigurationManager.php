@@ -49,7 +49,7 @@ class ConfigurationManager implements ConfigurationManagerInterface
      */
     private $entityTypeToEditionMapping = array(
         'eav_attribute'                 => 'general',
-        'eav_attribte_set'              => 'general',
+        'eav_attribute_set'             => 'general',
         'catalog_product_inventory_msi' => 'general',
         'catalog_product_tier_price'    => 'general',
         'customer_address'              => 'general',
@@ -90,20 +90,19 @@ class ConfigurationManager implements ConfigurationManagerInterface
         // initialize the array for the operations that has to be executed
         $execute = array();
 
-        // load the shortcuts and the operations from the configuration
+        // load the shortcuts from the configuration
         $shortcuts = $configuration->getShortcuts();
-        $operations = $configuration->getOperations();
 
         // query whether or not a shortcut has been passed
         if ($shortcut = $configuration->getShortcut()) {
-            // load the Entity Type Code and map it to the Magento Edition
+            // load the entity type code and map it to the Magento edition
             $magentoEdition = $this->mapEntityTypeToMagentoEdition($entityTypeCode = $configuration->getEntityTypeCode());
             // load the operation names from the shorcuts
             foreach ($shortcuts[$magentoEdition][$entityTypeCode] as $shortcutName => $opNames) {
-                // query whether or not the operation has to be executed or nt
+                // query whether or not the operation has to be executed or not
                 if ($shortcutName === $shortcut) {
-                    foreach ($opNames as $operationName) {
-                        $configuration->addOperationName($operationName);
+                    foreach ($opNames as $opName) {
+                        $configuration->addOperationName($opName);
                     }
                 }
             }
@@ -114,20 +113,7 @@ class ConfigurationManager implements ConfigurationManagerInterface
 
         // load and initialize the operations by their name
         foreach ($operationNames as $operationName) {
-            // explode the shortcut to get Magento Edition, Entity Type Code and Operation Name
-            list($edition, $type, $name) = explode('/', $operationName);
-            // initialize the execution context with the Magento Edition + Entity Type Code
-            $executionContext = new ExecutionContext($edition, $type);
-            // load the operations we want to execute
-            foreach ($operations[$edition][$type] as $operation) {
-                // query whether or not the operation is in the array of operation that has to be executed
-                if ($operation->getName() === $name) {
-                    // pass the execution context to the operation configuration
-                    $operation->setExecutionContext($executionContext);
-                    // finally add the operation to the array
-                    $execute[] = $operation;
-                }
-            }
+            $execute[] = $this->getOperation($operationName);
         }
 
         // return the array with the operations
@@ -192,6 +178,43 @@ class ConfigurationManager implements ConfigurationManagerInterface
 
         // throw an exception if no plugins are available
         throw new \Exception(sprintf('Can\'t find any plugins for operation(s) %s', implode(' > ', $configuration->getOperationNames())));
+    }
+
+    /**
+     * Return's the operation with the given name.
+     *
+     * @param string $operationName The name of the operation to return
+     *
+     * @return \TechDivision\Import\Configuration\OperationConfigurationInterface The operation instance
+     * @throws \Exception Is thrown if the operation with the given name is not available
+     */
+    protected function getOperation($operationName)
+    {
+
+        // explode the shortcut to get Magento Edition, Entity Type Code and Operation Name
+        list($edition, $type, $name) = explode('/', $operationName);
+
+        // load the operations from the configuration
+        $operations = $this->getConfiguration()->getOperations();
+
+        // query whether or not operations for the Magento edition + entity type code are available
+        if (isset($operations[$edition][$type])) {
+            // initialize the execution context with the Magento edition + entity type code
+            $executionContext = new ExecutionContext($edition, $type);
+            // iterate over the operations, initialize them for execution
+            foreach ($operations[$edition][$type] as $op) {
+                // query whether or not the operation is in the array of operation that has to be executed
+                if ($op->getName() === $name) {
+                    // pass the execution context to the operation configuration
+                    $op->setExecutionContext($executionContext);
+                    // finally add the operation to the array
+                    return $op;
+                }
+            }
+        }
+
+        // throw an exception if the operation is not available
+        throw new \Exception(sprintf('Operation "%s" is not available in scope "%s/%s"', $name, $edition, $type));
     }
 
     /**
