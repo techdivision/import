@@ -45,121 +45,124 @@ abstract class AbstractTest extends \PHPUnit_Framework_TestCase
      *
      * @return array The array with the global data
      */
-    protected function getMockGlobalData()
+    protected function getMockGlobalData(array $globalData = array())
     {
-        return array(
-            RegistryKeys::GLOBAL_DATA => array(
-                RegistryKeys::LINK_TYPES => array(),
-                RegistryKeys::CATEGORIES => array(),
-                RegistryKeys::TAX_CLASSES => array(),
-                RegistryKeys::EAV_ATTRIBUTES => array(),
-                RegistryKeys::ATTRIBUTE_SETS => array(),
-                RegistryKeys::STORE_WEBSITES => array(
-                    'admin' => array(
-                        MemberNames::WEBSITE_ID => 0,
-                        MemberNames::CODE => 'admin',
-                        MemberNames::NAME => 'Admin'
+        return array_merge_recursive(
+            $globalData,
+            array(
+                RegistryKeys::GLOBAL_DATA => array(
+                    RegistryKeys::LINK_TYPES => array(),
+                    RegistryKeys::CATEGORIES => array(),
+                    RegistryKeys::TAX_CLASSES => array(),
+                    RegistryKeys::EAV_ATTRIBUTES => array(),
+                    RegistryKeys::ATTRIBUTE_SETS => array(),
+                    RegistryKeys::STORE_WEBSITES => array(
+                        'admin' => array(
+                            MemberNames::WEBSITE_ID => 0,
+                            MemberNames::CODE => 'admin',
+                            MemberNames::NAME => 'Admin'
+                        ),
+                        'base' => array(
+                            MemberNames::WEBSITE_ID => 1,
+                            MemberNames::CODE => 'base',
+                            MemberNames::NAME => 'Main Website'
+                        )
                     ),
-                    'base' => array(
-                        MemberNames::WEBSITE_ID => 1,
-                        MemberNames::CODE => 'base',
-                        MemberNames::NAME => 'Main Website'
-                    )
-                ),
-                RegistryKeys::DEFAULT_STORE => array(
-                    MemberNames::STORE_ID => 1,
-                    MemberNames::CODE => 'default',
-                    MemberNames::WEBSITE_ID => 1
-                ),
-                RegistryKeys::ROOT_CATEGORIES => array(
-                    'default' => array(
-                        MemberNames::ENTITY_ID => 2,
-                        MemberNames::PATH => '1/2'
-                    )
-                ),
-                RegistryKeys::EAV_USER_DEFINED_ATTRIBUTES => array(),
-                RegistryKeys::STORES => array(
-                    'admin' => array(
-                        MemberNames::STORE_ID => 0,
-                        MemberNames::WEBSITE_ID => 0,
-                        MemberNames::CODE => 'admin',
-                        MemberNames::NAME => 'Admin'
-                    ),
-                    'default' => array(
+                    RegistryKeys::DEFAULT_STORE => array(
                         MemberNames::STORE_ID => 1,
-                        MemberNames::WEBSITE_ID => 1,
                         MemberNames::CODE => 'default',
-                        MemberNames::NAME => 'Default Store View'
+                        MemberNames::WEBSITE_ID => 1
                     ),
-                    'en_US' => array(
-                        MemberNames::STORE_ID => 2,
-                        MemberNames::WEBSITE_ID => 1,
-                        MemberNames::CODE => 'en_US',
-                        MemberNames::NAME => 'US Store'
-                    )
-                ),
-                RegistryKeys::ENTITY_TYPES => array(
-                    EntityTypeCodes::CATALOG_PRODUCT => array(
-                        MemberNames::ENTITY_TYPE_ID => 4,
-                        MemberNames::ENTITY_TYPE_CODE => EntityTypeCodes::CATALOG_PRODUCT
-                    )
-                ),
-                RegistryKeys::CORE_CONFIG_DATA => array(
-                    'default/0/web/seo/use_rewrites' => array(
-                        'config_id' => 1,
-                        'scope' => 'default',
-                        'scope_id' => 0,
-                        'path' => 'web/seo/use_rewrites',
-                        'value' => 1
+                    RegistryKeys::ROOT_CATEGORIES => array(
+                        'default' => array(
+                            MemberNames::ENTITY_ID => 2,
+                            MemberNames::PATH => '1/2'
+                        )
                     ),
-                    'default/0/web/unsecure/base_url' => array(
-                        'config_id' => 2,
-                        'scope' => 'default',
-                        'scope_id' => 0,
-                        'path' => 'web/unsecure/base_url',
-                        'value' => 'http://127.0.0.1/magento2-ee-2.1.7-sampledata/'
+                    RegistryKeys::EAV_USER_DEFINED_ATTRIBUTES => array(),
+                    RegistryKeys::STORES => array(
+                        'admin' => array(
+                            MemberNames::STORE_ID => 0,
+                            MemberNames::WEBSITE_ID => 0,
+                            MemberNames::CODE => 'admin',
+                            MemberNames::NAME => 'Admin'
+                        ),
+                        'default' => array(
+                            MemberNames::STORE_ID => 1,
+                            MemberNames::WEBSITE_ID => 1,
+                            MemberNames::CODE => 'default',
+                            MemberNames::NAME => 'Default Store View'
+                        ),
+                        'en_US' => array(
+                            MemberNames::STORE_ID => 2,
+                            MemberNames::WEBSITE_ID => 1,
+                            MemberNames::CODE => 'en_US',
+                            MemberNames::NAME => 'US Store'
+                        )
                     ),
-                    'default/0/web/secure/base_url' => array(
-                        'config_id' => 3,
-                        'scope' => 'default',
-                        'scope_id' => 0,
-                        'path' => 'web/secure/base_url',
-                        'value' => 'https://127.0.0.1/magento2-ee-2.1.7-sampledata/'
+                    RegistryKeys::ENTITY_TYPES => array(
+                        EntityTypeCodes::CATALOG_PRODUCT => array(
+                            MemberNames::ENTITY_TYPE_ID => 4,
+                            MemberNames::ENTITY_TYPE_CODE => EntityTypeCodes::CATALOG_PRODUCT
+                        )
                     ),
-                    'default/0/general/locale/code' => array(
-                        'config_id' => 4,
-                        'scope' => 'default',
-                        'scope_id' => 0,
-                        'path' => 'general/locale/code',
-                        'value' => 'en_US'
-                    ),
-                    'default/0/web/secure/use_in_frontend' => array(
-                        'config_id' => 5,
-                        'scope' => 'default',
-                        'scope_id' => 0,
-                        'path' => 'web/secure/use_in_frontend',
-                        'value' => null
-                    ),
-                    'default/0/web/secure/use_in_adminhtml' => array(
-                        'config_id' => 6,
-                        'scope' => 'default',
-                        'scope_id' => 0,
-                        'path' => 'web/secure/use_in_adminhtml',
-                        'value' => null
-                    ),
-                    'default/0/fallback/on/default/level' => array(
-                        'config_id' => 7,
-                        'scope' => 'default',
-                        'scope_id' => 0,
-                        'path' => 'fallback/on/website/level',
-                        'value' => 1001
-                    ),
-                    'websites/1/fallback/on/website/level' => array(
-                        'config_id' => 8,
-                        'scope' => 'websites',
-                        'scope_id' => 1,
-                        'path' => 'fallback/on/website/level',
-                        'value' => 1002
+                    RegistryKeys::CORE_CONFIG_DATA => array(
+                        'default/0/web/seo/use_rewrites' => array(
+                            'config_id' => 1,
+                            'scope' => 'default',
+                            'scope_id' => 0,
+                            'path' => 'web/seo/use_rewrites',
+                            'value' => 1
+                        ),
+                        'default/0/web/unsecure/base_url' => array(
+                            'config_id' => 2,
+                            'scope' => 'default',
+                            'scope_id' => 0,
+                            'path' => 'web/unsecure/base_url',
+                            'value' => 'http://127.0.0.1/magento2-ee-2.1.7-sampledata/'
+                        ),
+                        'default/0/web/secure/base_url' => array(
+                            'config_id' => 3,
+                            'scope' => 'default',
+                            'scope_id' => 0,
+                            'path' => 'web/secure/base_url',
+                            'value' => 'https://127.0.0.1/magento2-ee-2.1.7-sampledata/'
+                        ),
+                        'default/0/general/locale/code' => array(
+                            'config_id' => 4,
+                            'scope' => 'default',
+                            'scope_id' => 0,
+                            'path' => 'general/locale/code',
+                            'value' => 'en_US'
+                        ),
+                        'default/0/web/secure/use_in_frontend' => array(
+                            'config_id' => 5,
+                            'scope' => 'default',
+                            'scope_id' => 0,
+                            'path' => 'web/secure/use_in_frontend',
+                            'value' => null
+                        ),
+                        'default/0/web/secure/use_in_adminhtml' => array(
+                            'config_id' => 6,
+                            'scope' => 'default',
+                            'scope_id' => 0,
+                            'path' => 'web/secure/use_in_adminhtml',
+                            'value' => null
+                        ),
+                        'default/0/fallback/on/default/level' => array(
+                            'config_id' => 7,
+                            'scope' => 'default',
+                            'scope_id' => 0,
+                            'path' => 'fallback/on/website/level',
+                            'value' => 1001
+                        ),
+                        'websites/1/fallback/on/website/level' => array(
+                            'config_id' => 8,
+                            'scope' => 'websites',
+                            'scope_id' => 1,
+                            'path' => 'fallback/on/website/level',
+                            'value' => 1002
+                        )
                     )
                 )
             )
@@ -291,9 +294,6 @@ abstract class AbstractTest extends \PHPUnit_Framework_TestCase
 
         // create a mock configuration
         $mockConfiguration = $this->getMockConfiguration();
-        $mockConfiguration->expects($this->any())
-            ->method('getOperationName')
-            ->willReturn('add-update');
 
         // create a mock subject configuration
         $mockSubjectConfiguration = $this->getMockSubjectConfiguration();

@@ -107,23 +107,55 @@ class PluginModule implements ModuleInterface
     }
 
     /**
+     * Persist the UUID of the actual import process to the PID file.
+     *
+     * @return void
+     * @throws \Exception Is thrown, if the PID can not be added
+     */
+    protected function lock()
+    {
+        $this->getApplication()->lock();
+    }
+
+    /**
+     * Remove's the UUID of the actual import process from the PID file.
+     *
+     * @return void
+     * @throws \Exception Is thrown, if the PID can not be removed
+     */
+    protected function unlock()
+    {
+        $this->getApplication()->unlock();
+    }
+
+    /**
      * Inovkes the plug-in functionality.
      *
      * @return void
      */
     public function process()
     {
+        try {
+            // immediately add the PID to lock this import process
+            $this->lock();
+            // process the plugins defined in the configuration
+            /** @var \TechDivision\Import\Configuration\PluginConfigurationInterface $pluginConfiguration */
+            foreach ($this->getConfigurationManager()->getPlugins() as $pluginConfiguration) {
+                // query whether or not the operation has been stopped
+                if ($this->getApplication()->isStopped()) {
+                    break;
+                }
 
-        // process the plugins defined in the configuration
-        /** @var \TechDivision\Import\Configuration\PluginConfigurationInterface $pluginConfiguration */
-        foreach ($this->getConfigurationManager()->getPlugins() as $pluginConfiguration) {
-            // query whether or not the operation has been stopped
-            if ($this->getApplication()->isStopped()) {
-                break;
-            }
-
-            // execute the plugin instance
-            $this->getPluginExecutor()->execute($pluginConfiguration);
-         }
+                // execute the plugin instance
+                $this->getPluginExecutor()->execute($pluginConfiguration);
+             }
+        } catch (\Exception $e) {
+            // re-throw the exception
+             throw $e;
+        } finally {
+            // finally, if a PID has been set, remove it
+            // from the PID file to unlock the importer
+            $this->unlock();
+        }
     }
 }

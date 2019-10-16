@@ -76,6 +76,7 @@ class AbstractSubjectTest extends AbstractTest
             'rename',
             'isFile',
             'getHeaderMappings',
+            'getExecutionContext',
             'getDefaultCallbackMappings'
         );
     }

@@ -219,28 +219,6 @@ abstract class AbstractPlugin implements PluginInterface
     }
 
     /**
-     * Persist the UUID of the actual import process to the PID file.
-     *
-     * @return void
-     * @throws \Exception Is thrown, if the PID can not be added
-     */
-    protected function lock()
-    {
-        $this->getApplication()->lock();
-    }
-
-    /**
-     * Remove's the UUID of the actual import process from the PID file.
-     *
-     * @return void
-     * @throws \Exception Is thrown, if the PID can not be removed
-     */
-    protected function unlock()
-    {
-        $this->getApplication()->unlock();
-    }
-
-    /**
      * Remove's the passed line from the file with the passed name.
      *
      * @param string $line     The line to be removed

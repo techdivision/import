@@ -80,6 +80,8 @@ class AbstractEavSubjectTest extends AbstractTest
             'rename',
             'isFile',
             'getHeaderMappings',
+            'getEntityTypeCode',
+            'getExecutionContext',
             'getDefaultCallbackMappings'
         );
     }

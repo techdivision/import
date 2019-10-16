@@ -90,10 +90,9 @@ class ConfigurationManager implements ConfigurationManagerInterface
         // initialize the array for the operations that has to be executed
         $execute = array();
 
-        // load the shortcuts, the operations and the operation names from the configuration
+        // load the shortcuts and the operations from the configuration
         $shortcuts = $configuration->getShortcuts();
         $operations = $configuration->getOperations();
-        $operationNames = $configuration->getOperationNames();
 
         // query whether or not a shortcut has been passed
         if ($shortcut = $configuration->getShortcut()) {
@@ -104,11 +103,14 @@ class ConfigurationManager implements ConfigurationManagerInterface
                 // query whether or not the operation has to be executed or nt
                 if ($shortcutName === $shortcut) {
                     foreach ($opNames as $operationName) {
-                        $configuration->addOperationName($operationNames[] = $operationName);
+                        $configuration->addOperationName($operationName);
                     }
                 }
             }
         }
+
+        // load the operation names that has to be executed
+        $operationNames = $configuration->getOperationNames();
 
         // load and initialize the operations by their name
         foreach ($operationNames as $operationName) {

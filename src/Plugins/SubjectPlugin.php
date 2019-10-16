@@ -99,9 +99,6 @@ class SubjectPlugin extends AbstractPlugin implements SubjectAwarePluginInterfac
     {
 
         try {
-            // immediately add the PID to lock this import process
-            $this->lock();
-
             // load the plugin's subjects
             $subjects = $this->getPluginConfiguration()->getSubjects();
 
@@ -135,10 +132,6 @@ class SubjectPlugin extends AbstractPlugin implements SubjectAwarePluginInterfac
         } catch (\Exception $e) {
             // re-throw the exception
             throw $e;
-        } finally {
-            // finally, if a PID has been set, remove it
-            // from the PID file to unlock the importer
-            $this->unlock();
         }
     }
 
