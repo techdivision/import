@@ -123,7 +123,9 @@ class SubjectPlugin extends AbstractPlugin implements SubjectAwarePluginInterfac
             // update the number of imported bunches
             $this->getRegistryProcessor()->mergeAttributesRecursive(
                 RegistryKeys::STATUS,
-                array(RegistryKeys::BUNCHES => $this->bunches)
+                array(
+                    RegistryKeys::BUNCHES => $this->bunches
+                )
             );
 
         } catch (MissingOkFileException $mofe) {

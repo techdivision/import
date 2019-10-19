@@ -437,7 +437,42 @@ class SqlStatementRepository extends AbstractSqlStatementRepository
            ORDER BY main_table.is_user_defined,
                     main_table.attribute_id',
         SqlStatementKeys::CUSTOMER_GROUPS =>
-            'SELECT * FROM ${table:customer_group}'
+            'SELECT * FROM ${table:customer_group}',
+        SqlStatementKeys::DELETE_IMPORT_HISTORY =>
+            'DELETE
+               FROM ${table:import_history}
+              WHERE history_id = :history_id',
+        SqlStatementKeys::UPDATE_IMPORT_HISTORY =>
+            'UPDATE ${table:import_history}
+                SET user_id = :user_id,
+                    started_at = :started_at,
+                    imported_file = :imported_file,
+                    execution_time = :execution_time,
+                    summary = :summary,
+                    error_file = :error_file
+              WHERE history_id = :history_id',
+        SqlStatementKeys::CREATE_IMPORT_HISTORY =>
+            'INSERT
+               INTO ${table:import_history}
+                    (user_id,
+                     started_at,
+                     imported_file,
+                     execution_time,
+                     summary,
+                     error_file)
+             VALUES (:user_id,
+                     :started_at,
+                     :imported_file,
+                     :execution_time,
+                     :summary,
+                     :error_file)',
+        SqlStatementKeys::ADMIN_USERS =>
+            'SELECT *
+               FROM ${table:admin_user}',
+        SqlStatementKeys::ADMIN_USER_BY_USERNAME =>
+            'SELECT *
+               FROM ${table:admin_user}
+              WHERE username = :username'
     );
 
     /**

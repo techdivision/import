@@ -132,10 +132,7 @@ class SubjectExecutor implements SubjectExecutorInterface
                     $this->emitter->emit(sprintf('%s.%s.%s', $pluginName, $subjectName, EventNames::SUBJECT_EXPORT_START), $subjectInstance);
 
                     // export the artefacts if available
-                    $subjectInstance->export(
-                        $matches[BunchKeys::FILENAME],
-                        $matches[BunchKeys::COUNTER]
-                    );
+                    $subjectInstance->export($matches[BunchKeys::FILENAME], $matches[BunchKeys::COUNTER]);
 
                     // invoke the event that has to be fired after the subject's export method has been invoked
                     $this->emitter->emit(EventNames::SUBJECT_EXPORT_SUCCESS, $subjectInstance);
@@ -157,11 +154,8 @@ class SubjectExecutor implements SubjectExecutorInterface
             $this->emitter->emit(EventNames::SUBJECT_IMPORT_SUCCESS, $subjectInstance);
             $this->emitter->emit(sprintf('%s.%s.%s', $pluginName, $subjectName, EventNames::SUBJECT_IMPORT_SUCCESS), $subjectInstance);
         } catch (\Exception $e) {
-            // query whether or not, we've to export artefacts
-            if ($subjectInstance instanceof ExportableSubjectInterface) {
-                // tear down the subject instance
-                $subjectInstance->tearDown($serial);
-            }
+            // tear down the subject instance
+            $subjectInstance->tearDown($serial);
 
             // invoke the event that has to be fired when the subject's import method throws an exception
             $this->emitter->emit(EventNames::SUBJECT_IMPORT_FAILURE, $subjectInstance);

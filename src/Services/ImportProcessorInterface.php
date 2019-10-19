@@ -174,6 +174,13 @@ interface ImportProcessorInterface
     public function getCustomerGroupRepository();
 
     /**
+     * Return's the repository to access the admin users.
+     *
+     * @return \TechDivision\Import\Repositories\AdminUserRepositoryInterface The repository instance
+     */
+    public function getAdminUserRepository();
+
+    /**
      * Return's the action with the store CRUD methods.
      *
      * @return \TechDivision\Import\Actions\ActionInterface The action instance
@@ -193,6 +200,13 @@ interface ImportProcessorInterface
      * @return \TechDivision\Import\Actions\ActionInterface The action instance
      */
     public function getStoreWebsiteAction();
+
+    /**
+     * Return's the action with the import history CRUD methods.
+     *
+     * @return \TechDivision\Import\Actions\ActionInterface The action instance
+     */
+    public function getImportHistoryAction();
 
     /**
      * Return's the EAV attribute set with the passed ID.
@@ -395,6 +409,22 @@ interface ImportProcessorInterface
     public function getCustomerGroups();
 
     /**
+     * Return's an array with all available admin users.
+     *
+     * @return array The available admin users
+     */
+    public function getAdminUsers();
+
+    /**
+     * Load's and return's the admin user with the passed username.
+     *
+     * @param string $username The username of the admin user to return
+     *
+     * @return array|null The admin user with the passed username
+     */
+    public function getAdminUserByUsername($username);
+
+    /**
      * Persist's the passed store.
      *
      * @param array $store The store to persist
@@ -420,6 +450,15 @@ interface ImportProcessorInterface
      * @return void
      */
     public function persistStoreWebsite(array $storeWebsite);
+
+    /**
+     * Persist's the passed import history.
+     *
+     * @param array $importHistory The import history to persist
+     *
+     * @return void
+     */
+    public function persistImportHistory(array $importHistory);
 
     /**
      * Returns the array with the global data necessary for the

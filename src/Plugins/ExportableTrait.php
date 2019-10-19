@@ -21,6 +21,7 @@
 namespace TechDivision\Import\Plugins;
 
 use TechDivision\Import\Adapter\ExportAdapterInterface;
+use TechDivision\Import\Utils\RegistryKeys;
 
 /**
  * The trait implementation for the artefact export functionality.
@@ -76,6 +77,17 @@ trait ExportableTrait
         // export the artefacts
         $this->getExportAdapter()->export($this->getArtefacts(), $this->getTargetDir(), $timestamp, $counter);
 
+        // initialize the array with the status
+        $status = array();
+
+        // add the exported artefacts to the status
+        foreach ($this->getExportAdapter()->getExportedFilenames() as $filename) {
+            $status[$filename] = array();
+        }
+
+        // update status for the exported files
+        $this->getRegistryProcessor()->mergeAttributesRecursive(RegistryKeys::STATUS, array(RegistryKeys::FILES => $status));
+
         // reset the artefacts
         $this->resetArtefacts();
     }
@@ -101,4 +113,11 @@ trait ExportableTrait
     {
         return $this->exportAdapter;
     }
+
+    /**
+     * Return's the RegistryProcessor instance to handle the running threads.
+     *
+     * @return \TechDivision\Import\Services\RegistryProcessor The registry processor instance
+     */
+    abstract protected function getRegistryProcessor();
 }

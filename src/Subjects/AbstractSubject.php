@@ -20,6 +20,7 @@
 
 namespace TechDivision\Import\Subjects;
 
+use Ramsey\Uuid\Uuid;
 use League\Event\EmitterInterface;
 use Doctrine\Common\Collections\Collection;
 use TechDivision\Import\RowTrait;
@@ -85,6 +86,13 @@ abstract class AbstractSubject implements SubjectInterface, FilesystemSubjectInt
      * @var \TechDivision\Import\RowTrait
      */
     use RowTrait;
+
+    /**
+     * The unique identifier for the actual invocation.
+     *
+     * @var string
+     */
+    protected $uniqueId;
 
     /**
      * The name of the file to be imported.
@@ -224,6 +232,13 @@ abstract class AbstractSubject implements SubjectInterface, FilesystemSubjectInt
      * @var \League\Event\EmitterInterface
      */
     protected $emitter;
+
+    /**
+     * The status of the file (0 = not processed, 1 = successfully processed, 2 = processed with failure)
+     *
+     * @var array
+     */
+    protected $status = array();
 
     /**
      * Mapping for the virtual entity type code to the real Magento 2 EAV entity type code.
@@ -447,6 +462,38 @@ abstract class AbstractSubject implements SubjectInterface, FilesystemSubjectInt
     }
 
     /**
+     * Merge's the passed status into the actual one.
+     *
+     * @param array $status The status to MergeBuilder
+     *
+     * @return void
+     */
+    public function mergeStatus(array $status)
+    {
+        $this->status = array_merge_recursive($this->status, $status);
+    }
+
+    /**
+     * Retur's the actual status.
+     *
+     * @return array The actual status
+     */
+    public function getStatus()
+    {
+        return $this->status;
+    }
+
+    /**
+     * Return's the unique identifier for the actual invocation.
+     *
+     * @return string The unique identifier
+     */
+    public function getUniqueId()
+    {
+        return $this->uniqueId;
+    }
+
+    /**
      * Return's the source date format to use.
      *
      * @return string The source date format
@@ -485,6 +532,9 @@ abstract class AbstractSubject implements SubjectInterface, FilesystemSubjectInt
      */
     public function setUp($serial)
     {
+
+        // initialize the unique ID for the actual invocation
+        $this->uniqueId = Uuid::uuid4()->toString();
 
         // load the status of the actual import
         $status = $this->getRegistryProcessor()->getAttribute(RegistryKeys::STATUS);
@@ -538,12 +588,7 @@ abstract class AbstractSubject implements SubjectInterface, FilesystemSubjectInt
         $registryProcessor = $this->getRegistryProcessor();
 
         // update the source directory for the next subject
-        $registryProcessor->mergeAttributesRecursive(
-            RegistryKeys::STATUS,
-            array(
-                RegistryKeys::FILES => array($this->getFilename() => array(RegistryKeys::STATUS => 1))
-            )
-        );
+        $registryProcessor->mergeAttributesRecursive(RegistryKeys::STATUS, array(RegistryKeys::FILES => $this->getStatus()));
 
         // log a debug message with the new source directory
         $this->getSystemLogger()->debug(
@@ -732,12 +777,37 @@ abstract class AbstractSubject implements SubjectInterface, FilesystemSubjectInt
                 $this->getFilesystemAdapter()->delete($inProgressFilename);
             }
 
+            // update the status
+            $this->mergeStatus(
+                array(
+                    $filename => array(
+                        $this->getUniqueId() => array(
+                            RegistryKeys::STATUS => 1,
+                            RegistryKeys::PROCESSED_ROWS => $this->getLineNumber()
+                        )
+                    )
+                )
+            );
+
             // invoke the events that has to be fired when the artfact has been successfully processed
             $this->getEmitter()->emit(EventNames::SUBJECT_ARTEFACT_PROCESS_SUCCESS, $this);
         } catch (\Exception $e) {
             // rename the flag file, because import failed and write the stack trace
             $this->rename($inProgressFilename, $failedFilename);
             $this->write($failedFilename, $e->__toString());
+
+            // update the status with the error message
+            $this->mergeStatus(
+                array(
+                    $filename => array(
+                        $this->getUniqueId() => array(
+                            RegistryKeys::STATUS         => 2,
+                            RegistryKeys::ERROR_MESSAGE  => $e->getMessage(),
+                            RegistryKeys::PROCESSED_ROWS => $this->getLineNumber()
+                        )
+                    )
+                )
+            );
 
             // invoke the events that has to be fired when the artfact can't be processed
             $this->getEmitter()->emit(EventNames::SUBJECT_ARTEFACT_PROCESS_FAILURE, $this, $e);

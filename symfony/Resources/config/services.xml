@@ -159,6 +159,10 @@
             <argument type="service" id="connection"/>
             <argument type="service" id="import.repository.sql.statement"/>
         </service>
+        <service id="import.repository.admin.user" class="TechDivision\Import\Repositories\AdminUserRepository">
+            <argument type="service" id="connection"/>
+            <argument type="service" id="import.repository.sql.statement"/>
+        </service>
 
         <service id="import.action.processor.url.rewrite.product.create" class="TechDivision\Import\Actions\Processors\UrlRewriteCreateProcessor">
             <argument type="service" id="connection"/>
@@ -196,6 +200,18 @@
             <argument type="service" id="connection"/>
             <argument type="service" id="import.repository.sql.statement"/>
         </service>
+        <service id="import.action.processor.import.history.create" class="TechDivision\Import\Actions\Processors\ImportHistoryCreateProcessor">
+            <argument type="service" id="connection"/>
+            <argument type="service" id="import.repository.sql.statement"/>
+        </service>
+        <service id="import.action.processor.import.history.update" class="TechDivision\Import\Actions\Processors\ImportHistoryUpdateProcessor">
+            <argument type="service" id="connection"/>
+            <argument type="service" id="import.repository.sql.statement"/>
+        </service>
+        <service id="import.action.processor.import.history.delete" class="TechDivision\Import\Actions\Processors\ImportHistoryDeleteProcessor">
+            <argument type="service" id="connection"/>
+            <argument type="service" id="import.repository.sql.statement"/>
+        </service>
 
         <service id="import.action.url.rewrite" class="TechDivision\Import\Actions\GenericIdentifierAction">
             <argument type="service" id="import.action.processor.url.rewrite.product.create"/>
@@ -213,6 +229,11 @@
         <service id="import.action.store.website" class="TechDivision\Import\Actions\GenericIdentifierAction">
             <argument type="service" id="import.action.processor.store.website.create"/>
             <argument type="service" id="import.action.processor.store.website.update"/>
+        </service>
+        <service id="import.action.import.history" class="TechDivision\Import\Actions\GenericIdentifierAction">
+            <argument type="service" id="import.action.processor.import.history.create"/>
+            <argument type="service" id="import.action.processor.import.history.update"/>
+            <argument type="service" id="import.action.processor.import.history.delete"/>
         </service>
 
         <service id="import.assembler.category" class="TechDivision\Import\Assembler\CategoryAssembler">
@@ -239,10 +260,12 @@
             <argument type="service" id="import.repository.link.attribute"/>
             <argument type="service" id="import.repository.core.config.data"/>
             <argument type="service" id="import.repository.customer.group"/>
+            <argument type="service" id="import.repository.image.type"/>
+            <argument type="service" id="import.repository.admin.user"/>
             <argument type="service" id="import.action.store"/>
             <argument type="service" id="import.action.store.group"/>
             <argument type="service" id="import.action.store.website"/>
-            <argument type="service" id="import.repository.image.type"/>
+            <argument type="service" id="import.action.import.history"/>
         </service>
 
         <!--
@@ -321,9 +344,6 @@
             <argument type="service" id="import_app_simple.simple"/>
         </service>
         <service id="import.plugin.clean.up" class="TechDivision\Import\Plugins\VoidPlugin">
-            <argument type="service" id="import_app_simple.simple"/>
-        </service>
-        <service id="import.plugin.archive" class="TechDivision\Import\Plugins\ArchivePlugin">
             <argument type="service" id="import_app_simple.simple"/>
         </service>
         <service id="import.plugin.subject" class="TechDivision\Import\Plugins\SubjectPlugin">
@@ -455,6 +475,9 @@
             <argument type="service" id="configuration"/>
             <argument type="service" id="import.processor.registry"/>
         </service>
+        <service id="import.listener.finalize.registry" class="TechDivision\Import\Listeners\FinalizeRegistryListener">
+            <argument type="service" id="import.processor.registry"/>
+        </service>
         <service id="import.listener.initialize.directories" class="TechDivision\Import\Listeners\InitializeDirectoriesListener">
             <argument type="service" id="import.adapter.filesystem.php"/>
             <argument type="service" id="import.loader.source.and.target.dir"/>
@@ -464,6 +487,18 @@
             <argument type="service" id="configuration"/>
         </service>
         <service id="import.listener.render.operation.info" class="TechDivision\Import\Listeners\RenderOperationInfoListener">
+            <argument type="service" id="configuration"/>
+        </service>
+        <service id="import.listener.import.history" class="TechDivision\Import\Listeners\ImportHistoryListener">
+            <argument type="service" id="import.processor.registry"/>
+            <argument type="service" id="import.processor.import"/>
+            <argument type="service" id="loggers"/>
+            <argument type="service" id="configuration"/>
+        </service>
+        <service id="import.listener.archive" class="TechDivision\Import\Listeners\ArchiveListener">
+            <argument type="service" id="import.processor.registry"/>
+            <argument type="service" id="import.processor.import"/>
+            <argument type="service" id="loggers"/>
             <argument type="service" id="configuration"/>
         </service>
 

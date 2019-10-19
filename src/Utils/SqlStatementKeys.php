@@ -352,4 +352,39 @@ class SqlStatementKeys
      * @var string
      */
     const CUSTOMER_GROUPS = 'customer_groups';
+
+    /**
+     * The SQL statement to create a new import history entry.
+     *
+     * @var string
+     */
+    const CREATE_IMPORT_HISTORY = 'create.import_history';
+
+    /**
+     * The SQL statement to update an existing import history entry.
+     *
+     * @var string
+     */
+    const UPDATE_IMPORT_HISTORY = 'update.import_history';
+
+    /**
+     * The SQL statement to delete an existing import history entry.
+     *
+     * @var string
+     */
+    const DELETE_IMPORT_HISTORY = 'delete.import_history';
+
+    /**
+     * The SQL statement to load the available admin users.
+     *
+     * @var string
+     */
+    const ADMIN_USERS = 'admin_users';
+
+    /**
+     * The SQL statement to load the admin user with given username.
+     *
+     * @var string
+     */
+    const ADMIN_USER_BY_USERNAME = 'admin_user.by.username';
 }

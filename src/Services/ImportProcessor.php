@@ -29,16 +29,17 @@ use TechDivision\Import\Repositories\StoreRepositoryInterface;
 use TechDivision\Import\Repositories\CategoryRepositoryInterface;
 use TechDivision\Import\Repositories\TaxClassRepositoryInterface;
 use TechDivision\Import\Repositories\LinkTypeRepositoryInterface;
+use TechDivision\Import\Repositories\AdminUserRepositoryInterface;
 use TechDivision\Import\Repositories\ImageTypeRepositoryInterface;
 use TechDivision\Import\Repositories\EavAttributeRepositoryInterface;
 use TechDivision\Import\Repositories\StoreWebsiteRepositoryInterface;
+use TechDivision\Import\Repositories\CustomerGroupRepositoryInterface;
 use TechDivision\Import\Repositories\EavEntityTypeRepositoryInterface;
 use TechDivision\Import\Repositories\LinkAttributeRepositoryInterface;
 use TechDivision\Import\Repositories\CoreConfigDataRepositoryInterface;
 use TechDivision\Import\Repositories\CategoryVarcharRepositoryInterface;
 use TechDivision\Import\Repositories\EavAttributeSetRepositoryInterface;
 use TechDivision\Import\Repositories\EavAttributeGroupRepositoryInterface;
-use TechDivision\Import\Repositories\CustomerGroupRepositoryInterface;
 
 /**
  * Processor implementation to load global data.
@@ -165,6 +166,13 @@ class ImportProcessor implements ImportProcessorInterface
     protected $customerGroupRepository;
 
     /**
+     * The repository to access the admin user.
+     *
+     * @var \TechDivision\Import\Repositories\AdminUserRepositoryInterface
+     */
+    protected $adminUserRepository;
+
+    /**
      * The action for store CRUD methods.
      *
      * @var \TechDivision\Import\Actions\ActionInterface
@@ -186,6 +194,13 @@ class ImportProcessor implements ImportProcessorInterface
     protected $storeWebsiteAction;
 
     /**
+     * The action for import history CRUD methods.
+     *
+     * @var \TechDivision\Import\Actions\ActionInterface
+     */
+    protected $importHistoryAction;
+
+    /**
      * Initialize the processor with the necessary assembler and repository instances.
      *
      * @param \TechDivision\Import\Connection\ConnectionInterface                    $connection                  The connection to use
@@ -203,10 +218,12 @@ class ImportProcessor implements ImportProcessorInterface
      * @param \TechDivision\Import\Repositories\LinkAttributeRepositoryInterface     $linkAttributeRepository     The repository to access link attributes
      * @param \TechDivision\Import\Repositories\CoreConfigDataRepositoryInterface    $coreConfigDataRepository    The repository to access the configuration
      * @param \TechDivision\Import\Repositories\CustomerGroupRepositoryInterface     $customerGroupRepository     The repository to access the customer groups
+     * @param \TechDivision\Import\Repositories\ImageTypeRepositoryInterface         $imageTypeRepository         The repository to access images types
+     * @param \TechDivision\Import\Repositories\AdminUserRepositoryInterface         $adminUserRepository         The repository to access admin users
      * @param \TechDivision\Import\Actions\ActionInterface                           $storeAction                 The action with the store CRUD methods
      * @param \TechDivision\Import\Actions\ActionInterface                           $storeGroupAction            The action with the store group CRUD methods
      * @param \TechDivision\Import\Actions\ActionInterface                           $storeWebsiteAction          The action with the store website CRUD methods
-     * @param \TechDivision\Import\Repositories\ImageTypeRepositoryInterface         $imageTypeRepository         The repository to access images types
+     * @param \TechDivision\Import\Actions\ActionInterface                           $importHistoryAction         The action with the import history CRUD methods
      */
     public function __construct(
         ConnectionInterface $connection,
@@ -224,10 +241,12 @@ class ImportProcessor implements ImportProcessorInterface
         LinkAttributeRepositoryInterface $linkAttributeRepository,
         CoreConfigDataRepositoryInterface $coreConfigDataRepository,
         CustomerGroupRepositoryInterface $customerGroupRepository,
+        ImageTypeRepositoryInterface $imageTypeRepository,
+        AdminUserRepositoryInterface $adminUserRepository,
         ActionInterface $storeAction,
         ActionInterface $storeGroupAction,
         ActionInterface $storeWebsiteAction,
-        ImageTypeRepositoryInterface $imageTypeRepository
+        ActionInterface $importHistoryAction
     ) {
         $this->setConnection($connection);
         $this->setCategoryAssembler($categoryAssembler);
@@ -243,11 +262,13 @@ class ImportProcessor implements ImportProcessorInterface
         $this->setLinkTypeRepository($linkTypeRepository);
         $this->setLinkAttributeRepository($linkAttributeRepository);
         $this->setCoreConfigDataRepository($coreConfigDataRepository);
+        $this->setImageTypeRepository($imageTypeRepository);
+        $this->setCustomerGroupRepository($customerGroupRepository);
+        $this->setAdminUserRepository($adminUserRepository);
         $this->setStoreAction($storeAction);
         $this->setStoreGroupAction($storeGroupAction);
         $this->setStoreWebsiteAction($storeWebsiteAction);
-        $this->setImageTypeRepository($imageTypeRepository);
-        $this->setCustomerGroupRepository($customerGroupRepository);
+        $this->setImportHistoryAction($importHistoryAction);
     }
 
     /**
@@ -647,6 +668,28 @@ class ImportProcessor implements ImportProcessorInterface
     }
 
     /**
+     * Set's the repository to access the admin users.
+     *
+     * @param \TechDivision\Import\Repositories\AdminUserRepositoryInterface $adminUserRepository The repository to access the admin users
+     *
+     * @return void
+     */
+    public function setAdminUserRepository(AdminUserRepositoryInterface $adminUserRepository)
+    {
+        $this->adminUserRepository = $adminUserRepository;
+    }
+
+    /**
+     * Return's the repository to access the admin users.
+     *
+     * @return \TechDivision\Import\Repositories\AdminUserRepositoryInterface The repository instance
+     */
+    public function getAdminUserRepository()
+    {
+        return $this->adminUserRepository;
+    }
+
+    /**
      * Set's the action with the store CRUD methods.
      *
      * @param \TechDivision\Import\Actions\ActionInterface $storeAction The action with the store CRUD methods
@@ -710,6 +753,28 @@ class ImportProcessor implements ImportProcessorInterface
     public function getStoreWebsiteAction()
     {
         return $this->storeWebsiteAction;
+    }
+
+    /**
+     * Set's the action with the import history CRUD methods.
+     *
+     * @param \TechDivision\Import\Actions\ActionInterface $importHistoryAction The action with the import history CRUD methods
+     *
+     * @return void
+     */
+    public function setImportHistoryAction(ActionInterface $importHistoryAction)
+    {
+        $this->importHistoryAction = $importHistoryAction;
+    }
+
+    /**
+     * Return's the action with the import history CRUD methods.
+     *
+     * @return \TechDivision\Import\Actions\ActionInterface The action instance
+     */
+    public function getImportHistoryAction()
+    {
+        return $this->importHistoryAction;
     }
 
     /**
@@ -985,6 +1050,28 @@ class ImportProcessor implements ImportProcessorInterface
     }
 
     /**
+     * Return's an array with all available admin users.
+     *
+     * @return array The available admin users
+     */
+    public function getAdminUsers()
+    {
+        return $this->getAdminUserRepository()->findAll();
+    }
+
+    /**
+     * Load's and return's the admin user with the passed username.
+     *
+     * @param string $username The username of the admin user to return
+     *
+     * @return array|null The admin user with the passed username
+     */
+    public function getAdminUserByUsername($username)
+    {
+        return $this->getAdminUserRepository()->findOneByUsername($username);
+    }
+
+    /**
      * Persist's the passed store.
      *
      * @param array $store The store to persist
@@ -1018,6 +1105,18 @@ class ImportProcessor implements ImportProcessorInterface
     public function persistStoreWebsite(array $storeWebsite)
     {
         return $this->getStoreWebsiteAction()->persist($storeWebsite);
+    }
+
+    /**
+     * Persist's the passed import history.
+     *
+     * @param array $importHistory The import history to persist
+     *
+     * @return void
+     */
+    public function persistImportHistory(array $importHistory)
+    {
+        return $this->getImportHistoryAction()->persist($importHistory);
     }
 
     /**

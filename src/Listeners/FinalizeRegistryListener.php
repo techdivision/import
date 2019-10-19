@@ -1,7 +1,7 @@
 <?php
 
 /**
- * TechDivision\Import\Listeners\InitializeRegistryListener
+ * TechDivision\Import\Listeners\FinalizeRegistryListener
  *
  * NOTICE OF LICENSE
  *
@@ -22,13 +22,11 @@ namespace TechDivision\Import\Listeners;
 
 use League\Event\EventInterface;
 use League\Event\AbstractListener;
-use TechDivision\Import\Utils\CacheKeys;
 use TechDivision\Import\Utils\RegistryKeys;
-use TechDivision\Import\ConfigurationInterface;
 use TechDivision\Import\Services\RegistryProcessorInterface;
 
 /**
- * An listener implementation that initializes the registry.
+ * An listener implementation that finalizes the registry.
  *
  * @author    Tim Wagner <t.wagner@techdivision.com>
  * @copyright 2019 TechDivision GmbH <info@techdivision.com>
@@ -36,7 +34,7 @@ use TechDivision\Import\Services\RegistryProcessorInterface;
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
  */
-class InitializeRegistryListener extends AbstractListener
+class FinalizeRegistryListener extends AbstractListener
 {
 
     /**
@@ -47,21 +45,13 @@ class InitializeRegistryListener extends AbstractListener
     protected $registryProcessor;
 
     /**
-     * The configuration instance.
-     *
-     * @var \TechDivision\Import\ConfigurationInterface
-     */
-    protected $configuration;
-
-    /**
      * Initializes the event.
      *
      * @param \TechDivision\Import\ConfigurationInterface              $configuration     The configuration instance
      * @param \TechDivision\Import\Services\RegistryProcessorInterface $registryProcessor The registry processor instance
      */
-    public function __construct(ConfigurationInterface $configuration, RegistryProcessorInterface $registryProcessor)
+    public function __construct(RegistryProcessorInterface $registryProcessor)
     {
-        $this->configuration = $configuration;
         $this->registryProcessor = $registryProcessor;
     }
 
@@ -74,20 +64,7 @@ class InitializeRegistryListener extends AbstractListener
      */
     public function handle(EventInterface $event)
     {
-
-        // initialize the status
-        $status = array(
-            RegistryKeys::STATUS                => 1,
-            RegistryKeys::BUNCHES               => 0,
-            RegistryKeys::STARTED_AT            => time(),
-            RegistryKeys::FINISHED_AT           => 0,
-            RegistryKeys::SOURCE_DIRECTORY      => $this->getConfiguration()->getSourceDir(),
-            RegistryKeys::TARGET_DIRECTORY      => $this->getConfiguration()->getTargetDir(),
-            RegistryKeys::MISSING_OPTION_VALUES => array()
-        );
-
-        // register the status and the references in the registry (use the serial as tag also)
-        $this->getRegistryProcessor()->setAttribute(CacheKeys::STATUS, $status);
+        $this->getRegistryProcessor()->mergeAttributesRecursive(RegistryKeys::STATUS, array(RegistryKeys::FINISHED_AT => time()));
     }
 
     /**s
@@ -98,15 +75,5 @@ class InitializeRegistryListener extends AbstractListener
     protected function getRegistryProcessor()
     {
         return $this->registryProcessor;
-    }
-
-    /**
-     * Returns the configuration instance.
-     *
-     * @return \TechDivision\Import\ConfigurationInterface The configuration instance
-     */
-    protected function getConfiguration()
-    {
-        return $this->configuration;
     }
 }

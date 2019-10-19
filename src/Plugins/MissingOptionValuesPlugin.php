@@ -24,7 +24,6 @@ use TechDivision\Import\Utils\ColumnKeys;
 use TechDivision\Import\Utils\RegistryKeys;
 use TechDivision\Import\Utils\SwiftMailerKeys;
 use TechDivision\Import\ApplicationInterface;
-use TechDivision\Import\Subjects\ExportableTrait;
 use TechDivision\Import\Adapter\ExportAdapterInterface;
 
 /**
@@ -49,9 +48,16 @@ class MissingOptionValuesPlugin extends AbstractPlugin
     /**
      * The trait providing the export functionality.
      *
-     * @var \TechDivision\Import\Subjects\ExportableTrait
+     * @var \TechDivision\Import\Plugins\ExportableTrait
      */
     use ExportableTrait;
+
+    /**
+     * The array containing the data for product type configuration (configurables, bundles, etc).
+     *
+     * @var array
+     */
+    protected $artefacts = array();
 
     /**
      * Initializes the plugin with the application instance.
@@ -203,6 +209,93 @@ class MissingOptionValuesPlugin extends AbstractPlugin
                     $filename
                 )
             );
+        }
+    }
+
+    /**
+     * Return's the artefacts for post-processing.
+     *
+     * @return array The artefacts
+     */
+    public function getArtefacts()
+    {
+        return $this->artefacts;
+    }
+
+    /**
+     * Reset the array with the artefacts to free the memory.
+     *
+     * @return void
+     */
+    public function resetArtefacts()
+    {
+        $this->artefacts = array();
+    }
+
+    /**
+     * Add the passed product type artefacts to the product with the
+     * last entity ID.
+     *
+     * @param string  $type      The artefact type, e. g. configurable
+     * @param array   $artefacts The product type artefacts
+     * @param boolean $override  Whether or not the artefacts for the actual entity ID has to be overwritten
+     *
+     * @return void
+     * @uses \TechDivision\Import\Product\Subjects\BunchSubject::getLastEntityId()
+     */
+    public function addArtefacts($type, array $artefacts, $override = true)
+    {
+
+        // query whether or not, any artefacts are available
+        if (sizeof($artefacts) === 0) {
+            return;
+        }
+
+        // serialize the original data, if we're in debug mode
+        $keys = array_keys($artefacts);
+        foreach ($keys as $key) {
+            if (isset($artefacts[$key][ColumnKeys::ORIGINAL_DATA])) {
+                $artefacts[$key][ColumnKeys::ORIGINAL_DATA] = $this->isDebugMode() ? serialize($artefacts[$key][ColumnKeys::ORIGINAL_DATA]) : null;
+            }
+        }
+
+        // query whether or not, existing artefacts has to be overwritten
+        if ($override === true) {
+            $this->overrideArtefacts($type, $artefacts);
+        } else {
+            $this->appendArtefacts($type, $artefacts);
+        }
+    }
+
+    /**
+     * Add the passed product type artefacts to the product with the
+     * last entity ID and overrides existing ones with the same key.
+     *
+     * @param string $type      The artefact type, e. g. configurable
+     * @param array  $artefacts The product type artefacts
+     *
+     * @return void
+     */
+    protected function overrideArtefacts($type, array $artefacts)
+    {
+        foreach ($artefacts as $key => $artefact) {
+            $this->artefacts[$type][$this->getLastEntityId()][$key] = $artefact;
+        }
+    }
+
+    /**
+     * Append's the passed product type artefacts to the product with the
+     * last entity ID.
+     *
+     * @param string $type      The artefact type, e. g. configurable
+     * @param array  $artefacts The product type artefacts
+     *
+     * @return void
+     */
+    protected function appendArtefacts($type, array $artefacts)
+    {
+        foreach ($artefacts as $artefact) {
+            $this->artefacts[$type][$this->getLastEntityId()][] = $artefact;
         }
     }
 

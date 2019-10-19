@@ -22,8 +22,8 @@ namespace TechDivision\Import\Listeners;
 
 use League\Event\EventInterface;
 use League\Event\AbstractListener;
+use TechDivision\Import\ApplicationInterface;
 use TechDivision\Import\Loaders\LoaderInterface;
-use TechDivision\Import\Plugins\PluginInterface;
 use TechDivision\Import\Adapter\PhpFilesystemAdapterInterface;
 
 /**
@@ -69,19 +69,19 @@ class ClearDirectoriesListener extends AbstractListener
     /**
      * Handle the event.
      *
-     * @param \League\Event\EventInterface                 $event  The event that triggered the listener
-     * @param \TechDivision\Import\Plugins\PluginInterface $plugin The plugin instance that triggered the event
+     * @param \League\Event\EventInterface              $event       The event that triggered the listener
+     * @param \TechDivision\Import\ApplicationInterface $application The application instance
      *
      * @return void
      */
-    public function handle(EventInterface $event, PluginInterface $plugin = null)
+    public function handle(EventInterface $event, ApplicationInterface $application = null)
     {
 
         // clear the filecache
         clearstatcache();
 
         // load the serial and directories to clear
-        $serial = $plugin->getSerial();
+        $serial = $application->getSerial();
         $directories = $this->getLoader()->load();
 
         //  clear the loaded directories

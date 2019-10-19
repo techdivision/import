@@ -204,7 +204,6 @@ class RegistryKeys
      */
     const IMAGE_TYPES = 'imageTypes';
 
-
     /**
      * Key for the registry entry containing the link attributes.
      *
@@ -246,4 +245,39 @@ class RegistryKeys
      * @var string
      */
     const CUSTOMER_GROUPS = 'customerGroups';
+
+    /**
+     * Key for the registry entry containing the name of the archive file.
+     *
+     * @var string
+     */
+    const ARCHIVE_FILE = 'archiveFile';
+
+    /**
+     * Key for the registry entry with the UNIX timestamp the import process starts.
+     *
+     * @var string
+     */
+    const STARTED_AT = 'started_at';
+
+    /**
+     * Key for the registry entry with the UNIX timestamp the import process has been finished.
+     *
+     * @var string
+     */
+    const FINISHED_AT = 'finished_at';
+
+    /**
+     * Key for the registry entry with the number of processed rows.
+     *
+     * @var string
+     */
+    const PROCESSED_ROWS = 'processed_rows';
+
+    /**
+     * Key for the registry entry with the error message.
+     *
+     * @var string
+     */
+    const ERROR_MESSAGE = 'error_message';
 }

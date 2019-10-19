@@ -408,4 +408,20 @@ interface SubjectInterface
      * @return \TechDivision\Import\ExecutionContextInterface The execution context configuration to use
      */
     public function getExecutionContext();
+
+    /**
+     * Merge's the passed status into the actual one.
+     *
+     * @param array $status The status to MergeBuilder
+     *
+     * @return void
+     */
+    public function mergeStatus(array $status);
+
+    /**
+     * Retur's the actual status.
+     *
+     * @return array The actual status
+     */
+    public function getStatus();
 }

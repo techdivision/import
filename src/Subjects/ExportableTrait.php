@@ -239,6 +239,17 @@ trait ExportableTrait
         // export the artefacts
         $this->getExportAdapter()->export($this->getArtefacts(), $this->getTargetDir(), $timestamp, $counter);
 
+        // initialize the array with the status
+        $status = array();
+
+        // add the exported artefacts to the status
+        foreach ($this->getExportAdapter()->getExportedFilenames() as $filename) {
+            $status[$filename] = array();
+        }
+
+        // merge the status
+        $this->mergeStatus($status);
+
         // reset the artefacts
         $this->resetArtefacts();
     }
@@ -293,4 +304,13 @@ trait ExportableTrait
      * @return boolean TRUE if debug mode is enabled, else FALSE
      */
     abstract public function isDebugMode();
+
+    /**
+     * Merge's the passed status into the actual one.
+     *
+     * @param array $status The status to MergeBuilder
+     *
+     * @return void
+     */
+    abstract public function mergeStatus(array $status);
 }

@@ -1,7 +1,7 @@
 <?php
 
 /**
- * TechDivision\Import\Plugins\ArchivePlugin
+ * TechDivision\Import\Listeners\ArchiveListener
  *
  * NOTICE OF LICENSE
  *
@@ -12,35 +12,125 @@
  * PHP version 5
  *
  * @author    Tim Wagner <t.wagner@techdivision.com>
- * @copyright 2016 TechDivision GmbH <info@techdivision.com>
+ * @copyright 2019 TechDivision GmbH <info@techdivision.com>
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
  */
 
-namespace TechDivision\Import\Plugins;
+namespace TechDivision\Import\Listeners;
 
+use League\Event\EventInterface;
+use League\Event\AbstractListener;
+use Doctrine\Common\Collections\Collection;
+use TechDivision\Import\SystemLoggerTrait;
 use TechDivision\Import\Utils\RegistryKeys;
+use TechDivision\Import\ApplicationInterface;
+use TechDivision\Import\ConfigurationInterface;
+use TechDivision\Import\Services\ImportProcessorInterface;
+use TechDivision\Import\Services\RegistryProcessorInterface;
 
 /**
- * Plugin that archives the artefacts.
+ * Listener that archives the import artefacts.
  *
  * @author    Tim Wagner <t.wagner@techdivision.com>
- * @copyright 2016 TechDivision GmbH <info@techdivision.com>
+ * @copyright 2019 TechDivision GmbH <info@techdivision.com>
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
  */
-class ArchivePlugin extends AbstractPlugin
+class ArchiveListener extends AbstractListener
 {
 
     /**
-     * Process the plugin functionality.
+     * The trait that provides basic system logger functionality.
+     *
+     * @var \TechDivision\Import\SystemLoggerTrait
+     */
+    use SystemLoggerTrait;
+
+    /**
+     * The import processor instance.
+     *
+     * @var \TechDivision\Import\Services\RegistryProcessorInterface
+     */
+    protected $registryProcessor;
+
+    /**
+     * The registry processor instance.
+     *
+     * @var \TechDivision\Import\Services\ImportProcessorInterface
+     */
+    protected $importProcessor;
+
+    /**
+     * The configuration instance.
+     *
+     * @var \TechDivision\Import\ConfigurationInterface
+     */
+    protected $configuration;
+
+    /**
+     * Initializes the plugin with the application instance.
+     *
+     * @param \TechDivision\Import\Services\RegistryProcessorInterface $registryProcessor The registry processor instance
+     * @param \TechDivision\Import\Services\ImportProcessorInterface   $importProcessor   The import processor instance
+     * @param \Doctrine\Common\Collections\Collection                  $systemLoggers     The array with the system loggers instances
+     * @param \TechDivision\Import\ConfigurationInterface              $configuration     The configuration instance
+     */
+    public function __construct(
+        RegistryProcessorInterface $registryProcessor,
+        ImportProcessorInterface $importProcessor,
+        Collection $systemLoggers,
+        ConfigurationInterface $configuration
+    ) {
+
+        // set the passed instances
+        $this->registryProcessor = $registryProcessor;
+        $this->importProcessor = $importProcessor;
+        $this->systemLoggers = $systemLoggers;
+        $this->configuration = $configuration;
+    }
+
+    /**
+     * Return's the registry processor instance.
+     *
+     * @return \TechDivision\Import\Services\RegistryProcessorInterface The registry processor instance
+     */
+    protected function getRegistryProcessor()
+    {
+        return $this->registryProcessor;
+    }
+
+    /**
+     * Return's the import processor instance.
+     *
+     * @return \TechDivision\Import\Services\ImportProcessorInterface The import processor instance
+     */
+    protected function getImportProcessor()
+    {
+        return $this->importProcessor;
+    }
+
+    /**
+     * Return's the configuration instance.
+     *
+     * @return \TechDivision\Import\ConfigurationInterface The configuration instance
+     */
+    protected function getConfiguration()
+    {
+        return $this->configuration;
+    }
+
+    /**
+     * Handle the event.
+     *
+     * @param \League\Event\EventInterface              $event       The event that triggered the listener
+     * @param \TechDivision\Import\ApplicationInterface $application The application instance
      *
      * @return void
-     * @throws \Exception Is thrown, if the plugin can not be processed
      */
-    public function process()
+    public function handle(EventInterface $event, ApplicationInterface $application = null)
     {
 
         // query whether or not, the import artefacts have to be archived
@@ -81,7 +171,7 @@ class ArchivePlugin extends AbstractPlugin
         // query whether or not the specified archive directory already exists
         if ($archiveDir === null) {
             // try to initialize a default archive directory by concatenating 'archive' to the target directory
-            $archiveDir = sprintf('var/archive');
+            $archiveDir = sprintf('var/import_history');
         }
 
         // query whether or not the archive directory already exists
@@ -104,7 +194,7 @@ class ArchivePlugin extends AbstractPlugin
 
         // create the ZIP archive
         $archive = new \ZipArchive();
-        $archive->open($archiveFile = sprintf('%s/%s.zip', $archiveDir, $this->getSerial()), \ZipArchive::CREATE);
+        $archive->open($archiveFile = sprintf('%s/%s.zip', $archiveDir, $application->getSerial()), \ZipArchive::CREATE);
 
         // iterate through all files and add them to the ZIP archive
         /** @var \SplFileInfo $filename */
@@ -116,6 +206,9 @@ class ArchivePlugin extends AbstractPlugin
 
         // save the ZIP archive
         $archive->close();
+
+        // append the name of the archive file in the registry
+        $this->getRegistryProcessor()->mergeAttributesRecursive(RegistryKeys::STATUS, array(RegistryKeys::ARCHIVE_FILE => $archiveFile));
 
         // and and log a message that the import artefacts have been archived
         $this->getSystemLogger()->info(sprintf('Successfully archived imported files to %s!', $archiveFile));

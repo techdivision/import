@@ -166,4 +166,11 @@ interface ApplicationInterface extends ContainerInterface
      * @return string The application's version
      */
     public function getVersion();
+
+    /**
+     * Returns the actual application name.
+     *
+     * @return string The application's name
+     */
+    public function getName();
 }

@@ -121,5 +121,17 @@ class MoveFilesSubject extends AbstractSubject
 
         // move the file to the new source directory
         $this->rename($filename, sprintf('%s/%s', $newSourceDir, basename($filename)));
+
+        // update the status
+        $this->mergeStatus(
+            array(
+                $filename => array(
+                    $this->getUniqueId() => array(
+                        RegistryKeys::STATUS         => 1,
+                        RegistryKeys::PROCESSED_ROWS => $this->getLineNumber()
+                    )
+                )
+            )
+        );
     }
 }
