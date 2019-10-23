@@ -1,7 +1,7 @@
 <?php
 
 /**
- * TechDivision\Import\Callbacks\CallbackInterface
+ * TechDivision\Import\Exceptions\ApplicationStoppedException
  *
  * NOTICE OF LICENSE
  *
@@ -12,30 +12,23 @@
  * PHP version 5
  *
  * @author    Tim Wagner <t.wagner@techdivision.com>
- * @copyright 2016 TechDivision GmbH <info@techdivision.com>
+ * @copyright 2019 TechDivision GmbH <info@techdivision.com>
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
  */
 
-namespace TechDivision\Import\Callbacks;
+namespace TechDivision\Import\Exceptions;
 
 /**
- * interface for all callback implementations.
+ * A exception that is thrown if the application has been stopped.
  *
  * @author    Tim Wagner <t.wagner@techdivision.com>
- * @copyright 2016 TechDivision GmbH <info@techdivision.com>
+ * @copyright 2019 TechDivision GmbH <info@techdivision.com>
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
  */
-interface CallbackInterface
+class ApplicationStoppedException extends \Exception
 {
-
-    /**
-     * Will be invoked by a observer it has been registered for.
-     *
-     * @return mixed The modified value
-     */
-    public function handle();
 }

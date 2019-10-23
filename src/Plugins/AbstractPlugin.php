@@ -158,7 +158,7 @@ abstract class AbstractPlugin implements PluginInterface
      *
      * @return \TechDivision\Import\ApplicationInterface The application instance
      */
-    protected function getApplication()
+    public function getApplication()
     {
         return $this->application;
     }

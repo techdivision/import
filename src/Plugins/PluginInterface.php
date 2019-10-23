@@ -51,6 +51,13 @@ interface PluginInterface
     public function getSerial();
 
     /**
+     * Return's the application instance.
+     *
+     * @return \TechDivision\Import\ApplicationInterface The application instance
+     */
+    public function getApplication();
+
+    /**
      *  Set's the plugin configuration instance.
      *
      * @param \TechDivision\Import\Configuration\PluginConfigurationInterface $pluginConfiguration The plugin configuration instance

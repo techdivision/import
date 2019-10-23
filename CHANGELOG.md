@@ -8,6 +8,7 @@
 
 * Remove deprecated classes and methods
 * Add techdivision/import#146
+* Add techdivision/import#162
 * Add techdivision/import-cli-simple#216
 * Add techdivision/import-configuration-jms#25
 

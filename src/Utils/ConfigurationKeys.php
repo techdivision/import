@@ -111,4 +111,11 @@ class ConfigurationKeys
      * @var string
      */
     const CACHE_ENABLED = 'cache-enabled';
+
+    /**
+     * Name for the configuration key 'custom-validations'.
+     *
+     * @var string
+     */
+    const CUSTOM_VALIDATIONS = 'custom-validations';
 }

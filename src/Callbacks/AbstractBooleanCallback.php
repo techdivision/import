@@ -52,11 +52,11 @@ abstract class AbstractBooleanCallback extends AbstractCallback
     /**
      * Will be invoked by a observer it has been registered for.
      *
-     * @param \TechDivision\Import\Observers\ObserverInterface $observer The observer
+     * @param \TechDivision\Import\Observers\AttributeCodeAndValueAwareObserverInterface|null $observer The observer
      *
      * @return mixed The modified value
      */
-    public function handle(AttributeCodeAndValueAwareObserverInterface $observer)
+    public function handle(AttributeCodeAndValueAwareObserverInterface $observer = null)
     {
 
         // set the observer

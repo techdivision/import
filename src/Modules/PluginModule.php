@@ -141,14 +141,8 @@ class PluginModule implements ModuleInterface
             // process the plugins defined in the configuration
             /** @var \TechDivision\Import\Configuration\PluginConfigurationInterface $pluginConfiguration */
             foreach ($this->getConfigurationManager()->getPlugins() as $pluginConfiguration) {
-                // query whether or not the operation has been stopped
-                if ($this->getApplication()->isStopped()) {
-                    break;
-                }
-
-                // execute the plugin instance
                 $this->getPluginExecutor()->execute($pluginConfiguration);
-             }
+            }
         } catch (\Exception $e) {
             // re-throw the exception
              throw $e;

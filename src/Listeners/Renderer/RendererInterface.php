@@ -1,7 +1,7 @@
 <?php
 
 /**
- * TechDivision\Import\Callbacks\CallbackInterface
+ * TechDivision\Import\Listeners\Renderer\RendererInterface
  *
  * NOTICE OF LICENSE
  *
@@ -12,30 +12,30 @@
  * PHP version 5
  *
  * @author    Tim Wagner <t.wagner@techdivision.com>
- * @copyright 2016 TechDivision GmbH <info@techdivision.com>
+ * @copyright 2019 TechDivision GmbH <info@techdivision.com>
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
  */
 
-namespace TechDivision\Import\Callbacks;
+namespace TechDivision\Import\Listeners\Renderer;
 
 /**
- * interface for all callback implementations.
+ * The interface for renderer implementations.
  *
  * @author    Tim Wagner <t.wagner@techdivision.com>
- * @copyright 2016 TechDivision GmbH <info@techdivision.com>
+ * @copyright 2019 TechDivision GmbH <info@techdivision.com>
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
  */
-interface CallbackInterface
+interface RendererInterface
 {
 
     /**
-     * Will be invoked by a observer it has been registered for.
+     * Renders the data to some output, e. g. the console or a logger.
      *
-     * @return mixed The modified value
+     * @return void
      */
-    public function handle();
+    public function render();
 }

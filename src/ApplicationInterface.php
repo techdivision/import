@@ -139,7 +139,7 @@ interface ApplicationInterface extends ContainerInterface
      *
      * @param string $serial The unique serial of the actual import process
      *
-     * @return void
+     * @return null|int null or 0 if everything went fine, or an error code
      * @throws \Exception Is thrown if the operation can't be finished successfully
      */
     public function process($serial);
@@ -150,6 +150,7 @@ interface ApplicationInterface extends ContainerInterface
      * @param string $reason The reason why the operation has been stopped
      *
      * @return void
+     * @throws \TechDivision\Import\Exceptions\ApplicationStoppedException Is thrown if the application has been stopped
      */
     public function stop($reason);
 

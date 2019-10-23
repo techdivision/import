@@ -4,6 +4,7 @@
     xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <parameters>
+        <parameter key="array_validator.nullable.true">true</parameter>
         <parameter key="cache_type.static" type="constant">TechDivision\Import\Utils\CacheTypes::TYPE_STATIC</parameter>
         <parameter key="cache_type.configurable" type="constant">TechDivision\Import\Utils\CacheTypes::TYPE_CONFIGURABLE</parameter>
     </parameters>
@@ -38,10 +39,45 @@
         </service>
 
         <!--
+         | The DI validation renderer configuration
+         |-->
+        <service id="import.renderer.validations" class="\ArrayObject">
+            <call method="append">
+                <argument id="import.renderer.validations.console" type="service"/>
+            </call>
+            <call method="append">
+                <argument id="import.renderer.validations.json.file" type="service"/>
+            </call>
+            <call method="append">
+                <argument id="import.renderer.validations.system.logger" type="service"/>
+            </call>
+        </service>
+        <service id="import.renderer.validations.json.file" class="TechDivision\Import\Listeners\Renderer\Validations\JsonFileRenderer">
+            <argument type="service" id="import.processor.registry"/>
+        </service>
+        <service id="import.renderer.validations.console" class="TechDivision\Import\Listeners\Renderer\Validations\ConsoleTableRenderer">
+            <argument type="service" id="output"/>
+        </service>
+        <service id="import.renderer.validations.system.logger" class="TechDivision\Import\Listeners\Renderer\Validations\SystemLoggerRenderer">
+            <argument type="service" id="configuration"/>
+            <argument type="service" id="loggers"/>
+        </service>
+
+        <!--
          | The DI loader configuration
          |-->
+        <service id="import.loader.custom.validations" class="TechDivision\Import\Loaders\CustomValidationsLoader"/>
         <service id="import.loader.artefacts" class="TechDivision\Import\Loaders\ArtefactsLoader">
             <argument type="service" id="import.processor.registry"/>
+        </service>
+        <service id="import.loader.attribute.set" class="TechDivision\Import\Loaders\AttributeSetLoader">
+            <argument type="service" id="import.processor.import"/>
+        </service>
+        <service id="import.loader.store.website" class="TechDivision\Import\Loaders\StoreWebsiteLoader">
+            <argument type="service" id="import.processor.import"/>
+        </service>
+        <service id="import.loader.store.view.code" class="TechDivision\Import\Loaders\StoreViewCodeLoader">
+            <argument type="service" id="import.processor.import"/>
         </service>
         <service id="import.loader.source.and.target.dir" class="TechDivision\Import\Loaders\SourceAndTargetDirLoader">
             <argument type="service" id="import.processor.registry"/>
@@ -412,6 +448,12 @@
         <!--
          | The DI configuration for the subjects provided by this library
          |-->
+        <service id="import.subject.validator" class="TechDivision\Import\Subjects\ValidatorSubject" shared="false">
+            <argument type="service" id="import.processor.registry"/>
+            <argument type="service" id="import.generator.core.config.data.uid"/>
+            <argument type="service" id="loggers"/>
+            <argument type="service" id="import.events.emitter"/>
+        </service>
         <service id="import.subject.move.files" class="TechDivision\Import\Subjects\MoveFilesSubject" shared="false">
             <argument type="service" id="import.processor.registry"/>
             <argument type="service" id="import.generator.core.config.data.uid"/>
@@ -419,15 +461,39 @@
             <argument type="service" id="import.events.emitter"/>
         </service>
 
+        <service id="import.visitor.observer" class="TechDivision\Import\Observers\ObserverVisitor">
+            <argument type="service" id="service_container"/>
+        </service>
         <service id="import.observer.attribute.set" class="TechDivision\Import\Observers\AttributeSetObserver"/>
         <service id="import.observer.dynamic.attribute.loader" class="TechDivision\Import\Observers\DynamicAttributeLoader"/>
         <service id="import.observer.additional.attribute" class="TechDivision\Import\Observers\AdditionalAttributeObserver"/>
+        <service id="import.observer.validator.generic" class="TechDivision\Import\Observers\GenericValidatorObserver">
+            <argument type="service" id="import.processor.registry"/>
+        </service>
 
         <service id="import.visitor.callback" class="TechDivision\Import\Callbacks\CallbackVisitor">
             <argument type="service" id="service_container"/>
         </service>
-        <service id="import.visitor.observer" class="TechDivision\Import\Observers\ObserverVisitor">
-            <argument type="service" id="service_container"/>
+        <service id="import.callback.custom.array.validator" class="TechDivision\Import\Callbacks\IndexedArrayValidatorCallback">
+            <argument type="service" id="import.loader.custom.validations"/>
+        </service>
+        <service id="import.callback.custom.regex.validator" class="TechDivision\Import\Callbacks\RegexValidatorCallback">
+            <argument type="service" id="import.loader.custom.validations"/>
+        </service>
+        <service id="import.callback.attribute.set.validator" class="TechDivision\Import\Callbacks\ArrayValidatorCallback">
+            <argument type="service" id="import.loader.attribute.set"/>
+        </service>
+        <service id="import.callback.visibility.validator" class="TechDivision\Import\Callbacks\IndexedArrayValidatorCallback">
+            <argument type="service" id="import.loader.custom.validations"/>
+            <argument>%array_validator.nullable.true%</argument>
+        </service>
+        <service id="import.callback.store.website.validator" class="TechDivision\Import\Callbacks\ArrayValidatorCallback">
+            <argument type="service" id="import.loader.store.website"/>
+            <argument>%array_validator.nullable.true%</argument>
+        </service>
+        <service id="import.callback.store.view.code.validator" class="TechDivision\Import\Callbacks\ArrayValidatorCallback">
+            <argument type="service" id="import.loader.store.view.code"/>
+            <argument>%array_validator.nullable.true%</argument>
         </service>
 
         <!-- 
@@ -500,6 +566,13 @@
             <argument type="service" id="import.processor.import"/>
             <argument type="service" id="loggers"/>
             <argument type="service" id="configuration"/>
+        </service>
+        <service id="import.listener.render.validations" class="TechDivision\Import\Listeners\RenderValidationsListener">
+            <argument type="service" id="import.processor.registry"/>
+            <argument type="service" id="import.renderer.validations"/>
+        </service>
+        <service id="import.listener.stop.validation" class="TechDivision\Import\Listeners\StopValidationListener">
+            <argument type="service" id="import.processor.registry"/>
         </service>
 
         <!-- 

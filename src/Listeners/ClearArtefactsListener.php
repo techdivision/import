@@ -81,11 +81,31 @@ class ClearArtefactsListener extends AbstractListener
         // load the serial and directories to clear
         $files = $this->getLoader()->load();
 
+        $patterns = array();
+
         // iterate over the artefacts and clear
         // them as well as the flag files
         foreach ($files as $file) {
-            // prepare the glob pattern to load the artefact as well as it's flag files
-            $pattern = sprintf('%s/%s.*', dirname($file), pathinfo($file, PATHINFO_FILENAME));
+            // exctract the components of the artefact file
+            $elements = explode('_', pathinfo($file, PATHINFO_FILENAME));
+            // build filenames for the possible element combinations,
+            // which is necesary because of the .OK file possiblities
+            for ($i = sizeof($elements); $i > 0; $i--) {
+                // prepare the filename to build the pattern with
+                $filename = implode('_', array_slice($elements, 0, $i));
+                // prepare the glob pattern to load the artefact as well as it's flag files
+                $patterns[$filename] = sprintf('%s/%s.*', dirname($file), $filename);
+
+            }
+        }
+
+        // sort the patterns
+        usort($patterns, function ($a, $b) {
+            return strcmp($a, $b);
+        });
+
+        // iterate over the patterns and delete the matching files
+        foreach ($patterns as $pattern) {
             // iterate over the found files and delete them
             foreach (glob($pattern) as $filename) {
                 $this->getFilesystemAdapter()->delete($filename);

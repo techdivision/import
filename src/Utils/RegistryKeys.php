@@ -280,4 +280,11 @@ class RegistryKeys
      * @var string
      */
     const ERROR_MESSAGE = 'error_message';
+
+    /**
+     * Key for the registry entry with the validation errors.
+     *
+     * @var string
+     */
+    const VALIDATIONS = 'validations';
 }
