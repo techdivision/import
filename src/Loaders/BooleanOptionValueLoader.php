@@ -1,7 +1,7 @@
 <?php
 
 /**
- * TechDivision\Import\Subjects\ValidatorSubject
+ * TechDivision\Import\Loaders\BooleanOptionValueLoader
  *
  * NOTICE OF LICENSE
  *
@@ -18,12 +18,10 @@
  * @link      http://www.techdivision.com
  */
 
-namespace TechDivision\Import\Subjects;
-
-use TechDivision\Import\Utils\FrontendInputTypes;
+namespace TechDivision\Import\Loaders;
 
 /**
- * Generic validator subject implementation.
+ * Loader for boolean option values.
  *
  * @author    Tim Wagner <t.wagner@techdivision.com>
  * @copyright 2019 TechDivision GmbH <info@techdivision.com>
@@ -31,17 +29,30 @@ use TechDivision\Import\Utils\FrontendInputTypes;
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
  */
-class ValidatorSubject extends AbstractEavSubject
+class BooleanOptionValueLoader implements LoaderInterface
 {
 
     /**
-     * The default mappings for the user defined attributes, based on the attributes frontend input type.
+     * Array with the string => boolean mapping.
      *
      * @var array
      */
-    protected $defaultFrontendInputCallbackMappings = array(
-        FrontendInputTypes::SELECT      => array('import.callback.validator.select'),
-        FrontendInputTypes::BOOLEAN     => array('import.callback.validator.boolean'),
-        FrontendInputTypes::MULTISELECT => array('import.callback.validator.multiselect')
+    protected $booleanValues = array(
+        'true'  => 1,
+        'yes'   => 1,
+        '1'     => 1,
+        'false' => 0,
+        'no'    => 0,
+        '0'     => 0
     );
+
+    /**
+     * Loads and returns data the custom validation data.
+     *
+     * @return \ArrayAccess The array with the data
+     */
+    public function load()
+    {
+        return $this->booleanValues;
+    }
 }

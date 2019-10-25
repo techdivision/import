@@ -118,4 +118,11 @@ class ConfigurationKeys
      * @var string
      */
     const CUSTOM_VALIDATIONS = 'custom-validations';
+
+    /**
+     * Name for the configuration key 'collect-columns'.
+     *
+     * @var string
+     */
+    const COLLECT_COLUMNS = 'collect-columns';
 }

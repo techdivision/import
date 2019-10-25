@@ -21,6 +21,7 @@
 namespace TechDivision\Import\Subjects;
 
 use TechDivision\Import\Utils\ColumnKeys;
+use TechDivision\Import\Utils\RegistryKeys;
 use TechDivision\Import\Adapter\ExportAdapterInterface;
 
 /**
@@ -248,7 +249,13 @@ trait ExportableTrait
         }
 
         // merge the status
-        $this->mergeStatus($status);
+        $this->mergeStatus(
+            array(
+                RegistryKeys::STATUS => array(
+                    RegistryKeys::FILES => $status
+                )
+            )
+        );
 
         // reset the artefacts
         $this->resetArtefacts();

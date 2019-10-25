@@ -1,7 +1,7 @@
 <?php
 
 /**
- * TechDivision\Import\Listeners\StopValidationListener
+ * TechDivision\Import\Loaders\RegistryLoader
  *
  * NOTICE OF LICENSE
  *
@@ -18,16 +18,13 @@
  * @link      http://www.techdivision.com
  */
 
-namespace TechDivision\Import\Listeners;
+namespace TechDivision\Import\Loaders;
 
-use League\Event\EventInterface;
-use League\Event\AbstractListener;
 use TechDivision\Import\Utils\RegistryKeys;
-use TechDivision\Import\Plugins\PluginInterface;
 use TechDivision\Import\Services\RegistryProcessorInterface;
 
 /**
- * A listener implementation that stops the application on validation errors.
+ * Generic loader for data from the registry.
  *
  * @author    Tim Wagner <t.wagner@techdivision.com>
  * @copyright 2019 TechDivision GmbH <info@techdivision.com>
@@ -35,50 +32,59 @@ use TechDivision\Import\Services\RegistryProcessorInterface;
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
  */
-class StopValidationListener extends AbstractListener
+class RegistryLoader implements LoaderInterface
 {
 
     /**
-     * The import processor instance.
+     * The registry processor instance.
      *
      * @var \TechDivision\Import\Services\RegistryProcessorInterface
      */
     protected $registryProcessor;
 
     /**
-     * Initializes the plugin with the application instance.
+     * Registry key to load the data with.
+     *
+     * @var string
+     */
+    protected $registryKey;
+
+    /**
+     * Construct that initializes the iterator with the registry processor instance.
      *
      * @param \TechDivision\Import\Services\RegistryProcessorInterface $registryProcessor The registry processor instance
+     * @param string                                                   $registryKey       The registry key to load the data with
      */
-    public function __construct( RegistryProcessorInterface $registryProcessor)
+    public function __construct(RegistryProcessorInterface $registryProcessor, $registryKey = RegistryKeys::STATUS)
     {
         $this->registryProcessor = $registryProcessor;
+        $this->registryKey = $registryKey;
     }
 
     /**
-     * Handle the event.
+     * Loads and returns data.
      *
-     * @param \League\Event\EventInterface                      $event  The event that triggered the listener
-     * @param \TechDivision\Import\Plugins\PluginInterface|null $plugin The plugin instance
-     *
-     * @return void
+     * @return \ArrayAccess The array with the data
      */
-    public function handle(EventInterface $event, PluginInterface $plugin = null)
+    public function load()
     {
+        return $this->getRegistryProcessor()->load($this->getRegistryKey());
+    }
 
-        // load the validations from the registry
-        $validations = $this->getRegistryProcessor()->getAttribute(RegistryKeys::VALIDATIONS);
-
-        // query whether or not we've validation errors
-        if (is_array($validations) && sizeof($validations) > 0) {
-            $plugin->getApplication()->stop('Stopped processing because of validation errors');
-        }
+    /**
+     * Return's the registry key to load the data with.
+     *
+     * @return string The registry key
+     */
+    protected function getRegistryKey()
+    {
+        return $this->registryKey;
     }
 
     /**
      * Return's the registry processor instance.
      *
-     * @return \TechDivision\Import\Services\RegistryProcessorInterface The registry processor instance
+     * @return \TechDivision\Import\Services\RegistryProcessorInterface The processor instance
      */
     protected function getRegistryProcessor()
     {

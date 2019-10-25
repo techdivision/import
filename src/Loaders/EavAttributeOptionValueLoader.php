@@ -1,7 +1,7 @@
 <?php
 
 /**
- * TechDivision\Import\Loaders\AttributeSetLoader
+ * TechDivision\Import\Loaders\EavAttributeOptionValueLoader
  *
  * NOTICE OF LICENSE
  *
@@ -25,7 +25,7 @@ use TechDivision\Import\Services\ImportProcessorInterface;
 use TechDivision\Import\Configuration\SubjectConfigurationInterface;
 
 /**
- * Loader for attribute sets.
+ * Loader for available option values.
  *
  * @author    Tim Wagner <t.wagner@techdivision.com>
  * @copyright 2019 TechDivision GmbH <info@techdivision.com>
@@ -33,15 +33,15 @@ use TechDivision\Import\Configuration\SubjectConfigurationInterface;
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
  */
-class AttributeSetLoader implements LoaderInterface
+class EavAttributeOptionValueLoader implements LoaderInterface
 {
 
     /**
-     * The attribute sets.
+     * The attribute option values.
      *
      * @var array
      */
-    protected $attributeSets = array();
+    protected $eavAttributeOptionValues = array();
 
     /**
      * Construct that initializes the iterator with the import processor instance.
@@ -56,8 +56,9 @@ class AttributeSetLoader implements LoaderInterface
 
         // prepare the array with the attribute sets
         foreach ($entityTypes as $entityType) {
-            foreach ($importProcessor->getEavAttributeSetsByEntityTypeId($entityType[MemberNames::ENTITY_TYPE_ID]) as $attributeSet) {
-                $this->attributeSets[$entityType[MemberNames::ENTITY_TYPE_CODE]][] = $attributeSet[MemberNames::ATTRIBUTE_SET_NAME];
+            // prepare the array with the attribute sets
+            foreach ($importProcessor->getEavAttributeOptionValuesByEntityTypeIdAndStoreId($entityType[MemberNames::ENTITY_TYPE_ID], 0) as $eavAttributeOptionValue) {
+                $this->eavAttributeOptionValues[$entityType[MemberNames::ENTITY_TYPE_CODE]][$eavAttributeOptionValue[MemberNames::ATTRIBUTE_CODE]][] = $eavAttributeOptionValue[MemberNames::VALUE];
             }
         }
     }
@@ -72,12 +73,15 @@ class AttributeSetLoader implements LoaderInterface
     public function load(SubjectConfigurationInterface $configuration = null)
     {
 
+        // load the entity type code from the passed subject configuration
         $entityTypeCode = $configuration->getExecutionContext()->getEntityTypeCode();
 
-        if (isset($this->attributeSets[$entityTypeCode])) {
-            return $this->attributeSets[$entityTypeCode];
+        // return the available attribute option values for the entity type
+        if (isset($this->eavAttributeOptionValues[$entityTypeCode])) {
+            return $this->eavAttributeOptionValues[$entityTypeCode];
         }
 
+        // return an empty array otherwise
         return array();
     }
 

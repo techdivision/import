@@ -125,10 +125,14 @@ class MoveFilesSubject extends AbstractSubject
         // update the status
         $this->mergeStatus(
             array(
-                $filename => array(
-                    $this->getUniqueId() => array(
-                        RegistryKeys::STATUS         => 1,
-                        RegistryKeys::PROCESSED_ROWS => $this->getLineNumber()
+                RegistryKeys::STATUS => array(
+                    RegistryKeys::FILES => array(
+                        $filename => array(
+                            $this->getUniqueId() => array(
+                                RegistryKeys::STATUS         => 1,
+                                RegistryKeys::PROCESSED_ROWS => $this->getLineNumber()
+                            )
+                        )
                     )
                 )
             )

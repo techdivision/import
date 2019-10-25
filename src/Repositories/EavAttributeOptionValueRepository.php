@@ -53,6 +53,13 @@ class EavAttributeOptionValueRepository extends AbstractRepository implements Ea
     protected $eavAttributeOptionValuesStmt;
 
     /**
+     * The prepared statement to load the existing EAV attribute option values by their entity type and store ID.
+     *
+     * @var \PDOStatement
+     */
+    protected $eavAttributeOptionValuesByEntityTypeIdAndStoreIdStmt;
+
+    /**
      * The prepared statement to load an existing EAV attribute option value by its option id and store ID
      *
      * @var \PDOStatement
@@ -104,16 +111,12 @@ class EavAttributeOptionValueRepository extends AbstractRepository implements Ea
         // initialize the prepared statements
         $this->eavAttributeOptionValuesStmt =
             $this->getConnection()->prepare($this->loadStatement(SqlStatementKeys::EAV_ATTRIBUTE_OPTION_VALUES));
-
-        // initialize the prepared statements
+        $this->eavAttributeOptionValuesByEntityTypeIdAndStoreIdStmt =
+            $this->getConnection()->prepare($this->loadStatement(SqlStatementKeys::EAV_ATTRIBUTE_OPTION_VALUES_BY_ENTITY_TYPE_ID_AND_STORE_ID));
         $this->eavAttributeOptionValueByOptionIdAndStoreIdStmt =
             $this->getConnection()->prepare($this->loadStatement(SqlStatementKeys::EAV_ATTRIBUTE_OPTION_VALUE_BY_OPTION_ID_AND_STORE_ID));
-
-        // initialize the prepared statements
         $this->eavAttributeOptionValueByAttributeCodeAndStoreIdAndValueStmt =
             $this->getConnection()->prepare($this->loadStatement(SqlStatementKeys::EAV_ATTRIBUTE_OPTION_VALUE_BY_ATTRIBUTE_CODE_AND_STORE_ID_AND_VALUE));
-
-        // initialize the prepared statements
         $this->eavAttributeOptionValueByEntityTypeIdAndAttributeCodeAndStoreIdAndValueStmt =
             $this->getConnection()->prepare($this->loadStatement(SqlStatementKeys::EAV_ATTRIBUTE_OPTION_VALUE_BY_ENTITY_TYPE_ID_AND_ATTRIBUTE_CODE_AND_STORE_ID_AND_VALUE));
     }
@@ -149,6 +152,32 @@ class EavAttributeOptionValueRepository extends AbstractRepository implements Ea
         // load and return all available EAV attribute option values
         $this->eavAttributeOptionValuesStmt->execute(array());
         return $this->eavAttributeOptionValuesStmt->fetchAll(\PDO::FETCH_ASSOC);
+    }
+
+    /**
+     * Load's and return's the available EAV attribute option values by the passed entity type and store ID.
+     *
+     * @param integer $entityTypeId The entity type ID of the attribute option values to return
+     * @param integer $storeId      The store ID of the attribute option values to return
+     *
+     * @return array The EAV attribute option values
+     */
+    public function findAllByEntityTypeIdAndStoreId($entityTypeId, $storeId)
+    {
+
+        // the parameters of the EAV attribute option to load
+        $params = array(
+            MemberNames::ENTITY_TYPE_ID => $entityTypeId,
+            MemberNames::STORE_ID       => $storeId,
+        );
+
+        // load and return all available EAV attribute option values by the passed params
+        $this->eavAttributeOptionValuesByEntityTypeIdAndStoreIdStmt->execute($params);
+
+        // fetch the values and return them
+        while ($record = $this->eavAttributeOptionValuesByEntityTypeIdAndStoreIdStmt->fetch(\PDO::FETCH_ASSOC)) {
+            yield $record;
+        }
     }
 
     /**

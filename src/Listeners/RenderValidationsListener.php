@@ -75,13 +75,13 @@ class RenderValidationsListener extends AbstractListener
     public function handle(EventInterface $event)
     {
 
-        // load the status from the registry
-        $status = $this->getRegistryProcessor()->getAttribute(RegistryKeys::STATUS);
+        // load the validations from the registry
+        $validations = $this->getRegistryProcessor()->getAttribute(RegistryKeys::VALIDATIONS);
 
         // query whether or not we've validation errors
-        if (isset($status[RegistryKeys::VALIDATIONS])) {
+        if (is_array($validations) && sizeof($validations) > 0) {
             foreach ($this->getRenderer() as $renderer) {
-                $renderer->render($status[RegistryKeys::VALIDATIONS]);
+                $renderer->render($validations);
             }
         }
     }

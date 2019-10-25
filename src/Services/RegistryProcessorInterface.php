@@ -105,4 +105,14 @@ interface RegistryProcessorInterface
      * @link http://php.net/array_replace_recursive
      */
     public function mergeAttributesRecursive($key, array $attributes);
+
+    /**
+     * Load's the data with the passed key from the registry.
+     *
+     * @param string $key       The key of the data to load
+     * @param string $delimiter The delimiter to explode the key with
+     *
+     * @return mixed The data
+     */
+    public function load($key, $delimiter = '.');
 }

@@ -588,7 +588,9 @@ abstract class AbstractSubject implements SubjectInterface, FilesystemSubjectInt
         $registryProcessor = $this->getRegistryProcessor();
 
         // update the source directory for the next subject
-        $registryProcessor->mergeAttributesRecursive(RegistryKeys::STATUS, array(RegistryKeys::FILES => $this->getStatus()));
+        foreach ($this->getStatus() as $key => $status) {
+            $registryProcessor->mergeAttributesRecursive($key, $status);
+        }
 
         // log a debug message with the new source directory
         $this->getSystemLogger()->debug(
@@ -780,10 +782,14 @@ abstract class AbstractSubject implements SubjectInterface, FilesystemSubjectInt
             // update the status
             $this->mergeStatus(
                 array(
-                    $filename => array(
-                        $this->getUniqueId() => array(
-                            RegistryKeys::STATUS => 1,
-                            RegistryKeys::PROCESSED_ROWS => $this->getLineNumber()
+                    RegistryKeys::STATUS => array(
+                        RegistryKeys::FILES => array(
+                            $filename => array(
+                                $this->getUniqueId() => array(
+                                    RegistryKeys::STATUS => 1,
+                                    RegistryKeys::PROCESSED_ROWS => $this->getLineNumber()
+                                )
+                            )
                         )
                     )
                 )
@@ -799,11 +805,15 @@ abstract class AbstractSubject implements SubjectInterface, FilesystemSubjectInt
             // update the status with the error message
             $this->mergeStatus(
                 array(
-                    $filename => array(
-                        $this->getUniqueId() => array(
-                            RegistryKeys::STATUS         => 2,
-                            RegistryKeys::ERROR_MESSAGE  => $e->getMessage(),
-                            RegistryKeys::PROCESSED_ROWS => $this->getLineNumber()
+                    RegistryKeys::STATUS => array(
+                        RegistryKeys::FILES => array(
+                            $filename => array(
+                                $this->getUniqueId() => array(
+                                    RegistryKeys::STATUS         => 2,
+                                    RegistryKeys::ERROR_MESSAGE  => $e->getMessage(),
+                                    RegistryKeys::PROCESSED_ROWS => $this->getLineNumber()
+                                )
+                            )
                         )
                     )
                 )

@@ -20,9 +20,9 @@
 
 namespace TechDivision\Import\Observers;
 
-use TechDivision\Import\Utils\RegistryKeys;
 use TechDivision\Import\Subjects\SubjectInterface;
 use TechDivision\Import\Services\RegistryProcessorInterface;
+use TechDivision\Import\Utils\RegistryKeys;
 
 /**
  * Observer that invokes the callbacks to validate the actual row.
@@ -100,11 +100,13 @@ class GenericValidatorObserver extends AbstractObserver
                     $callback->handle($attributeCode, $attributeValue);
                 } catch (\InvalidArgumentException $iea) {
                     // add the the validation result to the status
-                    $this->mergeValidations(
+                    $this->mergeStatus(
                         array(
-                            basename($this->getFilename()) => array(
-                                $this->getSubject()->getLineNumber() => array(
-                                    $attributeCode => $iea->getMessage()
+                            RegistryKeys::VALIDATIONS => array(
+                                basename($this->getFilename()) => array(
+                                    $this->getSubject()->getLineNumber() => array(
+                                        $attributeCode => $iea->getMessage()
+                                    )
                                 )
                             )
                         )
@@ -112,18 +114,6 @@ class GenericValidatorObserver extends AbstractObserver
                 }
             }
         }
-    }
-
-    /**
-     * Merge the passed validation errors into the status.
-     *
-     * @param array $validations The validation errors to merge
-     *
-     * @return void
-     */
-    protected function mergeValidations(array $validations)
-    {
-        $this->getSubject()->mergeValidations($validations);
     }
 
     /**

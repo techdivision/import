@@ -66,7 +66,13 @@
         <!--
          | The DI loader configuration
          |-->
-        <service id="import.loader.custom.validations" class="TechDivision\Import\Loaders\CustomValidationsLoader"/>
+        <service id="import.loader.custom.validations" class="TechDivision\Import\Loaders\ConfigurationValueLoader">
+            <argument type="constant">TechDivision\Import\Utils\ConfigurationKeys::CUSTOM_VALIDATIONS</argument>
+        </service>
+        <service id="import.loader.collect.columns" class="TechDivision\Import\Loaders\ConfigurationValueLoader">
+            <argument type="constant">TechDivision\Import\Utils\ConfigurationKeys::COLLECT_COLUMNS</argument>
+        </service>
+        <service id="import.loader.boolean.option.value" class="TechDivision\Import\Loaders\BooleanOptionValueLoader"/>
         <service id="import.loader.artefacts" class="TechDivision\Import\Loaders\ArtefactsLoader">
             <argument type="service" id="import.processor.registry"/>
         </service>
@@ -81,6 +87,9 @@
         </service>
         <service id="import.loader.source.and.target.dir" class="TechDivision\Import\Loaders\SourceAndTargetDirLoader">
             <argument type="service" id="import.processor.registry"/>
+        </service>
+        <service id="import.loader.eav.attribute.option.value" class="TechDivision\Import\Loaders\EavAttributeOptionValueLoader">
+            <argument type="service" id="import.processor.import"/>
         </service>
 
         <!--
@@ -288,6 +297,7 @@
             <argument type="service" id="import.repository.eav.attribute"/>
             <argument type="service" id="import.repository.eav.attribute.set"/>
             <argument type="service" id="import.repository.eav.attribute.group"/>
+            <argument type="service" id="import.repository.eav.attribute.option.value"/>
             <argument type="service" id="import.repository.eav.entity.type"/>
             <argument type="service" id="import.repository.store"/>
             <argument type="service" id="import.repository.store.website"/>
@@ -467,7 +477,11 @@
         <service id="import.observer.attribute.set" class="TechDivision\Import\Observers\AttributeSetObserver"/>
         <service id="import.observer.dynamic.attribute.loader" class="TechDivision\Import\Observers\DynamicAttributeLoader"/>
         <service id="import.observer.additional.attribute" class="TechDivision\Import\Observers\AdditionalAttributeObserver"/>
-        <service id="import.observer.validator.generic" class="TechDivision\Import\Observers\GenericValidatorObserver">
+        <service id="import.observer.generic.column.collector" class="TechDivision\Import\Observers\GenericColumnCollectorObserver">
+            <argument type="service" id="import.loader.collect.columns"/>
+            <argument type="service" id="import.processor.registry"/>
+        </service>
+        <service id="import.observer.generic.validator" class="TechDivision\Import\Observers\GenericValidatorObserver">
             <argument type="service" id="import.processor.registry"/>
         </service>
 
@@ -493,6 +507,18 @@
         </service>
         <service id="import.callback.store.view.code.validator" class="TechDivision\Import\Callbacks\ArrayValidatorCallback">
             <argument type="service" id="import.loader.store.view.code"/>
+            <argument>%array_validator.nullable.true%</argument>
+        </service>
+        <service id="import.callback.validator.boolean" class="TechDivision\Import\Callbacks\BooleanValidatorCallback">
+            <argument type="service" id="import.loader.boolean.option.value"/>
+            <argument>%array_validator.nullable.true%</argument>
+        </service>
+        <service id="import.callback.validator.select" class="TechDivision\Import\Callbacks\SelectValidatorCallback">
+            <argument type="service" id="import.loader.eav.attribute.option.value"/>
+            <argument>%array_validator.nullable.true%</argument>
+        </service>
+        <service id="import.callback.validator.multiselect" class="TechDivision\Import\Callbacks\MultiselectValidatorCallback">
+            <argument type="service" id="import.loader.eav.attribute.option.value"/>
             <argument>%array_validator.nullable.true%</argument>
         </service>
 

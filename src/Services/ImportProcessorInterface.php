@@ -118,6 +118,13 @@ interface ImportProcessorInterface
     public function getEavAttributeGroupRepository();
 
     /**
+     * Return's the repository to access EAV attribute option values.
+     *
+     * @return \TechDivision\Import\Repositories\EavAttributeOptionValueRepositoryInterface The repository instance
+     */
+    public function getEavAttributeOptionValueRepository();
+
+    /**
      * Return's the repository to access stores.
      *
      * @return \TechDivision\Import\Repositories\StoreRepositoryInterface The repository instance
@@ -235,6 +242,16 @@ interface ImportProcessorInterface
      * @return array|boolean The EAV attribute groups for the passed attribute ID
      */
     public function getEavAttributeGroupsByAttributeSetId($attributeSetId);
+
+    /**
+     * Load's and return's the available EAV attribute option values by the passed entity type and store ID.
+     *
+     * @param integer $entityTypeId The entity type ID of the attribute option values to return
+     * @param integer $storeId      The store ID of the attribute option values to return
+     *
+     * @return array The EAV attribute option values
+     */
+    public function getEavAttributeOptionValuesByEntityTypeIdAndStoreId($entityTypeId, $storeId);
 
     /**
      * Return's an array with the EAV attributes for the passed entity type ID and attribute set name.

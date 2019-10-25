@@ -101,6 +101,20 @@ abstract class AbstractObserver implements ObserverInterface
     }
 
     /**
+     * Merge's the passed status into the actual one.
+     *
+     * @param array $status The status to MergeBuilder
+     *
+     * @return void
+     *
+     * @codeCoverageIgnore
+     */
+    protected function mergeStatus(array $status)
+    {
+        $this->getSubject()->mergeStatus($status);
+    }
+
+    /**
      * Set's the array containing header row.
      *
      * @param array $headers The array with the header row

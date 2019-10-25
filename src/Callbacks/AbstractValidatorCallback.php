@@ -22,7 +22,6 @@ namespace TechDivision\Import\Callbacks;
 
 use TechDivision\Import\Loaders\LoaderInterface;
 use TechDivision\Import\Subjects\SubjectInterface;
-use TechDivision\Import\Services\RegistryProcessorInterface;
 
 /**
  * Abstract callback implementation the validate the value for an specific attribute.
@@ -42,6 +41,13 @@ abstract class AbstractValidatorCallback implements CallbackInterface, CallbackF
      * @var \TechDivision\Import\Loaders\LoaderInterface
      */
     protected $loader;
+
+    /**
+     * The subject instance the serializer is bound to.
+     *
+     * @var \TechDivision\Import\Subjects\SubjectInterface
+     */
+    protected $subject;
 
     /**
      * The array that contains the allowed values found in the configuration.
@@ -70,11 +76,36 @@ abstract class AbstractValidatorCallback implements CallbackInterface, CallbackF
     public function createCallback(SubjectInterface $subject)
     {
 
-        // query whether or not the configuration value is available
+        // set the subject
+        $this->setSubject($subject);
+
+        // set the validations
         $this->setValidations($this->getLoader()->load($subject->getConfiguration()));
 
         // return the initialized instance
         return $this;
+    }
+
+    /**
+     * Set's the subject instance.
+     *
+     * @param \TechDivision\Import\Subjects\SubjectInterface $subject The subject instance
+     *
+     * @return void
+     */
+    protected function setSubject(SubjectInterface $subject)
+    {
+        $this->subject = $subject;
+    }
+
+    /**
+     * Return's the subject instance.
+     *
+     * @return \TechDivision\Import\Subjects\SubjectInterface The subject instance
+     */
+    protected function getSubject()
+    {
+        return $this->subject;
     }
 
     /**

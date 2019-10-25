@@ -193,6 +193,13 @@ class SqlStatementKeys
     const EAV_ATTRIBUTE_OPTION_VALUES = 'eav_attribute_option_values';
 
     /**
+     * The SQL statement to load the available EAV attribute option values by the its entity type and store ID.
+     *
+     * @var string
+     */
+    const EAV_ATTRIBUTE_OPTION_VALUES_BY_ENTITY_TYPE_ID_AND_STORE_ID = 'eav_attribute_option_values.by.entity_type_id.and.store_id';
+
+    /**
      * The SQL statement to load EAV attributes by attribute option value and store ID.
      *
      * @var string

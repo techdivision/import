@@ -49,6 +49,16 @@ interface EavAttributeOptionValueRepositoryInterface extends CacheWarmerAwareRep
     public function findAll();
 
     /**
+     * Load's and return's the available EAV attribute option values by the passed entity type and store ID.
+     *
+     * @param integer $entityTypeId The entity type ID of the attribute option values to return
+     * @param integer $storeId      The store ID of the attribute option values to return
+     *
+     * @return array The EAV attribute option values
+     */
+    public function findAllByEntityTypeIdAndStoreId($entityTypeId, $storeId);
+
+    /**
      * Load's and return's the EAV attribute option value with the passed option ID and store ID
      *
      * @param string  $optionId The option ID of the attribute option

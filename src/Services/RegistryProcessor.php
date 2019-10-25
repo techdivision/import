@@ -145,4 +145,34 @@ class RegistryProcessor implements RegistryProcessorInterface
     {
         $this->cacheAdapter->mergeAttributesRecursive($key, $attributes);
     }
+
+    /**
+     * Load's the data with the passed key from the registry.
+     *
+     * @param string $key       The key of the data to load
+     * @param string $delimiter The delimiter to explode the key with
+     *
+     * @return mixed The data
+     */
+    public function load($key, $delimiter = '.')
+    {
+
+        // explode the key elements by the passed delimiter
+        $elements = explode($delimiter, $key);
+
+        // load the data for the first key element
+        $data = $this->getAttribute(array_shift($elements)) ;
+
+        // try to resolve the data recursively by the key elemens
+        while ($k = array_shift($elements)) {
+            if (isset($data[$k])) {
+                $data = $data[$k];
+            } else {
+                throw new \InvalidArgumentException(sprintf('Can\'t resolve data for registry key "%s"', $k));
+            }
+        }
+
+        // finally return the loaded data
+        return $data;
+    }
 }

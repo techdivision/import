@@ -286,6 +286,15 @@ class SqlStatementRepository extends AbstractSqlStatementRepository
                     ${table:eav_attribute_option_value} t3
               WHERE t2.option_id = t3.option_id
                 AND t1.attribute_id = t2.attribute_id',
+        SqlStatementKeys::EAV_ATTRIBUTE_OPTION_VALUES_BY_ENTITY_TYPE_ID_AND_STORE_ID =>
+            'SELECT t3.*, t1.attribute_code
+               FROM ${table:eav_attribute} t1,
+                    ${table:eav_attribute_option} t2,
+                    ${table:eav_attribute_option_value} t3
+              WHERE t2.option_id = t3.option_id
+                AND t1.attribute_id = t2.attribute_id
+                AND t1.entity_type_id = :entity_type_id
+                AND t3.store_id = :store_id',
         SqlStatementKeys::CORE_CONFIG_DATA =>
             'SELECT * FROM ${table:core_config_data}',
         SqlStatementKeys::URL_REWRITES_BY_ENTITY_TYPE_AND_ENTITY_ID =>
