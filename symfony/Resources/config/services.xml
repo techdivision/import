@@ -55,6 +55,9 @@
         <service id="import.renderer.validations.json.file" class="TechDivision\Import\Listeners\Renderer\Validations\JsonFileRenderer">
             <argument type="service" id="import.processor.registry"/>
         </service>
+        <service id="import.renderer.console.table" class="TechDivision\Import\Listeners\Renderer\Validations\GenericConsoleTableRenderer">
+            <argument type="service" id="output"/>
+        </service>
         <service id="import.renderer.validations.console" class="TechDivision\Import\Listeners\Renderer\Validations\ConsoleTableRenderer">
             <argument type="service" id="output"/>
         </service>
@@ -90,6 +93,11 @@
         </service>
         <service id="import.loader.eav.attribute.option.value" class="TechDivision\Import\Loaders\EavAttributeOptionValueLoader">
             <argument type="service" id="import.processor.import"/>
+        </service>
+        <service id="import.loader.mysql.variables" class="TechDivision\Import\Loaders\MysqlVariablesLoader">
+            <argument type="service" id="connection"/>
+            <argument type="string">GLOBAL</argument>
+            <argument type="string">innodb%</argument>
         </service>
 
         <!--
@@ -580,6 +588,14 @@
         </service>
         <service id="import.listener.render.operation.info" class="TechDivision\Import\Listeners\RenderOperationInfoListener">
             <argument type="service" id="configuration"/>
+        </service>
+        <service id="import.listener.operation.report" class="TechDivision\Import\Listeners\RenderOperationReportListener">
+            <argument type="service" id="import.processor.registry"/>
+            <argument type="service" id="configuration"/>
+        </service>
+        <service id="import.listener.render.mysql.info" class="TechDivision\Import\Listeners\RenderMysqlInfoListener">
+            <argument type="service" id="import.loader.mysql.variables"/>
+            <argument type="service" id="import.renderer.console.table"/>
         </service>
         <service id="import.listener.import.history" class="TechDivision\Import\Listeners\ImportHistoryListener">
             <argument type="service" id="import.processor.registry"/>

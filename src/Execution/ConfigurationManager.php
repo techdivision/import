@@ -177,7 +177,7 @@ class ConfigurationManager implements ConfigurationManagerInterface
         }
 
         // throw an exception if no plugins are available
-        throw new \Exception(sprintf('Can\'t find any plugins for operation(s) %s', implode(' > ', $configuration->getOperationNames())));
+        throw new \Exception(sprintf('Can\'t find any plugins for shortcut "%s"', $configuration->getShortcut()));
     }
 
     /**

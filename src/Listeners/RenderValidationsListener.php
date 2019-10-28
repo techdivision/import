@@ -57,7 +57,7 @@ class RenderValidationsListener extends AbstractListener
      * @param \TechDivision\Import\Services\RegistryProcessorInterface                          $registryProcessor The registry processor instance
      * @param \TechDivision\Import\Listeners\Renderer\Validations\ValidationRendererInterface[] $renderer          The array with the validation renderer instances
      */
-    public function __construct( RegistryProcessorInterface $registryProcessor, \ArrayAccess $renderer )
+    public function __construct(RegistryProcessorInterface $registryProcessor, \ArrayAccess $renderer)
     {
 
         // set the passed instances

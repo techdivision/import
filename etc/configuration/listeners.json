@@ -4,6 +4,7 @@
       "app.set.up": [
         "import.listener.render.ansi.art",
         "import.listener.render.operation.info",
+        "import.listener.render.mysql.info",
         "import.listener.render.debug.info",
         "import.listener.initialize.registry"
       ],
@@ -14,6 +15,7 @@
         "import.listener.clear.artefacts",
         "import.listener.clear.directories",
         "import.listener.import.history",
+        "import.listener.operation.report",
         "import.listener.clear.registry"
       ]
     }

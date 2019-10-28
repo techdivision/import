@@ -11,6 +11,7 @@
 * Add techdivision/import#162
 * Add techdivision/import-cli-simple#216
 * Add techdivision/import-configuration-jms#25
+* Add functionality to render recommendations for performce relevant MySQL configurations
 
 # Version 14.0.6
 
