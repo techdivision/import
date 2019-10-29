@@ -2,7 +2,7 @@
 
 ## Bugfixes
 
-* None
+* Add missing event triggers to AbstractSubject
 
 ## Features
 
@@ -11,6 +11,7 @@
 * Add techdivision/import#162
 * Add techdivision/import-cli-simple#216
 * Add techdivision/import-configuration-jms#25
+* Add new events that will be triggered before and after the header has been initialized
 * Add functionality to render recommendations for performce relevant MySQL configurations
 
 # Version 14.0.6

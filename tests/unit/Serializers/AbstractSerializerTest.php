@@ -121,13 +121,138 @@ abstract class AbstractSerializerTest extends \PHPUnit_Framework_TestCase
                     MemberNames::ENTITY_TYPE_ID => 4,
                     MemberNames::FRONTEND_INPUT => FrontendInputTypes::MULTISELECT
                 ),
-                'DMEU_Application' => array(
-                    MemberNames::ATTRIBUTE_CODE => 'DMEU_Application',
+                'Application' => array(
+                    MemberNames::ATTRIBUTE_CODE => 'Application',
                     MemberNames::ENTITY_TYPE_ID => 4,
                     MemberNames::FRONTEND_INPUT => 'text'
                 ),
-                'DMEU_BulletText2' => array(
-                    MemberNames::ATTRIBUTE_CODE => 'DMEU_BulletText2',
+                'BulletText2' => array(
+                    MemberNames::ATTRIBUTE_CODE => 'BulletText2',
+                    MemberNames::ENTITY_TYPE_ID => 4,
+                    MemberNames::FRONTEND_INPUT => 'text'
+                ),
+                'ClothingSize' => array(
+                    MemberNames::ATTRIBUTE_CODE => 'ClothingSize',
+                    MemberNames::ENTITY_TYPE_ID => 4,
+                    MemberNames::FRONTEND_INPUT => FrontendInputTypes::SELECT
+                ),
+                'Colours' => array(
+                    MemberNames::ATTRIBUTE_CODE => 'Colours',
+                    MemberNames::ENTITY_TYPE_ID => 4,
+                    MemberNames::FRONTEND_INPUT => FrontendInputTypes::SELECT
+                ),
+                'Description' => array(
+                    MemberNames::ATTRIBUTE_CODE => 'Description',
+                    MemberNames::ENTITY_TYPE_ID => 4,
+                    MemberNames::FRONTEND_INPUT => FrontendInputTypes::SELECT
+                ),
+                'FlagNew' => array(
+                    MemberNames::ATTRIBUTE_CODE => 'FlagNew',
+                    MemberNames::ENTITY_TYPE_ID => 4,
+                    MemberNames::FRONTEND_INPUT => FrontendInputTypes::SELECT
+                ),
+                'FlagSample' => array(
+                    MemberNames::ATTRIBUTE_CODE => 'FlagSample',
+                    MemberNames::ENTITY_TYPE_ID => 4,
+                    MemberNames::FRONTEND_INPUT => FrontendInputTypes::SELECT
+                ),
+                'Manufacturer' => array(
+                    MemberNames::ATTRIBUTE_CODE => 'Manufacturer',
+                    MemberNames::ENTITY_TYPE_ID => 4,
+                    MemberNames::FRONTEND_INPUT => FrontendInputTypes::SELECT
+                ),
+                'Material' => array(
+                    MemberNames::ATTRIBUTE_CODE => 'Material',
+                    MemberNames::ENTITY_TYPE_ID => 4,
+                    MemberNames::FRONTEND_INPUT => FrontendInputTypes::SELECT
+                ),
+                'MergeUomFactor' => array(
+                    MemberNames::ATTRIBUTE_CODE => 'MergeUomFactor',
+                    MemberNames::ENTITY_TYPE_ID => 4,
+                    MemberNames::FRONTEND_INPUT => FrontendInputTypes::SELECT
+                ),
+                'Packaging' => array(
+                    MemberNames::ATTRIBUTE_CODE => 'Packaging',
+                    MemberNames::ENTITY_TYPE_ID => 4,
+                    MemberNames::FRONTEND_INPUT => FrontendInputTypes::SELECT
+                ),
+                'PublishTo' => array(
+                    MemberNames::ATTRIBUTE_CODE => 'PublishTo',
+                    MemberNames::ENTITY_TYPE_ID => 4,
+                    MemberNames::FRONTEND_INPUT => FrontendInputTypes::SELECT
+                ),
+                'Type' => array(
+                    MemberNames::ATTRIBUTE_CODE => 'Type',
+                    MemberNames::ENTITY_TYPE_ID => 4,
+                    MemberNames::FRONTEND_INPUT => FrontendInputTypes::SELECT
+                ),
+                'BulletText2' => array(
+                    MemberNames::ATTRIBUTE_CODE => 'BulletText2',
+                    MemberNames::ENTITY_TYPE_ID => 4,
+                    MemberNames::FRONTEND_INPUT => 'text'
+                ),
+                'Category1Header' => array(
+                    MemberNames::ATTRIBUTE_CODE => 'Category1Header',
+                    MemberNames::ENTITY_TYPE_ID => 4,
+                    MemberNames::FRONTEND_INPUT => 'text'
+                ),
+                'Category3Header' => array(
+                    MemberNames::ATTRIBUTE_CODE => 'Category3Header',
+                    MemberNames::ENTITY_TYPE_ID => 4,
+                    MemberNames::FRONTEND_INPUT => 'text'
+                ),
+                'Legend' => array(
+                    MemberNames::ATTRIBUTE_CODE => 'Legend',
+                    MemberNames::ENTITY_TYPE_ID => 4,
+                    MemberNames::FRONTEND_INPUT => 'text'
+                ),
+                'MainlinePageNumber' => array(
+                    MemberNames::ATTRIBUTE_CODE => 'MainlinePageNumber',
+                    MemberNames::ENTITY_TYPE_ID => 4,
+                    MemberNames::FRONTEND_INPUT => 'text'
+                ),
+                'Properties' => array(
+                    MemberNames::ATTRIBUTE_CODE => 'Properties',
+                    MemberNames::ENTITY_TYPE_ID => 4,
+                    MemberNames::FRONTEND_INPUT => 'text'
+                ),
+                'PubCodeRankingValue' => array(
+                    MemberNames::ATTRIBUTE_CODE => 'PubCodeRankingValue',
+                    MemberNames::ENTITY_TYPE_ID => 4,
+                    MemberNames::FRONTEND_INPUT => 'text'
+                ),
+                'SpaceCode' => array(
+                    MemberNames::ATTRIBUTE_CODE => 'SpaceCode',
+                    MemberNames::ENTITY_TYPE_ID => 4,
+                    MemberNames::FRONTEND_INPUT => 'text'
+                ),
+                'StyleNo' => array(
+                    MemberNames::ATTRIBUTE_CODE => 'StyleNo',
+                    MemberNames::ENTITY_TYPE_ID => 4,
+                    MemberNames::FRONTEND_INPUT => 'text'
+                ),
+                'StyleNoHeader' => array(
+                    MemberNames::ATTRIBUTE_CODE => 'StyleNoHeader',
+                    MemberNames::ENTITY_TYPE_ID => 4,
+                    MemberNames::FRONTEND_INPUT => 'text'
+                ),
+                'SubHeader' => array(
+                    MemberNames::ATTRIBUTE_CODE => 'SubHeader',
+                    MemberNames::ENTITY_TYPE_ID => 4,
+                    MemberNames::FRONTEND_INPUT => 'text'
+                ),
+                'TableHead1' => array(
+                    MemberNames::ATTRIBUTE_CODE => 'TableHead1',
+                    MemberNames::ENTITY_TYPE_ID => 4,
+                    MemberNames::FRONTEND_INPUT => 'text'
+                ),
+                'YNumberMaterial' => array(
+                    MemberNames::ATTRIBUTE_CODE => 'YNumberMaterial',
+                    MemberNames::ENTITY_TYPE_ID => 4,
+                    MemberNames::FRONTEND_INPUT => 'text'
+                ),
+                'SP_STATUS' => array(
+                    MemberNames::ATTRIBUTE_CODE => 'SP_STATUS',
                     MemberNames::ENTITY_TYPE_ID => 4,
                     MemberNames::FRONTEND_INPUT => 'text'
                 )

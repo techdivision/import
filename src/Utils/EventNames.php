@@ -190,16 +190,30 @@ class EventNames
     const SUBJECT_ARTEFACT_PROCESS_FAILURE = 'subject.artefact.process.failure';
 
     /**
-     * The event name for the event when an import artefact has successfully been processed.
+     * The event name for the event before a row of the import artefact will be processed.
      *
      * @var string
      */
     const SUBJECT_ARTEFACT_ROW_PROCESS_START = 'subject.artefact.row.process.start';
 
     /**
-     * The event name for the event when an import artefact has successfully been processed.
+     * The event name for the event when an row of the artefact has successfully been processed.
      *
      * @var string
      */
     const SUBJECT_ARTEFACT_ROW_PROCESS_SUCCESS = 'subject.artefact.row.process.success';
+
+    /**
+     * The event name for the event before the header row of the import artefact will be processed.
+     *
+     * @var string
+     */
+    const SUBJECT_ARTEFACT_HEADER_ROW_PROCESS_START = 'subject.artefact.header.row.process.start';
+
+    /**
+     * The event name for the event when the header row of the artefact has successfully been processed.
+     *
+     * @var string
+     */
+    const SUBJECT_ARTEFACT_HEADER_ROW_PROCESS_SUCCESS = 'subject.artefact.header.row.process.success';
 }

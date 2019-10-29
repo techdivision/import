@@ -339,6 +339,32 @@ abstract class AbstractSubject implements SubjectInterface, FilesystemSubjectInt
     }
 
     /**
+     * Load the default header mappings from the configuration.
+     *
+     * @return array
+     */
+    public function getDefaultHeaderMappings()
+    {
+
+        // initialize the array for the default header mappings
+        $defaultHeaderMappings = array();
+
+        // load the Magento edition and the entity type from the execution context
+        $entityTypeCode = $this->getExecutionContext()->getEntityTypeCode();
+
+        // load the header mappings from the configuration
+        $headerMappings = $this->getConfiguration()->getHeaderMappings();
+
+        // query whether or not header mappings for the entity type are available
+        if (isset($headerMappings[$entityTypeCode])) {
+            $defaultHeaderMappings = $headerMappings[$entityTypeCode];
+        }
+
+        // return the default header mappings
+        return $defaultHeaderMappings;
+    }
+
+    /**
      * Tries to format the passed value to a valid date with format 'Y-m-d H:i:s'.
      * If the passed value is NOT a valid date, NULL will be returned.
      *
@@ -548,11 +574,11 @@ abstract class AbstractSubject implements SubjectInterface, FilesystemSubjectInt
             $this->coreConfigData = $status[RegistryKeys::GLOBAL_DATA][RegistryKeys::CORE_CONFIG_DATA];
         }
 
+        // merge the header mappings with the values found in the configuration
+        $this->headerMappings = array_merge($this->headerMappings, $this->getDefaultHeaderMappings());
+
         // merge the callback mappings with the mappings from the child instance
         $this->callbackMappings = array_merge($this->callbackMappings, $this->getDefaultCallbackMappings());
-
-        // merge the header mappings with the values found in the configuration
-        $this->headerMappings = array_merge($this->headerMappings, $this->getConfiguration()->getHeaderMappings());
 
         // load the available callbacks from the configuration
         $availableCallbacks = $this->getConfiguration()->getCallbacks();
@@ -732,6 +758,7 @@ abstract class AbstractSubject implements SubjectInterface, FilesystemSubjectInt
 
             // invoke the events that has to be fired before the artfact will be processed
             $this->getEmitter()->emit(EventNames::SUBJECT_ARTEFACT_PROCESS_START, $this);
+            $this->getEmitter()->emit($this->getEventName(EventNames::SUBJECT_ARTEFACT_PROCESS_START), $this);
 
             // load the system logger instance
             $systemLogger = $this->getSystemLogger();
@@ -797,6 +824,7 @@ abstract class AbstractSubject implements SubjectInterface, FilesystemSubjectInt
 
             // invoke the events that has to be fired when the artfact has been successfully processed
             $this->getEmitter()->emit(EventNames::SUBJECT_ARTEFACT_PROCESS_SUCCESS, $this);
+            $this->getEmitter()->emit($this->getEventName(EventNames::SUBJECT_ARTEFACT_PROCESS_SUCCESS), $this);
         } catch (\Exception $e) {
             // rename the flag file, because import failed and write the stack trace
             $this->rename($inProgressFilename, $failedFilename);
@@ -821,6 +849,7 @@ abstract class AbstractSubject implements SubjectInterface, FilesystemSubjectInt
 
             // invoke the events that has to be fired when the artfact can't be processed
             $this->getEmitter()->emit(EventNames::SUBJECT_ARTEFACT_PROCESS_FAILURE, $this, $e);
+            $this->getEmitter()->emit($this->getEventName(EventNames::SUBJECT_ARTEFACT_PROCESS_FAILURE), $this, $e);
 
             // do not wrap the exception if not already done
             if ($e instanceof WrappedColumnException) {
@@ -852,43 +881,50 @@ abstract class AbstractSubject implements SubjectInterface, FilesystemSubjectInt
 
         // invoke the events that has to be fired before the artfact's row will be processed
         $this->getEmitter()->emit(EventNames::SUBJECT_ARTEFACT_ROW_PROCESS_START, $this);
+        $this->getEmitter()->emit($this->getEventName(EventNames::SUBJECT_ARTEFACT_ROW_PROCESS_START), $this);
 
         // initialize the headers with the columns from the first line
         if (sizeof($this->headers) === 0) {
+            // invoke the events that has to be fired before the artfact's header row will be processed
+            $this->getEmitter()->emit(EventNames::SUBJECT_ARTEFACT_HEADER_ROW_PROCESS_START, $this);
+            $this->getEmitter()->emit($this->getEventName(EventNames::SUBJECT_ARTEFACT_HEADER_ROW_PROCESS_START), $this);
+            // iterate over the column name => key an map the header names, if necessary
             foreach ($this->row as $value => $key) {
                 $this->headers[$this->mapAttributeCodeByHeaderMapping($key)] = $value;
             }
-            return;
-        }
+            // invoke the events that has to be fired when the artfact's header row has been successfully processed
+            $this->getEmitter()->emit(EventNames::SUBJECT_ARTEFACT_HEADER_ROW_PROCESS_SUCCESS, $this);
+            $this->getEmitter()->emit($this->getEventName(EventNames::SUBJECT_ARTEFACT_HEADER_ROW_PROCESS_SUCCESS), $this);
+        } else {
+            // load the available observers
+            $availableObservers = $this->getObservers();
 
-        // load the available observers
-        $availableObservers = $this->getObservers();
-
-        // process the observers
-        foreach ($availableObservers as $observers) {
-            // invoke the pre-import/import and post-import observers
-            /** @var \TechDivision\Import\Observers\ObserverInterface $observer */
-            foreach ($observers as $observer) {
-                // query whether or not we have to skip the row
-                if ($this->skipRow) {
-                    // log a debug message with the actual line nr/file information
-                    $this->getSystemLogger()->warning(
-                        $this->appendExceptionSuffix(
-                            sprintf(
-                                'Skip processing operation "%s" after observer "%s"',
-                                implode(' > ', $this->getConfiguration()->getConfiguration()->getOperationNames()),
-                                get_class($observer)
+            // process the observers
+            foreach ($availableObservers as $observers) {
+                // invoke the pre-import/import and post-import observers
+                /** @var \TechDivision\Import\Observers\ObserverInterface $observer */
+                foreach ($observers as $observer) {
+                    // query whether or not we have to skip the row
+                    if ($this->skipRow) {
+                        // log a debug message with the actual line nr/file information
+                        $this->getSystemLogger()->warning(
+                            $this->appendExceptionSuffix(
+                                sprintf(
+                                    'Skip processing operation "%s" after observer "%s"',
+                                    implode(' > ', $this->getConfiguration()->getConfiguration()->getOperationNames()),
+                                    get_class($observer)
+                                )
                             )
-                        )
-                    );
+                        );
 
-                    // skip the row
-                    break 2;
-                }
+                        // skip the row
+                        break 2;
+                    }
 
-                // if not, set the subject and process the observer
-                if ($observer instanceof ObserverInterface) {
-                    $this->row = $observer->handle($this);
+                    // if not, set the subject and process the observer
+                    if ($observer instanceof ObserverInterface) {
+                        $this->row = $observer->handle($this);
+                    }
                 }
             }
         }
@@ -922,6 +958,7 @@ abstract class AbstractSubject implements SubjectInterface, FilesystemSubjectInt
 
         // invoke the events that has to be fired when the artfact's row has been successfully processed
         $this->getEmitter()->emit(EventNames::SUBJECT_ARTEFACT_ROW_PROCESS_SUCCESS, $this);
+        $this->getEmitter()->emit($this->getEventName(EventNames::SUBJECT_ARTEFACT_ROW_PROCESS_SUCCESS), $this);
     }
 
     /**
@@ -1381,5 +1418,22 @@ abstract class AbstractSubject implements SubjectInterface, FilesystemSubjectInt
 
         // return the (mapped) entity type code
         return $entityTypeCode;
+    }
+
+    /**
+     * Concatenates and returns the event name for the actual plugin and subject context.
+     *
+     * @param string $eventName The event name to concatenate
+     *
+     * @return string The concatenated event name
+     */
+    protected function getEventName($eventName)
+    {
+        return  sprintf(
+            '%s.%s.%s',
+            $this->getConfiguration()->getPluginConfiguration()->getId(),
+            $this->getConfiguration()->getId(),
+            $eventName
+        );
     }
 }

@@ -43,7 +43,7 @@
          |-->
         <service id="import.renderer.validations" class="\ArrayObject">
             <call method="append">
-                <argument id="import.renderer.validations.console" type="service"/>
+                <argument id="import.renderer.console.table" type="service"/>
             </call>
             <call method="append">
                 <argument id="import.renderer.validations.json.file" type="service"/>
@@ -56,9 +56,6 @@
             <argument type="service" id="import.processor.registry"/>
         </service>
         <service id="import.renderer.console.table" class="TechDivision\Import\Listeners\Renderer\Validations\GenericConsoleTableRenderer">
-            <argument type="service" id="output"/>
-        </service>
-        <service id="import.renderer.validations.console" class="TechDivision\Import\Listeners\Renderer\Validations\ConsoleTableRenderer">
             <argument type="service" id="output"/>
         </service>
         <service id="import.renderer.validations.system.logger" class="TechDivision\Import\Listeners\Renderer\Validations\SystemLoggerRenderer">
@@ -98,6 +95,13 @@
             <argument type="service" id="connection"/>
             <argument type="string">GLOBAL</argument>
             <argument type="string">innodb%</argument>
+        </service>
+        <service id="import.loader.registry.validations" class="TechDivision\Import\Loaders\RegistryLoader">
+            <argument type="service" id="import.processor.registry"/>
+            <argument type="constant">TechDivision\Import\Utils\RegistryKeys::VALIDATIONS</argument>
+        </service>
+        <service id="import.loader.validations" class="TechDivision\Import\Loaders\ValidationLoader">
+            <argument type="service" id="import.loader.registry.validations"/>
         </service>
 
         <!--
@@ -610,10 +614,13 @@
             <argument type="service" id="configuration"/>
         </service>
         <service id="import.listener.render.validations" class="TechDivision\Import\Listeners\RenderValidationsListener">
-            <argument type="service" id="import.processor.registry"/>
+            <argument type="service" id="import.loader.validations"/>
             <argument type="service" id="import.renderer.validations"/>
         </service>
         <service id="import.listener.stop.validation" class="TechDivision\Import\Listeners\StopValidationListener">
+            <argument type="service" id="import.processor.registry"/>
+        </service>
+        <service id="import.listener.validate.header.row" class="TechDivision\Import\Listeners\ValidateHeaderRowListener">
             <argument type="service" id="import.processor.registry"/>
         </service>
 

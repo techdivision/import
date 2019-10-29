@@ -22,8 +22,7 @@ namespace TechDivision\Import\Listeners;
 
 use League\Event\EventInterface;
 use League\Event\AbstractListener;
-use TechDivision\Import\Utils\RegistryKeys;
-use TechDivision\Import\Services\RegistryProcessorInterface;
+use TechDivision\Import\Loaders\LoaderInterface;
 
 /**
  * A listener implementation that renders the ANSI art.
@@ -38,11 +37,11 @@ class RenderValidationsListener extends AbstractListener
 {
 
     /**
-     * The import processor instance.
+     * The loader instance used to load the validations from the registry.
      *
-     * @var \TechDivision\Import\Services\RegistryProcessorInterface
+     * @var \TechDivision\Import\Loaders\LoaderInterface
      */
-    protected $registryProcessor;
+    protected $loader;
 
     /**
      * The array with the validation renderer instances.
@@ -52,16 +51,16 @@ class RenderValidationsListener extends AbstractListener
     protected $renderer;
 
     /**
-     * Initializes the plugin with the application instance.
+     * Initializes the listener with the loader and the render instances.
      *
-     * @param \TechDivision\Import\Services\RegistryProcessorInterface                          $registryProcessor The registry processor instance
-     * @param \TechDivision\Import\Listeners\Renderer\Validations\ValidationRendererInterface[] $renderer          The array with the validation renderer instances
+     * @param \TechDivision\Import\Loaders\LoaderInterface                                      $loader   The loader instance
+     * @param \TechDivision\Import\Listeners\Renderer\Validations\ValidationRendererInterface[] $renderer The array with the validation renderer instances
      */
-    public function __construct(RegistryProcessorInterface $registryProcessor, \ArrayAccess $renderer)
+    public function __construct(LoaderInterface $loader, \ArrayAccess $renderer)
     {
 
         // set the passed instances
-        $this->registryProcessor = $registryProcessor;
+        $this->loader = $loader;
         $this->renderer = $renderer;
     }
 
@@ -75,8 +74,8 @@ class RenderValidationsListener extends AbstractListener
     public function handle(EventInterface $event)
     {
 
-        // load the validations from the registry
-        $validations = $this->getRegistryProcessor()->getAttribute(RegistryKeys::VALIDATIONS);
+        // load the validations
+        $validations = $this->getLoader()->load();
 
         // query whether or not we've validation errors
         if (is_array($validations) && sizeof($validations) > 0) {
@@ -87,13 +86,13 @@ class RenderValidationsListener extends AbstractListener
     }
 
     /**
-     * Return's the registry processor instance.
+     * Return's the loader instance
      *
-     * @return \TechDivision\Import\Services\RegistryProcessorInterface The registry processor instance
+     * @return \TechDivision\Import\Loaders\LoaderInterface The loader instance
      */
-    protected function getRegistryProcessor()
+    protected function getLoader()
     {
-        return $this->registryProcessor;
+        return $this->loader;
     }
 
     /**

@@ -192,6 +192,57 @@ class AdditionalAttributeCsvSerializerTest extends AbstractSerializerTest
     }
 
     /**
+     * Tests if the unserialize() method with enclosed simple values for a boolean, select and multiselect attribute.
+     *
+     * @return void
+     */
+    public function testUnserializeWithoutValueDelimiterAndManyAttributes()
+    {
+
+        // initialize the serialized value
+        $value = '"""ClothingSize=Eine Größe XXL"",""Colours=Gelb"",""Description=Schutzoverall"",""FlagNew=Nein"",""FlagSample=Ja"",""Manufacturer=DS SafetyWear"",""Material=Vliesstoff"",""MergeUomFactor=Stück"",""Packaging=Stück"",""PublishTo=Web & Catalogue"",""Type=Mit Kapuze, verklebten Nähten und extra Polyethylenbeschichtung"",""BulletText2=<strong>195603:</strong><br>Mit Kapuze, Reißverschluss mit Abdeckblende und Gummizügen an Hosenbeinen, Armen und Kapuze. CE-Kategorie III, Typ 5, 6.<br><strong>Farbe:</strong>&nbsp;Weiß<br><strong>Größen:</strong> M, L, XL, XXL<br><br><strong>195608:</strong><br>Ausführung wie <strong>195603</strong>, jedoch mit verklebten Nähten für verbesserten Schutz. CE-Kategorie III, Typ 4, 5, 6.<br><strong>Farbe:</strong>&nbsp;Weiß<br><strong>Größen:&nbsp;</strong>M, L, XL, XXL<br><br><strong>195609:</strong><br>Ausführung wie <strong>195608</strong>, jedoch mit zusätzlicher Polyethylenbeschichtung für noch höheren Schutz, z.B. gegen aggressive Flüssigkeiten oder Sprühnebel. Geeignet für den Einsatz bei kontaminationsgefährlichen Arbeiten. CE-Kategorie III, Typ 3, 4, 5.<br><strong>Farbe:&nbsp;</strong>Gelb<br><strong>Größen:&nbsp;</strong>L, XL, XXL"",""Category1Header=Erste Hilfe & Arbeitsschutzausrüstung"",""Category3Header=Schutzkleidung"",""Legend=Schutzoveralls"",""MainlinePageNumber=U-370"",""Properties=CE-Kategorie III, Typ 3, 4, 5"",""PubCodeRankingValue=13825"",""SpaceCode=CJE: TYVEK-SCHUTZKLEIDUNG"",""StyleNo=195609"",""StyleNoHeader=Artikel-<br>nummer"",""SubHeader=Optimaler Schutz vor Staub, Farbe, Schadstoffen"",""TableHead1=Geben Sie bitte die gewünschte Größe an."",""YNumberMaterial=Y2932705"",""SP_STATUS=CURRENT"""';
+
+        // create and initialize the CSV value serializer
+        $valueCsvSerializer = new ValueCsvSerializer();
+        $valueCsvSerializer->init($this->getMockCsvConfiguration());
+
+        // initialize the expected result
+        $values = array(
+            'ClothingSize'        => 'Eine Größe XXL',
+            'Colours'             => 'Gelb',
+            'Description'         => 'Schutzoverall',
+            'FlagNew'             => 'Nein',
+            'FlagSample'          => 'Ja',
+            'Manufacturer'        => 'DS SafetyWear',
+            'Material'            => 'Vliesstoff',
+            'MergeUomFactor'      => 'Stück',
+            'Packaging'           => 'Stück',
+            'PublishTo'           => 'Web & Catalogue',
+            'Type'                => 'Mit Kapuze, verklebten Nähten und extra Polyethylenbeschichtung',
+            'BulletText2'         => '<strong>195603:</strong><br>Mit Kapuze, Reißverschluss mit Abdeckblende und Gummizügen an Hosenbeinen, Armen und Kapuze. CE-Kategorie III, Typ 5, 6.<br><strong>Farbe:</strong>&nbsp;Weiß<br><strong>Größen:</strong> M, L, XL, XXL<br><br><strong>195608:</strong><br>Ausführung wie <strong>195603</strong>, jedoch mit verklebten Nähten für verbesserten Schutz. CE-Kategorie III, Typ 4, 5, 6.<br><strong>Farbe:</strong>&nbsp;Weiß<br><strong>Größen:&nbsp;</strong>M, L, XL, XXL<br><br><strong>195609:</strong><br>Ausführung wie <strong>195608</strong>, jedoch mit zusätzlicher Polyethylenbeschichtung für noch höheren Schutz, z.B. gegen aggressive Flüssigkeiten oder Sprühnebel. Geeignet für den Einsatz bei kontaminationsgefährlichen Arbeiten. CE-Kategorie III, Typ 3, 4, 5.<br><strong>Farbe:&nbsp;</strong>Gelb<br><strong>Größen:&nbsp;</strong>L, XL, XXL',
+            'Category1Header'     => 'Erste Hilfe & Arbeitsschutzausrüstung',
+            'Category3Header'     => 'Schutzkleidung',
+            'Legend'              => 'Schutzoveralls',
+            'MainlinePageNumber'  => 'U-370',
+            'Properties'          => 'CE-Kategorie III, Typ 3, 4, 5',
+            'PubCodeRankingValue' => '13825',
+            'SpaceCode'           => 'CJE: TYVEK-SCHUTZKLEIDUNG',
+            'StyleNo'             => '195609',
+            'StyleNoHeader'       => 'Artikel-<br>nummer',
+            'SubHeader'           => 'Optimaler Schutz vor Staub, Farbe, Schadstoffen',
+            'TableHead1'          => 'Geben Sie bitte die gewünschte Größe an.',
+            'YNumberMaterial'     => 'Y2932705',
+            'SP_STATUS'           => 'CURRENT'
+        );
+
+        // unserialize the value first time (simulate M2IF framework)
+        $unserialized = $valueCsvSerializer->unserialize($value);
+
+        // unserialize the value and assert the result
+        $this->assertSame($values, $this->additionalAttributeSerializer->unserialize(array_shift($unserialized)));
+    }
+
+    /**
      * Tests if the serialize() method with simple values for a boolean, select and multiselect attribute.
      *
      * @return void
@@ -222,12 +273,12 @@ class AdditionalAttributeCsvSerializerTest extends AbstractSerializerTest
     {
 
         // initialize the expected result
-        $value = '"DMEU_Application=Empfangshallen,Postabteilungen,Arztpraxen,Verkaufsräume,Reisebüros","DMEU_BulletText2=<strong>Material:</strong>&nbsp;Polyethylen, transparent <br><strong>Fachtiefe:</strong>&nbsp;45 mm <br><strong>Lieferumfang:</strong>&nbsp;inkl. Befestigungsmaterial"';
+        $value = '"Application=Empfangshallen,Postabteilungen,Arztpraxen,Verkaufsräume,Reisebüros","BulletText2=<strong>Material:</strong>&nbsp;Polyethylen, transparent <br><strong>Fachtiefe:</strong>&nbsp;45 mm <br><strong>Lieferumfang:</strong>&nbsp;inkl. Befestigungsmaterial"';
 
         // initialize the array with the values to serializer
         $values = array(
-            'DMEU_Application' => 'Empfangshallen,Postabteilungen,Arztpraxen,Verkaufsräume,Reisebüros',
-            'DMEU_BulletText2' => '<strong>Material:</strong>&nbsp;Polyethylen, transparent <br><strong>Fachtiefe:</strong>&nbsp;45 mm <br><strong>Lieferumfang:</strong>&nbsp;inkl. Befestigungsmaterial'
+            'Application' => 'Empfangshallen,Postabteilungen,Arztpraxen,Verkaufsräume,Reisebüros',
+            'BulletText2' => '<strong>Material:</strong>&nbsp;Polyethylen, transparent <br><strong>Fachtiefe:</strong>&nbsp;45 mm <br><strong>Lieferumfang:</strong>&nbsp;inkl. Befestigungsmaterial'
         );
 
         // serialize the values and assert the result
