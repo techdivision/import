@@ -11,14 +11,23 @@
 
     <services>
 
+        <!--
+         | The DI configuration for the synthetic services
+         |-->
         <service id="configuration.import.plugin.archive" synthetic="true" />
         <service id="configuration.import.plugin.subject" synthetic="true" />
         <service id="configuration.import.plugin.global.data" synthetic="true" />
         <service id="configuration.import.plugin.missing.option.values" synthetic="true" />
         <service id="configuration.import.subject.move.files" synthetic="true" />
 
+        <!--
+         | The DI configuration for the UID generator
+         |-->
         <service id="import.generator.core.config.data.uid" class="TechDivision\Import\Utils\Generators\CoreConfigDataUidGenerator"/>
 
+        <!--
+         | The DI utility configuration
+         |-->
         <service id="import.util.cache.key" class="TechDivision\Import\Utils\CacheKeyUtil">
             <argument type="service" id="configuration"/>
         </service>
@@ -28,7 +37,6 @@
         <service id="import.util.table.prefix" class="TechDivision\Import\Utils\TablePrefixUtil">
             <argument type="service" id="configuration"/>
         </service>
-
         <service id="import.util.sql.compilers" class="\ArrayObject">
             <call method="append">
                 <argument id="import.util.primary.key" type="service"/>
@@ -37,6 +45,22 @@
                 <argument id="import.util.table.prefix" type="service"/>
             </call>
         </service>
+
+        <!--
+         | The DI finder factory configuration
+         |-->
+        <service id="import.repository.finder.factory.simple" class="TechDivision\Import\Repositories\Finders\SimpleFinderFactory"/>
+        <service id="import.repository.finder.factory.yielded" class="TechDivision\Import\Repositories\Finders\YieldedFinderFactory"/>
+        <service id="import.repository.finder.factory.unique" class="TechDivision\Import\Repositories\Finders\UniqueFinderFactory"/>
+        <service id="import.repository.finder.factory.configurable" class="TechDivision\Import\Repositories\Finders\ConfigurableFinderFactory">
+            <argument type="service" id="service_container"/>
+            <argument type="service" id="configuration"/>
+        </service>
+
+        <!--
+         | The DI state detector configuration
+         |-->
+        <service id="import.observers.state.detector.simple" class="TechDivision\Import\Observers\StateDetectors\SimpleStateDetector"/>
 
         <!--
          | The DI validation renderer configuration
@@ -134,14 +158,14 @@
         </service>
 
         <!--
-         | The default DI aliases
+         | The DI default aliases
          |-->
         <service id="cache.adapter" alias="import.cache.adapter.local"/>
         <service id="cache.static" alias="import.cache.adapter.static"/>
         <service id="cache.configurable" alias="import.cache.adapter.configurable"/>
 
         <!--
-         | The repository configuration
+         | The DI repository configuration
          |-->
         <service id="import.repository.sql.statement" class="TechDivision\Import\Repositories\SqlStatementRepository">
             <argument type="service" id="import.util.sql.compilers"/>
@@ -221,6 +245,9 @@
             <argument type="service" id="import.repository.sql.statement"/>
         </service>
 
+        <!--
+         | The DI action processor configuration
+         |-->
         <service id="import.action.processor.url.rewrite.product.create" class="TechDivision\Import\Actions\Processors\UrlRewriteCreateProcessor">
             <argument type="service" id="connection"/>
             <argument type="service" id="import.repository.sql.statement"/>
@@ -270,6 +297,9 @@
             <argument type="service" id="import.repository.sql.statement"/>
         </service>
 
+        <!--
+         | The DI action configuration
+         |-->
         <service id="import.action.url.rewrite" class="TechDivision\Import\Actions\GenericIdentifierAction">
             <argument type="service" id="import.action.processor.url.rewrite.product.create"/>
             <argument type="service" id="import.action.processor.url.rewrite.product.update"/>
@@ -293,11 +323,17 @@
             <argument type="service" id="import.action.processor.import.history.delete"/>
         </service>
 
+        <!--
+         | The DI assembler configuration
+         |-->
         <service id="import.assembler.category" class="TechDivision\Import\Assembler\CategoryAssembler">
             <argument type="service" id="import.repository.category"/>
             <argument type="service" id="import.repository.category.varchar"/>
         </service>
 
+        <!--
+         | The DI configuration for processors
+         |-->
         <service id="import.processor.registry" class="TechDivision\Import\Services\RegistryProcessor">
             <argument type="service" id="cache.static"/>
         </service>

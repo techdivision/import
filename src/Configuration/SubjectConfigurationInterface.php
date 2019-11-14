@@ -120,7 +120,7 @@ interface SubjectConfigurationInterface extends ParamsConfigurationInterface, Im
     /**
      * Return's the reference to the parent plugin configuration instance.
      *
-     * @return \TechDivision\Import\ConfigurationInterface The parent plugin configuration instance
+     * @return \TechDivision\Import\Configuration\PluginConfigurationInterface The parent plugin configuration instance
      */
     public function getPluginConfiguration();
 

@@ -270,20 +270,22 @@ trait AttributeObserverTrait
                 // set the attribute value
                 $this->attributeValue = $attributeValue;
 
-                // prepare/initialize the attribute value
-                $value = $this->initializeAttribute($this->prepareAttributes());
-
-                // query whether or not the entity's value has to be persisted or deleted. if the value is
-                // an empty string and the status is UPDATE, then the value exists and has to be deleted
-                // We need to user $attributeValue instead of $value[MemberNames::VALUE] in cases where
-                // value was casted by attribute type. E.g. special_price = 0 if value is empty string in CSV
-                if ($attributeValue === '' && $value[EntityStatus::MEMBER_NAME] === EntityStatus::STATUS_UPDATE) {
-                    $this->$deleteMethod(array(MemberNames::VALUE_ID => $value[MemberNames::VALUE_ID]));
-                } elseif ($attributeValue !== '' && $value[MemberNames::VALUE] !== null) {
-                    $this->$persistMethod($value);
+                // prepare the attribute vale and query whether or not it has to be persisted
+                if ($this->hasChanges($value = $this->initializeAttribute($this->prepareAttributes()))) {
+                    // query whether or not the entity's value has to be persisted or deleted. if the value is
+                    // an empty string and the status is UPDATE, then the value exists and has to be deleted
+                    // We need to user $attributeValue instead of $value[MemberNames::VALUE] in cases where
+                    // value was casted by attribute type. E.g. special_price = 0 if value is empty string in CSV
+                    if ($attributeValue === '' && $value[EntityStatus::MEMBER_NAME] === EntityStatus::STATUS_UPDATE) {
+                        $this->$deleteMethod(array(MemberNames::VALUE_ID => $value[MemberNames::VALUE_ID]));
+                    } elseif ($attributeValue !== '' && $value[MemberNames::VALUE] !== null) {
+                        $this->$persistMethod($value);
+                    } else {
+                        // log a debug message, because this should never happen
+                        $this->getSubject()->getSystemLogger()->debug(sprintf('Found empty value for attribute "%s"', $attributeCode));
+                    }
                 } else {
-                    // log a debug message, because this should never happen
-                    $this->getSubject()->getSystemLogger()->debug(sprintf('Found empty value for attribute "%s"', $attributeCode));
+                    $this->getSubject()->getSystemLogger()->debug(sprintf('Skip to persist value for attribute "%s"', $attributeCode));
                 }
 
                 // continue with the next value
@@ -529,4 +531,13 @@ trait AttributeObserverTrait
      * @return void
      */
     abstract protected function deleteVarcharAttribute(array $row, $name = null);
+
+    /**
+     * Query whether or not the entity has to be processed.
+     *
+     * @param array $entity The entity to query for
+     *
+     * @return boolean TRUE if the entity has to be processed, else FALSE
+     */
+    abstract protected function hasChanges(array $entity);
 }

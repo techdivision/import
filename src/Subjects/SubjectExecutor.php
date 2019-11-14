@@ -105,14 +105,20 @@ class SubjectExecutor implements SubjectExecutorInterface
         // initialize the subject and import the bunch
         $subjectInstance = $this->subjectFactory->createSubject($subject);
 
-        try {
-            // load the subject + plug-in ID to prepare the event names
-            $subjectName = $subject->getName();
-            $pluginName = $subject->getPluginConfiguration()->getName();
+        // load the plug-in an operation configuartion
+        $pluginConfiguration = $subject->getPluginConfiguration();
+        $operationConfiguration = $pluginConfiguration->getOperationConfiguration();
 
+        // load the subject + plug-in ID  as well as th operation name to prepare the events
+        $subjectName = $subject->getName();
+        $pluginName = $pluginConfiguration->getName();
+        $operationName = $operationConfiguration->getName();
+
+        try {
             // invoke the event that has to be fired before the subject's import method will be invoked
             $this->emitter->emit(EventNames::SUBJECT_IMPORT_START, $subjectInstance);
             $this->emitter->emit(sprintf('%s.%s.%s', $pluginName, $subjectName, EventNames::SUBJECT_IMPORT_START), $subjectInstance);
+            $this->emitter->emit(sprintf('%s.%s.%s.%s', $operationName, $pluginName, $subjectName, EventNames::SUBJECT_IMPORT_START), $subjectInstance);
 
             // setup the subject instance
             $subjectInstance->setUp($serial);
@@ -130,6 +136,7 @@ class SubjectExecutor implements SubjectExecutorInterface
                     // invoke the event that has to be fired before the subject's export method will be invoked
                     $this->emitter->emit(EventNames::SUBJECT_EXPORT_START, $subjectInstance);
                     $this->emitter->emit(sprintf('%s.%s.%s', $pluginName, $subjectName, EventNames::SUBJECT_EXPORT_START), $subjectInstance);
+                    $this->emitter->emit(sprintf('%s.%s.%s.%s', $operationName, $pluginName, $subjectName, EventNames::SUBJECT_EXPORT_START), $subjectInstance);
 
                     // export the artefacts if available
                     $subjectInstance->export($matches[BunchKeys::FILENAME], $matches[BunchKeys::COUNTER]);
@@ -137,10 +144,12 @@ class SubjectExecutor implements SubjectExecutorInterface
                     // invoke the event that has to be fired after the subject's export method has been invoked
                     $this->emitter->emit(EventNames::SUBJECT_EXPORT_SUCCESS, $subjectInstance);
                     $this->emitter->emit(sprintf('%s.%s.%s', $pluginName, $subjectName, EventNames::SUBJECT_EXPORT_SUCCESS), $subjectInstance);
+                    $this->emitter->emit(sprintf('%s.%s.%s.%s', $operationName, $pluginName, $subjectName, EventNames::SUBJECT_EXPORT_SUCCESS), $subjectInstance);
                 } catch (\Exception $e) {
                     // invoke the event that has to be fired when the subject's export method throws an exception
                     $this->emitter->emit(EventNames::SUBJECT_EXPORT_FAILURE, $subjectInstance);
                     $this->emitter->emit(sprintf('%s.%s.%s', $pluginName, $subjectName, EventNames::SUBJECT_EXPORT_FAILURE), $subjectInstance);
+                    $this->emitter->emit(sprintf('%s.%s.%s.%s', $operationName, $pluginName, $subjectName, EventNames::SUBJECT_EXPORT_FAILURE), $subjectInstance);
 
                     // re-throw the exception
                     throw $e;
@@ -153,6 +162,7 @@ class SubjectExecutor implements SubjectExecutorInterface
             // invoke the event that has to be fired after the subject's import method has been invoked
             $this->emitter->emit(EventNames::SUBJECT_IMPORT_SUCCESS, $subjectInstance);
             $this->emitter->emit(sprintf('%s.%s.%s', $pluginName, $subjectName, EventNames::SUBJECT_IMPORT_SUCCESS), $subjectInstance);
+            $this->emitter->emit(sprintf('%s.%s.%s.%s', $operationName, $pluginName, $subjectName, EventNames::SUBJECT_IMPORT_SUCCESS), $subjectInstance);
         } catch (\Exception $e) {
             // tear down the subject instance
             $subjectInstance->tearDown($serial);
@@ -160,6 +170,7 @@ class SubjectExecutor implements SubjectExecutorInterface
             // invoke the event that has to be fired when the subject's import method throws an exception
             $this->emitter->emit(EventNames::SUBJECT_IMPORT_FAILURE, $subjectInstance);
             $this->emitter->emit(sprintf('%s.%s.%s', $pluginName, $subjectName, EventNames::SUBJECT_IMPORT_FAILURE), $subjectInstance);
+            $this->emitter->emit(sprintf('%s.%s.%s.%s', $operationName, $pluginName, $subjectName, EventNames::SUBJECT_IMPORT_FAILURE), $subjectInstance);
 
             // re-throw the exception
             throw $e;

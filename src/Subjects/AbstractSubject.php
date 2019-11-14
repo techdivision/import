@@ -788,7 +788,7 @@ abstract class AbstractSubject implements SubjectInterface, FilesystemSubjectInt
             $this->lastLog = time();
 
             // log a message that the file has to be imported
-            $systemLogger->info(sprintf('Now start processing file %s', $filename));
+            $systemLogger->info(sprintf('Now start processing file %s', basename($filename)));
 
             // let the adapter process the file
             $this->getImportAdapter()->import(array($this, 'importRow'), $filename);
@@ -797,7 +797,7 @@ abstract class AbstractSubject implements SubjectInterface, FilesystemSubjectInt
             $endTime = microtime(true) - $startTime;
 
             // log a message that the file has successfully been imported
-            $systemLogger->info(sprintf('Successfully processed file %s with %d lines in %f s', $filename, $this->lineNumber, $endTime));
+            $systemLogger->info(sprintf('Successfully processed file %s with %d lines in %f s', basename($filename), $this->lineNumber, $endTime));
 
             // rename flag file, because import has been successfull
             if ($this->getConfiguration()->isCreatingImportedFile()) {
@@ -907,7 +907,7 @@ abstract class AbstractSubject implements SubjectInterface, FilesystemSubjectInt
                     // query whether or not we have to skip the row
                     if ($this->skipRow) {
                         // log a debug message with the actual line nr/file information
-                        $this->getSystemLogger()->warning(
+                        $this->getSystemLogger()->debug(
                             $this->appendExceptionSuffix(
                                 sprintf(
                                     'Skip processing operation "%s" after observer "%s"',
@@ -930,14 +930,14 @@ abstract class AbstractSubject implements SubjectInterface, FilesystemSubjectInt
         }
 
         // query whether or not a minute has been passed
-        if ($this->lastLog < time() - 60) {
+        if ($this->lastLog < time() - 59) {
             // log the number processed rows per minute
             $this->getSystemLogger()->info(
                 sprintf(
                     'Successfully processed "%d (%d)" rows per minute of file "%s"',
                     $this->lineNumber - $this->lastLineNumber,
                     $this->lineNumber,
-                    $this->getFilename()
+                    basename($this->getFilename())
                 )
             );
 

@@ -32,7 +32,7 @@ use TechDivision\Import\Subjects\SubjectInterface;
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
  */
-class GenericCompositeObserver implements ObserverInterface
+class GenericCompositeObserver implements ObserverInterface, ObserverFactoryInterface
 {
 
     /**
@@ -57,6 +57,28 @@ class GenericCompositeObserver implements ObserverInterface
     protected $observers = array();
 
     /**
+     * Will be invoked by the observer visitor when a factory has been defined to create the observer instance.
+     *
+     * @param \TechDivision\Import\Subjects\SubjectInterface $subject The subject instance
+     *
+     * @return \TechDivision\Import\Observers\ObserverInterface The observer instance
+     */
+    public function createObserver(SubjectInterface $subject)
+    {
+
+        // iterate over the observers to figure out which of them implements the factory intereface
+        foreach ($this->observers as $key => $observer) {
+            // query whether or not a factory has been specified
+            if ($observer instanceof ObserverFactoryInterface) {
+                $this->observers[$key] = $observer->createObserver($subject);
+            }
+        }
+
+        // finally, return the composite observer instance
+        return $this;
+    }
+
+    /**
      * Will be invoked by the action on the events the listener has been registered for.
      *
      * @param \TechDivision\Import\Subjects\SubjectInterface $subject The subject instance
@@ -77,11 +99,11 @@ class GenericCompositeObserver implements ObserverInterface
             // query whether or not we have to skip the row
             if ($subject->rowHasToBeSkipped()) {
                 // log a debug message with the actual line nr/file information
-                $subject->getSystemLogger()->warning(
+                $subject->getSystemLogger()->debug(
                     $subject->appendExceptionSuffix(
                         sprintf(
                             'Skip processing operation "%s" after observer "%s"',
-                            $subject->getOperationName(),
+                            implode(' > ', $subject->getConfiguration()->getConfiguration()->getOperationNames()),
                             $subject->getConfiguration()->getId()
                         )
                     )

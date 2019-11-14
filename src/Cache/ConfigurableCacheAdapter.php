@@ -95,13 +95,14 @@ class ConfigurableCacheAdapter implements CacheAdapterInterface
     /**
      * Creates a unique cache key from the passed data.
      *
-     * @param mixed $data The date to create the cache key from
+     * @param mixed   $data      The date to create the cache key from
+     * @param boolean $usePrefix Flag to signal using the prefix or not
      *
      * @return string The generated cache key
      */
-    public function cacheKey($data)
+    public function cacheKey($data, $usePrefix = true)
     {
-        return $this->cacheAdapter->cacheKey($data);
+        return $this->cacheAdapter->cacheKey($data, $usePrefix);
     }
 
     /**

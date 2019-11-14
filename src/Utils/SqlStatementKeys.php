@@ -130,6 +130,13 @@ class SqlStatementKeys
     const EAV_ENTITY_TYPE_BY_ENTITY_TYPE_CODE = 'eav_entity_type.by.entity_type_code';
 
     /**
+     * The SQL statement to load a EAV attribute.
+     *
+     * @var string
+     */
+    const EAV_ATTRIBUTE = 'eav_attribute';
+
+    /**
      * The SQL statement to load the EAV attribute set.
      *
      * @var string

@@ -1,7 +1,7 @@
 <?php
 
 /**
- * TechDivision\Import\Utils\CacheKeys
+ * TechDivision\Import\Utils\CacheKeysInterface
  *
  * NOTICE OF LICENSE
  *
@@ -21,7 +21,7 @@
 namespace TechDivision\Import\Utils;
 
 /**
- * The interface for all utility class implementations to create cache keys.
+ * Interface for cache key implementations.
  *
  * @author    Tim Wagner <t.wagner@techdivision.com>
  * @copyright 2016 TechDivision GmbH <info@techdivision.com>
@@ -29,17 +29,22 @@ namespace TechDivision\Import\Utils;
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
  */
-interface CacheKeyUtilInterface
+interface CacheKeysInterface extends \ArrayAccess
 {
 
     /**
-     * Creates a unique cache key from the passed data.
+     * Query whether or not the passed cache key is valid.
      *
-     * @param mixed   $data      The date to create the cache key from
-     * @param boolean $usePrefix Flag to signal using the prefix or not
+     * @param string $cacheKey The cache key to query for
      *
-     * @return string The generated cache key
-     * @throws \Exception Is thrown if the passed data is not supported to create a cache key from
+     * @return boolean TRUE if the cache key is valid, else FALSE
      */
-    public function cacheKey($data, $usePrefix = true);
+    public function isCacheKey($cacheKey);
+
+    /**
+     * Returns the cache key of the actual instance.
+     *
+     * @return string The cache key
+     */
+    public function getCacheKey();
 }

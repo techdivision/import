@@ -33,6 +33,15 @@ interface EavAttributeRepositoryInterface extends RepositoryInterface
 {
 
     /**
+     * Return's the EAV attribute with the passed ID.
+     *
+     * @param string $attributeId The ID of the EAV attribute to return
+     *
+     * @return array The EAV attribute
+     */
+    public function load($attributeId);
+
+    /**
      * Return's the EAV attribute with the passed entity type ID and code.
      *
      * @param integer $entityTypeId  The entity type ID of the EAV attributes to return

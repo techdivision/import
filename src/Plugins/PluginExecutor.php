@@ -99,13 +99,16 @@ class PluginExecutor implements PluginExecutorInterface
         // initialize the plugin
         $pluginInstance = $this->getPluginFactory()->createPlugin($plugin);
 
-        try {
-            // load the subject + plug-in ID to prepare the event names
-            $pluginName = $plugin->getName();
+        //
+        // load the plug-in and operation name to prepare the events
+        $pluginName = $plugin->getName();
+        $operationName = $plugin->getOperationConfiguration()->getName();
 
+        try {
             // invoke the event that has to be fired before the plugin will be executed
             $this->getEmitter()->emit(EventNames::PLUGIN_PROCESS_START, $pluginInstance);
             $this->getEmitter()->emit(sprintf('%s.%s', $pluginName, EventNames::PLUGIN_PROCESS_START), $pluginInstance);
+            $this->getEmitter()->emit(sprintf('%s.%s.%s', $operationName, $pluginName, EventNames::PLUGIN_PROCESS_START), $pluginInstance);
 
             // initialize the counter
             $counter = 1;
@@ -119,6 +122,7 @@ class PluginExecutor implements PluginExecutorInterface
                     // invoke the event that has to be fired before the subject's export method will be invoked
                     $this->getEmitter()->emit(EventNames::PLUGIN_EXPORT_START, $pluginInstance);
                     $this->getEmitter()->emit(sprintf('%s.%s', $pluginName, EventNames::PLUGIN_EXPORT_START), $pluginInstance);
+                    $this->getEmitter()->emit(sprintf('%s.%s.%s', $operationName, $pluginName, EventNames::PLUGIN_EXPORT_START), $pluginInstance);
 
                     // export the plugin's artefacts if available
                     $pluginInstance->export(date('Ymd-His'), str_pad($counter++, 2, 0, STR_PAD_LEFT));
@@ -126,10 +130,12 @@ class PluginExecutor implements PluginExecutorInterface
                     // invoke the event that has to be fired after the subject's export method has been invoked
                     $this->getEmitter()->emit(EventNames::PLUGIN_EXPORT_SUCCESS, $pluginInstance);
                     $this->getEmitter()->emit(sprintf('%s.%s', $pluginName, EventNames::PLUGIN_EXPORT_SUCCESS), $pluginInstance);
+                    $this->getEmitter()->emit(sprintf('%s.%s.%s', $operationName, $pluginName, EventNames::PLUGIN_EXPORT_SUCCESS), $pluginInstance);
                 } catch (\Exception $e) {
                     // invoke the event that has to be fired when the subject's export method throws an exception
                     $this->getEmitter()->emit(EventNames::PLUGIN_EXPORT_FAILURE, $pluginInstance);
                     $this->getEmitter()->emit(sprintf('%s.%s', $pluginName, EventNames::PLUGIN_EXPORT_FAILURE), $pluginInstance);
+                    $this->getEmitter()->emit(sprintf('%s.%s.%s', $operationName, $pluginName, EventNames::PLUGIN_EXPORT_FAILURE), $pluginInstance);
 
                     // re-throw the exception
                     throw $e;
@@ -139,10 +145,12 @@ class PluginExecutor implements PluginExecutorInterface
             // invoke the event that has to be fired after the plugin has been executed
             $this->getEmitter()->emit(EventNames::PLUGIN_PROCESS_SUCCESS, $pluginInstance);
             $this->getEmitter()->emit(sprintf('%s.%s', $pluginName, EventNames::PLUGIN_PROCESS_SUCCESS), $pluginInstance);
+            $this->getEmitter()->emit(sprintf('%s.%s.%s', $operationName, $pluginName, EventNames::PLUGIN_PROCESS_SUCCESS), $pluginInstance);
         } catch (\Exception $e) {
             // invoke the event that has to be fired when the plugin throws an exception
             $this->getEmitter()->emit(EventNames::PLUGIN_PROCESS_FAILURE, $pluginInstance);
             $this->getEmitter()->emit(sprintf('%s.%s', $pluginName, EventNames::PLUGIN_PROCESS_FAILURE), $pluginInstance);
+            $this->getEmitter()->emit(sprintf('%s.%s.%s', $operationName, $pluginName, EventNames::PLUGIN_PROCESS_FAILURE), $pluginInstance);
 
             // re-throw the exception
             throw $e;

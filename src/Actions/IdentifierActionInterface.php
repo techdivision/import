@@ -1,7 +1,7 @@
 <?php
 
 /**
- * TechDivision\Import\Actions\GenericIdentifierAction
+ * TechDivision\Import\Actions\IdentifierActionInterface
  *
  * NOTICE OF LICENSE
  *
@@ -14,25 +14,22 @@
  * @author    Tim Wagner <t.wagner@techdivision.com>
  * @copyright 2016 TechDivision GmbH <info@techdivision.com>
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
- * @link      https://github.com/techdivision/import-category
+ * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
  */
 
 namespace TechDivision\Import\Actions;
 
-use TechDivision\Import\Utils\EntityStatus;
-
 /**
- * An action implementation that provides CRUD functionality and returns the ID of
- * the persisted entity for the `update` and `create` methods.
+ * The interface for all identifier action implementations.
  *
  * @author    Tim Wagner <t.wagner@techdivision.com>
  * @copyright 2016 TechDivision GmbH <info@techdivision.com>
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
- * @link      https://github.com/techdivision/import-category
+ * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
  */
-class GenericIdentifierAction extends GenericAction implements IdentifierActionInterface
+interface IdentifierActionInterface extends ActionInterface
 {
 
     /**
@@ -44,15 +41,7 @@ class GenericIdentifierAction extends GenericAction implements IdentifierActionI
      *
      * @return string The ID of the persisted entity
      */
-    public function persist(array $row, $name = null)
-    {
-
-        // load the method name
-        $methodName = $row[EntityStatus::MEMBER_NAME];
-
-        // invoke the method
-        return $this->$methodName($row, $name);
-    }
+    public function persist(array $row, $name = null);
 
     /**
      * Creates's the entity with the passed attributes.
@@ -60,12 +49,9 @@ class GenericIdentifierAction extends GenericAction implements IdentifierActionI
      * @param array       $row  The attributes of the entity to create
      * @param string|null $name The name of the prepared statement that has to be executed
      *
-     * @return string The last inserted ID
+     * @return string The ID of the created entity
      */
-    public function create(array $row, $name = null)
-    {
-        return $this->getCreateProcessor()->execute($row, $name, $this->getPrimaryKeyMemberName());
-    }
+    public function create(array $row, $name = null);
 
     /**
      * Update's the entity with the passed attributes.
@@ -73,10 +59,7 @@ class GenericIdentifierAction extends GenericAction implements IdentifierActionI
      * @param array       $row  The attributes of the entity to update
      * @param string|null $name The name of the prepared statement that has to be executed
      *
-     * @return string The ID of the updated product
+     * @return string The ID of the updated entity
      */
-    public function update(array $row, $name = null)
-    {
-        return $this->getUpdateProcessor()->execute($row, $name, $this->getPrimaryKeyMemberName());
-    }
+    public function update(array $row, $name = null);
 }

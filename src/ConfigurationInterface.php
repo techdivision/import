@@ -358,4 +358,30 @@ interface ConfigurationInterface extends CsvConfigurationInterface, ParamsConfig
      * @return string The username
      */
     public function getUsername();
+
+    /**
+     * Set's the array with the finder mappings.
+     *
+     * @param array $finderMappings The finder mappings
+     *
+     * @return void
+     */
+    public function setFinderMappings(array $finderMappings);
+
+    /**
+     * Return's the array with the finder mappings.
+     *
+     * @return array The finder mappings
+     */
+    public function getFinderMappings();
+
+    /**
+     * Return's the mapped finder for the passed key.
+     *
+     * @param string $key The key of the finder to map
+     *
+     * @return string The mapped finder name
+     * @throws \InvalidArgumentException Is thrown if the mapping with passed key can not be resolved
+     */
+    public function getFinderMappingByKey($key);
 }

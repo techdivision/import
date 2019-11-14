@@ -61,27 +61,28 @@ class CacheKeyUtil implements CacheKeyUtilInterface
     /**
      * Creates a unique cache key from the passed data.
      *
-     * @param mixed $data The date to create the cache key from
+     * @param mixed   $data      The date to create the cache key from
+     * @param boolean $usePrefix Flag to signal using the prefix or not
      *
      * @return string The generated cache key
      * @throws \Exception Is thrown if the passed data is not supported to create a cache key from
      */
-    public function cacheKey($data)
+    public function cacheKey($data, $usePrefix = true)
     {
 
         // return the cache key for scalar data
         if (is_scalar($data)) {
-            return $this->prefix($this->scalarKey($data));
+            return $this->prefix($this->scalarKey($data), $usePrefix);
         }
 
         // return the cache key for an array
         if (is_array($data)) {
-            return $this->prefix($this->arrayKey($data));
+            return $this->prefix($this->arrayKey($data), $usePrefix);
         }
 
         // return the cache key for an object
         if (is_object($data)) {
-            return $this->prefix($this->objectKey($data));
+            return $this->prefix($this->objectKey($data), $usePrefix);
         }
 
         // throw an exception if the passed data type is NOT supported
@@ -93,13 +94,14 @@ class CacheKeyUtil implements CacheKeyUtilInterface
     /**
      * Prefixes the cache key, e. g. with the products serial.
      *
-     * @param string $cacheKey The cache key to prefix
+     * @param string  $cacheKey  The cache key to prefix
+     * @param boolean $usePrefix Flag to signal using the prefix or not
      *
      * @return string The prefixed cache key
      */
-    protected function prefix($cacheKey)
+    protected function prefix($cacheKey, $usePrefix)
     {
-        return $this->prefix . $cacheKey;
+        return $usePrefix ? $this->prefix . $cacheKey : ltrim($cacheKey, CacheKeyUtil::SEPARATOR);
     }
 
     /**

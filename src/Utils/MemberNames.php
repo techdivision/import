@@ -405,4 +405,11 @@ class MemberNames
      * @var string
      */
     const ERROR_FILE = 'error_file';
+
+    /**
+     * Name for the parameter name 'pk'.
+     *
+     * @var string
+     */
+    const PK = 'pk';
 }

@@ -1,7 +1,7 @@
 <?php
 
 /**
- * TechDivision\Import\Utils\CacheKeys
+ * TechDivision\Import\Utils\InputOptionKeysInterface
  *
  * NOTICE OF LICENSE
  *
@@ -12,7 +12,7 @@
  * PHP version 5
  *
  * @author    Tim Wagner <t.wagner@techdivision.com>
- * @copyright 2016 TechDivision GmbH <info@techdivision.com>
+ * @copyright 2019 TechDivision GmbH <info@techdivision.com>
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
@@ -21,25 +21,23 @@
 namespace TechDivision\Import\Utils;
 
 /**
- * The interface for all utility class implementations to create cache keys.
+ * Interface for classes containing the available input option keys.
  *
  * @author    Tim Wagner <t.wagner@techdivision.com>
- * @copyright 2016 TechDivision GmbH <info@techdivision.com>
+ * @copyright 2019 TechDivision GmbH <info@techdivision.com>
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
  */
-interface CacheKeyUtilInterface
+interface InputOptionKeysInterface extends \ArrayAccess
 {
 
     /**
-     * Creates a unique cache key from the passed data.
+     * Query whether or not the passed input option is valid.
      *
-     * @param mixed   $data      The date to create the cache key from
-     * @param boolean $usePrefix Flag to signal using the prefix or not
+     * @param string $inputOption The input option to query for
      *
-     * @return string The generated cache key
-     * @throws \Exception Is thrown if the passed data is not supported to create a cache key from
+     * @return boolean TRUE if the input option is valid, else FALSE
      */
-    public function cacheKey($data, $usePrefix = true);
+    public function isInputOption($inputOption);
 }

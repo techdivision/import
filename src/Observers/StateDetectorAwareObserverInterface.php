@@ -1,7 +1,7 @@
 <?php
 
 /**
- * TechDivision\Import\Utils\CacheKeys
+ * TechDivision\Import\Observers\DynamicAttributeObserverInterface
  *
  * NOTICE OF LICENSE
  *
@@ -18,10 +18,10 @@
  * @link      http://www.techdivision.com
  */
 
-namespace TechDivision\Import\Utils;
+namespace TechDivision\Import\Observers;
 
 /**
- * The interface for all utility class implementations to create cache keys.
+ * interface for all state detector aware observer implementations.
  *
  * @author    Tim Wagner <t.wagner@techdivision.com>
  * @copyright 2016 TechDivision GmbH <info@techdivision.com>
@@ -29,17 +29,13 @@ namespace TechDivision\Import\Utils;
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
  */
-interface CacheKeyUtilInterface
+interface StateDetectorAwareObserverInterface
 {
 
     /**
-     * Creates a unique cache key from the passed data.
+     * Returns an array of the columns with their types to detect state.
      *
-     * @param mixed   $data      The date to create the cache key from
-     * @param boolean $usePrefix Flag to signal using the prefix or not
-     *
-     * @return string The generated cache key
-     * @throws \Exception Is thrown if the passed data is not supported to create a cache key from
+     * @return array The array with the column names as key and their type as value
      */
-    public function cacheKey($data, $usePrefix = true);
+    public function getColumns();
 }

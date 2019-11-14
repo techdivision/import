@@ -211,6 +211,6 @@ class ArchiveListener extends AbstractListener
         $this->getRegistryProcessor()->mergeAttributesRecursive(RegistryKeys::STATUS, array(RegistryKeys::ARCHIVE_FILE => $archiveFile));
 
         // and and log a message that the import artefacts have been archived
-        $this->getSystemLogger()->info(sprintf('Successfully archived imported files to %s!', $archiveFile));
+        $this->getSystemLogger()->info(sprintf('Successfully archived imported files to %s!', basename($archiveFile)));
     }
 }

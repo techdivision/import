@@ -183,6 +183,10 @@ class SqlStatementRepository extends AbstractSqlStatementRepository
             'SELECT *
                FROM ${table:eav_entity_type}
               WHERE entity_type_code = :entity_type_code',
+        SqlStatementKeys::EAV_ATTRIBUTE =>
+            'SELECT *
+               FROM ${table:eav_attribute}
+              WHERE attribute_id = :attribute_id',
         SqlStatementKeys::EAV_ATTRIBUTE_SET =>
             'SELECT t1.*
                FROM ${table:eav_attribute_set} AS t1

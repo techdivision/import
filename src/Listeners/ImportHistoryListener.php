@@ -159,7 +159,7 @@ class ImportHistoryListener extends AbstractListener
         }
 
         // log a warning that the admin user with the passed username is not available
-        $this->getSystemLogger()->warning(sprintf('Admin user with name "%s" is not available, user first available user to save import history', $username));
+        $this->getSystemLogger()->warning(sprintf('Admin user with name "%s" is not available, use first available user to save import history', $username));
 
         // return the first admin user otherwise
         return current($adminUsers);
@@ -251,7 +251,7 @@ class ImportHistoryListener extends AbstractListener
                     MemberNames::STARTED_AT     => $startedAt->format('Y-m-d H:i:s'),
                     MemberNames::IMPORTED_FILE  => $archiveFile,
                     MemberNames::EXECUTION_TIME => $executionTime,
-                    MemberNames::SUMMARY        => sizeof($errorMessages) > 0 ? implode(', ', $errorMessages) : $summary,
+                    MemberNames::SUMMARY        => substr(sizeof($errorMessages) > 0 ? implode(', ', $errorMessages) : $summary, 0, 255),
                     MemberNames::ERROR_FILE     => sizeof($errorMessages) > 0 ? $archiveFile : 'n/a'
                 )
             );

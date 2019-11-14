@@ -35,11 +35,12 @@ interface CacheAdapterInterface
     /**
      * Creates a unique cache key from the passed data.
      *
-     * @param mixed $data The date to create the cache key from
+     * @param mixed   $data      The date to create the cache key from
+     * @param boolean $usePrefix Flag to signal using the prefix or not
      *
      * @return string The generated cache key
      */
-    public function cacheKey($data);
+    public function cacheKey($data, $usePrefix = true);
 
     /**
      * Query whether or not a cache value for the passed cache key is available.

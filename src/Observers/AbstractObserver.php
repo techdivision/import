@@ -53,6 +53,23 @@ abstract class AbstractObserver implements ObserverInterface
     protected $subject;
 
     /**
+     * The state detector instance.
+     *
+     * @var \TechDivision\Import\Observers\StateDetectorInterface
+     */
+    protected $stateDetector;
+
+    /**
+     * Initializes the observer with the state detector instance.
+     *
+     * @param \TechDivision\Import\Observers\StateDetectorInterface $stateDetector
+     */
+    public function __construct(StateDetectorInterface $stateDetector = null)
+    {
+        $this->stateDetector = $stateDetector;
+    }
+
+    /**
      * Set's the obeserver's subject instance to initialize the observer with.
      *
      * @param \TechDivision\Import\Subjects\SubjectInterface $subject The observer's subject
@@ -75,6 +92,16 @@ abstract class AbstractObserver implements ObserverInterface
     }
 
     /**
+     * Return's the observer's state detector instance.
+     *
+     * @return \TechDivision\Import\Observers\StateDetectorInterface The state detector instance
+     */
+    protected function getStateDetector()
+    {
+        return $this->stateDetector;
+    }
+
+    /**
      * Initialize's and return's a new entity with the status 'create'.
      *
      * @param array $attr The attributes to merge into the new entity
@@ -83,21 +110,48 @@ abstract class AbstractObserver implements ObserverInterface
      */
     protected function initializeEntity(array $attr = array())
     {
-        return array_merge(array(EntityStatus::MEMBER_NAME => EntityStatus::STATUS_CREATE), $attr);
+        return array_merge($attr, array(EntityStatus::MEMBER_NAME => EntityStatus::STATUS_CREATE));
+    }
+
+    /**
+     * Query whether or not the entity has to be processed.
+     *
+     * @param array $entity The entity to query for
+     *
+     * @return boolean TRUE if the entity has to be processed, else FALSE
+     */
+    protected function hasChanges(array $entity)
+    {
+        return in_array($entity[EntityStatus::MEMBER_NAME], array(EntityStatus::STATUS_CREATE, EntityStatus::STATUS_UPDATE));
+    }
+
+    /**
+     * Detect's the entity state on the specific entity conditions and return's it.
+     *
+     * @param array       $entity        The entity loaded from the database
+     * @param array       $attr          The entity data from the import file
+     * @param string|null $changeSetName The change set name to use
+     *
+     * @return string The detected entity state
+     */
+    protected function detectState(array $entity, array $attr, $changeSetName = null)
+    {
+        return $this->getStateDetector() instanceof StateDetectorInterface ? $this->getStateDetector()->detect($this, $entity, $attr, $changeSetName) : EntityStatus::STATUS_UPDATE;
     }
 
     /**
      * Merge's and return's the entity with the passed attributes and set's the
-     * status to 'update'.
+     * passed status.
      *
-     * @param array $entity The entity to merge the attributes into
-     * @param array $attr   The attributes to be merged
+     * @param array       $entity        The entity to merge the attributes into
+     * @param array       $attr          The attributes to be merged
+     * @param string|null $changeSetName The change set name to use
      *
      * @return array The merged entity
      */
-    protected function mergeEntity(array $entity, array $attr)
+    protected function mergeEntity(array $entity, array $attr, $changeSetName = null)
     {
-        return array_merge($entity, $attr, array(EntityStatus::MEMBER_NAME => EntityStatus::STATUS_UPDATE));
+        return array_merge($entity, $attr, array(EntityStatus::MEMBER_NAME => $this->detectState($entity, $attr, $changeSetName)));
     }
 
     /**

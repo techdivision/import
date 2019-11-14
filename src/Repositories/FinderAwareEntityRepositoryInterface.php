@@ -1,7 +1,7 @@
 <?php
 
 /**
- * TechDivision\Import\Utils\CacheKeys
+ * TechDivision\Import\Repositories\FinderAwareEntityRepositoryInterface
  *
  * NOTICE OF LICENSE
  *
@@ -12,34 +12,30 @@
  * PHP version 5
  *
  * @author    Tim Wagner <t.wagner@techdivision.com>
- * @copyright 2016 TechDivision GmbH <info@techdivision.com>
+ * @copyright 2019 TechDivision GmbH <info@techdivision.com>
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
  */
 
-namespace TechDivision\Import\Utils;
+namespace TechDivision\Import\Repositories;
 
 /**
- * The interface for all utility class implementations to create cache keys.
+ * Interface for finder aware entity repository implementations.
  *
  * @author    Tim Wagner <t.wagner@techdivision.com>
- * @copyright 2016 TechDivision GmbH <info@techdivision.com>
+ * @copyright 2019 TechDivision GmbH <info@techdivision.com>
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
  */
-interface CacheKeyUtilInterface
+interface FinderAwareEntityRepositoryInterface extends FinderAwareRepositoryInterface
 {
 
     /**
-     * Creates a unique cache key from the passed data.
+     * Return's the entity unique key name.
      *
-     * @param mixed   $data      The date to create the cache key from
-     * @param boolean $usePrefix Flag to signal using the prefix or not
-     *
-     * @return string The generated cache key
-     * @throws \Exception Is thrown if the passed data is not supported to create a cache key from
+     * @return string The name of the entity's unique key
      */
-    public function cacheKey($data, $usePrefix = true);
+    public function getUniqueKeyName();
 }
