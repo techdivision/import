@@ -62,7 +62,7 @@ abstract class AbstractObserver implements ObserverInterface
     /**
      * Initializes the observer with the state detector instance.
      *
-     * @param \TechDivision\Import\Observers\StateDetectorInterface $stateDetector
+     * @param \TechDivision\Import\Observers\StateDetectorInterface $stateDetector The state detector instance
      */
     public function __construct(StateDetectorInterface $stateDetector = null)
     {
