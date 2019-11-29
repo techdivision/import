@@ -1,7 +1,7 @@
 <?php
 
 /**
- * TechDivision\Import\Callbacks\SelectValidatorCallback
+ * TechDivision\Import\Callbacks\MultipleValuesValidatorCallback
  *
  * NOTICE OF LICENSE
  *
@@ -14,22 +14,22 @@
  * @author    Tim Wagner <t.wagner@techdivision.com>
  * @copyright 2019 TechDivision GmbH <info@techdivision.com>
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
- * @link      https://github.com/techdivision/import-product
+ * @link      https://github.com/techdivision/impor
  * @link      http://www.techdivision.com
  */
 
 namespace TechDivision\Import\Callbacks;
 
 /**
- * A callback implementation that validates the option values of EAV select attributes.
+ * A callback implementation that validates the a list of values.
  *
  * @author    Tim Wagner <t.wagner@techdivision.com>
  * @copyright 2019 TechDivision GmbH <info@techdivision.com>
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
- * @link      https://github.com/techdivision/import-product
+ * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
  */
-class SelectValidatorCallback extends IndexedArrayValidatorCallback
+class MultipleValuesValidatorCallback extends ArrayValidatorCallback
 {
 
     /**
@@ -43,27 +43,24 @@ class SelectValidatorCallback extends IndexedArrayValidatorCallback
     public function handle($attributeCode = null, $attributeValue = null)
     {
 
-        // load the subject instance
-        $subject = $this->getSubject();
-
-        // explode the additional attributes
-        if ($this->isNullable($optionValues = $subject->explode($attributeValue, '='))) {
+        // explode the values and query whether or not an empty value is allowed
+        if ($this->isNullable($values = $this->getSubject()->explode($attributeValue))) {
             return;
         }
 
-        // load the validations for the attribute with the passed code
-        $validations = $this->getValidations($attributeCode);
+        // load the validations for the column
+        $validations = $this->getValidations();
 
-        // iterate over the attributes and append them to the row
-        foreach ($optionValues as $optionValue) {
+        // iterate over the values and validate them
+        foreach ($values as $value) {
             // query whether or not the value is valid
-            if (in_array($optionValue, $validations)) {
+            if (in_array($value, $validations)) {
                 continue;
             }
 
             // throw an exception if the value is NOT in the array
             throw new \InvalidArgumentException(
-                sprintf('Found invalid option value "%s" for attribute with code "%s"', $optionValue, $attributeCode)
+                sprintf('Found invalid value "%s" for column "%s"', $value, $attributeCode)
             );
         }
     }

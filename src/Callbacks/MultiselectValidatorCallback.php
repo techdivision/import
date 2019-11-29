@@ -53,11 +53,11 @@ class MultiselectValidatorCallback extends IndexedArrayValidatorCallback
 
         // iterate over the attributes and append them to the row
         foreach ($optionValues as $optionValue) {
-
+            // load the validations for the attribute with the passed code
             $validations = $this->getValidations($attributeCode);
-
+            // explode the values that have to be validated
             foreach ($subject->explode($optionValue, $subject->getMultipleValueDelimiter()) as $val) {
-
+                // query whether or not the value is valid
                 if (in_array($val, $validations)) {
                     continue;
                 }

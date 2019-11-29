@@ -90,6 +90,15 @@
         <!--
          | The DI loader configuration
          |-->
+        <service id="import.loader.attribute.set.name" class="TechDivision\Import\Loaders\AttributeSetNameLoader">
+            <argument type="service" id="import.processor.import"/>
+        </service>
+        <service id="import.loader.attribute.group.name" class="TechDivision\Import\Loaders\AttributeGroupNameLoader">
+            <argument type="service" id="import.processor.import"/>
+        </service>
+        <service id="import.loader.entity.type.code" class="TechDivision\Import\Loaders\EntityTypeCodeLoader">
+            <argument type="service" id="import.processor.import"/>
+        </service>
         <service id="import.loader.custom.validations" class="TechDivision\Import\Loaders\ConfigurationValueLoader">
             <argument type="constant">TechDivision\Import\Utils\ConfigurationKeys::CUSTOM_VALIDATIONS</argument>
         </service>
@@ -100,8 +109,17 @@
         <service id="import.loader.artefacts" class="TechDivision\Import\Loaders\ArtefactsLoader">
             <argument type="service" id="import.processor.registry"/>
         </service>
-        <service id="import.loader.attribute.set" class="TechDivision\Import\Loaders\AttributeSetLoader">
-            <argument type="service" id="import.processor.import"/>
+        <service id="import.loader.attribute.set.name.filtered.by.entity.type.code" class="TechDivision\Import\Loaders\FilteredByEntityTypeCodeLoader">
+            <argument type="service" id="import.loader.attribute.set.name"/>
+        </service>
+        <service id="import.loader.attribute.set.name.filtered.by.execution.context.entity.type.code" class="TechDivision\Import\Loaders\FilteredByExecutionContextEntityTypeCodeLoader">
+            <argument type="service" id="import.loader.attribute.set.name.filtered.by.entity.type.code"/>
+        </service>
+        <service id="import.loader.attribute.group.name.filtered.by.entity.type.code" class="TechDivision\Import\Loaders\FilteredByEntityTypeCodeLoader">
+            <argument type="service" id="import.loader.attribute.group.name"/>
+        </service>
+        <service id="import.loader.attribute.group.name.filtered.by.execution.context.entity.type.code" class="TechDivision\Import\Loaders\FilteredByExecutionContextEntityTypeCodeLoader">
+            <argument type="service" id="import.loader.attribute.group.name.filtered.by.entity.type.code"/>
         </service>
         <service id="import.loader.store.website" class="TechDivision\Import\Loaders\StoreWebsiteLoader">
             <argument type="service" id="import.processor.import"/>
@@ -542,8 +560,17 @@
         <service id="import.callback.custom.regex.validator" class="TechDivision\Import\Callbacks\RegexValidatorCallback">
             <argument type="service" id="import.loader.custom.validations"/>
         </service>
-        <service id="import.callback.attribute.set.validator" class="TechDivision\Import\Callbacks\ArrayValidatorCallback">
-            <argument type="service" id="import.loader.attribute.set"/>
+        <service id="import.callback.attribute.set.name.validator" class="TechDivision\Import\Callbacks\ArrayValidatorCallback">
+            <argument type="service" id="import.loader.attribute.set.name.filtered.by.execution.context.entity.type.code"/>
+        </service>
+        <!-- service id="import.callback.attribute.set.name.validator" class="TechDivision\Import\Callbacks\ArrayValidatorCallback">
+            <argument type="service" id="import.loader.attribute.set.name"/>
+        </service -->
+        <service id="import.callback.attribute.group.name.validator" class="TechDivision\Import\Callbacks\ArrayValidatorCallback">
+            <argument type="service" id="import.loader.attribute.group.name"/>
+        </service>
+        <service id="import.callback.entity.type.code.validator" class="TechDivision\Import\Callbacks\ArrayValidatorCallback">
+            <argument type="service" id="import.loader.entity.type.code"/>
         </service>
         <service id="import.callback.visibility.validator" class="TechDivision\Import\Callbacks\IndexedArrayValidatorCallback">
             <argument type="service" id="import.loader.custom.validations"/>

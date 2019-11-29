@@ -1,7 +1,7 @@
 <?php
 
 /**
- * TechDivision\Import\Loaders\AttributeSetLoader
+ * TechDivision\Import\Loaders\EntityTypeCodeLoader
  *
  * NOTICE OF LICENSE
  *
@@ -22,10 +22,9 @@ namespace TechDivision\Import\Loaders;
 
 use TechDivision\Import\Utils\MemberNames;
 use TechDivision\Import\Services\ImportProcessorInterface;
-use TechDivision\Import\Configuration\SubjectConfigurationInterface;
 
 /**
- * Loader for attribute sets.
+ * Loader for entity type codes.
  *
  * @author    Tim Wagner <t.wagner@techdivision.com>
  * @copyright 2019 TechDivision GmbH <info@techdivision.com>
@@ -33,15 +32,15 @@ use TechDivision\Import\Configuration\SubjectConfigurationInterface;
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
  */
-class AttributeSetLoader implements LoaderInterface
+class EntityTypeCodeLoader implements LoaderInterface
 {
 
     /**
-     * The attribute sets.
+     * The entity type codes.
      *
      * @var array
      */
-    protected $attributeSets = array();
+    protected $entityTypeCodes = array();
 
     /**
      * Construct that initializes the iterator with the import processor instance.
@@ -54,40 +53,19 @@ class AttributeSetLoader implements LoaderInterface
         // load the entity types
         $entityTypes = $importProcessor->getEavEntityTypes();
 
-        // prepare the array with the attribute sets
+        // prepare the array with the entity type codes
         foreach ($entityTypes as $entityType) {
-            foreach ($importProcessor->getEavAttributeSetsByEntityTypeId($entityType[MemberNames::ENTITY_TYPE_ID]) as $attributeSet) {
-                $this->attributeSets[$entityType[MemberNames::ENTITY_TYPE_CODE]][] = $attributeSet[MemberNames::ATTRIBUTE_SET_NAME];
-            }
+            $this->entityTypeCodes[] = $entityType[MemberNames::ENTITY_TYPE_CODE];
         }
     }
 
     /**
-     * Loads and returns data the custom validation data.
+     * Loads and returns the entity type codes.
      *
-     * @param \TechDivision\Import\Configuration\ParamsConfigurationInterface $configuration The configuration instance to load the validations from
-     *
-     * @return \ArrayAccess The array with the data
+     * @return \ArrayAccess The array with the entity type codes
      */
-    public function load(SubjectConfigurationInterface $configuration = null)
+    public function load()
     {
-
-        $entityTypeCode = $configuration->getExecutionContext()->getEntityTypeCode();
-
-        if (isset($this->attributeSets[$entityTypeCode])) {
-            return $this->attributeSets[$entityTypeCode];
-        }
-
-        return array();
-    }
-
-    /**
-     * Return's the import processor instance.
-     *
-     * @return \TechDivision\Import\Services\ImportProcessorInterface The processor instance
-     */
-    protected function getImportProcessor()
-    {
-        return $this->importProcessor;
+        return $this->entityTypeCodes;
     }
 }
