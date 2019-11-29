@@ -596,6 +596,12 @@
             <argument type="service" id="import.loader.eav.attribute.option.value"/>
             <argument>%array_validator.nullable.true%</argument>
         </service>
+        <service id="import.callback.validator.number" class="TechDivision\Import\Callbacks\NumberValidatorCallback">
+            <argument>%array_validator.nullable.true%</argument>
+        </service>
+        <service id="import.callback.validator.datetime" class="TechDivision\Import\Callbacks\DatetimeValidatorCallback">
+            <argument>%array_validator.nullable.true%</argument>
+        </service>
 
         <!-- 
          ! The DI configuration for the event emitter/listeners 
