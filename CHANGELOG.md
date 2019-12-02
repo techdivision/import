@@ -3,6 +3,8 @@
 ## Bugfixes
 
 * Add missing event triggers to AbstractSubject
+* Fixed techdivision/import-cli-simple#233
+* Fixed techdivision/import-cli-simple#234
 
 ## Features
 

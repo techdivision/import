@@ -384,4 +384,11 @@ interface ConfigurationInterface extends CsvConfigurationInterface, ParamsConfig
      * @throws \InvalidArgumentException Is thrown if the mapping with passed key can not be resolved
      */
     public function getFinderMappingByKey($key);
+
+    /**
+     * Load the default values from the configuration.
+     *
+     * @return array The array with the default values
+     */
+    public function getDefaultValues();
 }

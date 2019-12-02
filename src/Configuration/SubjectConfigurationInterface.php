@@ -256,4 +256,11 @@ interface SubjectConfigurationInterface extends ParamsConfigurationInterface, Im
      * @return \TechDivision\Import\ExecutionContextInterface The execution context to use
      */
     public function getExecutionContext();
+
+    /**
+     * Load the default values from the configuration.
+     *
+     * @return array The array with the default values
+     */
+    public function getDefaultValues();
 }

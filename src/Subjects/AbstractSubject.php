@@ -241,6 +241,15 @@ abstract class AbstractSubject implements SubjectInterface, FilesystemSubjectInt
     protected $status = array();
 
     /**
+     * The default values for the columns from the configuration.
+     *
+     * @var array
+     */
+    protected $defaultColumnValues = array();
+
+    protected $columnValues = array();
+
+    /**
      * Mapping for the virtual entity type code to the real Magento 2 EAV entity type code.
      *
      * @var array
@@ -339,9 +348,35 @@ abstract class AbstractSubject implements SubjectInterface, FilesystemSubjectInt
     }
 
     /**
+     * Load the default column values from the configuration.
+     *
+     * @return array The array with the default column values
+     */
+    public function getDefaultColumnValues()
+    {
+
+        // initialize the array for the default column values
+        $defaultColumnValues = array();
+
+        // load the entity type from the execution context
+        $entityTypeCode = $this->getExecutionContext()->getEntityTypeCode();
+
+        // load the column values from the configuration
+        $columnValues = $this->getConfiguration()->getDefaultValues();
+
+        // query whether or not default column values for the entity type are available
+        if (isset($columnValues[$entityTypeCode])) {
+            $defaultColumnValues = $columnValues[$entityTypeCode];
+        }
+
+        // return the default column values
+        return $defaultColumnValues;
+    }
+
+    /**
      * Load the default header mappings from the configuration.
      *
-     * @return array
+     * @return array The array with the default header mappings
      */
     public function getDefaultHeaderMappings()
     {
@@ -349,7 +384,7 @@ abstract class AbstractSubject implements SubjectInterface, FilesystemSubjectInt
         // initialize the array for the default header mappings
         $defaultHeaderMappings = array();
 
-        // load the Magento edition and the entity type from the execution context
+        // load the entity type from the execution context
         $entityTypeCode = $this->getExecutionContext()->getEntityTypeCode();
 
         // load the header mappings from the configuration
@@ -579,6 +614,9 @@ abstract class AbstractSubject implements SubjectInterface, FilesystemSubjectInt
 
         // merge the callback mappings with the mappings from the child instance
         $this->callbackMappings = array_merge($this->callbackMappings, $this->getDefaultCallbackMappings());
+
+        // merge the default column values with the values found in the configuration
+        $this->defaultColumnValues = array_merge($this->defaultColumnValues, $this->getDefaultColumnValues());
 
         // load the available callbacks from the configuration
         $availableCallbacks = $this->getConfiguration()->getCallbacks();
@@ -888,14 +926,30 @@ abstract class AbstractSubject implements SubjectInterface, FilesystemSubjectInt
             // invoke the events that has to be fired before the artfact's header row will be processed
             $this->getEmitter()->emit(EventNames::SUBJECT_ARTEFACT_HEADER_ROW_PROCESS_START, $this);
             $this->getEmitter()->emit($this->getEventName(EventNames::SUBJECT_ARTEFACT_HEADER_ROW_PROCESS_START), $this);
+
             // iterate over the column name => key an map the header names, if necessary
             foreach ($this->row as $value => $key) {
                 $this->headers[$this->mapAttributeCodeByHeaderMapping($key)] = $value;
             }
+
+            // iterate over the default column values to figure out whether or not the column exists
+            foreach ($this->defaultColumnValues as $name => $value) {
+                // do nothing, if the column already exists
+                if (array_key_exists($key = $this->mapAttributeCodeByHeaderMapping($name), $this->headers)) {
+                    continue;
+                }
+                // add the header and the default value for the column
+                $this->headers[$key] = $columnKey = sizeof($this->headers);
+                $this->columnValues[$columnKey] = $value;
+            }
+
             // invoke the events that has to be fired when the artfact's header row has been successfully processed
             $this->getEmitter()->emit(EventNames::SUBJECT_ARTEFACT_HEADER_ROW_PROCESS_SUCCESS, $this);
             $this->getEmitter()->emit($this->getEventName(EventNames::SUBJECT_ARTEFACT_HEADER_ROW_PROCESS_SUCCESS), $this);
         } else {
+            // merge the default column value into the actual row
+            $this->row = array_replace($this->row, $this->columnValues);
+
             // load the available observers
             $availableObservers = $this->getObservers();
 
