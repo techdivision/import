@@ -80,7 +80,6 @@ class AbstractEavSubjectTest extends AbstractTest
             'rename',
             'isFile',
             'getHeaderMappings',
-            'getEntityTypeCode',
             'getExecutionContext',
             'getDefaultCallbackMappings'
         );
@@ -91,7 +90,7 @@ class AbstractEavSubjectTest extends AbstractTest
      *
      * @return array The array with the global data
      */
-    protected function getMockGlobalData()
+    protected function getMockGlobalData(array $globalData = array())
     {
 
         // initialize the global data
@@ -172,14 +171,6 @@ class AbstractEavSubjectTest extends AbstractTest
     public function testGetAttributes()
     {
 
-        // mock the entity type code
-        $this->abstractEavSubject
-             ->getConfiguration()
-             ->getConfiguration()
-             ->expects($this->once())
-             ->method('getEntityTypeCode')
-             ->willReturn(EntityTypeCodes::CATALOG_PRODUCT);
-
         // set the attribute set name
         $this->abstractEavSubject->setAttributeSet(array(MemberNames::ATTRIBUTE_SET_NAME => 'Default'));
 
@@ -205,16 +196,6 @@ class AbstractEavSubjectTest extends AbstractTest
      */
     public function testGetAttributesWithInvalidEntityTypeCode()
     {
-
-        // mock the entity type code
-        $this->abstractEavSubject
-             ->getConfiguration()
-             ->getConfiguration()
-             ->expects($this->once())
-             ->method('getEntityTypeCode')
-             ->willReturn('unknown_entity_type');
-
-        // try to load the attributes
         $this->abstractEavSubject->getAttributes();
     }
 
@@ -229,16 +210,8 @@ class AbstractEavSubjectTest extends AbstractTest
     public function testGetAttributesWithInvalidAttributeSetName()
     {
 
-        // mock the entity type code
-        $this->abstractEavSubject
-             ->getConfiguration()
-             ->getConfiguration()
-             ->expects($this->once())
-             ->method('getEntityTypeCode')
-             ->willReturn(EntityTypeCodes::CATALOG_PRODUCT);
-
-         // set the attribute set name
-         $this->abstractEavSubject->setAttributeSet(array(MemberNames::ATTRIBUTE_SET_NAME => 'Unknown'));
+        // set the attribute set name
+        $this->abstractEavSubject->setAttributeSet(array(MemberNames::ATTRIBUTE_SET_NAME => 'Unknown'));
 
         // try to load the attributes
         $this->abstractEavSubject->getAttributes();
@@ -251,14 +224,6 @@ class AbstractEavSubjectTest extends AbstractTest
      */
     public function testGetAttributSetByAttributeSetName()
     {
-
-        // mock the entity type code
-        $this->abstractEavSubject
-             ->getConfiguration()
-             ->getConfiguration()
-             ->expects($this->once())
-             ->method('getEntityTypeCode')
-             ->willReturn(EntityTypeCodes::CATALOG_PRODUCT);
 
         // initialize the exptected attribute set
         $attributeSet = array(
@@ -284,16 +249,6 @@ class AbstractEavSubjectTest extends AbstractTest
      */
     public function testGetAttributSetByAttributSetNameWithInvalidEntityTypeCode()
     {
-
-        // mock the entity type code
-        $this->abstractEavSubject
-             ->getConfiguration()
-             ->getConfiguration()
-             ->expects($this->once())
-             ->method('getEntityTypeCode')
-             ->willReturn('unknown_entity_type');
-
-        // laod and count the attributes
         $this->abstractEavSubject->getAttributeSetByAttributeSetName('Default');
     }
 
@@ -307,16 +262,6 @@ class AbstractEavSubjectTest extends AbstractTest
      */
     public function testGetAttributSetByAttributSetNameWithInvalidAttributeSetName()
     {
-
-        // mock the entity type code
-        $this->abstractEavSubject
-             ->getConfiguration()
-             ->getConfiguration()
-             ->expects($this->once())
-             ->method('getEntityTypeCode')
-             ->willReturn(EntityTypeCodes::CATALOG_PRODUCT);
-
-        // laod and count the attributes
         $this->abstractEavSubject->getAttributeSetByAttributeSetName('Unknown');
     }
 
@@ -452,14 +397,6 @@ class AbstractEavSubjectTest extends AbstractTest
     public function testGetEavUserDefinedAttributes()
     {
 
-        // mock the entity type code
-        $this->abstractEavSubject
-             ->getConfiguration()
-             ->getConfiguration()
-             ->expects($this->once())
-             ->method('getEntityTypeCode')
-             ->willReturn(EntityTypeCodes::CATALOG_PRODUCT);
-
         // initialize the array with the expected EAV user defined attributes
         $userDefinedAttributes = array(
             array(
@@ -481,14 +418,6 @@ class AbstractEavSubjectTest extends AbstractTest
      */
     public function testGetEavAttributeByAttributeCode()
     {
-
-        // mock the entity type code
-        $this->abstractEavSubject
-             ->getConfiguration()
-             ->getConfiguration()
-             ->expects($this->once())
-             ->method('getEntityTypeCode')
-             ->willReturn(EntityTypeCodes::CATALOG_PRODUCT);
 
         // set the attribute set name
         $this->abstractEavSubject->setAttributeSet(array(MemberNames::ATTRIBUTE_SET_NAME => 'Default'));
@@ -515,14 +444,6 @@ class AbstractEavSubjectTest extends AbstractTest
     public function testGetEavAttributeByAttributeCodeWithInvalidAttributeCode()
     {
 
-        // mock the entity type code
-        $this->abstractEavSubject
-             ->getConfiguration()
-             ->getConfiguration()
-             ->expects($this->once())
-             ->method('getEntityTypeCode')
-             ->willReturn(EntityTypeCodes::CATALOG_PRODUCT);
-
         // set the attribute set name
         $this->abstractEavSubject->setAttributeSet(array(MemberNames::ATTRIBUTE_SET_NAME => 'Default'));
 
@@ -547,13 +468,6 @@ class AbstractEavSubjectTest extends AbstractTest
                                    FrontendInputTypes::SELECT => array('import_product.callback.select')
                                )
                            );
-
-        // mock the entity type code
-        $abstractEavSubject->getConfiguration()
-                           ->getConfiguration()
-                           ->expects($this->once())
-                           ->method('getEntityTypeCode')
-                           ->willReturn(EntityTypeCodes::CATALOG_PRODUCT);
 
         // initialize the callback mappings to compare
         $callbackMappings = array(

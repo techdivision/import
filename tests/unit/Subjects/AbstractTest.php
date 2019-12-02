@@ -27,6 +27,7 @@ use TechDivision\Import\Utils\RegistryKeys;
 use TechDivision\Import\Utils\EntityTypeCodes;
 use TechDivision\Import\Utils\Generators\CoreConfigDataUidGenerator;
 use TechDivision\Import\Configuration\Subject\DateConverterConfigurationInterface;
+use TechDivision\Import\Utils\EditionNames;
 
 /**
  * Abstract subject test class.
@@ -202,12 +203,54 @@ abstract class AbstractTest extends \PHPUnit_Framework_TestCase
      *
      * @return \PHPUnit_Framework_MockObject_MockObject The mock configuration
      */
-    protected function getMockConfiguration()
+    protected function getMockConfiguration(array $operationNames = array('add-update'))
     {
 
-        return $this->getMockBuilder('TechDivision\Import\ConfigurationInterface')
-                    ->setMethods(get_class_methods('TechDivision\Import\ConfigurationInterface'))
-                    ->getMock();
+        $mockConfiguration = $this->getMockBuilder('TechDivision\Import\ConfigurationInterface')
+                                  ->setMethods(get_class_methods('TechDivision\Import\ConfigurationInterface'))
+                                  ->getMock();
+
+        $mockConfiguration->expects($this->any())
+                          ->method('getOperationNames')
+                          ->willReturn($operationNames);
+
+
+        return $mockConfiguration;
+    }
+
+    protected function getMockExecutionContext($entityTypeCode = EntityTypeCodes::CATALOG_PRODUCT, $magentoEdition = EditionNames::CE)
+    {
+
+        $mockExecutionContext = $this->getMockBuilder('TechDivision\Import\ExecutionContextInterface')
+                                     ->setMethods(get_class_methods('TechDivision\Import\ExecutionContextInterface'))
+                                     ->getMock();
+
+        $mockExecutionContext->expects($this->any())
+                             ->method('getEntityTypeCode')
+                             ->willReturn($entityTypeCode);
+
+        $mockExecutionContext->expects($this->any())
+                             ->method('getMagentoEdition')
+                             ->willReturn($magentoEdition);
+
+        return $mockExecutionContext;
+    }
+
+    protected function getMockPluginConfiguration()
+    {
+
+        $mockPluginConfiguration = $this->getMockBuilder('TechDivision\Import\Configuration\PluginConfigurationInterface')
+                                        ->setMethods(get_class_methods('TechDivision\Import\Configuration\PluginConfigurationInterface'))
+                                        ->getMock();
+
+        $mockPluginConfiguration->expects($this->any())
+                                        ->method('getId')
+                                        ->willReturn('import.plugin.subject');
+        $mockPluginConfiguration->expects($this->any())
+                                ->method('getExecutionContext')
+                                ->willReturn($this->getMockExecutionContext());
+
+        return $mockPluginConfiguration;
     }
 
     /**
@@ -217,6 +260,7 @@ abstract class AbstractTest extends \PHPUnit_Framework_TestCase
      */
     protected function getMockSubjectConfiguration()
     {
+
         return $this->getMockBuilder('TechDivision\Import\Configuration\SubjectConfigurationInterface')
                     ->setMethods(get_class_methods('TechDivision\Import\Configuration\SubjectConfigurationInterface'))
                     ->getMock();
@@ -312,6 +356,9 @@ abstract class AbstractTest extends \PHPUnit_Framework_TestCase
         $mockSubjectConfiguration->expects($this->any())
             ->method('getDateConverter')
             ->willReturn($mockDateConverterConfiguration);
+        $mockSubjectConfiguration->expects($this->any())
+            ->method('getPluginConfiguration')
+            ->willReturn($this->getMockPluginConfiguration());
 
         // initialize the abstract subject that has to be tested
         $abstractSubject = $this->getMockBuilder($this->getSubjectClassName())
@@ -324,10 +371,13 @@ abstract class AbstractTest extends \PHPUnit_Framework_TestCase
             )
             ->getMockForAbstractClass();
 
-        // mock the getDefaultCallbackMappings() method
+        // mock the subject's methods
         $abstractSubject->expects($this->any())
             ->method('getDefaultCallbackMappings')
             ->willReturn($defaultCallbacks);
+        $abstractSubject->expects($this->any())
+            ->method('getExecutionContext')
+            ->willReturn($this->getMockExecutionContext());
 
         // mock the getAttribute() method
         $abstractSubject->getRegistryProcessor()

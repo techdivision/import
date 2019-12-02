@@ -54,6 +54,13 @@ class AbstractSubjectTest extends AbstractTest
     protected $serial;
 
     /**
+     * The target used for testing purposes.
+     *
+     * @var string
+     */
+    protected $targetDir = 'var/importexport';
+
+    /**
      * The class name of the subject we want to test.
      *
      * @return string The class name of the subject
@@ -75,10 +82,21 @@ class AbstractSubjectTest extends AbstractTest
             'write',
             'rename',
             'isFile',
+            'getStatus',
             'getHeaderMappings',
             'getExecutionContext',
             'getDefaultCallbackMappings'
         );
+    }
+
+    /**
+     * Mock the global data.
+     *
+     * @return array The array with the global data
+     */
+    protected function getMockGlobalData(array $globalData = array())
+    {
+        return parent::getMockGlobalData(array(RegistryKeys::TARGET_DIRECTORY => $this->targetDir));
     }
 
     /**
@@ -103,12 +121,18 @@ class AbstractSubjectTest extends AbstractTest
     public function testTearDown()
     {
 
-        // mock the method returning the new source directory
+        // mock the status method
         $this->abstractSubject
-             ->getConfiguration()
              ->expects($this->once())
-             ->method('getTargetDir')
-             ->willReturn($targetDir = 'var/importexport');
+             ->method('getStatus')
+             ->willReturn(
+                 array(
+                    RegistryKeys::STATUS =>
+                    array(
+                        RegistryKeys::FILES => array($filename = 'var/tmp/testfile.csv' => array(RegistryKeys::STATUS => 1))
+                    )
+                 )
+             );
 
         // mock the attribute merging
         $this->abstractSubject
@@ -118,7 +142,6 @@ class AbstractSubjectTest extends AbstractTest
              ->with(
                  RegistryKeys::STATUS,
                  array(
-                     RegistryKeys::SOURCE_DIRECTORY => sprintf('%s/%s', $targetDir, $this->serial),
                      RegistryKeys::FILES => array($filename = 'var/tmp/testfile.csv' => array(RegistryKeys::STATUS => 1))
                  )
              )
@@ -345,20 +368,23 @@ class AbstractSubjectTest extends AbstractTest
         $this->abstractSubject->setFilename($filename);
         $this->abstractSubject->setHeaders(array('col1' => 0, 'col2' => 1));
 
+        // create a mock observer and make sure, that it's handle() method will NOT be invoked
+        $mockObserver = $this->getMockBuilder('TechDivision\Import\Observers\ObserverInterface')
+            ->setMethods(get_class_methods('TechDivision\Import\Observers\ObserverInterface'))
+            ->getMock();
+        $mockObserver->expects($this->exactly(0))
+            ->method('handle');
+
         // mock the system loggers debug() method
         $this->abstractSubject
              ->getSystemLogger()
-             ->expects($this->once())
+             ->expects($this->exactly(2))
              ->method('debug')
-             ->with(sprintf('Successfully processed operation "add-update" in file %s on line 1', $filename))
+             ->withConsecutive(
+                 array(sprintf('Skip processing operation "add-update" after observer "%s" in file %s on line 1', get_class($mockObserver), $filename)),
+                 array(sprintf('Successfully processed operation "add-update" in file %s on line 1', $filename))
+             )
              ->willReturn(null);
-
-        // create a mock observer and make sure, that it's handle() method will NOT be invoked
-        $mockObserver = $this->getMockBuilder('TechDivision\Import\Observers\ObserverInterface')
-                             ->setMethods(get_class_methods('TechDivision\Import\Observers\ObserverInterface'))
-                             ->getMock();
-        $mockObserver->expects($this->exactly(0))
-                     ->method('handle');
 
         // register the mock observers
         $this->abstractSubject->registerObserver(new SkipObserverImpl(), 'import');
@@ -928,17 +954,6 @@ class AbstractSubjectTest extends AbstractTest
     }
 
     /**
-     * Query the set/getOperationName() method.
-     *
-     * @return void
-     */
-    public function testSetGetOperationName()
-    {
-        $this->abstractSubject->setOperationName($operationName = 'add-update');
-        $this->assertSame($operationName, $this->abstractSubject->getOperationName());
-    }
-
-    /**
      * Query the set/getLineNumber() method.
      *
      * @return void
@@ -1019,18 +1034,6 @@ class AbstractSubjectTest extends AbstractTest
      */
     public function testGetTarget()
     {
-
-        // mock the target directory configuration value
-        $this->abstractSubject
-             ->getConfiguration()
-             ->expects($this->once())
-             ->method('getTargetDir')
-             ->willReturn($targetDir = 'var/importexport');
-
-        // set the serial
-        $this->abstractSubject->setSerial($this->serial);
-
-        // query whether or not the expected target directory is returned
-        $this->assertSame(sprintf('%s/%s', $targetDir, $this->serial), $this->abstractSubject->getTargetDir());
+        $this->assertSame($this->targetDir, $this->abstractSubject->getTargetDir());
     }
 }

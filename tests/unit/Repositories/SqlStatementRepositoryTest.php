@@ -21,6 +21,7 @@
 namespace TechDivision\Import\Repositories;
 
 use TechDivision\Import\Utils\SqlStatementKeys;
+use TechDivision\Import\Utils\SqlCompilerInterface;
 
 /**
  * Test class for the SQL statement implementation.
@@ -50,7 +51,21 @@ class SqlStatementRepositoryTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->sqlStatementRepository = new SqlStatementRepository();
+
+        // initialize the mock compiler instance
+        $mockCompiler = $this->getMockBuilder(SqlCompilerInterface::class)
+            ->setMethods(get_class_methods(SqlCompilerInterface::class))
+            ->getMock();
+        $mockCompiler->expects($this->any())
+            ->method('compile')
+            ->willReturnArgument(0);
+
+        // initialize the traversable with the mock compilers
+        $compilers = new \ArrayObject();
+        $compilers->append($mockCompiler);
+
+        // initialize the SQL statement repository
+        $this->sqlStatementRepository = new SqlStatementRepository($compilers);
     }
 
     /**
