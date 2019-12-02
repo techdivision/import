@@ -40,9 +40,9 @@ class FilteredByEntityTypeCodeLoader implements LoaderInterface
     protected $loader;
 
     /**
-     * Construct that initializes the iterator with the import processor instance.
+     * Construct that initializes the iterator with the parent loader instance.
      *
-     * @param \TechDivision\Import\Services\ImportProcessorInterface $importProcessor The import processor instance
+     * @param \TechDivision\Import\Loaders\LoaderInterface $loader The parent loader instance
      */
     public function __construct(LoaderInterface $loader)
     {
@@ -52,19 +52,19 @@ class FilteredByEntityTypeCodeLoader implements LoaderInterface
     /**
      * Loads and returns data the array with the data, filtered by the passed entity type code.
      *
-     * @param string $entityTypeCode The entity type code to filter the data with
+     * @param string|null $entityTypeCode The entity type code to filter the data with
      *
      * @return \ArrayAccess The array with the data
      */
-    public function load($entitTypeCode = null)
+    public function load($entityTypeCode = null)
     {
 
         // load the data we want to filter by the passed entity type code
         $data = $this->loader->load();
 
         // query whether or not data with the passed entity type code is available
-        if (isset($data[$entitTypeCode])) {
-            return $data[$entitTypeCode];
+        if (isset($data[$entityTypeCode])) {
+            return $data[$entityTypeCode];
         }
 
         // return an empty array otherwise

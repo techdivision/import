@@ -50,7 +50,7 @@ class StopValidationListener extends AbstractListener
      *
      * @param \TechDivision\Import\Services\RegistryProcessorInterface $registryProcessor The registry processor instance
      */
-    public function __construct( RegistryProcessorInterface $registryProcessor)
+    public function __construct(RegistryProcessorInterface $registryProcessor)
     {
         $this->registryProcessor = $registryProcessor;
     }

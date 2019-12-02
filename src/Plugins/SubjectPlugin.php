@@ -127,7 +127,6 @@ class SubjectPlugin extends AbstractPlugin implements SubjectAwarePluginInterfac
                     RegistryKeys::BUNCHES => $this->bunches
                 )
             );
-
         } catch (MissingOkFileException $mofe) {
             // stop the application if we can't find the mandatory OK file
             $this->getApplication()->stop($mofe->getMessage());

@@ -80,6 +80,8 @@ class TablePrefixUtil implements TablePrefixUtilInterface
      */
     public function compile($statement)
     {
-        return preg_replace_callback(sprintf('/\$\{%s:(.*)\}/U', TablePrefixUtilInterface::TOKEN), function (array $matches) { return $this->getPrefixedTableName($matches[1]); }, $statement);
+        return preg_replace_callback(sprintf('/\$\{%s:(.*)\}/U', TablePrefixUtilInterface::TOKEN), function (array $matches) {
+            return $this->getPrefixedTableName($matches[1]);
+        }, $statement);
     }
 }

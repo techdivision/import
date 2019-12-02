@@ -37,7 +37,7 @@ interface ConsoleOptionLoaderInterface
      *
      * @param \TechDivision\Import\ConfigurationInterface $instance The configuration instance to load the values for
      *
-     * @returnf void
+     * @return void
      */
     public function load(ConfigurationInterface $instance);
 }

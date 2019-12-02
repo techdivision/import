@@ -68,7 +68,7 @@ class ClearArtefactsListener extends AbstractListener
     /**
      * Handle the event.
      *
-     * @param \League\Event\EventInterface $event  The event that triggered the listener
+     * @param \League\Event\EventInterface $event The event that triggered the listener
      *
      * @return void
      */
@@ -95,7 +95,6 @@ class ClearArtefactsListener extends AbstractListener
                 $filename = implode('_', array_slice($elements, 0, $i));
                 // prepare the glob pattern to load the artefact as well as it's flag files
                 $patterns[$filename] = sprintf('%s/%s.*', dirname($file), $filename);
-
             }
         }
 

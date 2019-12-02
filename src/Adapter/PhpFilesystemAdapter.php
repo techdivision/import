@@ -169,7 +169,7 @@ class PhpFilesystemAdapter implements PhpFilesystemAdapterInterface
     /**
      * Removes the passed directory recursively.
      *
-     * @param string  $src        Name of the directory to remove
+     * @param string  $src       Name of the directory to remove
      * @param boolean $recursive TRUE if the directory has to be deleted recursive, else FALSE
      *
      * @return void

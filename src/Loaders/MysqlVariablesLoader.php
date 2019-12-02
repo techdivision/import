@@ -105,7 +105,7 @@ class MysqlVariablesLoader implements LoaderInterface
      *
      * @param \TechDivision\Import\Connection\ConnectionInterface $connection    The connection instance
      * @param string                                              $variableScope The MySQL variable scope
-     * @param string                                              $variableNmae  The MySQL variable name
+     * @param string                                              $variableName  The MySQL variable name
      */
     public function __construct(ConnectionInterface $connection, $variableScope = 'GLOBAL', $variableName = 'innodb%')
     {

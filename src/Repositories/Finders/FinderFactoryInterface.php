@@ -19,7 +19,7 @@
  */
 
 namespace TechDivision\Import\Repositories\Finders;
-;
+
 use TechDivision\Import\Repositories\FinderAwareRepositoryInterface;
 
 /**

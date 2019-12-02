@@ -63,7 +63,7 @@ class EmitterFactory implements EmitterFactoryInterface
      * The constructor to initialize the instance.
      *
      * @param \TechDivision\Import\ConfigurationManagerInterface              $configurationManager The configuration instance
-     * @param \Symfony\Component\DependencyInjection\TaggedContainerInterface $container     The container instance
+     * @param \Symfony\Component\DependencyInjection\TaggedContainerInterface $container            The container instance
      */
     public function __construct(ConfigurationManagerInterface $configurationManager, TaggedContainerInterface $container)
     {

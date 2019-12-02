@@ -54,7 +54,8 @@ class RenderMysqlInfoListener extends AbstractListener
     /**
      * Initializes the plugin with the loader instance.
      *
-     * @param \TechDivision\Import\Loaders\LoaderInterface $loader The loader instance
+     * @param \TechDivision\Import\Loaders\LoaderInterface              $loader   The loader instance
+     * @param \TechDivision\Import\Listeners\Renderer\RendererInterface $renderer The renderer instance
      */
     public function __construct(LoaderInterface $loader, RendererInterface $renderer)
     {

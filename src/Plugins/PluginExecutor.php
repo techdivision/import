@@ -53,8 +53,8 @@ class PluginExecutor implements PluginExecutorInterface
     /**
      * Initializes the plug-in executor with the application instance.
      *
-     * @param \TechDivision\Import\Plugins\PluginFactoryInterface $pluginFactory  The plug-in factory instance
-     * @param \League\Event\EmitterInterface                      $emitter        The event emitter instance
+     * @param \TechDivision\Import\Plugins\PluginFactoryInterface $pluginFactory The plug-in factory instance
+     * @param \League\Event\EmitterInterface                      $emitter       The event emitter instance
      */
     public function __construct(
         PluginFactoryInterface $pluginFactory,

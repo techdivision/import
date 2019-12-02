@@ -47,7 +47,6 @@ class FinalizeRegistryListener extends AbstractListener
     /**
      * Initializes the event.
      *
-     * @param \TechDivision\Import\ConfigurationInterface              $configuration     The configuration instance
      * @param \TechDivision\Import\Services\RegistryProcessorInterface $registryProcessor The registry processor instance
      */
     public function __construct(RegistryProcessorInterface $registryProcessor)

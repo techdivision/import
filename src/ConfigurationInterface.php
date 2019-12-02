@@ -321,6 +321,8 @@ interface ConfigurationInterface extends CsvConfigurationInterface, ParamsConfig
      * Set's the shortcut that maps the operation names that has to be executed.
      *
      * @param string $shortcut The shortcut
+     *
+     * @return void
      */
     public function setShortcut($shortcut);
 
@@ -335,6 +337,8 @@ interface ConfigurationInterface extends CsvConfigurationInterface, ParamsConfig
      * Set's the name of the command that has been invoked.
      *
      * @param string $commandName The command name
+     *
+     * @return void
      */
     public function setCommandName($commandName);
 
@@ -349,6 +353,8 @@ interface ConfigurationInterface extends CsvConfigurationInterface, ParamsConfig
      * Set's the username to save the import history with.
      *
      * @param string $username The username
+     *
+     * @return void
      */
     public function setUsername($username);
 

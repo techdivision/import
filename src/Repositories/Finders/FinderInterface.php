@@ -56,7 +56,7 @@ interface FinderInterface
     /**
      * Executes the finder with the passed parameters.
      *
-     * @param array The finder params
+     * @param array $params The finder params
      *
      * @return array The finder result
      */

@@ -79,4 +79,3 @@ class ExecutionContext implements ExecutionContextInterface
         return $this->entityTypeCode;
     }
 }
-

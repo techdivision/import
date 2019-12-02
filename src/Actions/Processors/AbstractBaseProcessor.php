@@ -81,12 +81,12 @@ abstract class AbstractBaseProcessor extends AbstractProcessor
     /**
      * Return's the prepared statement with the passed name or the default one.
      *
-     * @param string $name        The name of the prepared statement to return
-     * @param string $defaultName The name of the default prepared statement
+     * @param string|null $name        The name of the prepared statement to return
+     * @param string|null $defaultName The name of the default prepared statement
      *
      * @return \PDOStatement The prepared statement
      */
-    protected function getPreparedStatement($name = null, $defaultName)
+    protected function getPreparedStatement($name = null, $defaultName = null)
     {
 
         // try to load the prepared statement, or use the default one

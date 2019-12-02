@@ -42,9 +42,9 @@ class FilteredByExecutionContextEntityTypeCodeLoader implements LoaderInterface
     protected $loader;
 
     /**
-     * Construct that initializes the iterator with the import processor instance.
+     * Construct that initializes the iterator with the parent loader instance.
      *
-     * @param \TechDivision\Import\Services\ImportProcessorInterface $importProcessor The import processor instance
+     * @param \TechDivision\Import\Loaders\LoaderInterface $loader The parent loader instance
      */
     public function __construct(LoaderInterface $loader)
     {

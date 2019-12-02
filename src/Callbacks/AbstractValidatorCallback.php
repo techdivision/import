@@ -122,6 +122,8 @@ abstract class AbstractValidatorCallback implements CallbackInterface, CallbackF
      * Set's the validations.
      *
      * @param array $validations The available validations
+     *
+     * @return void
      */
     protected function setValidations(array $validations)
     {

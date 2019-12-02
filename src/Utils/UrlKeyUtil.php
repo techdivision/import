@@ -98,7 +98,8 @@ class UrlKeyUtil implements UrlKeyUtilInterface
     /**
      * Make's the passed URL key unique by adding the next number to the end.
      *
-     * @param string $urlKey The URL key to make unique
+     * @param \TechDivision\Import\Subjects\UrlKeyAwareSubjectInterface $subject The subject to make the URL key unique for
+     * @param string                                                    $urlKey  The URL key to make unique
      *
      * @return string The unique URL key
      */

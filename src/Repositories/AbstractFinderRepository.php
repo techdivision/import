@@ -74,6 +74,8 @@ abstract class AbstractFinderRepository extends AbstractRepository implements Fi
      * Add the initialize finder to the repository.
      *
      * @param \TechDivision\Import\Repositories\Finders\FinderInterface $finder The finder instance to add
+     *
+     * @return void
      */
     public function addFinder(FinderInterface $finder)
     {

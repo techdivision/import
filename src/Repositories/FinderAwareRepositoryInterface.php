@@ -52,6 +52,8 @@ interface FinderAwareRepositoryInterface extends RepositoryInterface
      * Add the initialize finder to the repository.
      *
      * @param \TechDivision\Import\Repositories\Finders\FinderInterface $finder The finder instance to add
+     *
+     * @return void
      */
     public function addFinder(FinderInterface $finder);
 

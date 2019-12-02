@@ -71,7 +71,6 @@ class SimpleFileResolver extends AbstractFileResolver
     /**
      * Adds the passed match to the array with the matches.
      *
-     * @param string $name  The name of the match
      * @param string $match The match itself
      *
      * @return void
@@ -80,7 +79,7 @@ class SimpleFileResolver extends AbstractFileResolver
     {
 
         // lowercase all values of the passed match
-        array_walk($match, function(&$val, &$key) {
+        array_walk($match, function (&$val, &$key) {
             strtolower($key);
         });
 

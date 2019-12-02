@@ -45,4 +45,3 @@ interface ExecutionContextInterface
      */
     public function getEntityTypeCode();
 }
-
