@@ -11,6 +11,7 @@
 * Remove deprecated classes and methods
 * Add techdivision/import#146
 * Add techdivision/import#162
+* Add techdivision/import#163
 * Add techdivision/import-cli-simple#216
 * Add techdivision/import-configuration-jms#25
 * Add new events that will be triggered before and after the header has been initialized

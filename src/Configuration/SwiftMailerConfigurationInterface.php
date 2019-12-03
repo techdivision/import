@@ -33,18 +33,11 @@ interface SwiftMailerConfigurationInterface extends ParamsConfigurationInterface
 {
 
     /**
-     * Return's the factory used to create the swift mailer instance.
+     * Return's the DI ID used to create the swift mailer instance.
      *
-     * @return string The factory
+     * @return string The DI ID
      */
-    public function getFactory();
-
-    /**
-     * Return's the swift mailer factory that creates the mailer instance.
-     *
-     * @return string The swift mailer factory
-     */
-    public function getMailerFactory();
+    public function getId();
 
     /**
      * Return's the swift mailer transport configuration to use.

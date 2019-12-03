@@ -1,7 +1,7 @@
 <?php
 
 /**
- * TechDivision\Import\Utils\SwiftMailer\SendmailTransportMailerFactory
+ * TechDivision\Import\Loggers\SwiftMailer\SendmailTransportMailerFactory
  *
  * NOTICE OF LICENSE
  *
@@ -18,10 +18,10 @@
  * @link      http://www.techdivision.com
  */
 
-namespace TechDivision\Import\Utils\SwiftMailer;
+namespace TechDivision\Import\Loggers\SwiftMailer;
 
 use TechDivision\Import\Utils\SwiftMailerKeys;
-use TechDivision\Import\Configuration\SwiftMailerConfigurationInterface;
+use TechDivision\Import\Configuration\SwiftMailer\TransportConfigurationInterface;
 
 /**
  * Factory implementation for a swift mailer with a simple sendmail transport.
@@ -32,24 +32,18 @@ use TechDivision\Import\Configuration\SwiftMailerConfigurationInterface;
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
  */
-class SendmailTransportMailerFactory
+class SendmailTransportMailerFactory implements TransportMailerFactoryInterface
 {
 
     /**
-     * Creates a new swift mailer instance based on the passed configuration.
+     * Creates a new swift mailer instance based on the passed transport configuration.
      *
-     * @param \TechDivision\Import\Configuration\SwiftMailerConfigurationInterface $swiftMailerConfiguration The mailer configuration
+     * @param \TechDivision\Import\Configuration\SwiftMailer\TransportConfigurationInterface $transportConfiguration The mailer configuration
      *
      * @return \Swift_Mailer The mailer instance
      */
-    public static function factory(SwiftMailerConfigurationInterface $swiftMailerConfiguration)
+    public function factory(TransportConfigurationInterface $transportConfiguration)
     {
-
-        // load the transport configuration
-        $transportConfiguration = $swiftMailerConfiguration->getTransport();
-
-        // load the transport factory
-        $transportFactory = $transportConfiguration->getTransportFactory();
 
         // initialize and load the sendmail command parameter
         $command = '/usr/sbin/sendmail -bs';
@@ -58,12 +52,9 @@ class SendmailTransportMailerFactory
         }
 
         // initialize and create the mailer transport instance
-        $transport = $transportFactory::newInstance($command);
-
-        // load the mailer factory
-        $mailerFactory = $swiftMailerConfiguration->getMailerFactory();
+        $transport = \Swift_SendmailTransport::newInstance($command);
 
         // initialize, create and return the swift mailer instance
-        return $mailerFactory::newInstance($transport);
+        return \Swift_Mailer::newInstance($transport);
     }
 }

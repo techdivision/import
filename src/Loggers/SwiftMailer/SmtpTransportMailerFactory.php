@@ -1,7 +1,7 @@
 <?php
 
 /**
- * TechDivision\Import\Utils\SwiftMailer\SmtpTransportMailerFactory
+ * TechDivision\Import\Loggers\SwiftMailer\SmtpTransportMailerFactory
  *
  * NOTICE OF LICENSE
  *
@@ -18,10 +18,10 @@
  * @link      http://www.techdivision.com
  */
 
-namespace TechDivision\Import\Utils\SwiftMailer;
+namespace TechDivision\Import\Loggers\SwiftMailer;
 
 use TechDivision\Import\Utils\SwiftMailerKeys;
-use TechDivision\Import\Configuration\SwiftMailerConfigurationInterface;
+use TechDivision\Import\Configuration\SwiftMailer\TransportConfigurationInterface;
 
 /**
  * Factory implementation for a swift mailer with SMTP transport.
@@ -32,24 +32,18 @@ use TechDivision\Import\Configuration\SwiftMailerConfigurationInterface;
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
  */
-class SmtpTransportMailerFactory
+class SmtpTransportMailerFactory implements TransportMailerFactoryInterface
 {
 
     /**
-     * Creates a new swift mailer instance based on the passed configuration.
+     * Creates a new swift mailer instance based on the passed transport configuration.
      *
-     * @param \TechDivision\Import\Configuration\SwiftMailerConfigurationInterface $swiftMailerConfiguration The mailer configuration
+     * @param \TechDivision\Import\Configuration\SwiftMailer\TransportConfigurationInterface $transportConfiguration The mailer configuration
      *
      * @return \Swift_Mailer The mailer instance
      */
-    public static function factory(SwiftMailerConfigurationInterface $swiftMailerConfiguration)
+    public function factory(TransportConfigurationInterface $transportConfiguration)
     {
-
-        // load the transport configuration
-        $transportConfiguration = $swiftMailerConfiguration->getTransport();
-
-        // load the transport factory
-        $transportFactory = $transportConfiguration->getTransportFactory();
 
         // load the SMTP host from the configuration
         $smtpHost = null;
@@ -70,7 +64,7 @@ class SmtpTransportMailerFactory
         }
 
         // initialize and create the mailer transport instance
-        $transport = $transportFactory::newInstance($smtpHost, $smtpPort, $smtpSecurity);
+        $transport = \Swift_SmtpTransport::newInstance($smtpHost, $smtpPort, $smtpSecurity);
 
         // query whether or not if a SMTP authentication mode has been specified
         if ($transportConfiguration->hasParam(SwiftMailerKeys::SMTP_AUTH_MODE)) {
@@ -97,10 +91,7 @@ class SmtpTransportMailerFactory
             }
         }
 
-        // load the mailer factory
-        $mailerFactory = $swiftMailerConfiguration->getMailerFactory();
-
         // initialize, create and return the swift mailer instance
-        return $mailerFactory::newInstance($transport);
+        return \Swift_Mailer::newInstance($transport);
     }
 }

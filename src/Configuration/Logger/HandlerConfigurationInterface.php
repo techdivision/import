@@ -35,11 +35,11 @@ interface HandlerConfigurationInterface extends ParamsConfigurationInterface
 {
 
     /**
-     * Return's the handler's type to use.
+     * Return's the handler's DI ID to use.
      *
-     * @return string The type
+     * @return string The DI ID
      */
-    public function getType();
+    public function getId();
 
     /**
      * Return's the handler's formtter to use.

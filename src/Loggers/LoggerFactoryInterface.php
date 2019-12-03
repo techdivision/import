@@ -1,7 +1,7 @@
 <?php
 
 /**
- * TechDivision\Import\Configuration\Logger\FormatterConfigurationInterface
+ * TechDivision\Import\Loggers\LoggerFactoryInterface
  *
  * NOTICE OF LICENSE
  *
@@ -18,12 +18,10 @@
  * @link      http://www.techdivision.com
  */
 
-namespace TechDivision\Import\Configuration\Logger;
-
-use TechDivision\Import\Configuration\ParamsConfigurationInterface;
+namespace TechDivision\Import\Loggers;
 
 /**
- * The interface for a handler's formatter configuration.
+ * The interface for a logger factory implementation.
  *
  * @author    Tim Wagner <t.wagner@techdivision.com>
  * @copyright 2016 TechDivision GmbH <info@techdivision.com>
@@ -31,13 +29,13 @@ use TechDivision\Import\Configuration\ParamsConfigurationInterface;
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
  */
-interface FormatterConfigurationInterface extends ParamsConfigurationInterface
+interface LoggerFactoryInterface
 {
 
     /**
-     * Return's the formatter's DI ID to use.
+     * Create's and return's the loggers to use.
      *
-     * @return string The type
+     * @return \Doctrine\Common\Collections\ArrayCollection The array with the initialized loggers
      */
-    public function getId();
+    public function createLoggers();
 }

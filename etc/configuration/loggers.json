@@ -1,28 +1,30 @@
 {
-  "loggers": [
-    {
-      "name": "system",
+  "loggers": {
+    "system": {
+      "id": "import.logger.factory.monolog",
       "channel-name": "logger/system",
-      "type": "Monolog\\Logger",
       "handlers": [
         {
-          "type": "Monolog\\Handler\\ErrorLogHandler",
+          "id": "import.logger.factory.handler.error.log",
           "formatter": {
-            "type": "Monolog\\Formatter\\LineFormatter",
+            "id": "import.logger.factory.formatter.line",
             "params": {
-                "format": "[%datetime%] %channel%.%level_name%: %message% %context% %extra%",
-                "date-format": "Y-m-d H:i:s",
-                "allow-inline-line-breaks": true,
-                "ignore-empty-context-and-extra": true
-              }
+              "format": "[%datetime%] %channel%.%level_name%: %message% %context% %extra%",
+              "date-format": "Y-m-d H:i:s",
+              "allow-inline-line-breaks": true,
+              "ignore-empty-context-and-extra": true
+            }
           }
         }
       ],
       "processors": [
         {
-          "type": "Monolog\\Processor\\MemoryPeakUsageProcessor"
+          "id": "import.logger.processor.serial"
+        },
+        {
+          "id": "import.logger.processor.memory.peak.usage"
         }
       ]
     }
-  ]
+  }
 }

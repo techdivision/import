@@ -8,6 +8,7 @@
         "psr/cache" : "~1.0",
         "psr/container": "~1.0",
         "goodby/csv": "~1.0",
+        "monolog/monolog": "~1.0",
         "league/event": "~2.0",
         "league/flysystem": "~1.0",
         "ramsey/uuid": "~3.7.3|3.8.*",

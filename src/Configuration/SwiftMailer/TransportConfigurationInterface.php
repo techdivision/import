@@ -20,6 +20,8 @@
 
 namespace TechDivision\Import\Configuration\SwiftMailer;
 
+use TechDivision\Import\Configuration\ParamsConfigurationInterface;
+
 /**
  * The swift mailer transport configuration interface.
  *
@@ -29,13 +31,6 @@ namespace TechDivision\Import\Configuration\SwiftMailer;
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
  */
-interface TransportConfigurationInterface
+interface TransportConfigurationInterface extends ParamsConfigurationInterface
 {
-
-    /**
-     * Return's the swift mailer transport factory used to create he instance.
-     *
-     * @return string The swift mailer transport factory
-     */
-    public function getTransportFactory();
 }

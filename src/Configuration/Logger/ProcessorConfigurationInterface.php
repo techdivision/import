@@ -35,9 +35,9 @@ interface ProcessorConfigurationInterface extends ParamsConfigurationInterface
 {
 
     /**
-     * Return's the handler's type to use.
+     * Return's the processor's DI ID to use.
      *
-     * @return string The type
+     * @return string The DI ID
      */
-    public function getType();
+    public function getId();
 }

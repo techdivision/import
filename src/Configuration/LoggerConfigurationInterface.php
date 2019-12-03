@@ -47,11 +47,11 @@ interface LoggerConfigurationInterface extends ParamsConfigurationInterface
     public function getName();
 
     /**
-     * Return's the factory used to create the logger instance.
+     * Return's the DI name of the factory used to create the logger instance.
      *
-     * @return string The factory to use
+     * @return string The DI name of the factory to use
      */
-    public function getFactory();
+    public function getId();
 
     /**
      * Return's the logger's type to use.
