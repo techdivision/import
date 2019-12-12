@@ -47,23 +47,44 @@ class MonologLoggerFactory
     protected $container;
 
     /**
+     * The handler factory for the monolog logger factory.
+     *
+     * @var \TechDivision\Import\Loggers\MonologLoggerHandlerFactoryInterface
+     */
+    protected $monologLoggerHandlerFactory;
+
+    /**
      * Initialize the factory with the DI container instance.
      *
-     * @param \Symfony\Component\DependencyInjection\ContainerInterface $container The DI container instance
+     * @param \Symfony\Component\DependencyInjection\ContainerInterface         $container                   The DI container instance
+     * @param \TechDivision\Import\Loggers\MonologLoggerHandlerFactoryInterface $monologLoggerHandlerFactory The Monolog Logger handler factory instance
      */
-    public function __construct(ContainerInterface $container)
-    {
+    public function __construct(
+        ContainerInterface $container,
+        MonologLoggerHandlerFactoryInterface $monologLoggerHandlerFactory
+    ) {
         $this->container = $container;
+        $this->monologLoggerHandlerFactory = $monologLoggerHandlerFactory;
     }
 
     /**
-     * Returns the DI container instance.
+     * Return's the DI container instance.
      *
      * @return \Symfony\Component\DependencyInjection\ContainerInterface The DI container instance
      */
     protected function getContainer()
     {
         return $this->container;
+    }
+
+    /**
+     * Return's the Monolog Logger handler factory.
+     *
+     * @return \TechDivision\Import\Loggers\MonologLoggerHandlerFactoryInterface The Monolog Logger handler factory instance
+     */
+    protected function getMonologLoggerHandlerFactory()
+    {
+        return $this->monologLoggerHandlerFactory;
     }
 
     /**
@@ -103,29 +124,7 @@ class MonologLoggerFactory
         $handlers = array();
         /** @var \TechDivision\Import\Configuration\Logger\HandlerConfigurationInterface $handlerConfiguration */
         foreach ($availableHandlers as $handlerConfiguration) {
-            // create the handler (factory) instance
-            $possibleHandler = $this->getContainer()->get($handlerConfiguration->getId());
-            // query whether or not we've a factory or the instance
-            if ($possibleHandler instanceof HandlerFactoryInterface) {
-                $handler = $possibleHandler->factory($handlerConfiguration);
-            } else {
-                $handler = $possibleHandler;
-            }
-
-            // if we've a formatter, initialize the formatter also
-            if ($formatterConfiguration = $handlerConfiguration->getFormatter()) {
-                // create the formatter (factory) instance
-                $possibleFormatter = $this->getContainer()->get($formatterConfiguration->getId());
-                // query whether or not we've a factory or the instance
-                if ($possibleFormatter instanceof FormatterFactoryInterface) {
-                    $handler->setFormatter($possibleFormatter->factory($formatterConfiguration));
-                } else {
-                    $handler->setFormatter($possibleFormatter);
-                }
-            }
-
-            // add the handler
-            $handlers[] = $handler;
+            $handlers[] = $this->getMonologLoggerHandlerFactory()->factory($handlerConfiguration);
         }
 
         // prepare the logger params

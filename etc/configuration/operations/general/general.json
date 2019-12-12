@@ -61,6 +61,13 @@
           "plugins": [
             {
               "id": "import.plugin.subject",
+              "listeners": [
+                {
+                  "plugin.process.success": [
+                    "import.listener.reset.logger"
+                  ]
+                }
+              ],
               "subjects": [
                 {
                   "id": "import.subject.move.files",

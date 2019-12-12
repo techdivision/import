@@ -1,7 +1,7 @@
 <?php
 
 /**
- * TechDivision\Import\Loggers\HandlerFactoryInterface
+ * TechDivision\Import\Loaders\ResetAwareLoaderInterface
  *
  * NOTICE OF LICENSE
  *
@@ -18,12 +18,10 @@
  * @link      http://www.techdivision.com
  */
 
-namespace TechDivision\Import\Loggers;
-
-use TechDivision\Import\Configuration\Logger\HandlerConfigurationInterface;
+namespace TechDivision\Import\Loaders;
 
 /**
- * Interface for handler factory implementations.
+ * Interface for reset aware loader implementations.
  *
  * @author    Tim Wagner <t.wagner@techdivision.com>
  * @copyright 2019 TechDivision GmbH <info@techdivision.com>
@@ -31,15 +29,13 @@ use TechDivision\Import\Configuration\Logger\HandlerConfigurationInterface;
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
  */
-interface HandlerFactoryInterface
+interface ResetAwareLoaderInterface extends LoaderInterface
 {
 
     /**
-     * Creates a new formatter instance based on the passed configuration.
+     * Reset's the loader instance.
      *
-     * @param \TechDivision\Import\Configuration\Logger\HandlerConfigurationInterface $handlerConfiguration The handler configuration
-     *
-     * @return \Monolog\Handler\HandlerInterface The handler instance
+     * @return void
      */
-    public function factory(HandlerConfigurationInterface $handlerConfiguration);
+    public function reset();
 }

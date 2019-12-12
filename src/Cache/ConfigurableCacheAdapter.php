@@ -239,7 +239,7 @@ class ConfigurableCacheAdapter implements CacheAdapterInterface
      *
      * @return void
      */
-    public function toCache($key, $value, array $references = array(), array $tags = array(), $override = false, $time = null)
+    public function toCache($key, $value, array $references = array(), array $tags = array(), $override = true, $time = null)
     {
 
         // query whether or not the cache is enabled

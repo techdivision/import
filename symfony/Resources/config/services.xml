@@ -28,8 +28,16 @@
         <service id="import.logger.processor.serial" class="TechDivision\Import\Loggers\SerialProcessor">
             <argument type="service" id="configuration"/>
         </service>
+        <service id="import.logger.factory.monolog.formatter" class="TechDivision\Import\Loggers\MonologLoggerFormatterFactory">
+            <argument type="service" id="service_container"/>
+        </service>
+        <service id="import.logger.factory.monolog.handler" class="TechDivision\Import\Loggers\MonologLoggerHandlerFactory">
+            <argument type="service" id="service_container"/>
+            <argument type="service" id="import.logger.factory.monolog.formatter"/>
+        </service>
         <service id="import.logger.factory.monolog" class="TechDivision\Import\Loggers\MonologLoggerFactory">
             <argument type="service" id="service_container"/>
+            <argument type="service" id="import.logger.factory.monolog.handler"/>
         </service>
         <service id="import.logger.factory.handler.error.log" class="TechDivision\Import\Loggers\ErrorLogHandlerFactory">
             <argument type="service" id="configuration"/>
@@ -38,8 +46,15 @@
             <argument type="service" id="service_container"/>
             <argument type="service" id="configuration"/>
         </service>
+        <service id="import.logger.factory.handler.stream" class="TechDivision\Import\Loggers\StreamHandlerFactory">
+            <argument type="service" id="configuration"/>
+            <argument type="service" id="import.processor.registry"/>
+        </service>
         <service id="import.logger.factory.transport.swift.smtp" class="TechDivision\Import\Loggers\SwiftMailer\SmtpTransportMailerFactory"/>
         <service id="import.logger.factory.transport.swift.sendmail" class="TechDivision\Import\Loggers\SwiftMailer\SenfmailTransportMailerFactory"/>
+        <service id="import.logger.factory.handler.stream.wrapper" class="TechDivision\Import\Loggers\WrapperHandlerFactory">
+            <argument type="service" id="import.logger.factory.handler.stream"/>
+        </service>
 
         <!--
          | The DI configuration for the UID generator
@@ -712,6 +727,12 @@
         </service>
         <service id="import.listener.validate.header.row" class="TechDivision\Import\Listeners\ValidateHeaderRowListener">
             <argument type="service" id="import.processor.registry"/>
+        </service>
+        <service id="import.listener.reset.loader.eav.attribute.option.value" class="TechDivision\Import\Listeners\ResetLoaderListener">
+            <argument type="service" id="import.loader.eav.attribute.option.value"/>
+        </service>
+        <service id="import.listener.reset.logger" class="TechDivision\Import\Listeners\ResetLoggerListener">
+            <argument type="service" id="loggers"/>
         </service>
 
         <!-- 

@@ -63,7 +63,7 @@ trait CacheAdapterTrait
      *
      * @return void
      */
-    abstract public function toCache($key, $value, array $references = array(), array $tags = array(), $override = false, $time = null);
+    abstract public function toCache($key, $value, array $references = array(), array $tags = array(), $override = true, $time = null);
 
     /**
      * Returns a new cache item for the passed key

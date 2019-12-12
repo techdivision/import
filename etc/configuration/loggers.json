@@ -5,11 +5,14 @@
       "channel-name": "logger/system",
       "handlers": [
         {
-          "id": "import.logger.factory.handler.error.log",
+          "id": "import.logger.factory.handler.stream.wrapper",
+          "params": {
+            "stream": "system.log"
+          },
           "formatter": {
             "id": "import.logger.factory.formatter.line",
             "params": {
-              "format": "[%datetime%] %channel%.%level_name%: %message% %context% %extra%",
+              "format": "[%datetime%] %channel%.%level_name%: %message% %context% %extra%\n",
               "date-format": "Y-m-d H:i:s",
               "allow-inline-line-breaks": true,
               "ignore-empty-context-and-extra": true

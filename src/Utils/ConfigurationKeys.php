@@ -125,4 +125,11 @@ class ConfigurationKeys
      * @var string
      */
     const COLLECT_COLUMNS = 'collect-columns';
+
+    /**
+     * Name for the configuration key 'stream'.
+     *
+     * @var string
+     */
+    const STREAM = 'stream';
 }

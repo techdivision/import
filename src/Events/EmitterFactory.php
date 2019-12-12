@@ -94,12 +94,12 @@ class EmitterFactory implements EmitterFactoryInterface
             /** @var \TechDivision\Import\Configuration\PluginConfigurationInterface $plugin */
             foreach ($operation->getPlugins() as $plugin) {
                 // load the plugin listeners
-                $this->loadListeners($plugin, $pluginName = $plugin->getName());
+                $this->loadListeners($plugin, sprintf('%s.%s', $operationName = $operation->getName(), $pluginName = $plugin->getName()));
                 // load the plugin's registered subjects
                 /** @var \TechDivision\Import\Configuration\SubjectConfigurationInterface $subject */
                 foreach ($plugin->getSubjects() as $subject) {
                     // load the subject listeners
-                    $this->loadListeners($subject, sprintf('%s.%s', $pluginName, $subject->getName()));
+                    $this->loadListeners($subject, sprintf('%s.%s.%s', $operationName, $pluginName, $subject->getName()));
                 }
             }
         }

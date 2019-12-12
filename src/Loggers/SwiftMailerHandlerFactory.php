@@ -88,9 +88,9 @@ class SwiftMailerHandlerFactory implements HandlerFactoryInterface
     /**
      * Creates a new formatter instance based on the passed configuration.
      *
-     * @param \TechDivision\Import\Configuration\Logger\HandlerConfigurationInterface $formatterConfiguration The formatter configuration
+     * @param \TechDivision\Import\Configuration\Logger\HandlerConfigurationInterface $handlerConfiguration The handler configuration
      *
-     * @return object The formatter instance
+     * @return \Monolog\Handler\HandlerInterface The handler instance
      */
     public function factory(HandlerConfigurationInterface $handlerConfiguration)
     {

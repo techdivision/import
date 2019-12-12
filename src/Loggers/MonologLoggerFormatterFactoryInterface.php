@@ -1,7 +1,7 @@
 <?php
 
 /**
- * TechDivision\Import\Loggers\HandlerFactoryInterface
+ * TechDivision\Import\Loggers\MonologLoggerHandlerFormatterFactory
  *
  * NOTICE OF LICENSE
  *
@@ -20,10 +20,10 @@
 
 namespace TechDivision\Import\Loggers;
 
-use TechDivision\Import\Configuration\Logger\HandlerConfigurationInterface;
+use TechDivision\Import\Configuration\Logger\FormatterConfigurationInterface;
 
 /**
- * Interface for handler factory implementations.
+ * Interface for Monolog Logger formatter factory implementations.
  *
  * @author    Tim Wagner <t.wagner@techdivision.com>
  * @copyright 2019 TechDivision GmbH <info@techdivision.com>
@@ -31,15 +31,15 @@ use TechDivision\Import\Configuration\Logger\HandlerConfigurationInterface;
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
  */
-interface HandlerFactoryInterface
+interface MonologLoggerFormatterFactoryInterface
 {
 
     /**
-     * Creates a new formatter instance based on the passed configuration.
+     * Creates a new logger handler formatter instance based on the passed formatter configuration.
      *
-     * @param \TechDivision\Import\Configuration\Logger\HandlerConfigurationInterface $handlerConfiguration The handler configuration
+     * @param \TechDivision\Import\Configuration\Logger\HandlerConfigurationInterface $formatterConfiguration The formatter configuration
      *
-     * @return \Monolog\Handler\HandlerInterface The handler instance
+     * @return \Monolog\Formatter\FormatterInterface The logger handler formatter instance
      */
-    public function factory(HandlerConfigurationInterface $handlerConfiguration);
+    public function factory(FormatterConfigurationInterface $formatterConfiguration);
 }

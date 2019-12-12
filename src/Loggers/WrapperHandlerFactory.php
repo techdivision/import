@@ -1,7 +1,7 @@
 <?php
 
 /**
- * TechDivision\Import\Loggers\ErrorLogHandlerFactory
+ * TechDivision\Import\Loggers\StreamHandlerFactory
  *
  * NOTICE OF LICENSE
  *
@@ -20,14 +20,11 @@
 
 namespace TechDivision\Import\Loggers;
 
-use Monolog\Handler\ErrorLogHandler;
-use TechDivision\Import\Utils\ConfigurationUtil;
-use TechDivision\Import\Utils\ConfigurationKeys;
-use TechDivision\Import\ConfigurationInterface;
+use TechDivision\Import\Loggers\Handlers\HandlerWrapper;
 use TechDivision\Import\Configuration\Logger\HandlerConfigurationInterface;
 
 /**
- * Error Log Handler factory implementation.
+ * Factory implementation that wraps other handler factories.
  *
  * @author    Tim Wagner <t.wagner@techdivision.com>
  * @copyright 2019 TechDivision GmbH <info@techdivision.com>
@@ -35,24 +32,34 @@ use TechDivision\Import\Configuration\Logger\HandlerConfigurationInterface;
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
  */
-class ErrorLogHandlerFactory implements HandlerFactoryInterface
+class WrapperHandlerFactory implements HandlerFactoryInterface
 {
 
     /**
-     * The log level to use.
+     * The wrapped handler factory.
      *
-     * @var string
+     * @var \TechDivision\Import\Loggers\HandlerFactoryInterface
      */
-    protected $defaultLogLevel;
+    protected $handlerFactory;
 
     /**
-     * Initialize the processor with the actual configuration instance
+     * Initialize the processor with the handler factory instance that has to be wrapped
      *
-     * @param \TechDivision\Import\ConfigurationInterface $configuration The actual configuration instance
+     * @param \TechDivision\Import\Loggers\HandlerFactoryInterface $handlerFactory The handler factory we want to wrap
      */
-    public function __construct(ConfigurationInterface $configuration)
+    public function __construct(HandlerFactoryInterface $handlerFactory)
     {
-        $this->defaultLogLevel = $configuration->getLogLevel();
+        $this->handlerFactory = $handlerFactory;
+    }
+
+    /**
+     * Return's the wrapped handler factory.
+     *
+     * @return \TechDivision\Import\Loggers\HandlerFactoryInterface The wrapped handler factory
+     */
+    protected function getHandlerFactory()
+    {
+        return $this->handlerFactory;
     }
 
     /**
@@ -65,16 +72,8 @@ class ErrorLogHandlerFactory implements HandlerFactoryInterface
     public function factory(HandlerConfigurationInterface $handlerConfiguration)
     {
 
-        // load the params
-        $params = $handlerConfiguration->getParams();
-
-        // set the default log level, if not already set explicitly
-        if (!isset($params[ConfigurationKeys::LEVEL])) {
-            $params[ConfigurationKeys::LEVEL] = $this->defaultLogLevel;
-        }
-
-        // create and return the handler instance
-        $reflectionClass = new \ReflectionClass(ErrorLogHandler::class);
-        return $reflectionClass->newInstanceArgs(ConfigurationUtil::prepareConstructorArgs($reflectionClass, $params));
+        // create and return the wrapped handlerinstance
+        $reflectionClass = new \ReflectionClass(HandlerWrapper::class);
+        return $reflectionClass->newInstance($this->getHandlerFactory(), $handlerConfiguration);
     }
 }

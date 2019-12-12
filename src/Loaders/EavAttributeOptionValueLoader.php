@@ -33,15 +33,22 @@ use TechDivision\Import\Configuration\SubjectConfigurationInterface;
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
  */
-class EavAttributeOptionValueLoader implements LoaderInterface
+class EavAttributeOptionValueLoader implements ResetAwareLoaderInterface
 {
+
+    /**
+     * The import processor instance.
+     *
+     * @var \TechDivision\Import\Services\ImportProcessorInterface
+     */
+    protected $importProcessor;
 
     /**
      * The attribute option values.
      *
      * @var array
      */
-    protected $eavAttributeOptionValues = array();
+    protected $eavAttributeOptionValues;
 
     /**
      * Construct that initializes the iterator with the import processor instance.
@@ -51,16 +58,11 @@ class EavAttributeOptionValueLoader implements LoaderInterface
     public function __construct(ImportProcessorInterface $importProcessor)
     {
 
-        // load the entity types
-        $entityTypes = $importProcessor->getEavEntityTypes();
+        // set the import processor instance
+        $this->importProcessor = $importProcessor;
 
-        // prepare the array with the attribute sets
-        foreach ($entityTypes as $entityType) {
-            // prepare the array with the attribute sets
-            foreach ($importProcessor->getEavAttributeOptionValuesByEntityTypeIdAndStoreId($entityType[MemberNames::ENTITY_TYPE_ID], 0) as $eavAttributeOptionValue) {
-                $this->eavAttributeOptionValues[$entityType[MemberNames::ENTITY_TYPE_CODE]][$eavAttributeOptionValue[MemberNames::ATTRIBUTE_CODE]][] = $eavAttributeOptionValue[MemberNames::VALUE];
-            }
-        }
+        // reset the loader instance
+        $this->reset();
     }
 
     /**
@@ -83,6 +85,26 @@ class EavAttributeOptionValueLoader implements LoaderInterface
 
         // return an empty array otherwise
         return array();
+    }
+
+    /**
+     * Reset's the loader instance.
+     *
+     * @return void
+     */
+    public function reset()
+    {
+
+        // load the entity types
+        $entityTypes = $this->getImportProcessor()->getEavEntityTypes();
+
+        // prepare the array with the attribute sets
+        foreach ($entityTypes as $entityType) {
+            // prepare the array with the attribute sets
+            foreach ($this->getImportProcessor()->getEavAttributeOptionValuesByEntityTypeIdAndStoreId($entityType[MemberNames::ENTITY_TYPE_ID], 0) as $eavAttributeOptionValue) {
+                $this->eavAttributeOptionValues[$entityType[MemberNames::ENTITY_TYPE_CODE]][$eavAttributeOptionValue[MemberNames::ATTRIBUTE_CODE]][] = $eavAttributeOptionValue[MemberNames::VALUE];
+            }
+        }
     }
 
     /**

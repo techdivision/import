@@ -1413,11 +1413,11 @@ abstract class AbstractSubject implements SubjectInterface, FilesystemSubjectInt
 
         // if no message has been passed, only return the suffix
         if ($message === null) {
-            return sprintf(' in file %s on line %d', $filename, $lineNumber);
+            return sprintf(' in file %s on line %d', basename($filename), $lineNumber);
         }
 
         // concatenate the message with the suffix and return it
-        return sprintf('%s in file %s on line %d', $message, $filename, $lineNumber);
+        return sprintf('%s in file %s on line %d', $message, basename($filename), $lineNumber);
     }
 
     /**
