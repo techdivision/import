@@ -62,8 +62,8 @@ class HandlerWrapper implements ResetAwareHandlerInterface
     /**
      * Initializes the wrapper with the handler instance.
      *
-     * @param \TechDivision\Import\Loggers\HandlerFactoryInterface                    $handlerFactory
-     * @param \TechDivision\Import\Configuration\Logger\HandlerConfigurationInterface $handlerConfiguration
+     * @param \TechDivision\Import\Loggers\HandlerFactoryInterface                    $handlerFactory       The handler factory instance
+     * @param \TechDivision\Import\Configuration\Logger\HandlerConfigurationInterface $handlerConfiguration The handler configuration instance
      */
     public function __construct(HandlerFactoryInterface $handlerFactory, HandlerConfigurationInterface $handlerConfiguration)
     {
@@ -143,6 +143,8 @@ class HandlerWrapper implements ResetAwareHandlerInterface
      * Handles a set of records at once.
      *
      * @param array $records The records to handle (an array of record arrays)
+     *
+     * @return void
      */
     public function handleBatch(array $records)
     {

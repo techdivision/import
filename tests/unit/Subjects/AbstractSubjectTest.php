@@ -85,7 +85,8 @@ class AbstractSubjectTest extends AbstractTest
             'getStatus',
             'getHeaderMappings',
             'getExecutionContext',
-            'getDefaultCallbackMappings'
+            'getDefaultCallbackMappings',
+            'getFullOperationName'
         );
     }
 
@@ -291,7 +292,7 @@ class AbstractSubjectTest extends AbstractTest
     {
 
         // set the filename
-        $filename = 'var/importexport/product-import_20170706-160000_01.csv';
+        $filename = 'product-import_20170706-160000_01.csv';
 
         // mock the isFile() method
         $this->abstractSubject
@@ -305,7 +306,7 @@ class AbstractSubjectTest extends AbstractTest
              ->getSystemLogger()
              ->expects($this->once())
              ->method('debug')
-             ->with(sprintf('Import running, found inProgress file %s', sprintf('%s.inProgress', $filename)))
+             ->with(sprintf('Import running, found inProgress file "%s"', sprintf('%s.inProgress', $filename)))
              ->willReturn(null);
 
         // try to import the file with the passed name
@@ -321,7 +322,7 @@ class AbstractSubjectTest extends AbstractTest
     {
 
         // set the filename
-        $filename = 'var/importexport/product-import_20170706-160000_01.csv';
+        $filename = 'product-import_20170706-160000_01.csv';
 
         // set filename and headers
         $this->abstractSubject->setFilename($filename);
@@ -362,7 +363,10 @@ class AbstractSubjectTest extends AbstractTest
     {
 
         // set the filename
-        $filename = 'var/importexport/product-import_20170706-160000_01.csv';
+        $filename = 'product-import_20170706-160000_01.csv';
+
+        // mock the full operation name
+        $this->abstractSubject->expects($this->any())->method('getFullOperationName')->willReturn('add-update');
 
         // set filename, headers and skip the first row
         $this->abstractSubject->setFilename($filename);
@@ -546,8 +550,8 @@ class AbstractSubjectTest extends AbstractTest
     {
 
         // set the filename and the original filename
-        $filename = 'var/importexport/variants_20170706-160000_01.csv';
-        $originalFilename = 'var/importexport/product-import_20170706-160000_01.csv';
+        $filename = 'variants_20170706-160000_01.csv';
+        $originalFilename = 'product-import_20170706-160000_01.csv';
 
         // set filename and headers
         $this->abstractSubject->setFilename($filename);
@@ -669,7 +673,10 @@ class AbstractSubjectTest extends AbstractTest
     {
 
         // set the filename
-        $filename = 'var/importexport/product-import_20170706-160000_01.csv';
+        $filename = 'product-import_20170706-160000_01.csv';
+
+        // mock the full operation name
+        $this->abstractSubject->expects($this->any())->method('getFullOperationName')->willReturn('add-update');
 
         // set filename, headers and skip the first row
         $this->abstractSubject->setFilename($filename);
@@ -718,13 +725,16 @@ class AbstractSubjectTest extends AbstractTest
      * @return void
      *
      * @expectedException \Exception
-     * @expectedExceptionMessage Found invalid store view code unknown in file var/importexport/product-import_20170706-160000_01.csv on line 1
+     * @expectedExceptionMessage Found invalid store view code unknown in file product-import_20170706-160000_01.csv on line 1
      */
     public function testGetStoreIdWithException()
     {
 
         // set the filename
-        $filename = 'var/importexport/product-import_20170706-160000_01.csv';
+        $filename = 'product-import_20170706-160000_01.csv';
+
+        // mock the full operation name
+        $this->abstractSubject->expects($this->any())->method('getFullOperationName')->willReturn('add-update');
 
         // set filename, headers and skip the first row
         $this->abstractSubject->setFilename($filename);
@@ -765,7 +775,7 @@ class AbstractSubjectTest extends AbstractTest
     {
 
         // set the filename
-        $filename = 'var/importexport/product-import_20170706-160000_01.csv';
+        $filename = 'product-import_20170706-160000_01.csv';
 
         // set filename, headers and skip the first row
         $this->abstractSubject->setFilename($filename);

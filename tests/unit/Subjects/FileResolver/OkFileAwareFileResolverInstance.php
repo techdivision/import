@@ -1,7 +1,7 @@
 <?php
 
 /**
- * TechDivision\Import\Loggers\Handlers\ResetAwareHandlerInterface
+ *TechDivision\Import\Subjects\FileResolver\OkFileAwareFileResolverInstance
  *
  * NOTICE OF LICENSE
  *
@@ -18,12 +18,10 @@
  * @link      http://www.techdivision.com
  */
 
-namespace TechDivision\Import\Loggers\Handlers;
-
-use Monolog\Handler\HandlerInterface;
+namespace TechDivision\Import\Subjects\FileResolver;
 
 /**
- * Interface for reset() method aware handler implementations.
+ * Wrapper for the .OK file aware file resolver implementation.
  *
  * @author    Tim Wagner <t.wagner@techdivision.com>
  * @copyright 2019 TechDivision GmbH <info@techdivision.com>
@@ -31,13 +29,18 @@ use Monolog\Handler\HandlerInterface;
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
  */
-interface ResetAwareHandlerInterface extends HandlerInterface
+class OkFileAwareFileResolverInstance extends OkFileAwareFileResolver
 {
 
     /**
-     * Reset's the handler instance.
+     * Queries whether or not, the passed filename should be handled by the subject.
      *
-     * @return void
+     * @param string $filename The filename to query for
+     *
+     * @return boolean TRUE if the file should be handled, else FALSE
      */
-    public function reset();
+    public function shouldBeHandled($filename)
+    {
+        return parent::shouldBeHandled($filename);
+    }
 }

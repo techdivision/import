@@ -63,7 +63,7 @@ class MoveFilesSubjectTest extends AbstractTest
      */
     protected function getSubjectMethodsToMock()
     {
-        return array('match', 'rename', 'mkdir', 'isDir');
+        return array('match', 'rename', 'mkdir', 'isDir', 'getExecutionContext');
     }
 
     /**
@@ -107,7 +107,7 @@ class MoveFilesSubjectTest extends AbstractTest
         $this->moveFilesSubject
              ->getConfiguration()
              ->expects($this->once())
-             ->method('getTargetDir')
+             ->method('getSourceDir')
              ->willReturn($targetDir = 'var/importexport');
 
         // mock the isDir() method
@@ -146,7 +146,7 @@ class MoveFilesSubjectTest extends AbstractTest
         $this->moveFilesSubject
              ->getConfiguration()
              ->expects($this->once())
-             ->method('getTargetDir')
+             ->method('getSourceDir')
              ->willReturn($targetDir= 'var/importexport');
 
         // mock the isDir() method

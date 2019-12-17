@@ -206,43 +206,62 @@ abstract class AbstractTest extends \PHPUnit_Framework_TestCase
     protected function getMockConfiguration(array $operationNames = array('add-update'))
     {
 
+        // create the mock configuration instance
         $mockConfiguration = $this->getMockBuilder('TechDivision\Import\ConfigurationInterface')
                                   ->setMethods(get_class_methods('TechDivision\Import\ConfigurationInterface'))
                                   ->getMock();
 
+        // mock the necessary methods
         $mockConfiguration->expects($this->any())
                           ->method('getOperationNames')
                           ->willReturn($operationNames);
 
-
+        // return the mock configuration
         return $mockConfiguration;
     }
 
+    /**
+     * Return's the execution context.
+     *
+     * @param string $entityTypeCode The entity type code of the execution context
+     * @param string $magentoEdition The Magento edition of the execution context
+     *
+     * @return \PHPUnit_Framework_MockObject_MockObject The mock execution context
+     */
     protected function getMockExecutionContext($entityTypeCode = EntityTypeCodes::CATALOG_PRODUCT, $magentoEdition = EditionNames::CE)
     {
 
+        // create the mock execution context
         $mockExecutionContext = $this->getMockBuilder('TechDivision\Import\ExecutionContextInterface')
                                      ->setMethods(get_class_methods('TechDivision\Import\ExecutionContextInterface'))
                                      ->getMock();
 
+        // mock the methods
         $mockExecutionContext->expects($this->any())
                              ->method('getEntityTypeCode')
                              ->willReturn($entityTypeCode);
-
         $mockExecutionContext->expects($this->any())
                              ->method('getMagentoEdition')
                              ->willReturn($magentoEdition);
 
+        // return the mock execution context
         return $mockExecutionContext;
     }
 
+    /**
+     * Return's the plugin configuration.
+     *
+     * @return \PHPUnit_Framework_MockObject_MockObject The mock plugin configuration
+     */
     protected function getMockPluginConfiguration()
     {
 
+        // create the mock plugin configuration
         $mockPluginConfiguration = $this->getMockBuilder('TechDivision\Import\Configuration\PluginConfigurationInterface')
                                         ->setMethods(get_class_methods('TechDivision\Import\Configuration\PluginConfigurationInterface'))
                                         ->getMock();
 
+        // mock the necessary methods
         $mockPluginConfiguration->expects($this->any())
                                         ->method('getId')
                                         ->willReturn('import.plugin.subject');
@@ -250,6 +269,7 @@ abstract class AbstractTest extends \PHPUnit_Framework_TestCase
                                 ->method('getExecutionContext')
                                 ->willReturn($this->getMockExecutionContext());
 
+        // return the mock plugin configuration
         return $mockPluginConfiguration;
     }
 

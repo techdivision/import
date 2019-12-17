@@ -52,7 +52,8 @@ class MonologLoggerHandlerFactory implements MonologLoggerHandlerFactoryInterfac
     /**
      * Initialize the factory with the DI container instance.
      *
-     * @param \Symfony\Component\DependencyInjection\ContainerInterface $container The DI container instance
+     * @param \Symfony\Component\DependencyInjection\ContainerInterface           $container                     The DI container instance
+     * @param \TechDivision\Import\Loggers\MonologLoggerFormatterFactoryInterface $monologLoggerFormatterFactory The Monolog Logger formatter factory instance
      */
     public function __construct(ContainerInterface $container, MonologLoggerFormatterFactoryInterface $monologLoggerFormatterFactory)
     {

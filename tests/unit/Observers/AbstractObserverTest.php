@@ -80,7 +80,7 @@ class AbstractObserverTest extends \PHPUnit_Framework_TestCase
         $entity = array('attribute' => 100);
 
         // prepare the expected result
-        $expectedResult = array_merge(array(EntityStatus::MEMBER_NAME => EntityStatus::STATUS_CREATE), $entity);
+        $expectedResult = array_merge($entity, array(EntityStatus::MEMBER_NAME => EntityStatus::STATUS_CREATE));
 
         // assert that the entity has been initialized
         $this->assertSame($expectedResult, $this->abstractObserver->initializeEntity($entity));

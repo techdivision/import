@@ -220,6 +220,9 @@ class ExportableTraitTest extends \PHPUnit_Framework_TestCase
                                   ->setMethods(get_class_methods('TechDivision\Import\Adapter\ExportAdapterInterface'))
                                   ->getMock();
         $mockExportAdapter->expects($this->once())
+                          ->method('getExportedFilenames')
+                          ->willReturn(array());
+        $mockExportAdapter->expects($this->once())
                           ->method('export')
                           ->with(
                               $artfactsToCompare,

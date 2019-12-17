@@ -148,20 +148,11 @@ class SubjectPluginTest extends \PHPUnit_Framework_TestCase
         $mockConfiguration = $this->getMockBuilder('TechDivision\Import\ConfigurationInterface')
                                   ->setMethods(get_class_methods('TechDivision\Import\ConfigurationInterface'))
                                   ->getMock();
-        $mockConfiguration->expects($this->once())
-                                  ->method('getOperationName')
-                                  ->willReturn('add-update');
-        $mockConfiguration->expects($this->once())
-                                  ->method('getSourceDir')
-                                  ->willReturn('var/importexport');
 
         // mock the application methods
         $this->mockApplication->expects($this->exactly(2))
                               ->method('getRegistryProcessor')
                               ->willReturn($mockRegistryProcessor);
-        $this->mockApplication->expects($this->once())
-                              ->method('stop')
-                              ->willReturn(null);
         $this->mockApplication->expects($this->any())
                               ->method('getConfiguration')
                               ->willReturn($mockConfiguration);
@@ -205,18 +196,10 @@ class SubjectPluginTest extends \PHPUnit_Framework_TestCase
         // mock the file resolver methods
         $mockFileResolver->expects($this->once())
             ->method('loadFiles')
-            ->willReturn(array($filename = __DIR__ . DIRECTORY_SEPARATOR . '_file' . DIRECTORY_SEPARATOR . 'product-import_20170720-125052_01.csv'));
-        $mockFileResolver->expects($this->once())
-            ->method('shouldBeHandled')
-            ->with($filename)
-            ->willReturn(true);
-        $mockFileResolver->expects($this->once())
-            ->method('cleanUpOkFile')
-            ->with($filename)
-            ->willReturn(null);
+            ->willReturn(array(__DIR__ . DIRECTORY_SEPARATOR . '_file' . DIRECTORY_SEPARATOR . 'product-import_20170720-125052_01.csv'));
         $mockFileResolver->expects($this->once())
             ->method('getMatches')
-            ->willReturn(array());
+            ->willReturn(array(array()));
         $mockFileResolver->expects($this->once())
             ->method('reset')
             ->willReturn(null);
@@ -293,18 +276,10 @@ class SubjectPluginTest extends \PHPUnit_Framework_TestCase
         // mock the file resolver methods
         $mockFileResolver->expects($this->once())
             ->method('loadFiles')
-            ->willReturn(array($filename = __DIR__ . DIRECTORY_SEPARATOR . '_file' . DIRECTORY_SEPARATOR . 'product-import_20170720-125052_01.csv'));
-        $mockFileResolver->expects($this->once())
-            ->method('shouldBeHandled')
-            ->with($filename)
-            ->willReturn(true);
-        $mockFileResolver->expects($this->once())
-            ->method('cleanUpOkFile')
-            ->with($filename)
-            ->willReturn(null);
+            ->willReturn(array(__DIR__ . DIRECTORY_SEPARATOR . '_file' . DIRECTORY_SEPARATOR . 'product-import_20170720-125052_01.csv'));
         $mockFileResolver->expects($this->once())
             ->method('getMatches')
-            ->willReturn(array());
+            ->willReturn(array(array()));
 
         // let the mock file resolver factory create a mock file resolver instance
         $this->mockFileResolverFactory->expects($this->once())

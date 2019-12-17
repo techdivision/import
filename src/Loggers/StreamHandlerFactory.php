@@ -123,7 +123,7 @@ class StreamHandlerFactory implements HandlerFactoryInterface
         }
 
         // query wehther or not the log filename has been changed, if yes rename it
-        if ($this->stream && is_file($this->stream) && $this->stream !== $stream ) {
+        if ($this->stream && is_file($this->stream) && $this->stream !== $stream) {
             rename($this->stream, $stream);
         }
 
