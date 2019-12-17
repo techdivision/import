@@ -1,27 +1,18 @@
 {
   "operations": {
     "general": {
-      "general": [
-        {
-          "name": "global-data",
-          "plugins": [
-            {
+      "general": {
+        "global-data": {
+          "plugins": {
+            "global-data": {
               "id": "import.plugin.global.data"
             }
-          ]
+          }
         },
-        {
-          "name": "cache-warmer",
-          "plugins": [
-            {
-              "id": "import.plugin.cache.warmer"
-            }
-          ]
-        },
-        {
+        "initialize": {
           "name": "initialize",
-          "plugins": [
-            {
+          "plugins": {
+            "initialize": {
               "id": "import.plugin.initialize",
               "listeners": [
                 {
@@ -34,12 +25,11 @@
                 }
               ]
             }
-          ]
+          }
         },
-        {
-          "name": "clean-up",
-          "plugins": [
-            {
+        "clean-up": {
+          "plugins": {
+            "clean-up": {
               "id": "import.plugin.clean.up",
               "listeners": [
                 {
@@ -54,12 +44,11 @@
                 }
               ]
             }
-          ]
+          }
         },
-        {
-          "name": "move-files",
-          "plugins": [
-            {
+        "move-files": {
+          "plugins": {
+            "subject": {
               "id": "import.plugin.subject",
               "listeners": [
                 {
@@ -78,9 +67,9 @@
                 }
               ]
             }
-          ]
+          }
         }
-      ]
+      }
     }
   }
 }

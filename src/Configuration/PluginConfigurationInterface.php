@@ -104,4 +104,13 @@ interface PluginConfigurationInterface extends ParamsConfigurationInterface, Imp
      * @return \TechDivision\Import\Configuration\OperationConfigurationInterface The operation configuration
      */
     public function getOperationConfiguration();
+
+    /**
+     * Return's the full opration name, which consists of the Magento edition, the entity type code and the operation name.
+     *
+     * @param string $separator The separator used to seperate the elements
+     *
+     * @return string The full operation name
+     */
+    public function getFullOperationName($separator = '/');
 }

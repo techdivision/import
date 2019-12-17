@@ -103,7 +103,7 @@ class GenericCompositeObserver implements ObserverInterface, ObserverFactoryInte
                     $subject->appendExceptionSuffix(
                         sprintf(
                             'Skip processing operation "%s" after observer "%s"',
-                            implode(' > ', $subject->getConfiguration()->getConfiguration()->getOperationNames()),
+                            $subject->getFullOperationName(),
                             $subject->getConfiguration()->getId()
                         )
                     )

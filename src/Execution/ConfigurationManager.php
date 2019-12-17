@@ -198,19 +198,15 @@ class ConfigurationManager implements ConfigurationManagerInterface
         $operations = $this->getConfiguration()->getOperations();
 
         // query whether or not operations for the Magento edition + entity type code are available
-        if (isset($operations[$edition][$type])) {
-            // initialize the execution context with the Magento edition + entity type code
-            $executionContext = new ExecutionContext($edition, $type);
-            // iterate over the operations, initialize them for execution
-            foreach ($operations[$edition][$type] as $op) {
-                // query whether or not the operation is in the array of operation that has to be executed
-                if ($op->getName() === $name) {
-                    // pass the execution context to the operation configuration
-                    $op->setExecutionContext($executionContext);
-                    // finally add the operation to the array
-                    return $op;
-                }
-            }
+        if (isset($operations[$edition][$type][$name])) {
+            // load the operation
+            $op = $operations[$edition][$type][$name];
+            // pass the name to the operation configuration
+            $op->setName($name);
+            // initialize and pass the execution context to the operation configuration
+            $op->setExecutionContext(new ExecutionContext($edition, $type));
+            // finally add the operation to the array
+            return $op;
         }
 
         // throw an exception if the operation is not available

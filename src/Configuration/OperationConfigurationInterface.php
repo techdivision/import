@@ -44,9 +44,18 @@ interface OperationConfigurationInterface
     public function equals(OperationConfigurationInterface $operation);
 
     /**
+     * Set's the operation's name.
+     *
+     * @param string $name The operation's name
+     *
+     * @return void
+     */
+    public function setName($name);
+
+    /**
      * Return's the operation's name.
      *
-     * @return string The operation's class name
+     * @return string The operation's name
      */
     public function getName();
 
@@ -86,4 +95,13 @@ interface OperationConfigurationInterface
      * @return \TechDivision\Import\ExecutionContextInterface The execution context to use
      */
     public function getExecutionContext();
+
+    /**
+     * Return's the full opration name, which consists of the Magento edition, the entity type code and the operation name.
+     *
+     * @param string $separator The separator used to seperate the elements
+     *
+     * @return string The full operation name
+     */
+    public function getFullName($separator = '/');
 }

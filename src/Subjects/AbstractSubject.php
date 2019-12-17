@@ -812,7 +812,7 @@ abstract class AbstractSubject implements SubjectInterface, FilesystemSubjectInt
                 $this->isFile($inProgressFilename)
             ) {
                 // log a debug message and exit
-                $systemLogger->debug(sprintf('Import running, found inProgress file %s', $inProgressFilename));
+                $systemLogger->debug(sprintf('Import running, found inProgress file "%s"', $inProgressFilename));
                 return;
             }
 
@@ -826,7 +826,10 @@ abstract class AbstractSubject implements SubjectInterface, FilesystemSubjectInt
             $this->lastLog = time();
 
             // log a message that the file has to be imported
-            $systemLogger->info(sprintf('Now start processing file %s', basename($filename)));
+            $systemLogger->info(
+                sprintf('Now start processing file "%s"', basename($filename)),
+                array('operation-name' => $operationName = $this->getFullOperationName())
+            );
 
             // let the adapter process the file
             $this->getImportAdapter()->import(array($this, 'importRow'), $filename);
@@ -835,7 +838,10 @@ abstract class AbstractSubject implements SubjectInterface, FilesystemSubjectInt
             $endTime = microtime(true) - $startTime;
 
             // log a message that the file has successfully been imported
-            $systemLogger->info(sprintf('Successfully processed file %s with %d lines in %f s', basename($filename), $this->lineNumber, $endTime));
+            $systemLogger->info(
+                sprintf('Successfully processed file "%s" with "%d" lines in "%f" s', basename($filename), $this->lineNumber, $endTime),
+                array('operation-name' => $operationName)
+            );
 
             // rename flag file, because import has been successfull
             if ($this->getConfiguration()->isCreatingImportedFile()) {
@@ -965,7 +971,7 @@ abstract class AbstractSubject implements SubjectInterface, FilesystemSubjectInt
                             $this->appendExceptionSuffix(
                                 sprintf(
                                     'Skip processing operation "%s" after observer "%s"',
-                                    implode(' > ', $this->getConfiguration()->getConfiguration()->getOperationNames()),
+                                    $this->getFullOperationName(),
                                     get_class($observer)
                                 )
                             )
@@ -988,7 +994,8 @@ abstract class AbstractSubject implements SubjectInterface, FilesystemSubjectInt
             // log the number processed rows per minute
             $this->getSystemLogger()->info(
                 sprintf(
-                    'Successfully processed "%d (%d)" rows per minute of file "%s"',
+                    'Operation "%s" successfully processed "%d (%d)" rows per minute of file "%s"',
+                    $this->getFullOperationName(),
                     $this->lineNumber - $this->lastLineNumber,
                     $this->lineNumber,
                     basename($this->getFilename())
@@ -1489,5 +1496,17 @@ abstract class AbstractSubject implements SubjectInterface, FilesystemSubjectInt
             $this->getConfiguration()->getId(),
             $eventName
         );
+    }
+
+    /**
+     * Return's the full opration name, which consists of the Magento edition, the entity type code and the operation name.
+     *
+     * @param string $separator The separator used to seperate the elements
+     *
+     * @return string The full operation name
+     */
+    public function getFullOperationName($separator = '/')
+    {
+        return $this->getConfiguration()->getFullOperationName($separator);
     }
 }

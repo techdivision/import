@@ -424,4 +424,13 @@ interface SubjectInterface
      * @return array The actual status
      */
     public function getStatus();
+
+    /**
+     * Return's the full opration name, which consists of the Magento edition, the entity type code and the operation name.
+     *
+     * @param string $separator The separator used to seperate the elements
+     *
+     * @return string The full operation name
+     */
+    public function getFullOperationName($separator = '/');
 }
