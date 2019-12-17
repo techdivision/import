@@ -397,4 +397,13 @@ interface ConfigurationInterface extends CsvConfigurationInterface, ParamsConfig
      * @return array The array with the default values
      */
     public function getDefaultValues();
+
+    /**
+     * Return's an unique array with the prefixes of all configured subjects.
+     *
+     * @param array $ignore An array with prefixes that has to be ignored
+     *
+     * @return array An array with the available prefixes
+     */
+    public function getPrefixes($ignore = array('.*'));
 }
