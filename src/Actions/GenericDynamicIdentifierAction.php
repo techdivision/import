@@ -1,7 +1,7 @@
 <?php
 
 /**
- * TechDivision\Import\Actions\GenericIdentifierAction
+ * TechDivision\Import\Actions\GenericDynamicIdentifierAction
  *
  * NOTICE OF LICENSE
  *
@@ -33,7 +33,7 @@ use TechDivision\Import\Actions\Processors\ProcessorInterface;
  * @link      https://github.com/techdivision/import-category
  * @link      http://www.techdivision.com
  */
-class GenericIdentifierAction extends GenericIdentifierAction
+class GenericDynamicIdentifierAction extends GenericIdentifierAction
 {
 
     /**
