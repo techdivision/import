@@ -85,6 +85,13 @@ class EventNames
     const APP_PROCESS_TRANSACTION_FAILURE = 'app.process.transaction.failure';
 
     /**
+     * The event name for the event after the application has the transaction finished (independ if it has failed or succeeded).
+     *
+     * @var string
+     */
+    const APP_PROCESS_TRANSACTION_FINISHED = 'app.process.transaction.finished';
+
+    /**
      * The event name for the event that has to be fired before the plugin will be executed.
      *
      * @var string

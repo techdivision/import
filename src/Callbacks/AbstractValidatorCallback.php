@@ -22,6 +22,7 @@ namespace TechDivision\Import\Callbacks;
 
 use TechDivision\Import\Loaders\LoaderInterface;
 use TechDivision\Import\Subjects\SubjectInterface;
+use TechDivision\Import\Utils\ColumnKeys;
 
 /**
  * Abstract callback implementation the validate the value for an specific attribute.
@@ -140,5 +141,20 @@ abstract class AbstractValidatorCallback implements CallbackInterface, CallbackF
     protected function getValidations($attributeCode = null)
     {
         return $this->validations;
+    }
+
+    /**
+     * Whether or not the actual row is a main row, the method returns TRUE or FALSE.
+     *
+     * @return boolean TRUE if the row is a main row, FALSE otherwise
+     */
+    protected function isMainRow()
+    {
+
+        // load the store view code
+        $storeViewCode = $this->getSubject()->getValue(ColumnKeys::STORE_VIEW_CODE);
+
+        // query whether or not it is empty
+        return ($storeViewCode !== null || $storeViewCode !== '');
     }
 }

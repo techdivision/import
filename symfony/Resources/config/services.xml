@@ -594,9 +594,6 @@
         <service id="import.callback.attribute.set.name.validator" class="TechDivision\Import\Callbacks\ArrayValidatorCallback">
             <argument type="service" id="import.loader.attribute.set.name.filtered.by.execution.context.entity.type.code"/>
         </service>
-        <!-- service id="import.callback.attribute.set.name.validator" class="TechDivision\Import\Callbacks\ArrayValidatorCallback">
-            <argument type="service" id="import.loader.attribute.set.name"/>
-        </service -->
         <service id="import.callback.attribute.group.name.validator" class="TechDivision\Import\Callbacks\ArrayValidatorCallback">
             <argument type="service" id="import.loader.attribute.group.name"/>
         </service>
