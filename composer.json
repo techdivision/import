@@ -3,7 +3,7 @@
     "description": "A library supporting generic Magento 2 import functionality",
     "license": "OSL-3.0",
     "require": {
-        "php": ">=5.6.0",
+        "php": ">=7.1.0",
         "psr/log": "~1.0",
         "psr/cache" : "~1.0",
         "psr/container": "~1.0",
