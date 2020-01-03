@@ -20,6 +20,7 @@
 
 namespace TechDivision\Import\Observers;
 
+use PHPUnit\Framework\TestCase;
 use TechDivision\Import\Utils\ColumnKeys;
 
 /**
@@ -31,7 +32,7 @@ use TechDivision\Import\Utils\ColumnKeys;
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
  */
-class AdditionalAttributeObserverTest extends \PHPUnit_Framework_TestCase
+class AdditionalAttributeObserverTest extends TestCase
 {
 
     /**
@@ -46,7 +47,7 @@ class AdditionalAttributeObserverTest extends \PHPUnit_Framework_TestCase
      * This method is called before a test is executed.
      *
      * @return void
-     * @see \PHPUnit_Framework_TestCase::setUp()
+     * @see \PHPUnit\Framework\TestCase::setUp()
      */
     protected function setUp()
     {

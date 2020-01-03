@@ -20,10 +20,9 @@
 
 namespace TechDivision\Import\Repositories;
 
-use TechDivision\Import\Utils\SqlStatementKeys;
-use TechDivision\Import\Utils\SqlCompilerInterface;
+use PHPUnit\Framework\TestCase;
 use TechDivision\Import\Utils\TablePrefixUtil;
-use TechDivision\Import\Utils\TablePrefixUtilInterface;
+use TechDivision\Import\Utils\SqlStatementKeys;
 
 /**
  * Test class for the SQL statement implementation.
@@ -34,7 +33,7 @@ use TechDivision\Import\Utils\TablePrefixUtilInterface;
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
  */
-class SqlStatementRepositoryTest extends \PHPUnit_Framework_TestCase
+class SqlStatementRepositoryTest extends TestCase
 {
 
     /**
@@ -49,7 +48,7 @@ class SqlStatementRepositoryTest extends \PHPUnit_Framework_TestCase
      * This method is called before a test is executed.
      *
      * @return void
-     * @see \PHPUnit_Framework_TestCase::setUp()
+     * @see \PHPUnit\Framework\TestCase::setUp()
      */
     protected function setUp()
     {

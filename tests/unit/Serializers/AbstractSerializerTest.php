@@ -20,10 +20,11 @@
 
 namespace TechDivision\Import\Serializers;
 
-use TechDivision\Import\ConfigurationInterface;
-use TechDivision\Import\Utils\EntityTypeCodes;
+use PHPUnit\Framework\TestCase;
 use TechDivision\Import\Utils\MemberNames;
+use TechDivision\Import\Utils\EntityTypeCodes;
 use TechDivision\Import\Utils\FrontendInputTypes;
+use TechDivision\Import\ConfigurationInterface;
 use TechDivision\Import\Configuration\CsvConfigurationInterface;
 
 /**
@@ -35,7 +36,7 @@ use TechDivision\Import\Configuration\CsvConfigurationInterface;
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
  */
-abstract class AbstractSerializerTest extends \PHPUnit_Framework_TestCase
+abstract class AbstractSerializerTest extends TestCase
 {
 
     /**

@@ -20,6 +20,8 @@
 
 namespace TechDivision\Import\Observers;
 
+use PHPUnit\Framework\TestCase;
+
 /**
  * Test class for the abstract observer implementation.
  *
@@ -29,7 +31,7 @@ namespace TechDivision\Import\Observers;
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
  */
-class ObserverVisitorTest extends \PHPUnit_Framework_TestCase
+class ObserverVisitorTest extends TestCase
 {
 
     /**

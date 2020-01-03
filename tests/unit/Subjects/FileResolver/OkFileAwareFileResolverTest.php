@@ -20,6 +20,7 @@
 
 namespace TechDivision\Import\Subjects\FileResolver;
 
+use PHPUnit\Framework\TestCase;
 use TechDivision\Import\Utils\BunchKeys;
 use TechDivision\Import\ApplicationInterface;
 use TechDivision\Import\Services\RegistryProcessorInterface;
@@ -35,7 +36,7 @@ use TechDivision\Import\Configuration\Subject\FileResolverConfigurationInterface
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
  */
-class OkFileAwareFileResolverTest extends \PHPUnit_Framework_TestCase
+class OkFileAwareFileResolverTest extends TestCase
 {
 
     /**
@@ -50,7 +51,7 @@ class OkFileAwareFileResolverTest extends \PHPUnit_Framework_TestCase
      * This method is called before a test is executed.
      *
      * @return void
-     * @see \PHPUnit_Framework_TestCase::setUp()
+     * @see \PHPUnit\Framework\TestCase::setUp()
      */
     protected function setUp()
     {

@@ -20,11 +20,12 @@
 
 namespace TechDivision\Import\Subjects;
 
+use Psr\Log\LoggerInterface;
+use PHPUnit\Framework\TestCase;
 use Doctrine\Common\Collections\ArrayCollection;
+use TechDivision\Import\Utils\LoggerKeys;
 use TechDivision\Import\Subjects\I18n\NumberConverterFactoryInterface;
 use TechDivision\Import\Subjects\I18n\DateConverterFactoryInterface;
-use Psr\Log\LoggerInterface;
-use TechDivision\Import\Utils\LoggerKeys;
 
 /**
  * Test class for the subject factory implementation.
@@ -35,7 +36,7 @@ use TechDivision\Import\Utils\LoggerKeys;
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
  */
-class SubjectFactoryTest extends \PHPUnit_Framework_TestCase
+class SubjectFactoryTest extends TestCase
 {
 
     /**

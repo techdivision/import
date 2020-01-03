@@ -22,9 +22,9 @@
         "doctrine/dbal": "2.5.*",
         "pdepend/pdepend": "2.5.2",
         "phpmd/phpmd": "@stable",
-        "phpunit/phpunit": "~5.0",
+        "phpunit/phpunit": "~6.5.0",
         "sebastian/phpcpd": "~3.0.0",
-        "squizlabs/php_codesniffer": "3.3.1",
+        "squizlabs/php_codesniffer": "~3.4.0",
         "consolidation/robo": "~1.0",
         "mikey179/vfsstream": "~1.0",
         "symfony/http-kernel": "~3.4"

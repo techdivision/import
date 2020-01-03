@@ -20,6 +20,7 @@
 
 namespace TechDivision\Import\Observers;
 
+use PHPUnit\Framework\TestCase;
 use TechDivision\Import\Utils\MemberNames;
 use TechDivision\Import\Utils\EntityStatus;
 use TechDivision\Import\Utils\StoreViewCodes;
@@ -35,7 +36,7 @@ use TechDivision\Import\Utils\ConfigurationKeys;
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
  */
-class AbstractAttributeObserverTest extends \PHPUnit_Framework_TestCase
+class AbstractAttributeObserverTest extends TestCase
 {
 
     /**
@@ -50,7 +51,7 @@ class AbstractAttributeObserverTest extends \PHPUnit_Framework_TestCase
      * This method is called before a test is executed.
      *
      * @return void
-     * @see \PHPUnit_Framework_TestCase::setUp()
+     * @see \PHPUnit\Framework\TestCase::setUp()
      */
     protected function setUp()
     {

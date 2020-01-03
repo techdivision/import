@@ -20,6 +20,8 @@
 
 namespace TechDivision\Import\Actions;
 
+use PHPUnit\Framework\TestCase;
+
 /**
  * Test class for the generic action implementation.
  *
@@ -29,7 +31,7 @@ namespace TechDivision\Import\Actions;
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
  */
-class GenericActionTest extends \PHPUnit_Framework_TestCase
+class GenericActionTest extends TestCase
 {
 
     /**

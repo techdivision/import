@@ -20,14 +20,15 @@
 
 namespace TechDivision\Import\Subjects;
 
+use PHPUnit\Framework\TestCase;
 use Doctrine\Common\Collections\ArrayCollection;
 use TechDivision\Import\Utils\LoggerKeys;
 use TechDivision\Import\Utils\MemberNames;
+use TechDivision\Import\Utils\EditionNames;
 use TechDivision\Import\Utils\RegistryKeys;
 use TechDivision\Import\Utils\EntityTypeCodes;
 use TechDivision\Import\Utils\Generators\CoreConfigDataUidGenerator;
 use TechDivision\Import\Configuration\Subject\DateConverterConfigurationInterface;
-use TechDivision\Import\Utils\EditionNames;
 
 /**
  * Abstract subject test class.
@@ -38,7 +39,7 @@ use TechDivision\Import\Utils\EditionNames;
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
  */
-abstract class AbstractTest extends \PHPUnit_Framework_TestCase
+abstract class AbstractTest extends TestCase
 {
 
     /**
