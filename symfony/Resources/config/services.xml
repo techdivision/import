@@ -57,6 +57,7 @@
         <service id="import.logger.factory.handler.stream.wrapper" class="TechDivision\Import\Loggers\WrapperHandlerFactory">
             <argument type="service" id="import.logger.factory.handler.stream"/>
         </service>
+        <service id="import.logger.handler.null" class="Monolog\Handler\NullHandler"/>
 
         <!--
          | The DI configuration for the UID generator

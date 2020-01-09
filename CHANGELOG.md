@@ -1,3 +1,13 @@
+# Version 15.0.1
+
+## Bugfixes
+
+* None
+
+## Features
+
+* Add NULL log handler for testing purposes
+
 # Version 15.0.0
 
 ## Bugfixes
