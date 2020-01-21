@@ -16,7 +16,7 @@
         "cache/prefixed-cache": "1.0.*",
         "cache/namespaced-cache": "1.0.*",
         "swiftmailer/swiftmailer": "5.4.*",
-        "zendframework/zend-filter": "~2.0"
+        "laminas/laminas-filter": "~2.0"
     },
     "require-dev": {
         "doctrine/dbal": "2.5.*",
