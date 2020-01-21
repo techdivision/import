@@ -314,7 +314,7 @@ class MissingOptionValuesPlugin extends AbstractPlugin
      *
      * @return string The name of the target directory
      */
-    protected function getTargetDir()
+    public function getTargetDir()
     {
 
         // load the actual status
