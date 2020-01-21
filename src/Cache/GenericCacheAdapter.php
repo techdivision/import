@@ -20,7 +20,9 @@
 
 namespace TechDivision\Import\Cache;
 
+use Cache\TagInterop\TaggableCacheItemInterface;
 use Psr\Cache\CacheItemPoolInterface;
+use Symfony\Contracts\Cache\ItemInterface;
 use TechDivision\Import\Utils\CacheKeys;
 use TechDivision\Import\Utils\CacheKeyUtilInterface;
 
@@ -210,7 +212,13 @@ class GenericCacheAdapter implements CacheAdapterInterface
 
         // initialize the cache item
         $cacheItem = $this->cache->getItem($uniqueKey);
-        $cacheItem->set($value)->expiresAfter($time)->setTags($tags);
+        $cacheItem->set($value)->expiresAfter($time);
+        
+        if ($cacheItem instanceof TaggableCacheItemInterface) {
+            $cacheItem->setTags($tags);
+        } elseif ($cacheItem instanceof ItemInterface) {
+            $cacheItem->tag($tags);
+        }
 
         // set the attribute in the registry
         $this->cache->save($cacheItem);
