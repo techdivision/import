@@ -1,3 +1,13 @@
+# Version 15.0.2
+
+## Bugfixes
+
+* Fixed incompatibility with several PHP versions
+
+## Features
+
+* None
+
 # Version 15.0.1
 
 ## Bugfixes

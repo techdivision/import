@@ -192,10 +192,36 @@ abstract class AbstractBaseProcessor extends AbstractProcessor
         $statements = $this->getStatements();
 
         // initialize the default statement name
-        $this->defaultStatementName = array_key_first($statements);
+        $this->defaultStatementName = $this->firstKey($statements);
 
         foreach ($statements as $name => $statement) {
             $this->addPreparedStatement($name, $this->getConnection()->prepare($statement));
         }
+    }
+
+    /**
+     * Returns the first key of the passed array.
+     *
+     * This method has been used instead of the PHP function array_key_first, because
+     * this function will be available with PHP >= 7.3.0.
+     *
+     * @param array $array The array to return the first key for
+     *
+     * @return mixed|NULL The first key or NULL
+     * @link https://www.php.net/array_key_first
+     */
+    private function firstKey(array $array)
+    {
+
+        // load the array keys
+        $keys = array_keys($array);
+
+        // try to load and return the first key
+        foreach($keys as $key) {
+            return $key;
+        }
+
+        // return NULL otherwise
+        return null;
     }
 }

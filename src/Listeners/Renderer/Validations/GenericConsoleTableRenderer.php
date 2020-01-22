@@ -74,8 +74,14 @@ class GenericConsoleTableRenderer implements RendererInterface
         $table->setHeaders(array_keys(current($rows)))->setRows($rows);
 
         // set the column max width, if passed
-        foreach ($columnMaxWidths as $key => $widht) {
-            $table->setColumnMaxWidth($key, $widht);
+        foreach ($columnMaxWidths as $key => $width) {
+            // this is because of the used symfony/console version which
+            // can differ as a result of the Magento/PHP version used.
+            // So the method setColumnMaxWidth() will be available up
+            // from symfony/console version 4.2.0.
+            if (method_exists($table, $methodName = 'setColumnMaxWidth')) {
+                call_user_func(array($table, $methodName), $key, $width);
+            }
         }
 
         // render the table
