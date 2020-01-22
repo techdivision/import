@@ -1,3 +1,13 @@
+# Version 15.0.3
+
+## Bugfixes
+
+* None
+
+## Features
+
+* Remove unnecessary composer dependency to cache/namespaced-cache library
+
 # Version 15.0.2
 
 ## Bugfixes

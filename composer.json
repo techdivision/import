@@ -14,7 +14,6 @@
         "ramsey/uuid": "~3.7.3|3.8.*",
         "cache/array-adapter": "1.0.*",
         "cache/prefixed-cache": "1.0.*",
-        "cache/namespaced-cache": "1.0.*",
         "swiftmailer/swiftmailer": "5.4.*",
         "zendframework/zend-filter": "~2.0"
     },
