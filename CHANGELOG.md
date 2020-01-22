@@ -6,7 +6,7 @@
 
 ## Features
 
-* Remove unnecessary composer dependency to cache/namespaced-cache library
+* Remove unnecessary composer dependency to cache/* libraries
 
 # Version 15.0.2
 
