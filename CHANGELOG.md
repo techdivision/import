@@ -1,3 +1,13 @@
+# Version 14.0.7
+
+## Bugfixes
+
+* None
+
+## Features
+
+* Remove unnecessary composer dependency to cache/* libraries
+
 # Version 14.0.6
 
 ## Bugfixes
