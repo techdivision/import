@@ -13,7 +13,7 @@
         "league/flysystem": "~1.0",
         "ramsey/uuid": "~3.7.3|3.8.*",
         "swiftmailer/swiftmailer": "5.4.*",
-        "zendframework/zend-filter": "~2.0"
+        "laminas/laminas-filter": "~2.0"
     },
     "require-dev": {
         "doctrine/dbal": "2.5.*",
