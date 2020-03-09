@@ -304,13 +304,19 @@ class GenericCacheAdapter implements CacheAdapterInterface
         if ($this->isCached(CacheKeys::REFERENCES)) {
             // load the array with references from the cache
             $references = $this->fromCache(CacheKeys::REFERENCES);
-            // query whether or not the references exists
-            if (isset($references[$uniqueKey])) {
-                // remove the reference
-                unset($references[$uniqueKey]);
-                // set the array with references to the cache
-                $this->toCache(CacheKeys::REFERENCES, $references);
+            // initialize the references with the unique key
+            $refs = array($uniqueKey);
+            // load the references that points to the unique key also
+            $refs = array_merge($refs, array_keys(array_intersect($references, $refs)));
+            // remove ALL references to the passed unique key
+            foreach ($refs as $ref) {
+                // query whether or not the references exists and remove it, if available
+                if (isset($references[$ref])) {
+                    unset($references[$ref]);
+                }
             }
+            // set the array with references to the cache
+            $this->toCache(CacheKeys::REFERENCES, $references);
         }
     }
 }

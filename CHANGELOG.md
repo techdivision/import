@@ -1,3 +1,13 @@
+# Version 14.0.8
+
+## Bugfixes
+
+* None
+
+## Features
+
+* Clear cache references also, when an cache item has been removed
+
 # Version 14.0.7
 
 ## Bugfixes
