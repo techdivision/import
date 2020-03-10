@@ -64,7 +64,7 @@ class ValueCsvSerializerFactory implements ConfigurationAwareSerializerFactoryIn
     {
 
         // load the serializer instance from the container and pass the configuration
-        /** @var \TechDivision\Import\Serializers\ValueCsvSerializerInterface $serializer */
+        /** @var \TechDivision\Import\Serializers\SerializerInterface $serializer */
         $serializer = $this->container->get(DependencyInjectionKeys::IMPORT_SERIALIZER_CSV_VALUE);
         $serializer->init($configuration);
 

@@ -188,15 +188,7 @@
         <!--
          | The DI cache configuration
          |-->
-        <service id="import.cache.pool.factory.array" class="TechDivision\Import\Connection\ArrayCachePoolFactory"/>
-        <service id="import.cache.pool.array" class="Cache\Adapter\PHPArray\ArrayCachePool">
-            <factory service="import.cache.pool.factory.array" method="createCachePool"/>
-        </service>
         <service id="import.cache.adapter.local" class="TechDivision\Import\Cache\LocalCacheAdapter">
-            <argument type="service" id="import.util.cache.key"/>
-        </service>
-        <service id="import.cache.adapter.generic" class="TechDivision\Import\Cache\GenericCacheAdapter">
-            <argument type="service" id="import.cache.pool.array"/>
             <argument type="service" id="import.util.cache.key"/>
         </service>
         <service id="import.cache.adapter.static" class="TechDivision\Import\Cache\ConfigurableCacheAdapter">
@@ -605,7 +597,7 @@
             <argument type="service" id="import.loader.custom.validations"/>
             <argument>%array_validator.nullable.true%</argument>
         </service>
-        <service id="import.callback.store.website.validator" class="TechDivision\Import\Callbacks\ArrayValidatorCallback">
+        <service id="import.callback.store.website.validator" class="TechDivision\Import\Callbacks\MultipleValuesValidatorCallback">
             <argument type="service" id="import.loader.store.website"/>
             <argument>%array_validator.nullable.true%</argument>
         </service>
