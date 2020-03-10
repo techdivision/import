@@ -159,7 +159,7 @@ class ConfigurationManager implements ConfigurationManagerInterface
                 // query whether or not the plugin has subjects configured
                 if ($subjects = $plugin->getSubjects()) {
                     // extend the plugin's subjects with the main configuration instance
-                    /** @var \TechDivision\Import\Cli\Configuration\Subject $subject */
+                    /** @var \TechDivision\Import\Configuration\SubjectConfigurationInterface $subject */
                     foreach ($subjects as $subject) {
                         // set the configuration instance on the subject
                         $subject->setConfiguration($configuration);

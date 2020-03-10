@@ -74,11 +74,21 @@ class AdditionalAttributeObserver extends AbstractObserver
             $additionalAttributes = $subject->explode($additionalAttributes, $this->getMultipleFieldDelimiter());
             // iterate over the attributes and append them to the row
             foreach ($additionalAttributes as $additionalAttribute) {
-                // explode attribute code/option value from the attribute
-                list ($attributeCode, $optionValue) = $subject->explode($additionalAttribute, '=');
+                // initialize the option value
+                $optionValue = '';
+                // explode the attribute code/option value from the attribute
+                $exploded = $subject->explode($additionalAttribute, '=');
+                // initialize attribute code and option value, depending on what we've exploded
+                if (sizeof($exploded) < 1) {
+                    continue;
+                } elseif (sizeof($exploded) === 1) {
+                    list ($attributeCode) = $exploded;
+                } else {
+                    list ($attributeCode, $optionValue) = $exploded;
+                }
 
                 // try to load the appropriate key for the value
-                if (!$subject->hasHeader($attributeCode)) {
+                if ($subject->hasHeader($attributeCode) === false) {
                     $subject->addHeader($attributeCode);
                 }
 

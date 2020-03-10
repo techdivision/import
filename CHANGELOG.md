@@ -1,3 +1,24 @@
+# Version 15.0.5
+
+## Bugfixes
+
+* None
+
+## Features
+
+* Remove not referenced legacy code
+* Optimize additional attribute destruction to avoid unnecessary warnings
+
+# Version 15.0.4
+
+## Bugfixes
+
+* None
+
+## Features
+
+* Clear cache references also, when an cache item has been removed
+
 # Version 15.0.3
 
 ## Bugfixes
