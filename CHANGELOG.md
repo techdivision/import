@@ -1,3 +1,14 @@
+# Version 15.1.0
+
+## Bugfixes
+
+* None
+
+## Features
+
+* Extract dev autoloading
+* Add command to import URL rewrites as well as necessary class constants
+
 # Version 15.0.5
 
 ## Bugfixes

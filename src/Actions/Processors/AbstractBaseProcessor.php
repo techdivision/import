@@ -217,7 +217,7 @@ abstract class AbstractBaseProcessor extends AbstractProcessor
         $keys = array_keys($array);
 
         // try to load and return the first key
-        foreach($keys as $key) {
+        foreach ($keys as $key) {
             return $key;
         }
 
