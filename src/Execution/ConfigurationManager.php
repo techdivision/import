@@ -52,6 +52,7 @@ class ConfigurationManager implements ConfigurationManagerInterface
         'eav_attribute_set'             => 'general',
         'catalog_product_inventory_msi' => 'general',
         'catalog_product_tier_price'    => 'general',
+        'catalog_product_url'           => 'general',
         'customer_address'              => 'general',
         'customer'                      => 'general'
     );

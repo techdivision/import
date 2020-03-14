@@ -47,6 +47,13 @@ class EntityTypeCodes extends \ArrayObject
     const CATALOG_PRODUCT = 'catalog_product';
 
     /**
+     * Key for the product entity 'catalog_product_url'.
+     *
+     * @var integer
+     */
+    const CATALOG_PRODUCT_URL = 'catalog_product_url';
+
+    /**
      * Key for the product entity 'catalog_product_price'.
      *
      * @var integer

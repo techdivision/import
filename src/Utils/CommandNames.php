@@ -110,6 +110,13 @@ class CommandNames extends \ArrayObject
     const IMPORT_PRODUCTS_TIER_PRICE = 'import:products:price:tier';
 
     /**
+     * The command name for the product tier price import.
+     *
+     * @var string
+     */
+    const IMPORT_PRODUCTS_URL = 'import:products:url';
+
+    /**
      * The command name for the command that creates an OK file.
      *
      * @var string
