@@ -1,3 +1,13 @@
+# Version 15.1.1
+
+## Bugfixes
+
+* Remove extract dev autoloading
+
+## Features
+
+* None
+
 # Version 15.1.0
 
 ## Bugfixes
