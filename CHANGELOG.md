@@ -1,3 +1,13 @@
+# Version 14.0.9
+
+## Bugfixes
+
+* Remove unnecessary and slow reference clean-up when removing an item from cache
+
+## Features
+
+* None
+
 # Version 14.0.8
 
 ## Bugfixes

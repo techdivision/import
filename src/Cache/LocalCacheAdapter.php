@@ -265,22 +265,6 @@ class LocalCacheAdapter implements CacheAdapterInterface
      */
     public function removeCache($key)
     {
-
-        // delete the item with the passed key
-        unset($this->cache[$this->resolveReference($uniqueKey = $this->cacheKey($key))]);
-
-        // initialize the references with the unique key
-        $references = array($uniqueKey);
-
-        // load the references that points to the unique key also
-        $references = array_merge($references, array_keys(array_intersect($this->references, $references)));
-
-        // remove ALL references to the passed unique key
-        foreach ($references as $reference) {
-            // query whether or not the references exists and remove it, if available
-            if (isset($this->references[$reference])) {
-                unset($this->references[$reference]);
-            }
-        }
+        unset($this->cache[$this->resolveReference($this->cacheKey($key))]);
     }
 }

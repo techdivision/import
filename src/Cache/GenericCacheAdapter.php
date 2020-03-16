@@ -296,27 +296,6 @@ class GenericCacheAdapter implements CacheAdapterInterface
      */
     public function removeCache($key)
     {
-
-        // delete the item with the passed key
-        $this->cache->deleteItem($this->resolveReference($uniqueKey = $this->cacheKey($key)));
-
-        // query whether or not references are available
-        if ($this->isCached(CacheKeys::REFERENCES)) {
-            // load the array with references from the cache
-            $references = $this->fromCache(CacheKeys::REFERENCES);
-            // initialize the references with the unique key
-            $refs = array($uniqueKey);
-            // load the references that points to the unique key also
-            $refs = array_merge($refs, array_keys(array_intersect($references, $refs)));
-            // remove ALL references to the passed unique key
-            foreach ($refs as $ref) {
-                // query whether or not the references exists and remove it, if available
-                if (isset($references[$ref])) {
-                    unset($references[$ref]);
-                }
-            }
-            // set the array with references to the cache
-            $this->toCache(CacheKeys::REFERENCES, $references);
-        }
+        $this->cache->deleteItem($this->resolveReference($this->cacheKey($key)));
     }
 }
