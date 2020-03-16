@@ -1,3 +1,13 @@
+# Version 15.1.2
+
+## Bugfixes
+
+* Remove unnecessary and slow reference clean-up when removing an item from cache
+
+## Features
+
+* None
+
 # Version 15.1.1
 
 ## Bugfixes
