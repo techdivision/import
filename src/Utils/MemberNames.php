@@ -412,4 +412,11 @@ class MemberNames
      * @var string
      */
     const PK = 'pk';
+
+    /**
+     * Name for the member 'entity_table'.
+     *
+     * @var string
+     */
+    const ENTITY_TABLE = 'entity_table';
 }

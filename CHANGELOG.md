@@ -1,3 +1,13 @@
+# Version 15.2.0
+
+## Bugfixes
+
+* None
+
+## Features
+
+* Add compiler implementations for dynamic column handling
+
 # Version 15.1.2
 
 ## Bugfixes
