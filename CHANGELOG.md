@@ -1,3 +1,14 @@
+# Version 15.2.1
+
+## Bugfixes
+
+* Add entity type code CATALOG_PRODUCT_URL to EntityTypeCodes list
+* Add missing mapping EntityTypeCodes::CATALOG_PRODUCT_URL => EntityTypeCodes::CATALOG_PRODUCT to AbstractSubject
+
+## Features
+
+* Extract the import.configuration.manager DI configuration to techdivision/import-cli to make it overwritable
+
 # Version 15.2.0
 
 ## Bugfixes

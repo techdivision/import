@@ -747,13 +747,6 @@
         </service>
 
         <!-- 
-         ! The DI configuration for the execution context
-         !-->
-        <service id="import.configuration.manager" class="TechDivision\Import\Execution\ConfigurationManager">
-            <argument type="service" id="configuration"/>
-        </service>
-
-        <!-- 
          ! The DI configuration for the modules
          !-->
         <service id="import.modules" class="\ArrayObject">

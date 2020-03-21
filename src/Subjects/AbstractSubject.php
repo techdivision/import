@@ -247,6 +247,11 @@ abstract class AbstractSubject implements SubjectInterface, FilesystemSubjectInt
      */
     protected $defaultColumnValues = array();
 
+    /**
+     * The values of the actual column, pre-initialized with the default values.
+     *
+     * @var array
+     */
     protected $columnValues = array();
 
     /**
@@ -257,6 +262,7 @@ abstract class AbstractSubject implements SubjectInterface, FilesystemSubjectInt
     protected $entityTypeCodeMappings = array(
         EntityTypeCodes::EAV_ATTRIBUTE                 => EntityTypeCodes::CATALOG_PRODUCT,
         EntityTypeCodes::EAV_ATTRIBUTE_SET             => EntityTypeCodes::CATALOG_PRODUCT,
+        EntityTypeCodes::CATALOG_PRODUCT_URL           => EntityTypeCodes::CATALOG_PRODUCT,
         EntityTypeCodes::CATALOG_PRODUCT_PRICE         => EntityTypeCodes::CATALOG_PRODUCT,
         EntityTypeCodes::CATALOG_PRODUCT_INVENTORY     => EntityTypeCodes::CATALOG_PRODUCT,
         EntityTypeCodes::CATALOG_PRODUCT_INVENTORY_MSI => EntityTypeCodes::CATALOG_PRODUCT,
