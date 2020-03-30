@@ -84,6 +84,18 @@
                 <argument id="import.util.table.prefix" type="service"/>
             </call>
         </service>
+        <service id="import.util.column.names" class="TechDivision\Import\Utils\ColumnNamesUtil">
+            <argument type="service" id="import.loader.exclude.primary.key.column.name"/>
+            <argument type="service" id="import.util.table.prefix"/>
+        </service>
+        <service id="import.util.column.placeholders" class="TechDivision\Import\Utils\ColumnPlaceholdersUtil">
+            <argument type="service" id="import.loader.exclude.primary.key.column.name"/>
+            <argument type="service" id="import.util.table.prefix"/>
+        </service>
+        <service id="import.util.column.values" class="TechDivision\Import\Utils\ColumnValuesUtil">
+            <argument type="service" id="import.loader.exclude.primary.key.column.name"/>
+            <argument type="service" id="import.util.table.prefix"/>
+        </service>
 
         <!--
          | The DI finder factory configuration
@@ -183,6 +195,20 @@
         </service>
         <service id="import.loader.validations" class="TechDivision\Import\Loaders\ValidationLoader">
             <argument type="service" id="import.loader.registry.validations"/>
+        </service>
+        <service id="import.loader.column.metadata" class="TechDivision\Import\Loaders\ColumnMetadataLoader">
+            <argument type="service" id="connection"/>
+        </service>
+        <service id="import.loader.column.name" class="TechDivision\Import\Loaders\ColumnNameLoader">
+            <argument type="service" id="import.loader.column.metadata"/>
+        </service>
+        <service id="import.loader.exclude.primary.key.column.name" class="TechDivision\Import\Loaders\ExcludePrimaryKeyColumnNameLoader">
+            <argument type="service" id="import.loader.column.metadata"/>
+        </service>
+        <service id="import.loader.raw.entity" class="TechDivision\Import\Loaders\RawEntityLoader">
+            <argument type="service" id="connection"/>
+            <argument type="service" id="import.loader.column.metadata"/>
+            <argument type="service" id="import.processor.import"/>
         </service>
 
         <!--
@@ -718,13 +744,6 @@
         </service>
         <service id="import.listener.reset.logger" class="TechDivision\Import\Listeners\ResetLoggerListener">
             <argument type="service" id="loggers"/>
-        </service>
-
-        <!-- 
-         ! The DI configuration for the execution context
-         !-->
-        <service id="import.configuration.manager" class="TechDivision\Import\Execution\ConfigurationManager">
-            <argument type="service" id="configuration"/>
         </service>
 
         <!-- 

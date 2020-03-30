@@ -105,6 +105,7 @@ trait AttributeObserverTrait
      * Remove all the empty values from the row and return the cleared row.
      *
      * @return array The cleared row
+     * @todo Move initialization of $this->cleanUpEmptyColumnKeys to createObserver() method and implement ObserverFactoryInterface
      */
     protected function clearRow()
     {

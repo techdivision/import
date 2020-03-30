@@ -1,3 +1,34 @@
+# Version 15.2.1
+
+## Bugfixes
+
+* Add entity type code CATALOG_PRODUCT_URL to EntityTypeCodes list
+* Add missing mapping EntityTypeCodes::CATALOG_PRODUCT_URL => EntityTypeCodes::CATALOG_PRODUCT to AbstractSubject
+
+## Features
+
+* Extract the import.configuration.manager DI configuration to techdivision/import-cli to make it overwritable
+
+# Version 15.2.0
+
+## Bugfixes
+
+* None
+
+## Features
+
+* Add compiler implementations for dynamic column handling
+
+# Version 15.1.2
+
+## Bugfixes
+
+* Remove unnecessary and slow reference clean-up when removing an item from cache
+
+## Features
+
+* None
+
 # Version 15.1.1
 
 ## Bugfixes

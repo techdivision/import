@@ -130,6 +130,7 @@ class EntityTypeCodes extends \ArrayObject
             array(
                 EntityTypeCodes::NONE,
                 EntityTypeCodes::CATALOG_PRODUCT,
+                EntityTypeCodes::CATALOG_PRODUCT_URL,
                 EntityTypeCodes::CATALOG_PRODUCT_PRICE,
                 EntityTypeCodes::CATALOG_PRODUCT_INVENTORY,
                 EntityTypeCodes::CATALOG_CATEGORY,
