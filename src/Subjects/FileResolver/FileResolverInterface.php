@@ -20,6 +20,7 @@
 
 namespace TechDivision\Import\Subjects\FileResolver;
 
+use TechDivision\Import\Adapter\FilesystemAdapterInterface;
 use TechDivision\Import\Configuration\SubjectConfigurationInterface;
 
 /**
@@ -51,6 +52,27 @@ interface FileResolverInterface
     public function getSubjectConfiguration();
 
     /**
+     * Set's the filesystem adapter instance.
+     *
+     * @param \TechDivision\Import\Adapter\FilesystemAdapterInterface $filesystemAdapter
+     */
+    public function setFilesystemAdapter(FilesystemAdapterInterface $filesystemAdapter);
+
+    /**
+     * Return's the filesystem adapter instance.
+     *
+     * @return \TechDivision\Import\Adapter\FilesystemAdapterInterface The filesystem adapter instance
+     */
+    public function getFilesystemAdapter();
+
+    /**
+     * Returns the number of matches found.
+     *
+     * @return integer The number of matches
+     */
+    public function countMatches();
+
+    /**
      * Returns the matches.
      *
      * @return array The array with the matches
@@ -58,11 +80,71 @@ interface FileResolverInterface
     public function getMatches();
 
     /**
+     * Adds the passed match to the array with the matches.
+     *
+     * @param string $match The match itself
+     *
+     * @return void
+     */
+    public function addMatch(array $match);
+
+    /**
+     * Returns the match with the passed name.
+     *
+     * @param string $name The name of the match to return
+     *
+     * @return string|null The match itself
+     */
+    public function getMatch($name);
+
+    /**
      * Resets the file resolver to parse another source directory for new files.
      *
      * @return void
      */
     public function reset();
+
+    /**
+     * Returns the OK file suffix to use.
+     *
+     * @return string The OK file suffix
+     */
+    public function getOkFileSuffix();
+
+    /**
+     * Returns the delement separator char.
+     *
+     *  @return string The element separator char
+     */
+    public function getElementSeparator();
+
+    /**
+     * Returns the elements the filenames consists of, converted to lowercase.
+     *
+     * @return array The array with the filename elements
+     */
+    public function getPatternKeys();
+
+    /**
+     * Returns the values to create the regex pattern from.
+     *
+     * @param array|null $patternKeys The pattern keys used to load the pattern values
+     *
+     * @return array The array with the pattern values
+     */
+    public function resolvePatternValues(array $patternKeys = null);
+
+    /**
+     * Prepares and returns the pattern for the regex to load the files from the
+     * source directory for the passed subject.
+     *
+     * @param array|null  $patternKeys      The pattern keys used to load the pattern values
+     * @param string|null $suffix           The suffix used to prepare the regular expression
+     * @param string|null $elementSeparator The element separator used to prepare the regular expression
+     *
+     * @return string The prepared regex pattern
+     */
+    public function preparePattern(array $patternKeys = null, string $suffix = null, string $elementSeparator = null) : string;
 
     /**
      * Loads the files from the source directory and return's them sorted.

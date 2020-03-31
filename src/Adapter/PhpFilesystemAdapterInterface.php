@@ -42,4 +42,14 @@ interface PhpFilesystemAdapterInterface extends FilesystemAdapterInterface
      * @throws \Exception Is thrown, if the directory can not be removed
      */
     public function removeDir($src, $recursive = false);
+
+    /**
+     * Find and return pathnames matching a pattern
+     *
+     * @param string  $pattern No tilde expansion or parameter substitution is done.
+     * @param int     $flags   Flags that changes the behaviour
+     *
+     * @return array Containing the matched files/directories, an empty array if no file matched or FALSE on error
+     */
+    public function glob(string $pattern, int $flags = 0);
 }

@@ -59,92 +59,22 @@ class SimpleFileResolver extends AbstractFileResolver
     }
 
     /**
-     * Returns the number of matches found.
-     *
-     * @return integer The number of matches
-     */
-    protected function countMatches()
-    {
-        return sizeof($this->matches);
-    }
-
-    /**
-     * Adds the passed match to the array with the matches.
-     *
-     * @param string $match The match itself
-     *
-     * @return void
-     */
-    protected function addMatch(array $match)
-    {
-
-        // lowercase all values of the passed match
-        array_walk($match, function (&$val, &$key) {
-            strtolower($key);
-        });
-
-        // add the match
-        $this->matches[] = $match;
-    }
-
-    /**
-     * Returns the match with the passed name.
-     *
-     * @param string $name The name of the match to return
-     *
-     * @return string|null The match itself
-     */
-    protected function getMatch($name)
-    {
-
-        // create the key of the last match
-        $key = sizeof($this->matches) - 1;
-
-        // query whether or not a match is available
-        if (isset($this->matches[$key])) {
-            // load the last match
-            $lastMatch = $this->matches[$key];
-
-            // query whether or not a value with the passed key is available
-            if (isset($lastMatch[$name])) {
-                return $lastMatch[$name];
-            }
-        }
-    }
-
-    /**
-     * Returns the elements the filenames consists of, converted to lowercase.
-     *
-     * @return array The array with the filename elements
-     */
-    protected function getPatternKeys()
-    {
-
-        // load the pattern keys from the configuration
-        $patternKeys = $this->getPatternElements();
-
-        // make sure that they are all lowercase
-        array_walk($patternKeys, function (&$value) {
-            $value = strtolower($value);
-        });
-
-        // return the pattern keys
-        return $patternKeys;
-    }
-
-    /**
      * Returns the values to create the regex pattern from.
+     *
+     * @param array|null $patternKeys The pattern keys used to load the pattern values
      *
      * @return array The array with the pattern values
      */
-    protected function resolvePatternValues()
+    public function resolvePatternValues(array $patternKeys = null)
     {
 
         // initialize the array
         $elements = array();
 
-        // load the pattern keys
-        $patternKeys = $this->getPatternKeys();
+        // load the pattern keys, if not passed
+        if ($patternKeys === null) {
+            $patternKeys = $this->getPatternKeys();
+        }
 
         // prepare the pattern values
         foreach ($patternKeys as $element) {
@@ -184,17 +114,6 @@ class SimpleFileResolver extends AbstractFileResolver
     }
 
     /**
-     * Prepares and returns the pattern for the regex to load the files from the
-     * source directory for the passed subject.
-     *
-     * @return string The prepared regex pattern
-     */
-    protected function preparePattern()
-    {
-        return sprintf($this->getRegex(), implode($this->getElementSeparator(), $this->resolvePatternValues()), $this->getSuffix());
-    }
-
-    /**
      * Queries whether or not, the passed filename should be handled by the subject.
      *
      * @param string $filename The filename to query for
@@ -214,6 +133,82 @@ class SimpleFileResolver extends AbstractFileResolver
 
         // stop processing, because the filename doesn't match the subjects pattern
         return (boolean) $result;
+    }
+
+    /**
+     * Prepares and returns the pattern for the regex to load the files from the
+     * source directory for the passed subject.
+     *
+     * @param array|null  $patternKeys      The pattern keys used to load the pattern values
+     * @param string|null $suffix           The suffix used to prepare the regular expression
+     * @param string|null $elementSeparator The element separator used to prepare the regular expression
+     *
+     * @return string The prepared regex pattern
+     */
+    public function preparePattern(array $patternKeys = null, string $suffix = null, string $elementSeparator = null) : string
+    {
+        return sprintf(
+            $this->getRegex(),
+            implode(
+                $elementSeparator ? $elementSeparator : $this->getElementSeparator(),
+                $this->resolvePatternValues($patternKeys)
+            ),
+            $suffix ? $suffix : $this->getSuffix()
+        );
+    }
+
+    /**
+     * Returns the number of matches found.
+     *
+     * @return integer The number of matches
+     */
+    public function countMatches()
+    {
+        return sizeof($this->matches);
+    }
+
+    /**
+     * Adds the passed match to the array with the matches.
+     *
+     * @param string $match The match itself
+     *
+     * @return void
+     */
+    public function addMatch(array $match)
+    {
+
+        // lowercase all values of the passed match
+        array_walk($match, function (&$val, &$key) {
+            strtolower($key);
+        });
+
+        // add the match
+        $this->matches[] = $match;
+    }
+
+    /**
+     * Returns the match with the passed name.
+     *
+     * @param string $name The name of the match to return
+     *
+     * @return string|null The match itself
+     */
+    public function getMatch($name)
+    {
+
+        // create the key of the last match
+        $key = sizeof($this->matches) - 1;
+
+        // query whether or not a match is available
+        if (isset($this->matches[$key])) {
+            // load the last match
+            $lastMatch = $this->matches[$key];
+
+            // query whether or not a value with the passed key is available
+            if (isset($lastMatch[$name])) {
+                return $lastMatch[$name];
+            }
+        }
     }
 
     /**

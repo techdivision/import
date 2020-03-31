@@ -150,12 +150,12 @@ class PhpFilesystemAdapter implements PhpFilesystemAdapterInterface
     {
 
         // parse the directory
-        $files = glob($pattern = sprintf('%s/*', $directory), 0);
+        $files = $this->glob($pattern = sprintf('%s/*', $directory), 0);
 
         // parse all subdirectories, if recursive parsing is wanted
         if ($recursive !== false) {
             // load the directories
-            $dirs = glob(dirname($pattern). DIRECTORY_SEPARATOR . '*', GLOB_ONLYDIR|GLOB_NOSORT|GLOB_BRACE);
+            $dirs = $this->glob(dirname($pattern). DIRECTORY_SEPARATOR . '*', GLOB_ONLYDIR|GLOB_NOSORT|GLOB_BRACE);
             // iterate over the subdirectories for its files
             foreach ($dirs as $dir) {
                 $files = array_merge($files, $this->listContents($dir . DIRECTORY_SEPARATOR . basename($pattern), $recursive));
@@ -185,10 +185,10 @@ class PhpFilesystemAdapter implements PhpFilesystemAdapterInterface
         while (false !== ($file = readdir($dir))) {
             if (($file != '.') && ($file != '..')) {
                 $full = $src . '/' . $file;
-                if (is_dir($full)) {
+                if ($this->isDir($full)) {
                     $recursive ?? $this->removeDir($full, $recursive);
                 } else {
-                    if (!unlink($full)) {
+                    if (!$this->delete($full)) {
                         throw new \Exception(sprintf('Can\'t remove file %s', $full));
                     }
                 }
@@ -200,5 +200,18 @@ class PhpFilesystemAdapter implements PhpFilesystemAdapterInterface
         if (!rmdir($src)) {
             throw new \Exception(sprintf('Can\'t remove directory %s', $src));
         }
+    }
+
+    /**
+     * Find and return pathnames matching a pattern
+     *
+     * @param string  $pattern No tilde expansion or parameter substitution is done.
+     * @param int     $flags   Flags that changes the behaviour
+     *
+     * @return array Containing the matched files/directories, an empty array if no file matched or FALSE on error
+     */
+    public function glob(string $pattern, int $flags = 0)
+    {
+        return glob($pattern, $flags);
     }
 }

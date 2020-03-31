@@ -43,6 +43,13 @@ class ConfigurationManager implements ConfigurationManagerInterface
     private $configuration;
 
     /**
+     * Mapping for entity type (for configuration purposes only).
+     *
+     * @var array
+     */
+    private $entityTypeMapping = array('none' => 'general');
+
+    /**
      * Mapping for entity type to edition mapping (for configuration purposes only).
      *
      * @var array
@@ -54,7 +61,9 @@ class ConfigurationManager implements ConfigurationManagerInterface
         'catalog_product_tier_price'    => 'general',
         'catalog_product_url'           => 'general',
         'customer_address'              => 'general',
-        'customer'                      => 'general'
+        'customer'                      => 'general',
+        'general'                       => 'general',
+        'none'                          => 'general'
     );
 
     /**
@@ -94,10 +103,13 @@ class ConfigurationManager implements ConfigurationManagerInterface
         // load the shortcuts from the configuration
         $shortcuts = $configuration->getShortcuts();
 
+        // map the entity type code, if necessary
+        $entityTypeCode = $this->mapEntityType($configuration->getEntityTypeCode());
+
         // query whether or not a shortcut has been passed
         if ($shortcut = $configuration->getShortcut()) {
             // load the entity type code and map it to the Magento edition
-            $magentoEdition = $this->mapEntityTypeToMagentoEdition($entityTypeCode = $configuration->getEntityTypeCode());
+            $magentoEdition = $this->mapEntityTypeToMagentoEdition($entityTypeCode);
             // load the operation names from the shorcuts
             foreach ($shortcuts[$magentoEdition][$entityTypeCode] as $shortcutName => $opNames) {
                 // query whether or not the operation has to be executed or not
@@ -215,24 +227,43 @@ class ConfigurationManager implements ConfigurationManagerInterface
     }
 
     /**
-     * Return's the Entity Type to the configuration specific Magento Edition.
+     * Return's the entity type mapping.
      *
-     * @param string $entityType The Entity Type fot map
+     * @param string $entityType The entity type to map
      *
-     * @return string The mapped configuration specific Magento Edition
+     * @return string The mapped entity type
+     */
+    protected function mapEntityType($entityType)
+    {
+
+        // map the entity type, if a mapping is available
+        if (isset($this->entityTypeMapping[$entityType])) {
+            return $this->entityTypeMapping[$entityType];
+        }
+
+        // return the entity type
+        return $entityType;
+    }
+
+    /**
+     * Return's the entity type to the configuration specific Magento edition.
+     *
+     * @param string $entityType The entity type to map
+     *
+     * @return string The mapped configuration specific Magento edition
      */
     protected function mapEntityTypeToMagentoEdition($entityType)
     {
 
-        // load the actual Magento Edition
+        // load the actual Magento edition
         $magentoEdition = strtolower($this->getConfiguration()->getMagentoEdition());
 
-        // map the Entity Type to the configuration specific Magento Edition
+        // map the entity type to the configuration specific Magento edition
         if (isset($this->entityTypeToEditionMapping[$entityType])) {
             $magentoEdition = $this->entityTypeToEditionMapping[$entityType];
         }
 
-        // return the Magento Edition
+        // return the magento edition
         return $magentoEdition;
     }
 }

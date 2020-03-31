@@ -2,6 +2,13 @@
   "operations": {
     "general": {
       "general": {
+        "create-ok-files": {
+          "plugins": {
+            "subject": {
+              "id": "import.plugin.create.ok.files"
+            }
+          }
+        },
         "global-data": {
           "plugins": {
             "global-data": {

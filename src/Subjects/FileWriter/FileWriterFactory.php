@@ -1,7 +1,7 @@
 <?php
 
 /**
- * TechDivision\Import\Subjects\FileResolver\FileResolverFactory
+ * TechDivision\Import\Subjects\FileWriter\FileWriterFactory
  *
  * NOTICE OF LICENSE
  *
@@ -12,28 +12,27 @@
  * PHP version 5
  *
  * @author    Tim Wagner <t.wagner@techdivision.com>
- * @copyright 2016 TechDivision GmbH <info@techdivision.com>
+ * @copyright 2020 TechDivision GmbH <info@techdivision.com>
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
  */
 
-namespace TechDivision\Import\Subjects\FileResolver;
+namespace TechDivision\Import\Subjects\FileWriter;
 
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use TechDivision\Import\Adapter\FilesystemAdapterFactoryInterface;
 use TechDivision\Import\Configuration\SubjectConfigurationInterface;
 
 /**
- * Factory for file resolver instances.
+ * Factory for file writer instances.
  *
  * @author    Tim Wagner <t.wagner@techdivision.com>
- * @copyright 2016 TechDivision GmbH <info@techdivision.com>
+ * @copyright 2020 TechDivision GmbH <info@techdivision.com>
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
  */
-class FileResolverFactory implements FileResolverFactoryInterface
+class FileWriterFactory implements FileWriterFactoryInterface
 {
 
     /**
@@ -58,23 +57,16 @@ class FileResolverFactory implements FileResolverFactoryInterface
      *
      * @param \TechDivision\Import\Configuration\SubjectConfigurationInterface $subject The subject to create the file resolver for
      *
-     * @return \TechDivision\Import\Subjects\FileResolver\FileResolverInterface The file resolver instance
+     * @return \TechDivision\Import\Subjects\FileWriter\FileWriterInterface The file resolver instance
      */
-    public function createFileResolver(SubjectConfigurationInterface $subject)
+    public function createFileWriter(SubjectConfigurationInterface $subject) : FileWriterInterface
     {
 
         // create a new file resolver instance for the subject with the passed configuration
-        $fileResolver = $this->container->get($subject->getFileResolver()->getId());
+        $fileWriter = $this->container->get($subject->getFileWriter()->getId());
+        $fileWriter->setFileResolver($this->container->get($subject->getFileResolver()->getId()));
 
-        $filesystemAdapter = $this->container->get($subject->getFilesystemAdapter()->getId());
-        if ($filesystemAdapter instanceof FilesystemAdapterFactoryInterface) {
-            $filesystemAdapter = $filesystemAdapter->createFilesystemAdapter($subject);
-        }
-
-        $fileResolver->setFilesystemAdapter($filesystemAdapter);
-        $fileResolver->setSubjectConfiguration($subject);
-
-        // return the file resolver instance
-        return $fileResolver;
+        // return the file writer instance
+        return $fileWriter;
     }
 }

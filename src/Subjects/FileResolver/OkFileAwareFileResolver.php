@@ -1,7 +1,7 @@
 <?php
 
 /**
- * TechDivision\Import\Subjects\FileResolver\BunchFileResolver
+ * TechDivision\Import\Subjects\FileResolver\OkFileAwareFileResolver
  *
  * NOTICE OF LICENSE
  *

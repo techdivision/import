@@ -454,6 +454,23 @@
         </service>
 
         <!--
+         | The DI configuration for the file writers and their factories
+         |-->
+        <service id="import.subject.file.writer.filter.default.ok.file" class="TechDivision\Import\Subjects\FileWriter\Filters\DefaultOkFileFilter"/>
+        <service id="import.subject.file.writer.sorter,default.ok.file" class="TechDivision\Import\Subjects\FileWriter\Sorters\DefaultOkFileSorter"/>
+        <service id="import.subject.file.writer.factory" class="TechDivision\Import\Subjects\FileWriter\FileWriterFactory">
+            <argument type="service" id="service_container"/>
+        </service>
+        <service id="import.subject.file.writer.ok.file.aware" class="TechDivision\Import\Subjects\FileWriter\OkFileAwareFileWriter">
+            <call method="addFilter">
+                <argument id="import.subject.file.writer.filter.default.ok.file" type="service"/>
+            </call>
+            <call method="addSorter">
+                <argument id="import.subject.file.writer.sorter,default.ok.file" type="service"/>
+            </call>
+        </service>
+
+        <!--
          | The DI configuration for the number converters and their factories
          |-->
         <service id="import.subject.number.converter.factory" class="TechDivision\Import\Subjects\I18n\NumberConverterFactory">
@@ -522,6 +539,9 @@
         <service id="import.plugin.missing.option.values" class="TechDivision\Import\Plugins\MissingOptionValuesPlugin">
             <argument type="service" id="import_app_simple.simple"/>
             <argument type="service" id="import.adapter.export.csv"/>
+        </service>
+        <service id="import.plugin.create.ok.files" class="TechDivision\Import\Plugins\CreateOkFilesPlugin">
+            <argument type="service" id="import_app_simple.simple"/>
         </service>
 
         <!--

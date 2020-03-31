@@ -20,10 +20,11 @@
 
 namespace TechDivision\Import\Subjects\FileResolver;
 
-use TechDivision\Import\Utils\RegistryKeys;
 use TechDivision\Import\ApplicationInterface;
-use TechDivision\Import\Services\RegistryProcessorInterface;
+use TechDivision\Import\Adapter\FilesystemAdapterInterface;
 use TechDivision\Import\Configuration\SubjectConfigurationInterface;
+use TechDivision\Import\Services\RegistryProcessorInterface;
+use TechDivision\Import\Utils\RegistryKeys;
 
 /**
  * Abstract file resolver implementation.
@@ -71,6 +72,13 @@ abstract class AbstractFileResolver implements FileResolverInterface
      * @var \TechDivision\Import\Configuration\SubjectConfigurationInterface
      */
     private $subjectConfiguration;
+
+    /**
+     * The filesystem adapter instance.
+     *
+     * @var \TechDivision\Import\Adapter\PhpFilesystemAdapterInterface
+     */
+    private $filesystemAdapter;
 
     /**
      * Initializes the file resolver with the application and the registry instance.
@@ -137,16 +145,6 @@ abstract class AbstractFileResolver implements FileResolverInterface
     }
 
     /**
-     * Returns the delement separator char.
-     *
-     *  @return string The element separator char
-     */
-    protected function getElementSeparator()
-    {
-        return $this->getFileResolverConfiguration()->getElementSeparator();
-    }
-
-    /**
      * Returns the elements the filenames consists of.
      *
      * @return array The array with the filename elements
@@ -167,16 +165,6 @@ abstract class AbstractFileResolver implements FileResolverInterface
     }
 
     /**
-     * Returns the OK file suffix to use.
-     *
-     * @return string The OK file suffix
-     */
-    protected function getOkFileSuffix()
-    {
-        return $this->getFileResolverConfiguration()->getOkFileSuffix();
-    }
-
-    /**
      * Initializes the file resolver for the import process with the passed serial.
      *
      * @param string $serial The unique identifier of the actual import process
@@ -191,12 +179,55 @@ abstract class AbstractFileResolver implements FileResolverInterface
         $status = $this->getRegistryProcessor()->getAttribute(RegistryKeys::STATUS);
 
         // query whether or not the configured source directory is available
-        if (!is_dir($sourceDir = $status[RegistryKeys::SOURCE_DIRECTORY])) {
-            throw new \Exception(sprintf('Configured source directory "%s" is not available!', $sourceDir));
+        if ($this->getFilesystemAdapter()->isDir($sourceDir = $status[RegistryKeys::SOURCE_DIRECTORY])) {
+            // set the source directory, if it is accessible
+            $this->setSourceDir($sourceDir);
+            // return immediately
+            return;
         }
 
-        // set the source directory
-        $this->setSourceDir($sourceDir);
+        // throw an exception otherwise
+        throw new \Exception(sprintf('Configured source directory "%s" is not available!', $sourceDir));
+    }
+
+    /**
+     * Returns the OK file suffix to use.
+     *
+     * @return string The OK file suffix
+     */
+    public function getOkFileSuffix()
+    {
+        return $this->getFileResolverConfiguration()->getOkFileSuffix();
+    }
+
+    /**
+     * Returns the delement separator char.
+     *
+     *  @return string The element separator char
+     */
+    public function getElementSeparator()
+    {
+        return $this->getFileResolverConfiguration()->getElementSeparator();
+    }
+
+    /**
+     * Returns the elements the filenames consists of, converted to lowercase.
+     *
+     * @return array The array with the filename elements
+     */
+    public function getPatternKeys()
+    {
+
+        // load the pattern keys from the configuration
+        $patternKeys = $this->getPatternElements();
+
+        // make sure that they are all lowercase
+        array_walk($patternKeys, function (&$value) {
+            $value = strtolower($value);
+        });
+
+        // return the pattern keys
+        return $patternKeys;
     }
 
     /**
@@ -222,6 +253,26 @@ abstract class AbstractFileResolver implements FileResolverInterface
     }
 
     /**
+     * Set's the filesystem adapter instance.
+     *
+     * @param \TechDivision\Import\Adapter\FilesystemAdapterInterface $filesystemAdapter
+     */
+    public function setFilesystemAdapter(FilesystemAdapterInterface $filesystemAdapter)
+    {
+        $this->filesystemAdapter = $filesystemAdapter;
+    }
+
+    /**
+     * Return's the filesystem adapter instance.
+     *
+     * @return \TechDivision\Import\Adapter\FilesystemAdapterInterface The filesystem adapter instance
+     */
+    public function getFilesystemAdapter()
+    {
+        return $this->filesystemAdapter;
+    }
+
+    /**
      * Loads the files from the source directory and return's them sorted.
      *
      * @param string $serial The unique identifier of the actual import process
@@ -239,7 +290,7 @@ abstract class AbstractFileResolver implements FileResolverInterface
         $this->initialize($serial);
 
         // initialize the array with the files matching the suffix found in the source directory
-        $files = glob(sprintf('%s/*.%s', $this->getSourceDir(), $this->getSuffix()));
+        $files = $this->getFilesystemAdapter()->glob(sprintf('%s/*.%s', $this->getSourceDir(), $this->getSuffix()));
 
         // sort the files for the apropriate order
         usort($files, function ($a, $b) {
