@@ -443,7 +443,7 @@ class ConvertLiteral implements FilterInterface
     public function filter($string)
     {
         $string = strtr($string, $this->getConvertTable());
-        return '"libiconv"' == ICONV_IMPL ? iconv(
+        return 'libiconv' == trim(ICONV_IMPL, '"'."'") ? iconv(
             'UTF-8',
             'ascii//ignore//translit',
             $string
