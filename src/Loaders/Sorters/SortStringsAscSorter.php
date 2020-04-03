@@ -1,7 +1,7 @@
 <?php
 
 /**
- * TechDivision\Import\Subjects\FileWriter\FileWriterInterface
+ * TechDivision\Import\Loaders\Sorters\SortStringsAscSorter
  *
  * NOTICE OF LICENSE
  *
@@ -18,10 +18,10 @@
  * @link      http://www.techdivision.com
  */
 
-namespace TechDivision\Import\Subjects\FileWriter;
+namespace TechDivision\Import\Loaders\Sorters;
 
 /**
- * Interface for all file writer implementations.
+ * Callback that can be used to sort strings in an ascending order.
  *
  * @author    Tim Wagner <t.wagner@techdivision.com>
  * @copyright 2020 TechDivision GmbH <info@techdivision.com>
@@ -29,16 +29,20 @@ namespace TechDivision\Import\Subjects\FileWriter;
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
  */
-interface FileWriterInterface
+class SortStringsAscSorter
 {
 
     /**
-     * Create's the .OK files for the import with the passed serial.
+     * Compare's that passed strings binary safe and return's an integer, depending on the comparison result.
      *
-     * @param string $serial The serial to create the .OK files for
+     * @param string $str1 The first string
+     * @param string $str2 The second string
      *
-     * @return int Return's the number of created .OK files
-     * @throws \Exception Is thrown, one of the proposed .OK files can not be created
+     * @return int int < 0 if str1 is less than str2; > 0 if str1 is greater than str2, and 0 if they are equal.
+     * @link http://www.php.net/manual/en/function.strcmp.php
      */
-    public function createOkFiles(string $serial) : int;
+    public function __invoke(string $str1, string $str2) : int
+    {
+        return strcmp($str1, $str2);
+    }
 }

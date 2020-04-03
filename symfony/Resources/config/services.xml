@@ -210,6 +210,28 @@
             <argument type="service" id="import.loader.column.metadata"/>
             <argument type="service" id="import.processor.import"/>
         </service>
+        <service id="import.loader.filter.ok.file" class="TechDivision\Import\Loaders\Filters\OkFileFilter"/>
+        <service id="import.loader.filesystem" class="TechDivision\Import\Loaders\FilesystemLoader">
+            <argument type="service" id="import.adapter.filesystem.php"/>
+        </service>
+        <service id="import.loader.sorted.filesystem" class="TechDivision\Import\Loaders\SortedFilesystemLoader">
+            <argument type="service" id="import.loader.filesystem"/>
+        </service>
+        <service id="import.loader.filtered.filesystem" class="TechDivision\Import\Loaders\FilteredFilesystemLoader">
+            <argument type="service" id="import.loader.sorted.filesystem"/>
+        </service>
+        <service id="import.loader.factory.proposed.ok.filename" class="TechDivision\Import\Loaders\ProposedOkFilenameLoaderFactory">
+            <argument type="service" id="service_container"/>
+            <argument type="service" id="import.processor.registry"/>
+        </service>
+
+        <!--
+         | The DI handler configuration
+         |-->
+        <service id="import.handler.factory.ok.file" class="TechDivision\Import\Handlers\OkFileHandlerFactory">
+            <argument type="service" id="service_container"/>
+            <argument type="service" id="import.loader.factory.proposed.ok.filename"/>
+        </service>
 
         <!--
          | The DI cache configuration
@@ -439,10 +461,6 @@
         <service id="import.subject.file.resolver.factory" class="TechDivision\Import\Subjects\FileResolver\FileResolverFactory">
             <argument type="service" id="service_container"/>
         </service>
-        <service id="import.subject.file.resolver.simple" class="TechDivision\Import\Subjects\FileResolver\SimpleFileResolver">
-            <argument type="service" id="import_app_simple.simple"/>
-            <argument type="service" id="import.processor.registry"/>
-        </service>
         <service id="import.subject.file.resolver.ok.file.aware" class="TechDivision\Import\Subjects\FileResolver\OkFileAwareFileResolver">
             <argument type="service" id="import_app_simple.simple"/>
             <argument type="service" id="import.processor.registry"/>
@@ -460,14 +478,10 @@
         <service id="import.subject.file.writer.sorter,default.ok.file" class="TechDivision\Import\Subjects\FileWriter\Sorters\DefaultOkFileSorter"/>
         <service id="import.subject.file.writer.factory" class="TechDivision\Import\Subjects\FileWriter\FileWriterFactory">
             <argument type="service" id="service_container"/>
+            <argument type="service" id="import.handler.factory.ok.file"/>
         </service>
         <service id="import.subject.file.writer.ok.file.aware" class="TechDivision\Import\Subjects\FileWriter\OkFileAwareFileWriter">
-            <call method="addFilter">
-                <argument id="import.subject.file.writer.filter.default.ok.file" type="service"/>
-            </call>
-            <call method="addSorter">
-                <argument id="import.subject.file.writer.sorter,default.ok.file" type="service"/>
-            </call>
+            <argument id="import.processor.registry" type="service"/>
         </service>
 
         <!--
@@ -542,6 +556,7 @@
         </service>
         <service id="import.plugin.create.ok.files" class="TechDivision\Import\Plugins\CreateOkFilesPlugin">
             <argument type="service" id="import_app_simple.simple"/>
+            <argument type="service" id="import.subject.file.writer.factory"/>
         </service>
 
         <!--
@@ -620,7 +635,7 @@
         <service id="import.observer.generic.validator" class="TechDivision\Import\Observers\GenericValidatorObserver">
             <argument type="service" id="import.processor.registry"/>
         </service>
-
+        
         <service id="import.visitor.callback" class="TechDivision\Import\Callbacks\CallbackVisitor">
             <argument type="service" id="service_container"/>
         </service>

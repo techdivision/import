@@ -1,7 +1,7 @@
 <?php
 
 /**
- * TechDivision\Import\Subjects\FileResolver\OkFileAwareFileResolverInterface
+ * TechDivision\Import\Handlers\GenericFileHandlerInterface
  *
  * NOTICE OF LICENSE
  *
@@ -12,34 +12,34 @@
  * PHP version 5
  *
  * @author    Tim Wagner <t.wagner@techdivision.com>
- * @copyright 2019 TechDivision GmbH <info@techdivision.com>
+ * @copyright 2020 TechDivision GmbH <info@techdivision.com>
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
  */
 
-namespace TechDivision\Import\Subjects\FileResolver;
+namespace TechDivision\Import\Handlers;
 
 /**
- * Interface for all OK file aware resolver implementations.
+ * A generic interface for file handler implementations implementations.
  *
  * @author    Tim Wagner <t.wagner@techdivision.com>
- * @copyright 2019 TechDivision GmbH <info@techdivision.com>
+ * @copyright 2020 TechDivision GmbH <info@techdivision.com>
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
  */
-interface OkFileAwareFileResolverInterface extends FileResolverInterface
+interface GenericFileHandlerInterface extends HandlerInterface
 {
 
     /**
-     * Query whether or not, the passed CSV filename is in the OK file. If the filename was found,
-     * the OK file will be cleaned-up.
+     * Remove's the passed line from the file with the passed name.
      *
-     * @param string $filename The filename to be cleaned-up
+     * @param string   $line The line to be removed
+     * @param resource $fh   The file handle of the file the line has to be removed
      *
      * @return void
-     * @throws \Exception Is thrown, if the passed filename is NOT in the OK file or the OK can not be cleaned-up
+     * @throws \Exception Is thrown, if the file doesn't exists, the line is not found or can not be removed
      */
-    public function cleanUpOkFile(string $filename) : void;
+    public function removeLineFromFile(string $line, $fh) : void;
 }

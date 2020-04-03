@@ -1,7 +1,7 @@
 <?php
 
 /**
- * TechDivision\Import\Subjects\FileWriter\FileWriterInterface
+ * TechDivision\Import\Handlers\HandlerFactoryInterface
  *
  * NOTICE OF LICENSE
  *
@@ -18,10 +18,10 @@
  * @link      http://www.techdivision.com
  */
 
-namespace TechDivision\Import\Subjects\FileWriter;
+namespace TechDivision\Import\Handlers;
 
 /**
- * Interface for all file writer implementations.
+ * Interface for handler factory implementations
  *
  * @author    Tim Wagner <t.wagner@techdivision.com>
  * @copyright 2020 TechDivision GmbH <info@techdivision.com>
@@ -29,16 +29,13 @@ namespace TechDivision\Import\Subjects\FileWriter;
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
  */
-interface FileWriterInterface
+interface HandlerFactoryInterface
 {
 
     /**
-     * Create's the .OK files for the import with the passed serial.
+     * Create's and return's a new handler instance.
      *
-     * @param string $serial The serial to create the .OK files for
-     *
-     * @return int Return's the number of created .OK files
-     * @throws \Exception Is thrown, one of the proposed .OK files can not be created
+     * @return \TechDivision\Import\Handlers\HandlerInterface The new handler instance
      */
-    public function createOkFiles(string $serial) : int;
+    public function createHandler() : HandlerInterface;
 }

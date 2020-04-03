@@ -4,7 +4,7 @@
       "general": {
         "create-ok-files": {
           "plugins": {
-            "subject": {
+            "create-ok-files": {
               "id": "import.plugin.create.ok.files"
             }
           }

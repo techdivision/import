@@ -1,7 +1,7 @@
 <?php
 
 /**
- * TechDivision\Import\Subjects\FileWriter\Sorters\DefaultOkFileFilter
+ * TechDivision\Import\Loaders\Sorters\SorterImplInterface
  *
  * NOTICE OF LICENSE
  *
@@ -18,10 +18,10 @@
  * @link      http://www.techdivision.com
  */
 
-namespace TechDivision\Import\Subjects\FileWriter\Sorters;
+namespace TechDivision\Import\Loaders\Sorters;
 
 /**
- * Factory for file writer instances.
+ * Interface for sorter implementations.
  *
  * @author    Tim Wagner <t.wagner@techdivision.com>
  * @copyright 2020 TechDivision GmbH <info@techdivision.com>
@@ -29,15 +29,30 @@ namespace TechDivision\Import\Subjects\FileWriter\Sorters;
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
  */
-interface FileWriterSorterInterface
+interface SorterImplInterface
 {
 
     /**
+     * Add's the passed sorter to the loader instance.
      *
-     * @param array  $v
-     * @param string $k
+     * @param callable $sorter The sorter to add
      *
-     * @return boolean TRUE if the value with the actual key should be in the array, else FALSE
+     * @return void
      */
-    public function __invoke(array $a, array $b) : int;
+    public function addSorter(callable $sorter) : void;
+
+    /**
+     * Return's the array with the sorter callbacks.
+     *
+     * @return callable[] The sorter callbacks
+     */
+    public function getSorters() : array;
+
+    /**
+     *
+     * @param array $data
+     *
+     * @return void
+     */
+    public function sort(array &$data) : void;
 }

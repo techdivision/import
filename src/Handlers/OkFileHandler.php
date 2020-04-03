@@ -1,7 +1,7 @@
 <?php
 
 /**
- * TechDivision\Import\Subjects\FileResolver\OkFileAwareFileResolver
+ * TechDivision\Import\Handlers\PidFileHandler
  *
  * NOTICE OF LICENSE
  *
@@ -12,67 +12,108 @@
  * PHP version 5
  *
  * @author    Tim Wagner <t.wagner@techdivision.com>
- * @copyright 2016 TechDivision GmbH <info@techdivision.com>
+ * @copyright 2020 TechDivision GmbH <info@techdivision.com>
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
  */
 
-namespace TechDivision\Import\Subjects\FileResolver;
+namespace TechDivision\Import\Handlers;
 
+use TechDivision\Import\Loaders\FilteredLoaderInterface;
 use TechDivision\Import\Exceptions\LineNotFoundException;
 use TechDivision\Import\Exceptions\MissingOkFileException;
-use TechDivision\Import\ApplicationInterface;
-use TechDivision\Import\Services\RegistryProcessorInterface;
-use TechDivision\Import\Loaders\FilteredLoaderInterface;
+use TechDivision\Import\Adapter\FilesystemAdapterInterface;
+use TechDivision\Import\Configuration\Subject\FileResolverConfigurationInterface;
 
 /**
- * Plugin that processes the subjects.
+ * An .OK file handler implementation.
  *
  * @author    Tim Wagner <t.wagner@techdivision.com>
- * @copyright 2016 TechDivision GmbH <info@techdivision.com>
+ * @copyright 2020 TechDivision GmbH <info@techdivision.com>
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
  */
-class OkFileAwareFileResolver extends AbstractFileResolver implements OkFileAwareFileResolverInterface
+class OkFileHandler implements OkFileHandlerInterface
 {
 
     /**
-     * The appliation instance.
+     * The loader instance used to load the proposed .OK filenames and it's content.
      *
-     * @var \TechDivision\Import\ApplicationInterface
+     * @var \TechDivision\Import\Loaders\FilteredLoaderInterface
      */
-    private $application;
+    private $loader;
 
     /**
-     * Initializes the file resolver with the application and the registry instance.
+     * The generic file handler instance.
      *
-     * @param \TechDivision\Import\ApplicationInterface                $application       The application instance
-     * @param \TechDivision\Import\Services\RegistryProcessorInterface $registryProcessor The registry instance
-     * @param \TechDivision\Import\Loaders\FilteredLoaderInterface     $filesystemLoader  The filesystem loader instance
+     * @var \TechDivision\Import\Handlers\GenericFileHandlerInterface
      */
-    public function __construct(
-        ApplicationInterface $application,
-        RegistryProcessorInterface $registryProcessor,
-        FilteredLoaderInterface $filesystemLoader
-    ) {
+    private $genericFileHandler;
 
-        // set the application instance
-        $this->application = $application;
+    /**
+     * The filesystem adapter instance.
+     *
+     * @var \TechDivision\Import\Adapter\FilesystemAdapterInterface
+     */
+    private $filesystemAdapter;
 
-        // pass the processor and filesystem loader instance to the parent constructor
-        parent::__construct($registryProcessor, $filesystemLoader);
+    /**
+     * The file resolver configuration instance.
+     *
+     * @var \TechDivision\Import\Configuration\Subject\FileResolverConfigurationInterface
+     */
+    private $fileResolverConfiguration;
+
+    /**
+     * Initializes the file handler instance.
+     *
+     * @param \TechDivision\Import\Handlers\GenericFileHandlerInterface|null $genericFileHandler The generic file handler instance
+     */
+    public function __construct(GenericFileHandlerInterface $genericFileHandler = null)
+    {
+        $this->genericFileHandler = $genericFileHandler ?? new GenericFileHandler();
     }
 
     /**
-     * Return's the application instance.
+     * Return's the generic file handler instance.
      *
-     * @return \TechDivision\Import\ApplicationInterface The application instance
+     * @return \TechDivision\Import\Handlers\GenericFileHandlerInterface The generic file handler instance
      */
-    protected function getApplication() : ApplicationInterface
+    protected function getGenericFileHandler()
     {
-        return $this->application;
+        return $this->genericFileHandler;
+    }
+
+    /**
+     * Return's the filesystem adapter instance.
+     *
+     * @return \TechDivision\Import\Adapter\FilesystemAdapterInterface The filesystem adapter instance
+     */
+    protected function getFilesystemAdapter()
+    {
+        return $this->filesystemAdapter;
+    }
+
+    /**
+     * Return's the loader instance used to load the proposed .OK filenames and it's content.
+     *
+     * @return \TechDivision\Import\Loaders\FilteredLoaderInterface The loader instance
+     */
+    protected function getLoader() : FilteredLoaderInterface
+    {
+        return $this->loader;
+    }
+
+    /**
+     * Returns the file resolver configuration instance.
+     *
+     * @return \TechDivision\Import\Configuration\Subject\FileResolverConfigurationInterface The configuration instance
+     */
+    protected function getFileResolverConfiguration() : FileResolverConfigurationInterface
+    {
+        return $this->fileResolverConfiguration;
     }
 
     /**
@@ -86,7 +127,7 @@ class OkFileAwareFileResolver extends AbstractFileResolver implements OkFileAwar
      */
     protected function removeLineFromFile(string $line, string $filename) : void
     {
-        $this->getApplication()->removeLineFromFile($line, $filename);
+        $this->getGenericFileHandler()->removeLineFromFile($line, $filename);
     }
 
     /**
@@ -134,15 +175,47 @@ class OkFileAwareFileResolver extends AbstractFileResolver implements OkFileAwar
     }
 
     /**
+     * Returns the delement separator char.
+     *
+     *  @return string The element separator char
+     */
+    protected function getElementSeparator() : string
+    {
+        return $this->getFileResolverConfiguration()->getElementSeparator();
+    }
+
+    /**
      * Returns the elements the filenames consists of.
      *
      * @return array The array with the filename elements
      * @todo Refactorig required, because of duplicate method
      * @see \TechDivision\Import\Loaders\Filters\OkFileFilter::getPatternElements()
      */
-    protected function getPatternElements()
+    protected function getPatternElements() : array
     {
         return $this->getFileResolverConfiguration()->getPatternElements();
+    }
+
+    /**
+     * Returns the elements the filenames consists of.
+     *
+     * @return array The array with the filename elements
+     * @todo Refactorig required, because of duplicate method
+     * @see \TechDivision\Import\Loaders\Filters\OkFileFilter::getOkFileSuffix()
+     */
+    protected function getOkFileSuffix() : array
+    {
+        return $this->getFileResolverConfiguration()->getOkFileSuffix();
+    }
+
+    /**
+     * Returns the actual source directory to load the files from.
+     *
+     * @return string The actual source directory
+     */
+    protected function getSourceDir() : string
+    {
+        throw new \Exception(sprintf('Method "%s" has not been implemented yet', __METHOD__));
     }
 
     /**
@@ -152,7 +225,7 @@ class OkFileAwareFileResolver extends AbstractFileResolver implements OkFileAwar
      * @todo Refactorig required, because of duplicate method
      * @see \TechDivision\Import\Loaders\Filters\OkFileFilter::getPatternKeys()
      */
-    protected function getPatternKeys()
+    protected function getPatternKeys() : array
     {
 
         // load the pattern keys from the configuration
@@ -187,7 +260,7 @@ class OkFileAwareFileResolver extends AbstractFileResolver implements OkFileAwar
             // load the parts from the matches
             for ($z = 0; $z < $i; $z++) {
                 // append the part
-                $parts[] = $this->getMatch($patternKeys[$z]);
+                $parts[] = $this->getLoader()->getMatch($patternKeys[$z]);
             }
 
             // query whether or not, the OK file exists, if yes append it
@@ -198,6 +271,38 @@ class OkFileAwareFileResolver extends AbstractFileResolver implements OkFileAwar
 
         // prepare and return the pattern for the OK file
         return $okFilenames;
+    }
+
+    /**
+     * Set's the loader instance used to load the proposed .OK filenames and it's content.
+     *
+     * @param \TechDivision\Import\Loaders\FilteredLoaderInterface $loader The loader instance
+     *
+     * @return void
+     */
+    public function setLoader(FilteredLoaderInterface $loader) : void
+    {
+        $this->loader = $loader;
+    }
+
+    /**
+     * Set's the file resolver configuration.
+     *
+     * @param \TechDivision\Import\Configuration\Subject\FileResolverConfigurationInterface $fileResolverConfiguration The file resolver configuration
+     */
+    public function setFileResolverConfiguration(FileResolverConfigurationInterface $fileResolverConfiguration) : void
+    {
+        $this->fileResolverConfiguration = $fileResolverConfiguration;
+    }
+
+    /**
+     * Set's the filesystem adapter instance.
+     *
+     * @param \TechDivision\Import\Adapter\FilesystemAdapterInterface $filesystemAdapter The filesystem adapter instance
+     */
+    public function setFilesystemAdapter(FilesystemAdapterInterface $filesystemAdapter) : void
+    {
+        $this->filesystemAdapter = $filesystemAdapter;
     }
 
     /**
@@ -270,40 +375,33 @@ class OkFileAwareFileResolver extends AbstractFileResolver implements OkFileAwar
     }
 
     /**
-     * Loads the files from the source directory and return's them sorted.
+     * Create's the .OK files for all .CSV files that matches the passed pattern.
      *
-     * @param string $serial The unique identifier of the actual import process
+     * @param string $pattern The pattern that matches the .CSV files we want to create the .OK files for
      *
-     * @return array The array with the files matching the subjects suffix
-     * @throws \Exception Is thrown, when the source directory is NOT available
-     * @throws \TechDivision\Import\Exceptions\MissingOkFileException Is thrown, if files to be processed are available but the mandatory OK file is missing
+     * @return int Return's the number of created .OK files
+     * @throws \Exception Is thrown, one of the proposed .OK files can not be created
      */
-    public function loadFiles(string $serial) : array
+    public function createOkFiles(string $pattern) : int
     {
 
-        // initialize the array with the files that has to be handled
-        $filesToHandle = parent::loadFiles($serial);
+        // initialize the counter for the processed .OK files
+        $counter = 0;
 
-        // load the size of the files before the filters have been applied
-        $sizeBeforeFiltersHaveBeenApplied = $this->getFilesystemLoader()->getSizeBeforeFiltersHaveBeenApplied();
+        // load the array with the proposed .OK filenames
+        $proposedOkFilenames = $this->getLoader()->load($pattern);
 
-        // stop processing, if files ARE available, an OK file IS mandatory, but
-        // NO file will be processed (because of a missing/not matching OK file)
-        if ($this->getSubjectConfiguration()->isOkFileNeeded() && $sizeBeforeFiltersHaveBeenApplied > 0 && sizeof($filesToHandle) === 0) {
-            throw new MissingOkFileException(
-                sprintf(
-                    'Stop processing, because can\'t find the mandatory OK file to process at least one of %d files',
-                    $sizeBeforeFiltersHaveBeenApplied
-                )
-            );
+        // create the proposed .OK files
+        foreach ($proposedOkFilenames as $okFilename => $csvFilenames) {
+            // write the proposed .OK file
+            if ($this->getFilesystemAdapter()->write($okFilename, implode(PHP_EOL, $csvFilenames)) === false) {
+                throw new \Exception(sprintf('Can\' create .OK file "%s"', $okFilename));
+            }
+            // raise the counter
+            $counter++;
         }
 
-        // clean-up the .OK file for the found files
-        foreach ($filesToHandle as $fileToHandle) {
-            $this->cleanUpOkFile($fileToHandle);
-        }
-
-        // return the array with the files that has to be handled
-        return $filesToHandle;
+        // return the number of created .OK files
+        return $counter;
     }
 }

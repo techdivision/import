@@ -35,7 +35,7 @@ interface FileResolverConfigurationInterface
     /**
      * Returns the file resolver's unique DI identifier.
      *
-     * @return string The file resolverss unique DI identifier
+     * @return string The file resolver's unique DI identifier
      */
     public function getId();
 

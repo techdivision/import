@@ -216,6 +216,13 @@ interface SubjectConfigurationInterface extends ParamsConfigurationInterface, Im
     public function getFileResolver();
 
     /**
+     * Return's the file writer configuration instance.
+     *
+     * @return \TechDivision\Import\Configuration\Subject\FileWriterConfigurationInterface The file writer configuration instance
+     */
+    public function getFileWriter();
+
+    /**
      * Return's the number converter configuration instance.
      *
      * @return \TechDivision\Import\Configuration\Subject\NumberConverterConfigurationInterface The number converter configuration instance

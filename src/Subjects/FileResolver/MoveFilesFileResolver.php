@@ -23,6 +23,7 @@ namespace TechDivision\Import\Subjects\FileResolver;
 use TechDivision\Import\ApplicationInterface;
 use TechDivision\Import\ConfigurationInterface;
 use TechDivision\Import\Services\RegistryProcessorInterface;
+use TechDivision\Import\Configuration\Subject\FileResolverConfigurationInterface;
 
 /**
  * A custom file resolver implementation for the move files subject
@@ -69,7 +70,7 @@ class MoveFilesFileResolver extends OkFileAwareFileResolver
      *
      * @return \TechDivision\Import\ConfigurationInterface The configuration instance
      */
-    protected function getConfiguration()
+    protected function getConfiguration() : ConfigurationInterface
     {
         return $this->configuration;
     }
@@ -79,7 +80,7 @@ class MoveFilesFileResolver extends OkFileAwareFileResolver
      *
      * @return \TechDivision\Import\Configuration\Subject\FileResolverConfigurationInterface The configuration instance
      */
-    protected function getFileResolverConfiguration()
+    protected function getFileResolverConfiguration() : FileResolverConfigurationInterface
     {
 
         // load the file resolver configuration from the parent instance

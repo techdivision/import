@@ -20,11 +20,12 @@
 
 namespace TechDivision\Import\Subjects\FileResolver;
 
-use TechDivision\Import\ApplicationInterface;
-use TechDivision\Import\Adapter\FilesystemAdapterInterface;
-use TechDivision\Import\Configuration\SubjectConfigurationInterface;
-use TechDivision\Import\Services\RegistryProcessorInterface;
 use TechDivision\Import\Utils\RegistryKeys;
+use TechDivision\Import\Loaders\FilteredLoaderInterface;
+use TechDivision\Import\Adapter\FilesystemAdapterInterface;
+use TechDivision\Import\Services\RegistryProcessorInterface;
+use TechDivision\Import\Configuration\SubjectConfigurationInterface;
+use TechDivision\Import\Configuration\Subject\FileResolverConfigurationInterface;
 
 /**
  * Abstract file resolver implementation.
@@ -46,25 +47,11 @@ abstract class AbstractFileResolver implements FileResolverInterface
     private $registryProcessor;
 
     /**
-     * The appliation instance.
-     *
-     * @var \TechDivision\Import\ApplicationInterface
-     */
-    private $application;
-
-    /**
      * The actual source directory to load the files from.
      *
      * @var string
      */
     private $sourceDir;
-
-    /**
-     * The OK file suffix to use.
-     *
-     * @var string
-     */
-    private $okFileSuffix = 'ok';
 
     /**
      * The subject configuraiton instance.
@@ -81,35 +68,42 @@ abstract class AbstractFileResolver implements FileResolverInterface
     private $filesystemAdapter;
 
     /**
+     * The filesystem loader instance.
+     *
+     * @var \TechDivision\Import\Loaders\LoaderInterface
+     */
+    private $filesystemLoader;
+
+    /**
      * Initializes the file resolver with the application and the registry instance.
      *
-     * @param \TechDivision\Import\ApplicationInterface                $application       The application instance
      * @param \TechDivision\Import\Services\RegistryProcessorInterface $registryProcessor The registry instance
+     * @param \TechDivision\Import\Loaders\FilteredLoaderInterface     $filesystemLoader  The filesystem loader instance
      */
-    public function __construct(ApplicationInterface $application, RegistryProcessorInterface $registryProcessor)
+    public function __construct(RegistryProcessorInterface $registryProcessor, FilteredLoaderInterface $filesystemLoader)
     {
-        $this->application = $application;
         $this->registryProcessor = $registryProcessor;
+        $this->filesystemLoader = $filesystemLoader;
     }
 
     /**
-     * Returns the registry processor instance.
+     * Return's the registry processor instance.
      *
      * @return \TechDivision\Import\Services\RegistryProcessorInterface The processor instance
      */
-    protected function getRegistryProcessor()
+    protected function getRegistryProcessor() : RegistryProcessorInterface
     {
         return $this->registryProcessor;
     }
 
     /**
-     * Return's the application instance.
+     * Return's the filesystem loader instance.
      *
-     * @return \TechDivision\Import\ApplicationInterface The application instance
+     * @return \TechDivision\Import\Loaders\FilteredLoaderInterface The loader instance
      */
-    protected function getApplication()
+    protected function getFilesystemLoader() : FilteredLoaderInterface
     {
-        return $this->application;
+        return $this->filesystemLoader;
     }
 
     /**
@@ -119,7 +113,7 @@ abstract class AbstractFileResolver implements FileResolverInterface
      *
      * @return void
      */
-    protected function setSourceDir($sourceDir)
+    protected function setSourceDir(string $sourceDir) : void
     {
         $this->sourceDir = $sourceDir;
     }
@@ -129,7 +123,7 @@ abstract class AbstractFileResolver implements FileResolverInterface
      *
      * @return string The actual source directory
      */
-    protected function getSourceDir()
+    protected function getSourceDir() : string
     {
         return $this->sourceDir;
     }
@@ -139,19 +133,9 @@ abstract class AbstractFileResolver implements FileResolverInterface
      *
      * @return \TechDivision\Import\Configuration\Subject\FileResolverConfigurationInterface The configuration instance
      */
-    protected function getFileResolverConfiguration()
+    protected function getFileResolverConfiguration() : FileResolverConfigurationInterface
     {
         return $this->getSubjectConfiguration()->getFileResolver();
-    }
-
-    /**
-     * Returns the elements the filenames consists of.
-     *
-     * @return array The array with the filename elements
-     */
-    protected function getPatternElements()
-    {
-        return $this->getFileResolverConfiguration()->getPatternElements();
     }
 
     /**
@@ -159,7 +143,7 @@ abstract class AbstractFileResolver implements FileResolverInterface
      *
      * @return string The suffix
      */
-    protected function getSuffix()
+    protected function getSuffix() : string
     {
         return $this->getFileResolverConfiguration()->getSuffix();
     }
@@ -172,7 +156,7 @@ abstract class AbstractFileResolver implements FileResolverInterface
      * @return void
      * @throws \Exception Is thrown if the configured source directory is not available
      */
-    protected function initialize($serial)
+    protected function initialize(string $serial) : void
     {
 
         // load the actual status
@@ -191,53 +175,13 @@ abstract class AbstractFileResolver implements FileResolverInterface
     }
 
     /**
-     * Returns the OK file suffix to use.
-     *
-     * @return string The OK file suffix
-     */
-    public function getOkFileSuffix()
-    {
-        return $this->getFileResolverConfiguration()->getOkFileSuffix();
-    }
-
-    /**
-     * Returns the delement separator char.
-     *
-     *  @return string The element separator char
-     */
-    public function getElementSeparator()
-    {
-        return $this->getFileResolverConfiguration()->getElementSeparator();
-    }
-
-    /**
-     * Returns the elements the filenames consists of, converted to lowercase.
-     *
-     * @return array The array with the filename elements
-     */
-    public function getPatternKeys()
-    {
-
-        // load the pattern keys from the configuration
-        $patternKeys = $this->getPatternElements();
-
-        // make sure that they are all lowercase
-        array_walk($patternKeys, function (&$value) {
-            $value = strtolower($value);
-        });
-
-        // return the pattern keys
-        return $patternKeys;
-    }
-
-    /**
      * Sets the subject configuration instance.
      *
      * @param \TechDivision\Import\Configuration\SubjectConfigurationInterface $subjectConfiguration The subject configuration
      *
      * @return void
      */
-    public function setSubjectConfiguration(SubjectConfigurationInterface $subjectConfiguration)
+    public function setSubjectConfiguration(SubjectConfigurationInterface $subjectConfiguration) : void
     {
         $this->subjectConfiguration = $subjectConfiguration;
     }
@@ -247,7 +191,7 @@ abstract class AbstractFileResolver implements FileResolverInterface
      *
      * @return \TechDivision\Import\Configuration\SubjectConfigurationInterface The subject configuration
      */
-    public function getSubjectConfiguration()
+    public function getSubjectConfiguration() : SubjectConfigurationInterface
     {
         return $this->subjectConfiguration;
     }
@@ -256,8 +200,10 @@ abstract class AbstractFileResolver implements FileResolverInterface
      * Set's the filesystem adapter instance.
      *
      * @param \TechDivision\Import\Adapter\FilesystemAdapterInterface $filesystemAdapter
+     *
+     * @return void
      */
-    public function setFilesystemAdapter(FilesystemAdapterInterface $filesystemAdapter)
+    public function setFilesystemAdapter(FilesystemAdapterInterface $filesystemAdapter) : void
     {
         $this->filesystemAdapter = $filesystemAdapter;
     }
@@ -267,7 +213,7 @@ abstract class AbstractFileResolver implements FileResolverInterface
      *
      * @return \TechDivision\Import\Adapter\FilesystemAdapterInterface The filesystem adapter instance
      */
-    public function getFilesystemAdapter()
+    public function getFilesystemAdapter() : FilesystemAdapterInterface
     {
         return $this->filesystemAdapter;
     }
@@ -280,24 +226,14 @@ abstract class AbstractFileResolver implements FileResolverInterface
      * @return array The array with the files matching the subjects suffix
      * @throws \Exception Is thrown, when the source directory is NOT available
      */
-    public function loadFiles($serial)
+    public function loadFiles(string $serial) : array
     {
 
-        // clear the filecache
-        clearstatcache();
-
         // initialize the resolver
+        // @TODO Check if the method can not be moved to object initialization
         $this->initialize($serial);
 
         // initialize the array with the files matching the suffix found in the source directory
-        $files = $this->getFilesystemAdapter()->glob(sprintf('%s/*.%s', $this->getSourceDir(), $this->getSuffix()));
-
-        // sort the files for the apropriate order
-        usort($files, function ($a, $b) {
-            return strcmp($a, $b);
-        });
-
-        // return the sorted files
-        return $files;
+        return $this->getFilesystemLoader()->load(sprintf('%s/*.%s', $this->getSourceDir(), $this->getSuffix()));
     }
 }

@@ -117,4 +117,25 @@ interface FilesystemAdapterInterface
      * @return array A list of filenames
      */
     public function listContents($directory = '', $recursive = false);
+
+    /**
+     * Removes the passed directory recursively.
+     *
+     * @param string  $src       Name of the directory to remove
+     * @param boolean $recursive TRUE if the directory has to be deleted recursive, else FALSE
+     *
+     * @return void
+     * @throws \Exception Is thrown, if the directory can not be removed
+     */
+    public function removeDir($src, $recursive = false);
+
+    /**
+     * Find and return pathnames matching a pattern
+     *
+     * @param string  $pattern No tilde expansion or parameter substitution is done.
+     * @param int     $flags   Flags that changes the behaviour
+     *
+     * @return array Containing the matched files/directories, an empty array if no file matched or FALSE on error
+     */
+    public function glob(string $pattern, int $flags = 0);
 }

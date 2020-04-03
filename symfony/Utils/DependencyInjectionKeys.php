@@ -141,6 +141,13 @@ class DependencyInjectionKeys
     const IMPORT_SUBJECT_FILE_RESOLVER_OK_FILE_AWARE = 'import.subject.file.resolver.ok.file.aware';
 
     /**
+     * The key for the OK file CSV import bunch file writer service.
+     *
+     * @var string
+     */
+    const IMPORT_SUBJECT_FILE_WRITER_OK_FILE_AWARE = 'import.subject.file.writer.ok.file.aware';
+
+    /**
      * The key for the simple number converter service.
      *
      * @var string

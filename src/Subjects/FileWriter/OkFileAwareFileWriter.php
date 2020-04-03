@@ -20,9 +20,11 @@
 
 namespace TechDivision\Import\Subjects\FileWriter;
 
-use TechDivision\Import\Subjects\FileResolver\FileResolverInterface;
-use TechDivision\Import\Subjects\FileWriter\Filters\FileWriterFilterInterface;
-use TechDivision\Import\Subjects\FileWriter\Sorters\FileWriterSorterInterface;
+use TechDivision\Import\Utils\RegistryKeys;
+use TechDivision\Import\Handlers\OkFileHandlerInterface;
+use TechDivision\Import\Adapter\FilesystemAdapterInterface;
+use TechDivision\Import\Services\RegistryProcessorInterface;
+use TechDivision\Import\Configuration\Subject\FileResolverConfigurationInterface;
 
 /**
  * Plugin that processes the subjects.
@@ -37,115 +39,175 @@ class OkFileAwareFileWriter implements FileWriterInterface
 {
 
     /**
-     * The file resolver instance to loads the CSV files.
+     * The registry processor instance.
      *
-     * @var \TechDivision\Import\Subjects\FileResolver\FileResolverInterface
+     * @var \TechDivision\Import\Services\RegistryProcessorInterface
      */
-    private $fileResolver;
+    private $registryProcessor;
 
     /**
-     * The array with the filters to filter the loaded CSV files.
+     * The actual source directory to load the files from.
      *
-     * @var \TechDivision\Import\Subjects\FileWriter\Filters\FileWriterFilterInterface[]
+     * @var string
      */
-    private $filters = array();
+    private $sourceDir;
 
     /**
-     * The array with the sorters to sort the loaded CSV files.
+     * The filesystem adapter instance.
      *
-     * @var \TechDivision\Import\Subjects\FileWriter\Sorters\FileWriterSorterInterface[]
+     * @var \TechDivision\Import\Adapter\FilesystemAdapterInterface
      */
-    private $sorters = array();
+    private $filesystemAdapter;
 
     /**
-     * Returns the match with the passed name.
+     * The .OK file handler instance to use.
      *
-     * @param array $keys The keys of the match to return
-     *
-     * @return string|null The match itself
+     * @var \TechDivision\Import\Handlers\OkFileHandlerInterface
      */
-    protected function proposedOkFilenamesByKeys(array $keys) : array
+    private $handler;
+
+    /**
+     * The file resolver configuration instance.
+     *
+     * @var \TechDivision\Import\Configuration\Subject\FileResolverConfigurationInterface
+     */
+    private $fileResolverConfiguration;
+
+    /**
+     * Initializes the file resolver with the application and the registry instance.
+     *
+     * @param \TechDivision\Import\Services\RegistryProcessorInterface $registryProcessor The registry instance
+     */
+    public function __construct(RegistryProcessorInterface $registryProcessor)
+    {
+        $this->registryProcessor = $registryProcessor;
+    }
+
+    /**
+     * Return's the registry processor instance.
+     *
+     * @return \TechDivision\Import\Services\RegistryProcessorInterface the registry processor instance
+     */
+    protected function getRegistryProcessor() : RegistryProcessorInterface
+    {
+        return $this->registryProcessor;
+    }
+
+    /**
+     * Return's the .OK file handler instance.
+     *
+     * @return \TechDivision\Import\Handlers\OkFileHandlerInterface The .OK file handler instance
+     */
+    protected function getHandler() : OkFileHandlerInterface
+    {
+        return $this->handler;
+    }
+
+    /**
+     * Return's the filesystem adapter instance.
+     *
+     * @return \TechDivision\Import\Adapter\FilesystemAdapterInterface The filesystem adapter instance
+     */
+    protected function getFilesystemAdapter() : FilesystemAdapterInterface
+    {
+        return $this->filesystemAdapter;
+    }
+
+    /**
+     * Returns the file resolver configuration instance.
+     *
+     * @return \TechDivision\Import\Configuration\Subject\FileResolverConfigurationInterface The configuration instance
+     */
+    protected function getFileResolverConfiguration() : FileResolverConfigurationInterface
+    {
+        return $this->fileResolverConfiguration;
+    }
+
+    /**
+     * Sets the actual source directory to load the files from.
+     *
+     * @param string $sourceDir The actual source directory
+     *
+     * @return void
+     */
+    protected function setSourceDir(string $sourceDir) : void
+    {
+        $this->sourceDir = $sourceDir;
+    }
+
+    /**
+     * Returns the actual source directory to load the files from.
+     *
+     * @return string The actual source directory
+     */
+    protected function getSourceDir() : string
+    {
+        return $this->sourceDir;
+    }
+
+    /**
+     * Initializes the file resolver for the import process with the passed serial.
+     *
+     * @param string $serial The unique identifier of the actual import process
+     *
+     * @return void
+     * @throws \Exception Is thrown if the configured source directory is not available
+     */
+    protected function initialize(string $serial) : void
     {
 
-        // load the file resolver instance
-        $fileResolver = $this->getFileResolver();
+        // load the actual status
+        $status = $this->getRegistryProcessor()->getAttribute(RegistryKeys::STATUS);
 
-        // intialize the array for the .OK filename => .CSV filenames
-        $result = array();
-
-        // load the matches from the fileresolver
-        $matches = $fileResolver->getMatches();
-
-        // process the matches
-        foreach ($matches as $i => $match) {
-            // initialize the array for the values of the match elements
-            $elements = array();
-            // load the values from the matches
-            foreach ($keys as $key) {
-                if (array_key_exists($key, $match)) {
-                    $elements[$i][] = $match[$key];
-                }
-            }
-
-            // use the values to create the proposed .OK filenames
-            foreach ($elements as $element) {
-                // load the source directory
-                $sourceDir = dirname($csvPath = $match[0]);
-                // create the filename by concatenating the element values
-                $okFilename = implode($fileResolver->getElementSeparator(), $element);
-                // create the path to the .OK file
-                $okPath = sprintf('%s/%s.%s', $sourceDir, $okFilename, $fileResolver->getOkFileSuffix());
-                // register the proposed .OK file in the array
-                $result[$okPath][] = basename($csvPath);
-            }
+        // query whether or not the configured source directory is available
+        if ($this->getFilesystemAdapter()->isDir($sourceDir = $status[RegistryKeys::SOURCE_DIRECTORY])) {
+            // set the source directory, if it is accessible
+            $this->setSourceDir($sourceDir);
+            // return immediately
+            return;
         }
 
-        // return the array with the result
-        return $result;
+        // throw an exception otherwise
+        throw new \Exception(sprintf('Configured source directory "%s" is not available!', $sourceDir));
+    }
+    /**
+     * Returns the suffix for the import files.
+     *
+     * @return string The suffix
+     */
+    protected function getSuffix() : string
+    {
+        return $this->getFileResolverConfiguration()->getSuffix();
     }
 
     /**
-     * Add's the passed filter to the writer instance.
+     * Set's he .OK file handler instance.
      *
-     * @param \TechDivision\Import\Subjects\FileWriter\Filters\FileWriterFilterInterface $filter The filter to add
-     *
-     * @return void
+     * @param \TechDivision\Import\Handlers\OkFileHandlerInterface $handler The .OK file handler instance
      */
-    public function addFilter(FileWriterFilterInterface $filter) : void
+    public function setHandler(OkFileHandlerInterface $handler) :void
     {
-        $this->filters[] = $filter;
+        $this->handler = $handler;
     }
 
     /**
-     * Adds the passed sorter to the writer instance.
+     * Set's the filesystem adapter instance.
      *
-     * @param \TechDivision\Import\Subjects\FileWriter\Sorters\FileWriterSorterInterface $sorter The sorter to add
+     * @param \TechDivision\Import\Adapter\FilesystemAdapterInterface $filesystemAdapter The filesystem adapter instance
      */
-    public function addSorter(FileWriterSorterInterface $sorter) : void
+    public function setFilesystemAdapter(FilesystemAdapterInterface $filesystemAdapter) : void
     {
-        $this->sorters[] = $sorter;
+        $this->filesystemAdapter = $filesystemAdapter;
     }
 
     /**
-     * Set's the file resolver intance.
+     * Set's the file resolver configuration.
      *
-     * @param \TechDivision\Import\Subjects\FileResolver\FileResolverInterface $fileResolver The file resolver instance
-     *
-     * @return void
+     * @param \TechDivision\Import\Configuration\Subject\FileResolverConfigurationInterface $fileResolverConfiguration The file resolver configuration
      */
-    public function setFileResolver(FileResolverInterface $fileResolver) : void
+    public function setFileResolverConfiguration(FileResolverConfigurationInterface $fileResolverConfiguration) : void
     {
-        $this->fileResolver = $fileResolver;
-    }
-
-    /**
-     * Return's the file resolver instance.
-     *
-     * @return \TechDivision\Import\Subjects\FileResolver\FileResolverInterface The file resolver instance
-     */
-    public function getFileResolver() : FileResolverInterface
-    {
-        return $this->fileResolver;
+        $this->fileResolverConfiguration = $fileResolverConfiguration;
     }
 
     /**
@@ -159,115 +221,11 @@ class OkFileAwareFileWriter implements FileWriterInterface
     public function createOkFiles(string $serial) : int
     {
 
-        // initialize the counter for the processed .OK files
-        $counter = 0;
+        // initialize the resolver
+        // @TODO Check if the method can not be moved to object initialization
+        $this->initialize($serial);
 
-        // load the array with the proposed .OK filenames
-        $proposedOkFilenames = $this->propsedOkFilenames($serial);
-
-        // create the proposed .OK files
-        foreach ($proposedOkFilenames as $okFilename => $csvFilenames) {
-            // write the proposed .OK file
-            if ($this->getFileResolver()->getFilesystemAdapter()->write($okFilename, implode(PHP_EOL, $csvFilenames)) === false) {
-                throw new \Exception(sprintf('Can\' create any .OK file "%s" for serial "%s"', $okFilename, $serial));
-            }
-            // raise the counter
-            $counter++;
-        }
-
-        // return the number of created .OK files
-        return $counter;
-    }
-
-    /**
-     * Return's an array with the proposed .OK filenames as key and the matching CSV
-     * files as values for the import with the passed serial.
-     *
-     * Based on the passed serial, the files with the configured prefix from the also
-     * configured source directory will be loaded and processed to return the array
-     * with the proposed .OK filenames.
-     *
-     * @param string $serial The serial to load the array with the proposed .OK files for
-     *
-     * @return array The array with key => value pairs of the proposed .OK and the matching CSV files
-     */
-    public function propsedOkFilenames(string $serial) : array
-    {
-
-        // load the file information
-        $this->loadFiles($serial);
-
-        // initialize the array for the available okFilenames
-        $okFilenames = array();
-
-        // load the pattern keys (prefix, filename and suffix),
-        // that has to be used from the configuration
-        $patternKeys = $this->getFileResolver()->getPatternKeys();
-
-        // prepare the .OK filenames based on the found CSV file information
-        for ($i = 1; $i <= sizeof($patternKeys); $i++) {
-            // initialize the array for the pattern that has to used to load
-            // the propsed .OK file for
-            $keys = array();
-            // load the parts from the matches
-            for ($z = 0; $z < $i; $z++) {
-                $keys[] = $patternKeys[$z];
-            }
-            // merge the proposed .OK filenames for the passed keys into the array
-            $okFilenames = array_merge_recursive($okFilenames, $this->proposedOkFilenamesByKeys($keys));
-        }
-
-        // sort the .OK filenames with the registered sorters
-        foreach ($this->sorters as $sorter) {
-            uasort($okFilenames, $sorter);
-        }
-
-        // filter the .OK filenames with the registered filters
-        foreach ($this->filters as $filter) {
-            $okFilenames = array_filter($okFilenames, $filter, $filter->getFlags());
-        }
-
-        // prepare and return the pattern for the OK file
-        return $okFilenames;
-    }
-
-    /**
-     * Loads the files from the source directory and return's them sorted.
-     *
-     * @param string $serial The unique identifier of the actual import process
-     *
-     * @return array The array with the files matching the subjects suffix
-     */
-    public function loadFiles(string $serial) : array
-    {
-
-        // load the file resolver instance
-        $fileResolver = $this->getFileResolver();
-
-        // initialize the array with the files that has to be handled
-        $filesToHandle = array();
-
-        // load the files that match the regular expressiong
-        $files = $fileResolver->loadFiles($serial);
-
-        // load the pattern to load the available CSV files, do this here and not after each found file again,
-        // because we want to load ALL available CSV files with the given prefix and not bunches only!
-        $pattern = $fileResolver->preparePattern();
-
-        // query whether or not the file has to be handled
-        foreach ($files as $file) {
-            // initialize the array with the matches
-            $matches = array();
-            // update the matches, if the pattern matches
-            if (preg_match($pattern, $file, $matches)) {
-                // add the match
-                $fileResolver->addMatch($matches);
-                // append the file to the list of files that has to be handled
-                $filesToHandle[] = $file;
-            }
-        }
-
-        // return the array with the files
-        return $filesToHandle;
+        // initialize the array with the files matching the suffix found in the source directory
+        return $this->getHandler()->createOkFiles(sprintf('%s/*.%s', $this->getSourceDir(), $this->getSuffix()));
     }
 }

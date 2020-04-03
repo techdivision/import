@@ -149,6 +149,9 @@ class PhpFilesystemAdapter implements PhpFilesystemAdapterInterface
     public function listContents($directory = '', $recursive = false)
     {
 
+        // clear the filecache
+        clearstatcache();
+
         // parse the directory
         $files = $this->glob($pattern = sprintf('%s/*', $directory), 0);
 
@@ -209,9 +212,15 @@ class PhpFilesystemAdapter implements PhpFilesystemAdapterInterface
      * @param int     $flags   Flags that changes the behaviour
      *
      * @return array Containing the matched files/directories, an empty array if no file matched or FALSE on error
+     * @link https://www.php.net/glob
      */
     public function glob(string $pattern, int $flags = 0)
     {
+
+        // clear the filecache
+        clearstatcache();
+
+        // invoke the glob and return the array with the found files
         return glob($pattern, $flags);
     }
 }

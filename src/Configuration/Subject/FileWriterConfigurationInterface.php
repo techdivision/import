@@ -1,7 +1,7 @@
 <?php
 
 /**
- * TechDivision\Import\Subjects\FileWriter\Filters\DefaultOkFileFilter
+ * TechDivision\Import\Configuration\Subject\FileWriterConfigurationInterface
  *
  * NOTICE OF LICENSE
  *
@@ -18,10 +18,10 @@
  * @link      http://www.techdivision.com
  */
 
-namespace TechDivision\Import\Subjects\FileWriter\Filters;
+namespace TechDivision\Import\Configuration\Subject;
 
 /**
- * Factory for file writer instances.
+ * The interface for a file writer's configuration.
  *
  * @author    Tim Wagner <t.wagner@techdivision.com>
  * @copyright 2020 TechDivision GmbH <info@techdivision.com>
@@ -29,17 +29,13 @@ namespace TechDivision\Import\Subjects\FileWriter\Filters;
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
  */
-interface FileWriterFilterInterface
+interface FileWriterConfigurationInterface
 {
 
-    public function getFlags();
-
     /**
+     * Returns the file writer's unique DI identifier.
      *
-     * @param array  $v
-     * @param string $k
-     *
-     * @return bool TRUE if the value with the actual key should be in the array, else FALSE
+     * @return string The file writer's unique DI identifier
      */
-    public function __invoke($v, $k) : bool;
+    public function getId();
 }

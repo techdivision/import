@@ -406,4 +406,15 @@ interface ConfigurationInterface extends CsvConfigurationInterface, ParamsConfig
      * @return array An array with the available prefixes
      */
     public function getPrefixes($ignore = array('.*'));
+
+    /**
+     * Return's an array with the subjects which prefix is NOT in the passed
+     * array of blacklisted prefixes and that matches the filters.
+     *
+     * @param callable[] $filters An array with filters to filter the subjects that has to be returned
+     * @param array      $ignore  An array with prefixes that has to be ignored
+     *
+     * @return array An array with the matching subjects
+     */
+    public function getSubjects(array $filters = array());
 }

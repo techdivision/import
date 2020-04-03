@@ -60,7 +60,7 @@ class FileResolverFactory implements FileResolverFactoryInterface
      *
      * @return \TechDivision\Import\Subjects\FileResolver\FileResolverInterface The file resolver instance
      */
-    public function createFileResolver(SubjectConfigurationInterface $subject)
+    public function createFileResolver(SubjectConfigurationInterface $subject) : FileResolverInterface
     {
 
         // create a new file resolver instance for the subject with the passed configuration

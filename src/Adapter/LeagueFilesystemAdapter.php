@@ -177,4 +177,31 @@ class LeagueFilesystemAdapter implements FilesystemAdapterInterface
         // return the filenames
         return $files;
     }
+
+    /**
+     * Removes the passed directory recursively.
+     *
+     * @param string  $src       Name of the directory to remove
+     * @param boolean $recursive TRUE if the directory has to be deleted recursive, else FALSE
+     *
+     * @return void
+     * @throws \Exception Is thrown, if the directory can not be removed
+     */
+    public function removeDir($src, $recursive = false)
+    {
+        $this->filesystem->deleteDir($src);
+    }
+
+    /**
+     * Find and return pathnames matching a pattern
+     *
+     * @param string  $pattern No tilde expansion or parameter substitution is done.
+     * @param int     $flags   Flags that changes the behaviour
+     *
+     * @return array Containing the matched files/directories, an empty array if no file matched or FALSE on error
+     */
+    public function glob(string $pattern, int $flags = 0)
+    {
+        throw new \Exception(sprintf('Method "%s" has not yet been implemented', __METHOD__));
+    }
 }

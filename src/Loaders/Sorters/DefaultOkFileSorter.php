@@ -1,7 +1,7 @@
 <?php
 
 /**
- * TechDivision\Import\Subjects\FileWriter\Filters\DefaultOkFileFilter
+ * TechDivision\Import\Loaders\Sorters\DefaultOkFileSorter
  *
  * NOTICE OF LICENSE
  *
@@ -18,7 +18,7 @@
  * @link      http://www.techdivision.com
  */
 
-namespace TechDivision\Import\Subjects\FileWriter\Filters;
+namespace TechDivision\Import\Loaders\Sorters;
 
 /**
  * Factory for file writer instances.
@@ -29,37 +29,26 @@ namespace TechDivision\Import\Subjects\FileWriter\Filters;
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
  */
-class DefaultOkFileFilter implements FileWriterFilterInterface
+class DefaultOkFileSorter
 {
-
-    public function getFlags()
-    {
-        return ARRAY_FILTER_USE_BOTH;
-    }
 
     /**
      *
      * @param array  $v
      * @param string $k
      *
-     * @return bool TRUE if the value with the actual key should be in the array, else FALSE
+     * @return boolean TRUE if the value with the actual key should be in the array, else FALSE
      */
-    public function __invoke($v, $k) : bool
+    public function __invoke(array $a, array $b) : int
     {
 
-        foreach ($v as $f) {
+        $countA = sizeof($a);
+        $countB = sizeof($b);
 
-            $matches = array();
-
-            $pattern = '/^(?<prefix>.*)_(?<filename>.*)_.*\.csv$/';
-
-            if (preg_match($pattern, $f, $matches)) {
-                if (preg_match(sprintf('/^.*\/%s_%s\.ok$/', $matches['prefix'], $matches['filename']), $k)) {
-                    return true;
-                }
-            }
+        if ($countA === $countB) {
+            return 0;
         }
 
-        return false;
+        return ($countB < $countA) ? - 1 : 1;
     }
 }

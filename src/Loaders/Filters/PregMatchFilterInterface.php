@@ -1,7 +1,7 @@
 <?php
 
 /**
- * TechDivision\Import\Subjects\FileWriter\FileWriterInterface
+ * TechDivision\Import\Loaders\Filters\PregMatchFilterInterface
  *
  * NOTICE OF LICENSE
  *
@@ -18,10 +18,12 @@
  * @link      http://www.techdivision.com
  */
 
-namespace TechDivision\Import\Subjects\FileWriter;
+namespace TechDivision\Import\Loaders\Filters;
+
+use TechDivision\Import\Interfaces\PregMatchAwareInterface;
 
 /**
- * Interface for all file writer implementations.
+ * Interface for preg match aware filter implementations.
  *
  * @author    Tim Wagner <t.wagner@techdivision.com>
  * @copyright 2020 TechDivision GmbH <info@techdivision.com>
@@ -29,16 +31,6 @@ namespace TechDivision\Import\Subjects\FileWriter;
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
  */
-interface FileWriterInterface
+interface PregMatchFilterInterface extends FilterInterface, PregMatchAwareInterface
 {
-
-    /**
-     * Create's the .OK files for the import with the passed serial.
-     *
-     * @param string $serial The serial to create the .OK files for
-     *
-     * @return int Return's the number of created .OK files
-     * @throws \Exception Is thrown, one of the proposed .OK files can not be created
-     */
-    public function createOkFiles(string $serial) : int;
 }

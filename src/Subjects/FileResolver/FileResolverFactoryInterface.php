@@ -41,5 +41,5 @@ interface FileResolverFactoryInterface
      *
      * @return \TechDivision\Import\Subjects\FileResolver\FileResolverInterface The file resolver instance
      */
-    public function createFileResolver(SubjectConfigurationInterface $subject);
+    public function createFileResolver(SubjectConfigurationInterface $subject) : FileResolverInterface;
 }

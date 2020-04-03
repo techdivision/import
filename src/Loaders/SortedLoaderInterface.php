@@ -1,7 +1,7 @@
 <?php
 
 /**
- * TechDivision\Import\Subjects\FileResolver\OkFileAwareFileResolverInterface
+ * TechDivision\Import\Loaders\SortedLoaderInterface
  *
  * NOTICE OF LICENSE
  *
@@ -12,34 +12,40 @@
  * PHP version 5
  *
  * @author    Tim Wagner <t.wagner@techdivision.com>
- * @copyright 2019 TechDivision GmbH <info@techdivision.com>
+ * @copyright 2020 TechDivision GmbH <info@techdivision.com>
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
  */
 
-namespace TechDivision\Import\Subjects\FileResolver;
+namespace TechDivision\Import\Loaders;
 
 /**
- * Interface for all OK file aware resolver implementations.
+ * Interface for sorted loader implementations.
  *
  * @author    Tim Wagner <t.wagner@techdivision.com>
- * @copyright 2019 TechDivision GmbH <info@techdivision.com>
+ * @copyright 2020 TechDivision GmbH <info@techdivision.com>
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
+ * @link      https://www.php.net/uasort
  */
-interface OkFileAwareFileResolverInterface extends FileResolverInterface
+interface SortedLoaderInterface extends LoaderInterface
 {
 
     /**
-     * Query whether or not, the passed CSV filename is in the OK file. If the filename was found,
-     * the OK file will be cleaned-up.
+     * Add's the passed sorter to the loader instance.
      *
-     * @param string $filename The filename to be cleaned-up
+     * @param callable $sorter The sorter to add
      *
      * @return void
-     * @throws \Exception Is thrown, if the passed filename is NOT in the OK file or the OK can not be cleaned-up
      */
-    public function cleanUpOkFile(string $filename) : void;
+    public function addSorter(callable $sorter) : void;
+
+    /**
+     * Return's the array with the sorter callbacks.
+     *
+     * @return callable[] The sorter callbacks
+     */
+    public function getSorters() : array;
 }

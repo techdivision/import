@@ -1,7 +1,7 @@
 <?php
 
 /**
- * TechDivision\Import\Subjects\FileWriter\FileWriterInterface
+ * TechDivision\Import\Loaders\Filters\FilterInterface
  *
  * NOTICE OF LICENSE
  *
@@ -18,10 +18,10 @@
  * @link      http://www.techdivision.com
  */
 
-namespace TechDivision\Import\Subjects\FileWriter;
+namespace TechDivision\Import\Loaders\Filters;
 
 /**
- * Interface for all file writer implementations.
+ * Factory for file writer instances.
  *
  * @author    Tim Wagner <t.wagner@techdivision.com>
  * @copyright 2020 TechDivision GmbH <info@techdivision.com>
@@ -29,16 +29,21 @@ namespace TechDivision\Import\Subjects\FileWriter;
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
  */
-interface FileWriterInterface
+interface FilterInterface
 {
 
     /**
-     * Create's the .OK files for the import with the passed serial.
+     * The filter's unique name.
      *
-     * @param string $serial The serial to create the .OK files for
-     *
-     * @return int Return's the number of created .OK files
-     * @throws \Exception Is thrown, one of the proposed .OK files can not be created
+     * @return string The unique name
      */
-    public function createOkFiles(string $serial) : int;
+    public function getName() : string;
+
+    /**
+     * Return's the flag used to define what will be passed to the callback invoked
+     * by the `array_filter()` method.
+     *
+     * @return int The flag
+     */
+    public function getFlag() : int;
 }

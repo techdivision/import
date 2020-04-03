@@ -1,7 +1,7 @@
 <?php
 
 /**
- * TechDivision\Import\Subjects\FileWriter\Sorters\DefaultOkFileFilter
+ * TechDivision\Import\Handlers\PidFileHandler
  *
  * NOTICE OF LICENSE
  *
@@ -18,10 +18,10 @@
  * @link      http://www.techdivision.com
  */
 
-namespace TechDivision\Import\Subjects\FileWriter\Sorters;
+namespace TechDivision\Import\Handlers;
 
 /**
- * Factory for file writer instances.
+ * A generic interface for PID file handler implementations.
  *
  * @author    Tim Wagner <t.wagner@techdivision.com>
  * @copyright 2020 TechDivision GmbH <info@techdivision.com>
@@ -29,26 +29,23 @@ namespace TechDivision\Import\Subjects\FileWriter\Sorters;
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
  */
-class DefaultOkFileSorter implements FileWriterSorterInterface
+interface PidFileHandlerInterface extends HandlerInterface
 {
 
     /**
+     * Persist the UUID of the actual import process to the PID file.
      *
-     * @param array  $v
-     * @param string $k
-     *
-     * @return boolean TRUE if the value with the actual key should be in the array, else FALSE
+     * @return void
+     * @throws \Exception Is thrown, if the PID can not be locked or the PID can not be added
+     * @throws \TechDivision\Import\Exceptions\ImportAlreadyRunningException Is thrown, if a import process is already running
      */
-    public function __invoke(array $a, array $b) : int
-    {
+    public function lock();
 
-        $countA = sizeof($a);
-        $countB = sizeof($b);
-
-        if ($countA === $countB) {
-            return 0;
-        }
-
-        return ($countB < $countA) ? - 1 : 1;
-    }
+    /**
+     * Remove's the UUID of the actual import process from the PID file.
+     *
+     * @return void
+     * @throws \Exception Is thrown, if the PID can not be removed
+     */
+    public function unlock();
 }
