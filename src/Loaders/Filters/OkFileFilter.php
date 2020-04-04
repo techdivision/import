@@ -22,6 +22,8 @@ namespace TechDivision\Import\Loaders\Filters;
 
 use TechDivision\Import\Utils\BunchKeys;
 use TechDivision\Import\Configuration\Subject\FileResolverConfigurationInterface;
+use TechDivision\Import\Configuration\SubjectConfigurationInterface;
+use TechDivision\Import\Handlers\OkFileHandlerInterface;
 
 
 /**
@@ -56,82 +58,69 @@ class OkFileFilter extends PregMatchFilter
 {
 
     /**
-     * The regular expression used to load the files with.
+     * The .OK file handler instance to use.
+     *
+     * @var \TechDivision\Import\Handlers\OkFileHandlerInterface
+     */
+    private $handler;
+
+    /**
+     * The subject configuration with the information to load the files that has to be imported with.
+     *
+     * @var \TechDivision\Import\Configuration\SubjectConfigurationInterface
+     */
+    private $subjectConfiguration;
+
+    /**
+     * The source dirctory to use.
      *
      * @var string
      */
-    private $regex = '/^.*\/%s\\.%s$/';
+    private $sourceDir;
 
     /**
-     * Returns the regular expression used to load the files with.
+     * Initializes the filter with pattern as well as the flags and the offset to use.
      *
-     * @return string The regular expression
+     * @param string $pattern The pattern to search for, as a string
+     * @param int    $flags   The flags to optimize the pattern search
+     * @param int    $offset  The offset with the alternate place from which to start the search (in bytes)
      */
-    protected function getRegex() : string
-    {
-        return $this->regex;
+    public function __construct(
+        OkFileHandlerInterface $handler,
+        SubjectConfigurationInterface $subjectConfiguration,
+        string $sourceDir,
+        string $pattern = '/^.*\/%s\\.%s$/',
+        int $flags = 0,
+        int $offset = 0
+    ) {
+
+        // set the passed instances
+        $this->handler = $handler;
+        $this->sourceDir = $sourceDir;
+        $this->subjectConfiguration = $subjectConfiguration;
+
+        // pass the pattern, flags and offset to the parent constructor
+        parent::__construct($pattern, $flags, $offset);
     }
 
     /**
-     * Returns the delement separator char.
+     * Return's the .OK file handler instance.
      *
-     *  @return string The element separator char
+     * @return \TechDivision\Import\Handlers\OkFileHandlerInterface The .OK file handler instance
      */
-    protected function getElementSeparator() : string
+    protected function getHandler() : OkFileHandlerInterface
     {
-        throw new \Exception(sprintf('Method "%s" has not been implemented yet', __METHOD__));
+        return $this->handler;
     }
 
     /**
-     * Returns the suffix for the import files.
+     * Returns the subject configuration instance.
      *
-     * @return string The suffix
+     * @return \TechDivision\Import\Configuration\SubjectConfigurationInterface The subject configuration instance
      */
-    protected function getSuffix() : string
+    protected function getSubjectConfiguration() : SubjectConfigurationInterface
     {
-        throw new \Exception(sprintf('Method "%s" has not been implemented yet', __METHOD__));
-    }
-
-    /**
-     * Returns the OK file suffix to use.
-     *
-     * @return string The OK file suffix
-     */
-    protected function getOkFileSuffix() : string
-    {
-        throw new \Exception(sprintf('Method "%s" has not been implemented yet', __METHOD__));
-    }
-
-    /**
-     * Returns the elements the filenames consists of.
-     *
-     * @return array The array with the filename elements
-     * @todo Refactorig required, because of duplicate method
-     * @see \TechDivision\Import\Subjects\FileResolver\OkFileAwareFileResolver::getPatternElements()
-     */
-    protected function getPatternElements() : array
-    {
-        throw new \Exception(sprintf('Method "%s" has not been implemented yet', __METHOD__));
-    }
-
-    /**
-     * Returns the file resolver configuration instance.
-     *
-     * @return \TechDivision\Import\Configuration\Subject\FileResolverConfigurationInterface The configuration instance
-     */
-    protected function getFileResolverConfiguration() : FileResolverConfigurationInterface
-    {
-        throw new \Exception(sprintf('Method "%s" has not been implemented yet', __METHOD__));
-    }
-
-    /**
-     * Queries whether or not that the subject needs an OK file to be processed.
-     *
-     * @return boolean TRUE if the subject needs an OK file, else FALSE
-     */
-    protected function isOkFileNeeded() : bool
-    {
-        throw new \Exception(sprintf('Method "%s" has not been implemented yet', __METHOD__));
+        return $this->subjectConfiguration;
     }
 
     /**
@@ -141,7 +130,67 @@ class OkFileFilter extends PregMatchFilter
      */
     protected function getSourceDir() : string
     {
-        throw new \Exception(sprintf('Method "%s" has not been implemented yet', __METHOD__));
+        return $this->sourceDir;
+    }
+
+    /**
+     * Returns the file resolver configuration instance.
+     *
+     * @return \TechDivision\Import\Configuration\Subject\FileResolverConfigurationInterface The configuration instance
+     */
+    protected function getFileResolverConfiguration() : FileResolverConfigurationInterface
+    {
+        return $this->getSubjectConfiguration()->getFileResolver();
+    }
+
+    /**
+     * Returns the delement separator char.
+     *
+     *  @return string The element separator char
+     */
+    protected function getElementSeparator() : string
+    {
+        return $this->getFileResolverConfiguration()->getElementSeparator();
+    }
+
+    /**
+     * Returns the suffix for the import files.
+     *
+     * @return string The suffix
+     */
+    protected function getSuffix() : string
+    {
+        return $this->getFileResolverConfiguration()->getSuffix();
+    }
+
+    /**
+     * Returns the OK file suffix to use.
+     *
+     * @return string The OK file suffix
+     */
+    protected function getOkFileSuffix() : string
+    {
+        return $this->getFileResolverConfiguration()->getOkFileSuffix();
+    }
+
+    /**
+     * Returns the elements the filenames consists of.
+     *
+     * @return array The array with the filename elements
+     */
+    protected function getPatternElements() : array
+    {
+        return $this->getFileResolverConfiguration()->getPatternElements();
+    }
+
+    /**
+     * Queries whether or not that the subject needs an OK file to be processed.
+     *
+     * @return boolean TRUE if the subject needs an OK file, else FALSE
+     */
+    protected function isOkFileNeeded() : bool
+    {
+        return $this->getSubjectConfiguration()->isOkFileNeeded();
     }
 
     /**
@@ -151,8 +200,6 @@ class OkFileFilter extends PregMatchFilter
      * @param string $filename2 The second filename to compare
      *
      * @return boolean TRUE if the passed files basename are equal, else FALSE
-     * @todo Refactorig required, because of duplicate method
-     * @see \TechDivision\Import\Subjects\FileResolver\OkFileAwareFileResolver::isEqualFilename()
      */
     protected function isEqualFilename(string $filename1, string $filename2) : bool
     {
@@ -166,8 +213,6 @@ class OkFileFilter extends PregMatchFilter
      * @param string $suffix   The suffix to return
      *
      * @return string The filname without the suffix
-     * @todo Refactorig required, because of duplicate method
-     * @see \TechDivision\Import\Subjects\FileResolver\OkFileAwareFileResolver::stripSuffix()
      */
     protected function stripSuffix(string $filename, string $suffix) : string
     {
@@ -178,8 +223,6 @@ class OkFileFilter extends PregMatchFilter
      * Returns the elements the filenames consists of, converted to lowercase.
      *
      * @return array The array with the filename elements
-     * @todo Refactorig required, because of duplicate method
-     * @see \TechDivision\Import\Subjects\FileResolver\OkFileAwareFileResolver::getPatternKeys()
      */
     protected function getPatternKeys() : array
     {
@@ -232,19 +275,14 @@ class OkFileFilter extends PregMatchFilter
      *
      * @return array The array with the pattern values
      */
-    protected function resolvePatternValues(array $patternKeys = null) : array
+    protected function resolvePatternValues() : array
     {
 
         // initialize the array
         $elements = array();
 
-        // load the pattern keys, if not passed
-        if ($patternKeys === null) {
-            $patternKeys = $this->getPatternKeys();
-        }
-
         // prepare the pattern values
-        foreach ($patternKeys as $element) {
+        foreach ($this->getPatternKeys() as $element) {
             $elements[] = sprintf('(?<%s>%s)', $element, $this->resolvePatternValue($element));
         }
 
@@ -256,21 +294,14 @@ class OkFileFilter extends PregMatchFilter
      * Prepares and returns the pattern for the regex to load the files from the
      * source directory for the passed subject.
      *
-     * @param array|null  $patternKeys      The pattern keys used to load the pattern values
-     * @param string|null $suffix           The suffix used to prepare the regular expression
-     * @param string|null $elementSeparator The element separator used to prepare the regular expression
-     *
      * @return string The prepared regex pattern
      */
-    protected function getPattern(array $patternKeys = null, string $suffix = null, string $elementSeparator = null) : string
+    protected function getPattern() : string
     {
         return sprintf(
-            $this->getRegex(),
-            implode(
-                $elementSeparator ? $elementSeparator : $this->getElementSeparator(),
-                $this->resolvePatternValues($patternKeys)
-            ),
-            $suffix ? $suffix : $this->getSuffix()
+            parent::getPattern(),
+            implode($this->getElementSeparator(), $this->resolvePatternValues()),
+            $this->getSuffix()
         );
     }
 
@@ -280,8 +311,6 @@ class OkFileFilter extends PregMatchFilter
      * @param array $parts The parts to concatenate the OK filename from
      *
      * @return string The OK filename
-     * @todo Refactorig required, because of duplicate method
-     * @see \TechDivision\Import\Subjects\FileResolver\OkFileAwareFileResolver::prepareOkFilename()
      */
     protected function prepareOkFilename(array $parts) : string
     {
@@ -292,8 +321,6 @@ class OkFileFilter extends PregMatchFilter
      * Return's an array with the names of the expected OK files for the actual subject.
      *
      * @return array The array with the expected OK filenames
-     * @todo Refactorig required, because of duplicate method
-     * @see \TechDivision\Import\Subjects\FileResolver\OkFileAwareFileResolver::getOkFilenames()
      */
     protected function getOkFilenames() : array
     {
@@ -354,6 +381,7 @@ class OkFileFilter extends PregMatchFilter
             foreach ($okFilenames as $okFilename) {
                 // if the OK filename matches the CSV filename AND the OK file is empty
                 if ($this->isEqualFilename($v, $okFilename) && filesize($okFilename) === 0) {
+                    $this->getHandler()->delete($okFilename);
                     $inOkFile = true;
                     break;
                 }
@@ -366,8 +394,9 @@ class OkFileFilter extends PregMatchFilter
                     $line = trim($line, PHP_EOL);
                 });
 
-                // query whether or not the OK file contains the filename
+                // query whether or not the .OK file contains the filename
                 if (in_array(basename($v), $okFileLines)) {
+                    $this->getHandler()->cleanUpOkFile($v, $okFilename);
                     $inOkFile = true;
                     break;
                 }

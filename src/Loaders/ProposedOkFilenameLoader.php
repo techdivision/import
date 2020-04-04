@@ -21,11 +21,8 @@
 namespace TechDivision\Import\Loaders;
 
 use TechDivision\Import\Utils\BunchKeys;
-use TechDivision\Import\Utils\RegistryKeys;
 use TechDivision\Import\Loaders\Sorters\UasortImpl;
 use TechDivision\Import\Loaders\Filters\PregMatchFilter;
-use TechDivision\Import\Adapter\FilesystemAdapterInterface;
-use TechDivision\Import\Services\RegistryProcessorInterface;
 use TechDivision\Import\Loaders\Filters\FilterImplInterface;
 use TechDivision\Import\Loaders\Sorters\SorterImplInterface;
 use TechDivision\Import\Configuration\Subject\FileResolverConfigurationInterface;

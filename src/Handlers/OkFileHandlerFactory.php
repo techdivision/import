@@ -108,7 +108,6 @@ class OkFileHandlerFactory implements HandlerFactoryInterface
         $handler = new OkFileHandler();
         $handler->setLoader($proposedOkFileLoader);
         $handler->setFilesystemAdapter($filesystemAdapter);
-        $handler->setFileResolverConfiguration($subject->getFileResolver());
 
         // return the new .OK file handler instance
         return $handler;

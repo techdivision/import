@@ -102,6 +102,7 @@ class FileWriterFactory implements FileWriterFactoryInterface
         $handler = $this->getHandlerFactory()->createHandler($subject);
 
         // load the filesystem adapter instance
+        /** \TechDivision\Import\Adapter\FilesystemAdapterInterface $filesystemAdapter */
         $filesystemAdapter = $container->get($subject->getFilesystemAdapter()->getId());
 
         // query whether or not we've a factory instance
@@ -110,6 +111,7 @@ class FileWriterFactory implements FileWriterFactoryInterface
         }
 
         // create a new file writer instance for the subject with the passed configuration
+        /** @var \TechDivision\Import\Subjects\FileWriter\OkFileAwareFileWriterInterface $fileWriter */
         $fileWriter = $container->get($subject->getFileWriter()->getId());
         $fileWriter->setHandler($handler);
         $fileWriter->setFilesystemAdapter($filesystemAdapter);

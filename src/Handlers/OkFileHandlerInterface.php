@@ -21,7 +21,6 @@
 namespace TechDivision\Import\Handlers;
 
 use TechDivision\Import\Loaders\FilteredLoaderInterface;
-use TechDivision\Import\Configuration\Subject\FileResolverConfigurationInterface;
 
 /**
  * Interface for all .OK file handler implementations.
@@ -45,22 +44,26 @@ interface OkFileHandlerInterface extends HandlerInterface
     public function setLoader(FilteredLoaderInterface $loader) : void;
 
     /**
-     * Set's the file resolver configuration.
+     * Deletes the .OK file with the passed name, but only if it is empty.
      *
-     * @param \TechDivision\Import\Configuration\Subject\FileResolverConfigurationInterface $fileResolverConfiguration The file resolver configuration
+     * @param string $okFilename The name of the .OK file to delete
+     *
+     * @return void
+     * @throw \TechDivision\Import\Exceptions\OkFileNotEmptyException Is thrown, if the .OK file is NOT empty
      */
-    public function setFileResolverConfiguration(FileResolverConfigurationInterface $fileResolverConfiguration) : void;
+    public function delete(string $okFilename);
 
     /**
-     * Query whether or not, the passed CSV filename is in the OK file. If the filename was found,
+     * Query whether or not, the passed CSV filename is in the passed OK file. If the filename was found,
      * the OK file will be cleaned-up.
      *
-     * @param string $filename The filename to be cleaned-up
+     * @param string $filename   The filename to be cleaned-up
+     * @param string $okFilename The filename of the .OK filename
      *
      * @return void
      * @throws \Exception Is thrown, if the passed filename is NOT in the OK file or the OK can not be cleaned-up
      */
-    public function cleanUpOkFile(string $filename) : void;
+    public function cleanUpOkFile(string $filename, string $okFilename) : void;
 
     /**
      * Create's the .OK files for all .CSV files that matches the passed pattern.

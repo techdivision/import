@@ -22,9 +22,8 @@ namespace TechDivision\Import\Handlers;
 
 use TechDivision\Import\Loaders\FilteredLoaderInterface;
 use TechDivision\Import\Exceptions\LineNotFoundException;
-use TechDivision\Import\Exceptions\MissingOkFileException;
 use TechDivision\Import\Adapter\FilesystemAdapterInterface;
-use TechDivision\Import\Configuration\Subject\FileResolverConfigurationInterface;
+use TechDivision\Import\Exceptions\OkFileNotEmptyException;
 
 /**
  * An .OK file handler implementation.
@@ -46,13 +45,6 @@ class OkFileHandler implements OkFileHandlerInterface
     private $loader;
 
     /**
-     * The generic file handler instance.
-     *
-     * @var \TechDivision\Import\Handlers\GenericFileHandlerInterface
-     */
-    private $genericFileHandler;
-
-    /**
      * The filesystem adapter instance.
      *
      * @var \TechDivision\Import\Adapter\FilesystemAdapterInterface
@@ -60,11 +52,11 @@ class OkFileHandler implements OkFileHandlerInterface
     private $filesystemAdapter;
 
     /**
-     * The file resolver configuration instance.
+     * The generic file handler instance.
      *
-     * @var \TechDivision\Import\Configuration\Subject\FileResolverConfigurationInterface
+     * @var \TechDivision\Import\Handlers\GenericFileHandlerInterface
      */
-    private $fileResolverConfiguration;
+    private $genericFileHandler;
 
     /**
      * Initializes the file handler instance.
@@ -107,170 +99,17 @@ class OkFileHandler implements OkFileHandlerInterface
     }
 
     /**
-     * Returns the file resolver configuration instance.
-     *
-     * @return \TechDivision\Import\Configuration\Subject\FileResolverConfigurationInterface The configuration instance
-     */
-    protected function getFileResolverConfiguration() : FileResolverConfigurationInterface
-    {
-        return $this->fileResolverConfiguration;
-    }
-
-    /**
      * Remove's the passed line from the file with the passed name.
      *
-     * @param string $line     The line to be removed
-     * @param string $filename The name of the file the line has to be removed
+     * @param string   $line The line to be removed
+     * @param resource $fh   The file handle of the file the line has to be removed
      *
      * @return void
      * @throws \Exception Is thrown, if the file doesn't exists, the line is not found or can not be removed
      */
-    protected function removeLineFromFile(string $line, string $filename) : void
+    protected function removeLineFromFile(string $line, $fh) : void
     {
-        $this->getGenericFileHandler()->removeLineFromFile($line, $filename);
-    }
-
-    /**
-     * Query whether or not the basename, without suffix, of the passed filenames are equal.
-     *
-     * @param string $filename1 The first filename to compare
-     * @param string $filename2 The second filename to compare
-     *
-     * @return boolean TRUE if the passed files basename are equal, else FALSE
-     * @todo Refactorig required, because of duplicate method
-     * @see \TechDivision\Import\Loaders\Filters\OkFileFilter::isEqualFilename()
-     */
-    protected function isEqualFilename(string $filename1, string $filename2) : bool
-    {
-        return $this->stripSuffix($filename1, $this->getSuffix()) === $this->stripSuffix($filename2, $this->getOkFileSuffix());
-    }
-
-    /**
-     * Strips the passed suffix, including the (.), from the filename and returns it.
-     *
-     * @param string $filename The filename to return the suffix from
-     * @param string $suffix   The suffix to return
-     *
-     * @return string The filname without the suffix
-     * @todo Refactorig required, because of duplicate method
-     * @see \TechDivision\Import\Loaders\Filters\OkFileFilter::stripSuffix()
-     */
-    protected function stripSuffix(string $filename, string $suffix) : string
-    {
-        return basename($filename, sprintf('.%s', $suffix));
-    }
-
-    /**
-     * Prepares and returns an OK filename from the passed parts.
-     *
-     * @param array $parts The parts to concatenate the OK filename from
-     *
-     * @return string The OK filename
-     * @todo Refactorig required, because of duplicate method
-     * @see \TechDivision\Import\Loaders\Filters\OkFileFilter::prepareOkFilename()
-     */
-    protected function prepareOkFilename(array $parts) : string
-    {
-        return sprintf('%s/%s.%s', $this->getSourceDir(), implode($this->getElementSeparator(), $parts), $this->getOkFileSuffix());
-    }
-
-    /**
-     * Returns the delement separator char.
-     *
-     *  @return string The element separator char
-     */
-    protected function getElementSeparator() : string
-    {
-        return $this->getFileResolverConfiguration()->getElementSeparator();
-    }
-
-    /**
-     * Returns the elements the filenames consists of.
-     *
-     * @return array The array with the filename elements
-     * @todo Refactorig required, because of duplicate method
-     * @see \TechDivision\Import\Loaders\Filters\OkFileFilter::getPatternElements()
-     */
-    protected function getPatternElements() : array
-    {
-        return $this->getFileResolverConfiguration()->getPatternElements();
-    }
-
-    /**
-     * Returns the elements the filenames consists of.
-     *
-     * @return array The array with the filename elements
-     * @todo Refactorig required, because of duplicate method
-     * @see \TechDivision\Import\Loaders\Filters\OkFileFilter::getOkFileSuffix()
-     */
-    protected function getOkFileSuffix() : array
-    {
-        return $this->getFileResolverConfiguration()->getOkFileSuffix();
-    }
-
-    /**
-     * Returns the actual source directory to load the files from.
-     *
-     * @return string The actual source directory
-     */
-    protected function getSourceDir() : string
-    {
-        throw new \Exception(sprintf('Method "%s" has not been implemented yet', __METHOD__));
-    }
-
-    /**
-     * Returns the elements the filenames consists of, converted to lowercase.
-     *
-     * @return array The array with the filename elements
-     * @todo Refactorig required, because of duplicate method
-     * @see \TechDivision\Import\Loaders\Filters\OkFileFilter::getPatternKeys()
-     */
-    protected function getPatternKeys() : array
-    {
-
-        // load the pattern keys from the configuration
-        $patternKeys = $this->getPatternElements();
-
-        // make sure that they are all lowercase
-        array_walk($patternKeys, function (&$value) {
-            $value = strtolower($value);
-        });
-
-        // return the pattern keys
-        return $patternKeys;
-    }
-
-    /**
-     * Return's an array with the names of the expected OK files for the actual subject.
-     *
-     * @return array The array with the expected OK filenames
-     * @todo Refactorig required, because of duplicate method
-     * @see \TechDivision\Import\Loaders\Filters\OkFileFilter::getOkFilenames()
-     */
-    protected function getOkFilenames() : array
-    {
-
-        // initialize the array for the available okFilenames
-        $okFilenames = array();
-
-        // prepare the OK filenames based on the found CSV file information
-        for ($i = 1; $i <= sizeof($patternKeys = $this->getPatternKeys()); $i++) {
-            // intialize the array for the parts of the names (prefix, filename + counter)
-            $parts = array();
-            // load the parts from the matches
-            for ($z = 0; $z < $i; $z++) {
-                // append the part
-                $parts[] = $this->getLoader()->getMatch($patternKeys[$z]);
-            }
-
-            // query whether or not, the OK file exists, if yes append it
-            if (file_exists($okFilename = $this->prepareOkFilename($parts))) {
-                $okFilenames[] = $okFilename;
-            }
-        }
-
-        // prepare and return the pattern for the OK file
-        return $okFilenames;
+        $this->getGenericFileHandler()->removeLineFromFile($line, $fh);
     }
 
     /**
@@ -286,16 +125,6 @@ class OkFileHandler implements OkFileHandlerInterface
     }
 
     /**
-     * Set's the file resolver configuration.
-     *
-     * @param \TechDivision\Import\Configuration\Subject\FileResolverConfigurationInterface $fileResolverConfiguration The file resolver configuration
-     */
-    public function setFileResolverConfiguration(FileResolverConfigurationInterface $fileResolverConfiguration) : void
-    {
-        $this->fileResolverConfiguration = $fileResolverConfiguration;
-    }
-
-    /**
      * Set's the filesystem adapter instance.
      *
      * @param \TechDivision\Import\Adapter\FilesystemAdapterInterface $filesystemAdapter The filesystem adapter instance
@@ -306,60 +135,47 @@ class OkFileHandler implements OkFileHandlerInterface
     }
 
     /**
-     * Query whether or not, the passed CSV filename is in the OK file. If the filename was found,
+     * Deletes the .OK file with the passed name, but only if it is empty.
+     *
+     * @param string $okFilename The name of the .OK file to delete
+     *
+     * @return void
+     * @throw \TechDivision\Import\Exceptions\OkFileNotEmptyException Is thrown, if the .OK file is NOT empty
+     */
+    public function delete(string $okFilename)
+    {
+
+        // if the .OK file is empty, delete it
+        if (filesize($okFilename) === 0) {
+            $this->getFilesystemAdapter()->delete($okFilename);
+        } else {
+            throw new OkFileNotEmptyException(sprintf('Can\'t delete file "%s" because it\'s not empty', $okFilename));
+        }
+    }
+
+    /**
+     * Query whether or not, the passed CSV filename is in the passed OK file. If the filename was found,
      * the OK file will be cleaned-up.
      *
-     * @param string $filename The filename to be cleaned-up
+     * @param string $filename   The filename to be cleaned-up
+     * @param string $okFilename The filename of the .OK filename
      *
      * @return void
      * @throws \Exception Is thrown, if the passed filename is NOT in the OK file or the OK can not be cleaned-up
      */
-    public function cleanUpOkFile(string $filename) : void
+    public function cleanUpOkFile(string $filename, string $okFilename) : void
     {
 
-        // query whether or not the subject needs an OK file, if yes remove the filename from the file
-        if ($this->getSubjectConfiguration()->isOkFileNeeded() === false) {
-            return;
-        }
-
         try {
-            // try to load the expected OK filenames
-            if (sizeof($okFilenames = $this->getOkFilenames()) === 0) {
-                throw new MissingOkFileException(sprintf('Can\'t find a OK filename for file %s', $filename));
+            // else, remove the CSV filename from the OK file
+            $this->removeLineFromFile(basename($filename), $fh = fopen($okFilename, 'r+'));
+            fclose($fh);
+
+            // finally delete the .OK file, if empty
+            if (filesize($okFilename) === 0) {
+                $this->delete($okFilename);
             }
 
-            // iterate over the found OK filenames (should usually be only one, but could be more)
-            foreach ($okFilenames as $okFilename) {
-                // clear the filecache
-                \clearstatcache();
-                // if the OK filename matches the CSV filename AND the OK file is empty
-                if ($this->isEqualFilename($filename, $okFilename) && filesize($okFilename) === 0) {
-                    unlink($okFilename);
-                    return;
-                }
-
-                // else, remove the CSV filename from the OK file
-                $this->removeLineFromFile(basename($filename), $fh = fopen($okFilename, 'r+'));
-                fclose($fh);
-
-                // if the OK file is empty, delete the file
-                if (filesize($okFilename) === 0) {
-                    unlink($okFilename);
-                }
-
-                // return immediately
-                return;
-            }
-
-            // throw an exception if either no OK file has been found,
-            // or the CSV file is not in one of the OK files
-            throw new \Exception(
-                sprintf(
-                    'Can\'t found filename %s in one of the expected OK files: %s',
-                    $filename,
-                    implode(', ', $okFilenames)
-                )
-            );
         } catch (LineNotFoundException $lne) {
             // wrap and re-throw the exception
             throw new \Exception(

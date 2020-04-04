@@ -20,7 +20,6 @@
 
 namespace TechDivision\Import\Subjects\FileResolver;
 
-use TechDivision\Import\ApplicationInterface;
 use TechDivision\Import\ConfigurationInterface;
 use TechDivision\Import\Services\RegistryProcessorInterface;
 use TechDivision\Import\Configuration\Subject\FileResolverConfigurationInterface;
@@ -48,18 +47,16 @@ class MoveFilesFileResolver extends OkFileAwareFileResolver
     /**
      * Initializes the file resolver with the application and the registry instance.
      *
-     * @param \TechDivision\Import\ApplicationInterface                $application       The application instance
-     * @param \TechDivision\Import\Services\RegistryProcessorInterface $registryProcessor The registry instance
      * @param \TechDivision\Import\ConfigurationInterface              $configuration     The configuration instance
+     * @param \TechDivision\Import\Services\RegistryProcessorInterface $registryProcessor The registry instance
      */
     public function __construct(
-        ApplicationInterface $application,
-        RegistryProcessorInterface $registryProcessor,
-        ConfigurationInterface $configuration
+        ConfigurationInterface $configuration,
+        RegistryProcessorInterface $registryProcessor
     ) {
 
         // pass the application + registry processor to the parent class
-        parent::__construct($application, $registryProcessor);
+        parent::__construct($registryProcessor);
 
         // set the configuration instance
         $this->configuration = $configuration;

@@ -84,5 +84,8 @@ class GenericFileHandler implements GenericFileHandlerInterface
                 throw new \Exception(sprintf('Can\'t write %s to file', $ln));
             }
         }
+
+        // clear the file status cache
+        clearstatcache();
     }
 }

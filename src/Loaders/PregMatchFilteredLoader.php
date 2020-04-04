@@ -36,7 +36,7 @@ use TechDivision\Import\Loaders\Filters\PregMatchFilterInterface;
  * @link      http://www.techdivision.com
  * @link      https://www.php.net/array_filter
  */
-class PregMatchFilteredLoader implements FilteredLoaderInterface
+class PregMatchFilteredLoader implements PregMatchFilteredLoaderInterface
 {
 
     /**
@@ -101,6 +101,25 @@ class PregMatchFilteredLoader implements FilteredLoaderInterface
 
         // return the matches of all filters
         return $matches;
+    }
+
+    /**
+     * Reset's the registered filters.
+     *
+     * @return void
+     */
+    public function reset() : void
+    {
+
+        // load the filters that has to be resetted
+        $filters = $this->getFilters();
+
+        // reset the filters
+        foreach ($filters as $filter) {
+            if ($filter instanceof PregMatchFilterInterface) {
+                $filter->reset();
+            }
+        }
     }
 
     /**

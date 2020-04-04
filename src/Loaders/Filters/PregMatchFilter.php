@@ -229,14 +229,19 @@ class PregMatchFilter implements PregMatchFilterInterface
         $matches = array();
 
         // query whether or not the passed subject matches the pattern
-        if (is_int($result = preg_match($pattern = $this->getPattern(), $v, $matches, $this->getFlags(), $this->getOffset()))) {
-            // add the matches to the stack
-            $this->addMatches($matches);
-            // return the result
-            return (bool) $result;
-        }
+        $result = preg_match($pattern = $this->getPattern(), $v, $matches, $this->getFlags(), $this->getOffset());
 
         // throw an exception if the pattern can not be evaluated against the passed subject
-        throw new \RuntimeException(sprintf('Pattern "%s" can not be matched against subject "%s"', $pattern, $v));
+        if ($result === false) {
+            throw new \RuntimeException(sprintf('Pattern "%s" can not be matched against subject "%s"', $pattern, $v));
+        }
+
+        // add the matches to the stack, if the pattern matches
+        if ($result === 1) {
+            $this->addMatches($matches);
+        }
+
+        // return the result
+        return (bool) $result;
     }
 }

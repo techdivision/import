@@ -21,9 +21,9 @@
 namespace TechDivision\Import\Subjects\FileResolver;
 
 use TechDivision\Import\Utils\RegistryKeys;
-use TechDivision\Import\Loaders\FilteredLoaderInterface;
 use TechDivision\Import\Adapter\FilesystemAdapterInterface;
 use TechDivision\Import\Services\RegistryProcessorInterface;
+use TechDivision\Import\Loaders\PregMatchFilteredLoaderInterface;
 use TechDivision\Import\Configuration\SubjectConfigurationInterface;
 use TechDivision\Import\Configuration\Subject\FileResolverConfigurationInterface;
 
@@ -70,7 +70,7 @@ abstract class AbstractFileResolver implements FileResolverInterface
     /**
      * The filesystem loader instance.
      *
-     * @var \TechDivision\Import\Loaders\LoaderInterface
+     * @var \TechDivision\Import\Loaders\PregMatchFilteredLoaderInterface
      */
     private $filesystemLoader;
 
@@ -78,12 +78,10 @@ abstract class AbstractFileResolver implements FileResolverInterface
      * Initializes the file resolver with the application and the registry instance.
      *
      * @param \TechDivision\Import\Services\RegistryProcessorInterface $registryProcessor The registry instance
-     * @param \TechDivision\Import\Loaders\FilteredLoaderInterface     $filesystemLoader  The filesystem loader instance
      */
-    public function __construct(RegistryProcessorInterface $registryProcessor, FilteredLoaderInterface $filesystemLoader)
+    public function __construct(RegistryProcessorInterface $registryProcessor)
     {
         $this->registryProcessor = $registryProcessor;
-        $this->filesystemLoader = $filesystemLoader;
     }
 
     /**
@@ -99,9 +97,9 @@ abstract class AbstractFileResolver implements FileResolverInterface
     /**
      * Return's the filesystem loader instance.
      *
-     * @return \TechDivision\Import\Loaders\FilteredLoaderInterface The loader instance
+     * @return \TechDivision\Import\Loaders\PregMatchFilteredLoaderInterface The loader instance
      */
-    protected function getFilesystemLoader() : FilteredLoaderInterface
+    protected function getFilesystemLoader() : PregMatchFilteredLoaderInterface
     {
         return $this->filesystemLoader;
     }
@@ -175,6 +173,18 @@ abstract class AbstractFileResolver implements FileResolverInterface
     }
 
     /**
+     * Set's the filesystem loader used to resolve the file that has to be processed.
+     *
+     * @param \TechDivision\Import\Loaders\PregMatchFilteredLoaderInterface $loader The filesystem loader instance
+     *
+     * @return void
+     */
+    public function setLoader(PregMatchFilteredLoaderInterface $loader) : void
+    {
+        $this->filesystemLoader = $loader;
+    }
+
+    /**
      * Sets the subject configuration instance.
      *
      * @param \TechDivision\Import\Configuration\SubjectConfigurationInterface $subjectConfiguration The subject configuration
@@ -216,6 +226,26 @@ abstract class AbstractFileResolver implements FileResolverInterface
     public function getFilesystemAdapter() : FilesystemAdapterInterface
     {
         return $this->filesystemAdapter;
+    }
+
+    /**
+     * Return's the matches of all filters.
+     *
+     * @return array The array with the matches
+     */
+    public function getMatches()
+    {
+        return $this->getFilesystemLoader()->getMatches();
+    }
+
+    /**
+     * Reset's the registered filters.
+     *
+     * @return void
+     */
+    public function reset() : void
+    {
+        $this->getFilesystemLoader()->reset();
     }
 
     /**

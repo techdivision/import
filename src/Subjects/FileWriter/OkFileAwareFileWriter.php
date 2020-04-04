@@ -27,7 +27,7 @@ use TechDivision\Import\Services\RegistryProcessorInterface;
 use TechDivision\Import\Configuration\Subject\FileResolverConfigurationInterface;
 
 /**
- * Plugin that processes the subjects.
+ * File writer implementation for .OK files.
  *
  * @author    Tim Wagner <t.wagner@techdivision.com>
  * @copyright 2020 TechDivision GmbH <info@techdivision.com>
@@ -35,7 +35,7 @@ use TechDivision\Import\Configuration\Subject\FileResolverConfigurationInterface
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
  */
-class OkFileAwareFileWriter implements FileWriterInterface
+class OkFileAwareFileWriter implements OkFileAwareFileWriterInterface
 {
 
     /**
@@ -170,6 +170,7 @@ class OkFileAwareFileWriter implements FileWriterInterface
         // throw an exception otherwise
         throw new \Exception(sprintf('Configured source directory "%s" is not available!', $sourceDir));
     }
+
     /**
      * Returns the suffix for the import files.
      *

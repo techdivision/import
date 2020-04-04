@@ -150,8 +150,8 @@ class SubjectPlugin extends AbstractPlugin implements SubjectAwarePluginInterfac
     protected function processSubject(SubjectConfigurationInterface $subject)
     {
 
-        // initialize the bunch number
-        $bunches = 0;
+        // initialize the file counter
+        $counter = 0;
 
         // load the file resolver for the subject with the passed configuration
         $fileResolver = $this->fileResolverFactory->createFileResolver($subject);
@@ -163,22 +163,22 @@ class SubjectPlugin extends AbstractPlugin implements SubjectAwarePluginInterfac
         $matches = $fileResolver->getMatches();
 
         // iterate through all CSV files and process the subjects
-        foreach ($files as $key => $filename) {
+        foreach ($files as $filename) {
             // initialize the subject and import the bunch
-            $this->subjectExecutor->execute($subject, $matches[$key], $serial, $filename);
-            // raise the number of the imported bunches
-            $bunches++;
+            $this->subjectExecutor->execute($subject, $matches[$counter], $serial, $filename);
+            // raise the number of the imported files
+            $counter++;
         }
 
-        // raise the bunch number by the imported bunches
-        $this->bunches = $this->bunches + $bunches;
+        // raise the bunch number by the number of imported files
+        $this->bunches = $this->bunches + $counter;
 
         // reset the file resolver for making it ready parsing the files of the next subject
         $fileResolver->reset();
 
         // and and log a message that the subject has been processed
         $this->getSystemLogger()->debug(
-            sprintf('Successfully processed subject %s with %d bunches)!', $subject->getId(), $bunches)
+            sprintf('Successfully processed subject "%s" with "%d" files)!', $subject->getId(), $counter)
         );
     }
 }

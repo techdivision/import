@@ -460,15 +460,15 @@
          |-->
         <service id="import.subject.file.resolver.factory" class="TechDivision\Import\Subjects\FileResolver\FileResolverFactory">
             <argument type="service" id="service_container"/>
+            <argument type="service" id="import.handler.factory.ok.file"/>
+            <argument type="service" id="import.processor.registry"/>
         </service>
         <service id="import.subject.file.resolver.ok.file.aware" class="TechDivision\Import\Subjects\FileResolver\OkFileAwareFileResolver">
-            <argument type="service" id="import_app_simple.simple"/>
             <argument type="service" id="import.processor.registry"/>
         </service>
         <service id="import.subject.file.resolver.move.files" class="TechDivision\Import\Subjects\FileResolver\MoveFilesFileResolver">
-            <argument type="service" id="import_app_simple.simple"/>
-            <argument type="service" id="import.processor.registry"/>
             <argument type="service" id="configuration"/>
+            <argument type="service" id="import.processor.registry"/>
         </service>
 
         <!--
