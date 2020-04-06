@@ -46,7 +46,7 @@ class FilesystemLoader implements LoaderInterface
     /**
      * Construct that initializes the loader with the filesystem adapter instance.
      *
-     * @param \TechDivision\Import\Adapter\FilesystemAdapterInterface $registryProcessor The filesystem adapter instance
+     * @param \TechDivision\Import\Adapter\FilesystemAdapterInterface $filesystemAdapter The filesystem adapter instance
      */
     public function __construct(FilesystemAdapterInterface $filesystemAdapter)
     {

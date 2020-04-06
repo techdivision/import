@@ -132,10 +132,30 @@ interface FilesystemAdapterInterface
     /**
      * Find and return pathnames matching a pattern
      *
-     * @param string  $pattern No tilde expansion or parameter substitution is done.
-     * @param int     $flags   Flags that changes the behaviour
+     * @param string $pattern No tilde expansion or parameter substitution is done.
+     * @param int    $flags   Flags that changes the behaviour
      *
      * @return array Containing the matched files/directories, an empty array if no file matched or FALSE on error
      */
     public function glob(string $pattern, int $flags = 0);
+
+    /**
+     * Return's the size of the file with the passed name.
+     *
+     * @param string $filename The name of the file to return the size for
+     *
+     * @return int The size of the file in bytes
+     * @throws \Exception  Is thrown, if the size can not be calculated
+     */
+    public function size($filename);
+
+    /**
+     * Read's and return's the content of the file with the passed name as array.
+     *
+     * @param string $filename The name of the file to return its content for
+     *
+     * @return array The content of the file as array
+     * @throws \Exception  Is thrown, if the file is not accessible
+     */
+    public function read($filename);
 }

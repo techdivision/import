@@ -228,6 +228,11 @@
         <!--
          | The DI handler configuration
          |-->
+        <service id="import.handler.file.generic" class="TechDivision\Import\Handlers\GenericFileHandler"/>
+        <service id="import.handler.file.pid" class="TechDivision\Import\Handlers\PidFileHandler">
+            <argument type="service" id="configuration"/>
+            <argument type="service" id="import.handler.file.generic"/>
+        </service>
         <service id="import.handler.factory.ok.file" class="TechDivision\Import\Handlers\OkFileHandlerFactory">
             <argument type="service" id="service_container"/>
             <argument type="service" id="import.loader.factory.proposed.ok.filename"/>

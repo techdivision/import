@@ -28,6 +28,7 @@ namespace TechDivision\Import\Loaders\Sorters;
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
+ * @link      https://php.net/uasort
  */
 class UasortImpl implements SorterImplInterface
 {
@@ -62,8 +63,10 @@ class UasortImpl implements SorterImplInterface
     }
 
     /**
+     * Sorts the passed array with data by applying each of the registered callbacks
+     * by invoking the `uasort` function on it.
      *
-     * @param array $data
+     * @param array $data The array to be sorted
      *
      * @return void
      */

@@ -161,11 +161,15 @@ class ConfigurationManager implements ConfigurationManagerInterface
                 $plugin->setOperationConfiguration($operation);
                 // if NO prefix for the move files subject has been set, we use the prefix from the first plugin's subject
                 if ($configuration->getMoveFilesPrefix() === null) {
-                    // use the prefix of the first subject
+                    // use the prefix of the first subject that needs an .OK file
                     /** @var \TechDivision\Import\Configuration\SubjectConfigurationInterface $subject */
                     foreach ($plugin->getSubjects() as $subject) {
-                        $configuration->setMoveFilesPrefix($subject->getFileResolver()->getPrefix());
-                        break;
+                        // we use the subject with the first file resolver that has a custom
+                        // prefix set to initialize the prefix for the move files subject for
+                        if ($subject->getFileResolver()->hasPrefix()) {
+                            $configuration->setMoveFilesPrefix($subject->getFileResolver()->getPrefix());
+                            break;
+                        }
                     }
                 }
 

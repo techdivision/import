@@ -29,7 +29,7 @@ namespace TechDivision\Import\Subjects\FileResolver;
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
  */
-class SimpleFileResolverInstance extends SimpleFileResolver
+class SimpleFileResolverInstance extends AbstractFileResolver
 {
 
     /**

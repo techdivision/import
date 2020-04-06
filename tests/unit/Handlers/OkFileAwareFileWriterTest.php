@@ -30,6 +30,7 @@ use TechDivision\Import\Subjects\FileResolver\SimpleFileResolver;
 use TechDivision\Import\Subjects\FileWriter\Filters\DefaultOkFileFilter;
 use TechDivision\Import\Subjects\FileWriter\Sorters\DefaultOkFileSorter;
 use TechDivision\Import\Utils\BunchKeys;
+use TechDivision\Import\Handlers\OkFileHandlerInterface;
 
 /**
  * Test class for the symfony application implementation.
@@ -59,7 +60,10 @@ class OkFileAwareFileWriterTest extends TestCase
      */
     protected function setUp()
     {
-        $this->okFileAwareFileWriter = new OkFileAwareFileWriter();
+
+        $mockRegistryProcessor = $this->getMockBuilder(RegistryProcessorInterface::class)->getMock();
+
+        $this->okFileAwareFileWriter = new OkFileAwareFileWriter($mockRegistryProcessor);
     }
 
     /**
@@ -73,7 +77,7 @@ class OkFileAwareFileWriterTest extends TestCase
     {
 
         // create a mock application
-        $mockApplication = $this->getMockBuilder(ApplicationInterface::class)->getMock();
+        $mockOkFileHandler = $this->getMockBuilder(OkFileHandlerInterface::class)->getMock();
 
         // create a mock registry processor
         $mockRegistryProcessor = $this->getMockBuilder(RegistryProcessorInterface::class)->getMock();
@@ -137,61 +141,6 @@ class OkFileAwareFileWriterTest extends TestCase
         $this->okFileAwareFileWriter->addSorter(new DefaultOkFileSorter());
 
         return $this->okFileAwareFileWriter;
-    }
-
-    /**
-     * Test the getContainer() method.
-     *
-     * @return void
-     */
-    public function testProposedOkFilenames()
-    {
-
-        $okFileAwareFileWriter = $this->getOkFileAwareFileWriter(array(__DIR__ . DIRECTORY_SEPARATOR . 'magento-import_20200326-145451_01.csv'));
-
-        $expectedOkFilenames = array(__DIR__ . DIRECTORY_SEPARATOR . 'magento-import_20200326-145451.ok');
-
-        $this->assertSame($expectedOkFilenames, array_keys($okFileAwareFileWriter->propsedOkFilenames(uniqid())));
-    }
-
-    /**
-     * Test the getContainer() method.
-     *
-     * @return void
-     */
-    public function testProposedOkFilenamesWithBunch()
-    {
-
-        $okFileAwareFileWriter = $this->getOkFileAwareFileWriter(array(
-            __DIR__ . DIRECTORY_SEPARATOR . 'magento-import_20200326-145451_01.csv',
-            __DIR__ . DIRECTORY_SEPARATOR . 'magento-import_20200326-145451_02.csv'
-        ));
-
-        $expectedOkFilenames = array(__DIR__ . DIRECTORY_SEPARATOR . 'magento-import_20200326-145451.ok');
-
-        $this->assertSame($expectedOkFilenames, array_keys($okFileAwareFileWriter->propsedOkFilenames(uniqid())));
-    }
-
-    /**
-     * Test the getContainer() method.
-     *
-     * @return void
-     */
-    public function testProposedOkFilenamesWithMultipleFiles()
-    {
-
-
-        $okFileAwareFileWriter = $this->getOkFileAwareFileWriter(array(
-            __DIR__ . DIRECTORY_SEPARATOR . 'magento-import_20200326-145451_01.csv',
-            __DIR__ . DIRECTORY_SEPARATOR . 'magento-import_20200327-145451_01.csv'
-        ));
-
-        $expectedOkFilenames = array(
-            __DIR__ . DIRECTORY_SEPARATOR . 'magento-import_20200326-145451.ok',
-            __DIR__ . DIRECTORY_SEPARATOR . 'magento-import_20200327-145451.ok'
-        );
-
-        $this->assertSame($expectedOkFilenames, array_keys($okFileAwareFileWriter->propsedOkFilenames(uniqid())));
     }
 
     /**

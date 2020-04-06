@@ -35,6 +35,19 @@ interface GenericFileHandlerInterface extends HandlerInterface
     /**
      * Remove's the passed line from the file with the passed name.
      *
+     * @param string $line     The line to be removed
+     * @param string $filename The name of the file the line has to be removed from
+     *
+     * @return void
+     * @throws \TechDivision\Import\Exceptions\LineNotFoundException Is thrown, if the requested line can not be found in the file
+     * @throws \Exception Is thrown, if the file can not be written, after the line has been removed
+     * @see \TechDivision\Import\Handlers\GenericFileHandlerInterface::removeLineFromFile()
+     */
+    public function removeLineFromFilename(string $line, string $filename) : void;
+
+    /**
+     * Remove's the passed line from the file with the passed name.
+     *
      * @param string   $line The line to be removed
      * @param resource $fh   The file handle of the file the line has to be removed
      *

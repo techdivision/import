@@ -21,10 +21,9 @@
 namespace TechDivision\Import\Loaders\Filters;
 
 use TechDivision\Import\Utils\BunchKeys;
-use TechDivision\Import\Configuration\Subject\FileResolverConfigurationInterface;
-use TechDivision\Import\Configuration\SubjectConfigurationInterface;
 use TechDivision\Import\Handlers\OkFileHandlerInterface;
-
+use TechDivision\Import\Configuration\SubjectConfigurationInterface;
+use TechDivision\Import\Configuration\Subject\FileResolverConfigurationInterface;
 
 /**
  * Callback used to filter CSV files based on an availble .OK file and the information found
@@ -81,9 +80,12 @@ class OkFileFilter extends PregMatchFilter
     /**
      * Initializes the filter with pattern as well as the flags and the offset to use.
      *
-     * @param string $pattern The pattern to search for, as a string
-     * @param int    $flags   The flags to optimize the pattern search
-     * @param int    $offset  The offset with the alternate place from which to start the search (in bytes)
+     * @param \TechDivision\Import\Handlers\OkFileHandlerInterface             $handler              The .OK file handler instance to use
+     * @param \TechDivision\Import\Configuration\SubjectConfigurationInterface $subjectConfiguration The subject configuration with the information to load the files that has to be imported with
+     * @param string                                                           $sourceDir            The source dirctory to use
+     * @param string                                                           $pattern              The pattern to search for, as a string
+     * @param int                                                              $flags                The flags to optimize the pattern search
+     * @param int                                                              $offset               The offset with the alternate place from which to start the search (in bytes)
      */
     public function __construct(
         OkFileHandlerInterface $handler,
@@ -194,32 +196,6 @@ class OkFileFilter extends PregMatchFilter
     }
 
     /**
-     * Query whether or not the basename, without suffix, of the passed filenames are equal.
-     *
-     * @param string $filename1 The first filename to compare
-     * @param string $filename2 The second filename to compare
-     *
-     * @return boolean TRUE if the passed files basename are equal, else FALSE
-     */
-    protected function isEqualFilename(string $filename1, string $filename2) : bool
-    {
-        return $this->stripSuffix($filename1, $this->getSuffix()) === $this->stripSuffix($filename2, $this->getOkFileSuffix());
-    }
-
-    /**
-     * Strips the passed suffix, including the (.), from the filename and returns it.
-     *
-     * @param string $filename The filename to return the suffix from
-     * @param string $suffix   The suffix to return
-     *
-     * @return string The filname without the suffix
-     */
-    protected function stripSuffix(string $filename, string $suffix) : string
-    {
-        return basename($filename, sprintf('.%s', $suffix));
-    }
-
-    /**
      * Returns the elements the filenames consists of, converted to lowercase.
      *
      * @return array The array with the filename elements
@@ -270,8 +246,6 @@ class OkFileFilter extends PregMatchFilter
 
     /**
      * Returns the values to create the regex pattern from.
-     *
-     * @param array|null $patternKeys The pattern keys used to load the pattern values
      *
      * @return array The array with the pattern values
      */
@@ -328,19 +302,22 @@ class OkFileFilter extends PregMatchFilter
         // initialize the array for the available okFilenames
         $okFilenames = array();
 
-        // prepare the OK filenames based on the found CSV file information
-        for ($i = 1; $i <= sizeof($patternKeys = $this->getPatternKeys()); $i++) {
-            // intialize the array for the parts of the names (prefix, filename + counter)
-            $parts = array();
-            // load the parts from the matches
-            for ($z = 0; $z < $i; $z++) {
-                // append the part
-                $parts[] = $this->getMatch($patternKeys[$z]);
-            }
+        // try to load the .OK filenames, if we've at least one match
+        if ($this->countMatches() > 0) {
+            // prepare the OK filenames based on the found CSV file information
+            for ($i = 1; $i <= sizeof($patternKeys = $this->getPatternKeys()); $i++) {
+                // intialize the array for the parts of the names (prefix, filename + counter)
+                $parts = array();
+                // load the parts from the matches
+                for ($z = 0; $z < $i; $z++) {
+                    // append the part
+                    $parts[] = $this->getMatch($patternKeys[$z]);
+                }
 
-            // query whether or not, the OK file exists, if yes append it
-            if (file_exists($okFilename = $this->prepareOkFilename($parts))) {
-                $okFilenames[] = $okFilename;
+                // query whether or not, the OK file exists, if yes append it
+                if ($this->getHandler()->isOkFile($okFilename = $this->prepareOkFilename($parts))) {
+                    $okFilenames[] = $okFilename;
+                }
             }
         }
 
@@ -366,11 +343,11 @@ class OkFileFilter extends PregMatchFilter
         // initialize the flag: we assume that the file is in an OK file
         $inOkFile = true;
 
-        // query whether or not the subject requests an OK file
+        // query whether or not the subject requests an .OK file
         if ($this->isOkFileNeeded()) {
             // try to load the expected OK filenames
             if (sizeof($okFilenames = $this->getOkFilenames()) === 0) {
-                // stop processing, because the needed OK file is NOT available
+                // stop processing, because the mandatory .OK file is NOT available
                 return false;
             }
 
@@ -379,24 +356,7 @@ class OkFileFilter extends PregMatchFilter
 
             // iterate over the found OK filenames (should usually be only one, but could be more)
             foreach ($okFilenames as $okFilename) {
-                // if the OK filename matches the CSV filename AND the OK file is empty
-                if ($this->isEqualFilename($v, $okFilename) && filesize($okFilename) === 0) {
-                    $this->getHandler()->delete($okFilename);
-                    $inOkFile = true;
-                    break;
-                }
-
-                // load the OK file content
-                $okFileLines = file($okFilename);
-
-                // remove line breaks
-                array_walk($okFileLines, function (&$line) {
-                    $line = trim($line, PHP_EOL);
-                });
-
-                // query whether or not the .OK file contains the filename
-                if (in_array(basename($v), $okFileLines)) {
-                    $this->getHandler()->cleanUpOkFile($v, $okFilename);
+                if ($this->getHandler()->cleanUpOkFile($v, $okFilename) === true) {
                     $inOkFile = true;
                     break;
                 }

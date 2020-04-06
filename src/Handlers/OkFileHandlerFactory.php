@@ -88,6 +88,8 @@ class OkFileHandlerFactory implements HandlerFactoryInterface
     /**
      * Create's and return's a new handler instance.
      *
+     * @param \TechDivision\Import\Configuration\SubjectConfigurationInterface|null $subject The subject configuration instance
+     *
      * @return \TechDivision\Import\Handlers\HandlerInterface|null The new handler instance
      */
     public function createHandler(SubjectConfigurationInterface $subject = null) : HandlerInterface

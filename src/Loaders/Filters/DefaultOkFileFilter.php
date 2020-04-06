@@ -56,19 +56,23 @@ class DefaultOkFileFilter implements FilterInterface
     /**
      * This is the callback method that will be called by the invoking `array_filter` function.
      *
-     * @param mixed $v The value that has to be filtered
+     * @param array  $v The array with files that has to imported and that should be matches against the passed .OK filename
+     * @param string $k The key name, which has to be the .OK filename in this case
      *
      * @return bool TRUE if the value should be in the array, else FALSE
+     * @todo Making pattern creation for .OK and import files as well as the suffix more generic
      */
     public function __invoke($v, $k) : bool
     {
 
+        // iterate over the  array with the passed .OK filenames and the matching
+        // files that has to be imported to figure out if they match given pattern
         foreach ($v as $f) {
-
+            // initialize the array for the matches
             $matches = array();
-
+            // prepare the pattern
             $pattern = '/^(?<prefix>.*)_(?<filename>.*)_.*\.csv$/';
-
+            // try to match the pattern against the import file and the .OK file
             if (preg_match($pattern, $f, $matches)) {
                 if (preg_match(sprintf('/^.*\/%s_%s\.ok$/', $matches['prefix'], $matches['filename']), $k)) {
                     return true;
@@ -76,6 +80,7 @@ class DefaultOkFileFilter implements FilterInterface
             }
         }
 
+        // return FALSE, if the pattern doesn't match
         return false;
     }
 }

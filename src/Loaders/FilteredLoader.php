@@ -64,7 +64,7 @@ class FilteredLoader implements FilteredLoaderInterface
     /**
      * Construct that initializes the loader with the parent loader instance.
      *
-     * @param \TechDivision\Import\Loaders\LoaderInterface                  $loader The parent loader instance
+     * @param \TechDivision\Import\Loaders\LoaderInterface                  $loader     The parent loader instance
      * @param \TechDivision\Import\Loaders\Filters\FilterImplInterface|null $filterImpl The filter instance to use
      */
     public function __construct(LoaderInterface $loader, FilterImplInterface $filterImpl = null)

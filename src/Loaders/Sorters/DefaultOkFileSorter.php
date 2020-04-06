@@ -33,22 +33,26 @@ class DefaultOkFileSorter
 {
 
     /**
+     * Compare's that size of the passed arrays.
      *
-     * @param array  $v
-     * @param string $k
+     * @param array $a The first array
+     * @param array $b The second array
      *
-     * @return boolean TRUE if the value with the actual key should be in the array, else FALSE
+     * @return int int < 0 if size of a is less than the size of b; > 0 if the size of a is greater than size of b, and 0 if size of both is equal
      */
     public function __invoke(array $a, array $b) : int
     {
 
+        // count the number of elements
         $countA = sizeof($a);
         $countB = sizeof($b);
 
+        // return 0, if the size is equal
         if ($countA === $countB) {
             return 0;
         }
 
+        // return -1 if th size of a > b, else 1
         return ($countB < $countA) ? - 1 : 1;
     }
 }

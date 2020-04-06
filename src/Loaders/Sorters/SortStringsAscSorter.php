@@ -28,6 +28,7 @@ namespace TechDivision\Import\Loaders\Sorters;
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
+ * @link      https://php.net/strcmp
  */
 class SortStringsAscSorter
 {
@@ -39,7 +40,6 @@ class SortStringsAscSorter
      * @param string $str2 The second string
      *
      * @return int int < 0 if str1 is less than str2; > 0 if str1 is greater than str2, and 0 if they are equal.
-     * @link http://www.php.net/manual/en/function.strcmp.php
      */
     public function __invoke(string $str1, string $str2) : int
     {

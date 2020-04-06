@@ -68,8 +68,9 @@ interface FilterImplInterface
     public function getFilters() : array;
 
     /**
+     * The methods that filters by applying the registered filters on it.
      *
-     * @param array $data
+     * @param array $data The array with the data that has to be filtered
      *
      * @return void
      */

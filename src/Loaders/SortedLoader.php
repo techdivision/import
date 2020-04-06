@@ -20,7 +20,6 @@
 
 namespace TechDivision\Import\Loaders;
 
-
 use TechDivision\Import\Loaders\Sorters\UasortImpl;
 use TechDivision\Import\Loaders\Sorters\SorterImplInterface;
 

@@ -73,10 +73,9 @@ class ProposedOkFilenameLoader extends FilteredLoader implements FilteredLoaderI
     /**
      * Initializes the file handler instance.
      *
-     * @param \TechDivision\Import\Services\RegistryProcessorInterface  $registryProcessor  The registry processor instance
-     * @param \TechDivision\Import\Loaders\FilteredLoaderInterface      $loader             The parent loader instance
-     * @param \TechDivision\Import\Loaders\Filters\FilterImplInterface  $filterImpl         The filter instance to use
-     * @param \TechDivision\Import\Loaders\Sorters\SorterImplInterface  $sorterImpl         The sorter instance to use
+     * @param \TechDivision\Import\Loaders\FilteredLoaderInterface     $loader     The parent loader instance
+     * @param \TechDivision\Import\Loaders\Filters\FilterImplInterface $filterImpl The filter instance to use
+     * @param \TechDivision\Import\Loaders\Sorters\SorterImplInterface $sorterImpl The sorter instance to use
      */
     public function __construct(
         FilteredLoaderInterface $loader,
@@ -408,6 +407,8 @@ class ProposedOkFilenameLoader extends FilteredLoader implements FilteredLoaderI
      * Return's the actual source directory.
      *
      * @param string $sourceDir The actual source directory
+     *
+     * @return void
      */
     public function setSourceDir(string $sourceDir) : void
     {
@@ -440,6 +441,8 @@ class ProposedOkFilenameLoader extends FilteredLoader implements FilteredLoaderI
      * Set's the file resolver configuration.
      *
      * @param \TechDivision\Import\Configuration\Subject\FileResolverConfigurationInterface $fileResolverConfiguration The file resolver configuration
+     *
+     * @return void
      */
     public function setFileResolverConfiguration(FileResolverConfigurationInterface $fileResolverConfiguration) : void
     {

@@ -28,6 +28,7 @@ namespace TechDivision\Import\Loaders\Filters;
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
+ * @link      https://php.net/array_filter
  */
 class ArrayFilterImpl implements FilterImplInterface
 {
@@ -94,8 +95,10 @@ class ArrayFilterImpl implements FilterImplInterface
     }
 
     /**
+     * The methods that filters the passed array by inovking the `array_filter` method
+     * for each of the registered filter callbacks on it.
      *
-     * @param array $data
+     * @param array $data The array with the data that has to be filtered
      *
      * @return void
      */

@@ -101,15 +101,82 @@ class OkFileHandler implements OkFileHandlerInterface
     /**
      * Remove's the passed line from the file with the passed name.
      *
-     * @param string   $line The line to be removed
-     * @param resource $fh   The file handle of the file the line has to be removed
+     * @param string $line     The line to be removed
+     * @param string $filename The name of the file the line has to be removed from
      *
      * @return void
-     * @throws \Exception Is thrown, if the file doesn't exists, the line is not found or can not be removed
+     * @throws \TechDivision\Import\Exceptions\LineNotFoundException Is thrown, if the requested line can not be found in the file
+     * @throws \Exception Is thrown, if the file can not be written, after the line has been removed
+     * @see \TechDivision\Import\Handlers\GenericFileHandlerInterface::removeLineFromFile()
      */
-    protected function removeLineFromFile(string $line, $fh) : void
+    protected function removeLineFromFilename(string $line, string $filename) : void
     {
-        $this->getGenericFileHandler()->removeLineFromFile($line, $fh);
+        $this->getGenericFileHandler()->removeLineFromFilename($line, $filename);
+    }
+
+    /**
+     * Strips the passed suffix, including the (.), from the filename and returns it.
+     *
+     * @param string $filename The filename to return the suffix from
+     *
+     * @return string The filname without the suffix
+     */
+    protected function stripSuffix(string $filename) : string
+    {
+        return basename($filename, sprintf('.%s', pathinfo($filename, PATHINFO_BASENAME)));
+    }
+
+    /**
+     * Return's the size of the file with the passed name.
+     *
+     * @param string $okFilename The name of the file to return the size for
+     *
+     * @return int The size of the file in bytes
+     * @throws \Exception Is thrown, if the size can not be calculated
+     */
+    protected function size($okFilename)
+    {
+        return $this->getFilesystemAdapter()->size($okFilename);
+    }
+
+    /**
+     * Deletes the .OK file with the passed name, but only if it is empty.
+     *
+     * @param string $okFilename The name of the .OK file to delete
+     *
+     * @return void
+     * @throws \TechDivision\Import\Exceptions\OkFileNotEmptyException Is thrown, if the .OK file is NOT empty
+     */
+    protected function delete(string $okFilename)
+    {
+
+        // if the .OK file is empty, delete it
+        if (filesize($okFilename) === 0) {
+            $this->getFilesystemAdapter()->delete($okFilename);
+        } else {
+            throw new OkFileNotEmptyException(sprintf('Can\'t delete file "%s" because it\'s not empty', $okFilename));
+        }
+    }
+
+    /**
+     * Query whether or not the basename, without suffix, of the passed filenames are equal.
+     *
+     * @param string $filename   The filename to compare
+     * @param string $okFilename The name of the .OK file to compare
+     *
+     * @return boolean TRUE if the passed files basename are equal, else FALSE
+     */
+    protected function isEqualFilename(string $filename, string $okFilename) : bool
+    {
+
+        // strip the suffix of the files and compare them
+        if (strcmp($this->stripSuffix($filename), $this->stripSuffix($okFilename)) === 0) {
+            // return TRUE, if the filenames ARE equal
+            return true;
+        }
+
+        // return FALSE, if the filenames are NOT equal
+        return false;
     }
 
     /**
@@ -128,6 +195,8 @@ class OkFileHandler implements OkFileHandlerInterface
      * Set's the filesystem adapter instance.
      *
      * @param \TechDivision\Import\Adapter\FilesystemAdapterInterface $filesystemAdapter The filesystem adapter instance
+     *
+     * @return void
      */
     public function setFilesystemAdapter(FilesystemAdapterInterface $filesystemAdapter) : void
     {
@@ -135,22 +204,15 @@ class OkFileHandler implements OkFileHandlerInterface
     }
 
     /**
-     * Deletes the .OK file with the passed name, but only if it is empty.
+     * Query's whether or not the passed file is available and can be used as .OK file.
      *
-     * @param string $okFilename The name of the .OK file to delete
+     * @param string $okFilename The .OK file that has to be queried
      *
-     * @return void
-     * @throw \TechDivision\Import\Exceptions\OkFileNotEmptyException Is thrown, if the .OK file is NOT empty
+     * @return bool TRUE if the passed filename is an .OK file, else FALSE
      */
-    public function delete(string $okFilename)
+    public function isOkFile(string $okFilename) : bool
     {
-
-        // if the .OK file is empty, delete it
-        if (filesize($okFilename) === 0) {
-            $this->getFilesystemAdapter()->delete($okFilename);
-        } else {
-            throw new OkFileNotEmptyException(sprintf('Can\'t delete file "%s" because it\'s not empty', $okFilename));
-        }
+        return $this->getFilesystemAdapter()->isFile($okFilename);
     }
 
     /**
@@ -160,27 +222,39 @@ class OkFileHandler implements OkFileHandlerInterface
      * @param string $filename   The filename to be cleaned-up
      * @param string $okFilename The filename of the .OK filename
      *
-     * @return void
+     * @return bool TRUE if the passed filename matches the also passed .OK file
      * @throws \Exception Is thrown, if the passed filename is NOT in the OK file or the OK can not be cleaned-up
      */
-    public function cleanUpOkFile(string $filename, string $okFilename) : void
+    public function cleanUpOkFile(string $filename, string $okFilename) : bool
     {
 
         try {
-            // else, remove the CSV filename from the OK file
-            $this->removeLineFromFile(basename($filename), $fh = fopen($okFilename, 'r+'));
-            fclose($fh);
-
-            // finally delete the .OK file, if empty
-            if (filesize($okFilename) === 0) {
+            // if the OK filename matches the CSV filename AND the OK file is empty
+            if ($this->isEqualFilename($filename, $okFilename) && $this->size($okFilename) === 0) {
+                // finally delete the .OK file
                 $this->delete($okFilename);
+                // and return TRUE
+                return true;
+            } else {
+                // if the OK filename matches the CSV filename AND the OK file is empty
+                foreach ($this->getFilesystemAdapter()->read($okFilename) as $line) {
+                    if (strcmp(basename($filename), trim($line, PHP_EOL)) === 0) {
+                        // else, remove the CSV filename from the OK file
+                        $this->removeLineFromFilename($line, $okFilename);
+                        // finally delete the .OK file, if empty
+                        if ($this->size($okFilename) === 0) {
+                            $this->delete($okFilename);
+                        }
+                        // return TRUE, when the line has successfully been removed
+                        return true;
+                    }
+                }
             }
-
         } catch (LineNotFoundException $lne) {
             // wrap and re-throw the exception
             throw new \Exception(
                 sprintf(
-                    'Can\'t remove filename %s from OK file: %s',
+                    'Can\'t remove filename "%s" from .OK file: "%s"',
                     $filename,
                     $okFilename
                 ),
@@ -188,6 +262,8 @@ class OkFileHandler implements OkFileHandlerInterface
                 $lne
             );
         }
+        // otherwise, return FALSE
+        return false;
     }
 
     /**

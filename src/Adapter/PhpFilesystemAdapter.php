@@ -208,8 +208,8 @@ class PhpFilesystemAdapter implements PhpFilesystemAdapterInterface
     /**
      * Find and return pathnames matching a pattern
      *
-     * @param string  $pattern No tilde expansion or parameter substitution is done.
-     * @param int     $flags   Flags that changes the behaviour
+     * @param string $pattern No tilde expansion or parameter substitution is done.
+     * @param int    $flags   Flags that changes the behaviour
      *
      * @return array Containing the matched files/directories, an empty array if no file matched or FALSE on error
      * @link https://www.php.net/glob
@@ -222,5 +222,47 @@ class PhpFilesystemAdapter implements PhpFilesystemAdapterInterface
 
         // invoke the glob and return the array with the found files
         return glob($pattern, $flags);
+    }
+
+    /**
+     * Return's the size of the file with the passed name.
+     *
+     * @param string $filename The name of the file to return the size for
+     *
+     * @return int The size of the file in bytes
+     * @throws \Exception  Is thrown, if the size can not be calculated
+     * @link https://php.net/filesize
+     */
+    public function size($filename)
+    {
+
+        // calculate the size of the file and return it
+        if (is_int($size = filesize($filename))) {
+            return $size;
+        }
+
+        // throw an exception if the size can not be calculated
+        throw new \Exception(sprintf('Can\'t calculate size of file "%s"', $filename));
+    }
+
+    /**
+     * Read's and return's the content of the file with the passed name as array.
+     *
+     * @param string $filename The name of the file to return its content for
+     *
+     * @return array The content of the file as array
+     * @throws \Exception  Is thrown, if the file is not accessible
+     * @link https://php.net/file
+     */
+    public function read($filename)
+    {
+
+        // read the content of the file and return it
+        if ($content = file($filename)) {
+            return $content;
+        }
+
+        // throw an exception if the content of the file is not accessible
+        throw new \Exception(sprintf('Can\'t read the content of file "%s"', $filename));
     }
 }

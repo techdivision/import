@@ -112,7 +112,7 @@ interface CacheAdapterInterface
     /**
      * Remove the item with the passed key and all its references from the cache.
      *
-     * @param string $key The key of the cache item to Remove
+     * @param string $key               The key of the cache item to Remove
      * @param bool   $cleanUpReferences TRUE if the references has to be cleaned-up, else FALSE (default)
      *
      * @return void

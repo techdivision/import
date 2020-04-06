@@ -21,6 +21,7 @@
 namespace TechDivision\Import\Handlers;
 
 use TechDivision\Import\Loaders\FilteredLoaderInterface;
+use TechDivision\Import\Adapter\FilesystemAdapterInterface;
 
 /**
  * Interface for all .OK file handler implementations.
@@ -44,14 +45,22 @@ interface OkFileHandlerInterface extends HandlerInterface
     public function setLoader(FilteredLoaderInterface $loader) : void;
 
     /**
-     * Deletes the .OK file with the passed name, but only if it is empty.
+     * Set's the filesystem adapter instance.
      *
-     * @param string $okFilename The name of the .OK file to delete
+     * @param \TechDivision\Import\Adapter\FilesystemAdapterInterface $filesystemAdapter The filesystem adapter instance
      *
      * @return void
-     * @throw \TechDivision\Import\Exceptions\OkFileNotEmptyException Is thrown, if the .OK file is NOT empty
      */
-    public function delete(string $okFilename);
+    public function setFilesystemAdapter(FilesystemAdapterInterface $filesystemAdapter) : void;
+
+    /**
+     * Query's whether or not the passed file is available and can be used as .OK file.
+     *
+     * @param string $okFilename The .OK file that has to be queried
+     *
+     * @return bool TRUE if the passed filename is an .OK file, else FALSE
+     */
+    public function isOkFile(string $okFilename) : bool;
 
     /**
      * Query whether or not, the passed CSV filename is in the passed OK file. If the filename was found,
@@ -60,10 +69,10 @@ interface OkFileHandlerInterface extends HandlerInterface
      * @param string $filename   The filename to be cleaned-up
      * @param string $okFilename The filename of the .OK filename
      *
-     * @return void
+     * @return bool TRUE if the passed filename matches the also passed .OK file
      * @throws \Exception Is thrown, if the passed filename is NOT in the OK file or the OK can not be cleaned-up
      */
-    public function cleanUpOkFile(string $filename, string $okFilename) : void;
+    public function cleanUpOkFile(string $filename, string $okFilename) : bool;
 
     /**
      * Create's the .OK files for all .CSV files that matches the passed pattern.

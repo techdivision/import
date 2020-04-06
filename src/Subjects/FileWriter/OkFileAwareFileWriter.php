@@ -185,6 +185,8 @@ class OkFileAwareFileWriter implements OkFileAwareFileWriterInterface
      * Set's he .OK file handler instance.
      *
      * @param \TechDivision\Import\Handlers\OkFileHandlerInterface $handler The .OK file handler instance
+     *
+     * @return void
      */
     public function setHandler(OkFileHandlerInterface $handler) :void
     {
@@ -195,6 +197,8 @@ class OkFileAwareFileWriter implements OkFileAwareFileWriterInterface
      * Set's the filesystem adapter instance.
      *
      * @param \TechDivision\Import\Adapter\FilesystemAdapterInterface $filesystemAdapter The filesystem adapter instance
+     *
+     * @return void
      */
     public function setFilesystemAdapter(FilesystemAdapterInterface $filesystemAdapter) : void
     {
@@ -205,6 +209,8 @@ class OkFileAwareFileWriter implements OkFileAwareFileWriterInterface
      * Set's the file resolver configuration.
      *
      * @param \TechDivision\Import\Configuration\Subject\FileResolverConfigurationInterface $fileResolverConfiguration The file resolver configuration
+     *
+     * @return void
      */
     public function setFileResolverConfiguration(FileResolverConfigurationInterface $fileResolverConfiguration) : void
     {

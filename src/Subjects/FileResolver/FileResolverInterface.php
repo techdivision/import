@@ -54,7 +54,9 @@ interface FileResolverInterface
     /**
      * Set's the filesystem adapter instance.
      *
-     * @param \TechDivision\Import\Adapter\FilesystemAdapterInterface $filesystemAdapter
+     * @param \TechDivision\Import\Adapter\FilesystemAdapterInterface $filesystemAdapter The filesystem adapter instance
+     *
+     * @return void
      */
     public function setFilesystemAdapter(FilesystemAdapterInterface $filesystemAdapter) : void;
 

@@ -115,7 +115,9 @@ class ProposedOkFilenameLoaderFactory implements LoaderFactoryInterface
     /**
      * Create's and return's the apropriate loader instance.
      *
-     * @return \TechDivision\Import\Loaders\LoaderInterface|null The loader instance
+     * @param \TechDivision\Import\Configuration\SubjectConfigurationInterface|null $subject The suject configuration instance
+     *
+     * @return \TechDivision\Import\Loaders\LoaderInterface The loader instance
      */
     public function createLoader(SubjectConfigurationInterface $subject = null) : LoaderInterface
     {

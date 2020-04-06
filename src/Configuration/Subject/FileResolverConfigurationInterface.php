@@ -47,6 +47,16 @@ interface FileResolverConfigurationInterface
     public function getPrefix();
 
     /**
+     * Query's whether or not a custom prefix has been configured for the
+     * file resolver.
+     *
+     * @param string $defaultPrefix The default prefix to match against
+     *
+     * @return boolean TRUE if the file resolver has a custom prefix, else FALSE
+     */
+    public function hasPrefix($defaultPrefix = '.*');
+
+    /**
      * Returns the filename/meta sequence of the import files.
      *
      * @return string The suffix

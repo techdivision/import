@@ -412,7 +412,6 @@ interface ConfigurationInterface extends CsvConfigurationInterface, ParamsConfig
      * array of blacklisted prefixes and that matches the filters.
      *
      * @param callable[] $filters An array with filters to filter the subjects that has to be returned
-     * @param array      $ignore  An array with prefixes that has to be ignored
      *
      * @return array An array with the matching subjects
      */

@@ -158,7 +158,7 @@ class PregMatchFilter implements PregMatchFilterInterface
     /**
      * Adds the passed match to the array with the matches.
      *
-     * @param string $match The match itself
+     * @param array $matches The matchs itself
      *
      * @return void
      */

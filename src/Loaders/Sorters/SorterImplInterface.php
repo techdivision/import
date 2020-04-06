@@ -49,8 +49,9 @@ interface SorterImplInterface
     public function getSorters() : array;
 
     /**
+     * Sorts the passed array with data by applying the registered sorters on it.
      *
-     * @param array $data
+     * @param array $data The array to be sorted
      *
      * @return void
      */
