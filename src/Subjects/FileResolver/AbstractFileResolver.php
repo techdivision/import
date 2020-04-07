@@ -233,7 +233,7 @@ abstract class AbstractFileResolver implements FileResolverInterface
      *
      * @return array The array with the matches
      */
-    public function getMatches()
+    public function getMatches() : array
     {
         return $this->getFilesystemLoader()->getMatches();
     }

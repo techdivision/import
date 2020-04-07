@@ -36,6 +36,20 @@ interface FileResolverInterface
 {
 
     /**
+     * Return's the matches of all filters.
+     *
+     * @return array The array with the matches
+     */
+    public function getMatches() : array;
+
+    /**
+     * Reset's the registered filters.
+     *
+     * @return void
+     */
+    public function reset() : void;
+
+    /**
      * Set's the subject configuration instance.
      *
      * @param \TechDivision\Import\Configuration\SubjectConfigurationInterface $subjectConfiguration The subject configuration
