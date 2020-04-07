@@ -22,7 +22,7 @@ namespace TechDivision\Import\Loggers;
 
 use Monolog\Logger;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use TechDivision\Import\ConfigurationInterface;
+use TechDivision\Import\Configuration\ConfigurationInterface;
 use TechDivision\Import\Utils\ConfigurationKeys;
 use TechDivision\Import\Utils\ConfigurationUtil;
 use TechDivision\Import\Configuration\LoggerConfigurationInterface;
@@ -90,7 +90,7 @@ class MonologLoggerFactory
     /**
      * Creates a new logger instance based on the passed logger configuration.
      *
-     * @param \TechDivision\Import\ConfigurationInterface                     $configuration       The system configuration
+     * @param \TechDivision\Import\Configuration\ConfigurationInterface       $configuration       The system configuration
      * @param \TechDivision\Import\Configuration\LoggerConfigurationInterface $loggerConfiguration The logger configuration
      *
      * @return \Psr\Log\LoggerInterface The logger instance

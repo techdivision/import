@@ -38,7 +38,7 @@ interface ConfigurationFactoryInterface
      * @param string $filename The configuration filename
      * @param string $type     The format of the configuration file, either one of json, yaml or xml
      *
-     * @return \TechDivision\Import\ConfigurationInterface The configuration instance
+     * @return \TechDivision\Import\Configuration\ConfigurationInterface The configuration instance
      * @throws \Exception Is thrown, if the specified configuration file doesn't exist
      */
     public function factory($filename, $type = 'json');
@@ -64,7 +64,7 @@ interface ConfigurationFactoryInterface
      * @param string $params     A serialized string with additional params that'll be passed to the configuration
      * @param string $paramsFile A filename that contains serialized data with additional params that'll be passed to the configuration
      *
-     * @return \TechDivision\Import\ConfigurationInterface The configuration instance
+     * @return \TechDivision\Import\Configuration\ConfigurationInterface The configuration instance
      */
     public function factoryFromString($data, $format = 'json', $params = null, $paramsFile = null);
 }

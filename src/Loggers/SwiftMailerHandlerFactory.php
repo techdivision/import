@@ -24,7 +24,7 @@ use Monolog\Handler\SwiftMailerHandler;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use TechDivision\Import\Utils\LoggerKeys;
 use TechDivision\Import\Utils\SwiftMailerKeys;
-use TechDivision\Import\ConfigurationInterface;
+use TechDivision\Import\Configuration\ConfigurationInterface;
 use TechDivision\Import\Configuration\Logger\HandlerConfigurationInterface;
 use TechDivision\Import\Loggers\SwiftMailer\TransportMailerFactoryInterface;
 
@@ -58,7 +58,7 @@ class SwiftMailerHandlerFactory implements HandlerFactoryInterface
      * Initialize the processor with the actual configuration instance
      *
      * @param \Symfony\Component\DependencyInjection\ContainerInterface $container     The DI container instance
-     * @param \TechDivision\Import\ConfigurationInterface               $configuration The actual configuration instance
+     * @param \TechDivision\Import\Configuration\ConfigurationInterface $configuration The actual configuration instance
      */
     public function __construct(ContainerInterface $container, ConfigurationInterface $configuration)
     {

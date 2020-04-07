@@ -20,7 +20,7 @@
 
 namespace TechDivision\Import\Cache;
 
-use TechDivision\Import\ConfigurationInterface;
+use TechDivision\Import\Configuration\ConfigurationInterface;
 use TechDivision\Import\Utils\CacheTypes;
 
 /**
@@ -66,9 +66,9 @@ class ConfigurableCacheAdapter implements CacheAdapterInterface
     /**
      * Initialize the cache handler with the passed cache and configuration instances.
      * .
-     * @param \TechDivision\Import\Cache\CacheAdapterInterface $cacheAdapter  The cache instance
-     * @param \TechDivision\Import\ConfigurationInterface      $configuration The configuration instance
-     * @param string                                           $type          The cache type to use
+     * @param \TechDivision\Import\Cache\CacheAdapterInterface          $cacheAdapter  The cache instance
+     * @param \TechDivision\Import\Configuration\ConfigurationInterface $configuration The configuration instance
+     * @param string                                                    $type          The cache type to use
      */
     public function __construct(
         CacheAdapterInterface $cacheAdapter,

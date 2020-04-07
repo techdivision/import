@@ -20,7 +20,7 @@
 
 namespace TechDivision\Import\Utils;
 
-use TechDivision\Import\ConfigurationInterface;
+use TechDivision\Import\Configuration\ConfigurationInterface;
 
 /**
  * Utility class for table prefix handling.
@@ -37,14 +37,14 @@ class TablePrefixUtil implements TablePrefixUtilInterface
     /**
      * The configuration instance.
      *
-     * @var \TechDivision\Import\ConfigurationInterface
+     * @var \TechDivision\Import\Configuration\ConfigurationInterface
      */
     protected $configuration;
 
     /**
      * Construct a new instance.
      *
-     * @param \TechDivision\Import\ConfigurationInterface $configuration The configuration instance
+     * @param \TechDivision\Import\Configuration\ConfigurationInterface $configuration The configuration instance
      */
     public function __construct(ConfigurationInterface $configuration)
     {

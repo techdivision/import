@@ -23,7 +23,7 @@ namespace TechDivision\Import\Cache;
 use Ramsey\Uuid\Uuid;
 use PHPUnit\Framework\TestCase;
 use TechDivision\Import\Utils\CacheKeyUtil;
-use TechDivision\Import\ConfigurationInterface;
+use TechDivision\Import\Configuration\ConfigurationInterface;
 
 /**
  * Test class for the local cache adapter.

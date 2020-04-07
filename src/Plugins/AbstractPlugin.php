@@ -235,7 +235,7 @@ abstract class AbstractPlugin implements PluginInterface
     /**
      * Return's the system configuration.
      *
-     * @return \TechDivision\Import\ConfigurationInterface The system configuration
+     * @return \TechDivision\Import\Configuration\ConfigurationInterface The system configuration
      */
     protected function getConfiguration()
     {

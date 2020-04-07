@@ -85,7 +85,7 @@ interface ApplicationInterface extends ContainerInterface
     /**
      * Return's the system configuration.
      *
-     * @return \TechDivision\Import\ConfigurationInterface The system configuration
+     * @return \TechDivision\Import\Configuration\ConfigurationInterface The system configuration
      */
     public function getConfiguration();
 

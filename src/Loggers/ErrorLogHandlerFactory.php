@@ -23,7 +23,7 @@ namespace TechDivision\Import\Loggers;
 use Monolog\Handler\ErrorLogHandler;
 use TechDivision\Import\Utils\ConfigurationUtil;
 use TechDivision\Import\Utils\ConfigurationKeys;
-use TechDivision\Import\ConfigurationInterface;
+use TechDivision\Import\Configuration\ConfigurationInterface;
 use TechDivision\Import\Configuration\Logger\HandlerConfigurationInterface;
 
 /**
@@ -48,7 +48,7 @@ class ErrorLogHandlerFactory implements HandlerFactoryInterface
     /**
      * Initialize the processor with the actual configuration instance
      *
-     * @param \TechDivision\Import\ConfigurationInterface $configuration The actual configuration instance
+     * @param \TechDivision\Import\Configuration\ConfigurationInterface $configuration The actual configuration instance
      */
     public function __construct(ConfigurationInterface $configuration)
     {

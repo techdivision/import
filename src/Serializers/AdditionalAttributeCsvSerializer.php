@@ -23,7 +23,7 @@ namespace TechDivision\Import\Serializers;
 use TechDivision\Import\Configuration\CsvConfigurationInterface;
 use TechDivision\Import\Utils\FrontendInputTypes;
 use TechDivision\Import\Utils\MemberNames;
-use TechDivision\Import\ConfigurationInterface;
+use TechDivision\Import\Configuration\ConfigurationInterface;
 use TechDivision\Import\Services\ImportProcessorInterface;
 
 /**
@@ -63,7 +63,7 @@ class AdditionalAttributeCsvSerializer extends AbstractCsvSerializer
     /**
      *  The configuration instance.
      *
-     * @var \TechDivision\Import\ConfigurationInterface
+     * @var \TechDivision\Import\Configuration\ConfigurationInterface
      */
     private $configuration;
 
@@ -77,7 +77,7 @@ class AdditionalAttributeCsvSerializer extends AbstractCsvSerializer
     /**
      * Initialize the serializer with the passed CSV value serializer factory.
      *
-     * @param \TechDivision\Import\ConfigurationInterface                                   $configuration             The configuration instance
+     * @param \TechDivision\Import\Configuration\ConfigurationInterface                     $configuration             The configuration instance
      * @param \TechDivision\Import\Services\ImportProcessorInterface                        $importProcessor           The processor instance
      * @param \TechDivision\Import\Serializers\ConfigurationAwareSerializerFactoryInterface $valueCsvSerializerFactory The CSV value serializer factory
      */
@@ -99,7 +99,7 @@ class AdditionalAttributeCsvSerializer extends AbstractCsvSerializer
     /**
      * Returns the configuration instance.
      *
-     * @return \TechDivision\Import\ConfigurationInterface The configuration instance
+     * @return \TechDivision\Import\Configuration\ConfigurationInterface The configuration instance
      */
     protected function getConfiguration()
     {

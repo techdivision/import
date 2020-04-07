@@ -208,8 +208,8 @@ abstract class AbstractTest extends TestCase
     {
 
         // create the mock configuration instance
-        $mockConfiguration = $this->getMockBuilder('TechDivision\Import\ConfigurationInterface')
-                                  ->setMethods(get_class_methods('TechDivision\Import\ConfigurationInterface'))
+        $mockConfiguration = $this->getMockBuilder('TechDivision\Import\Configuration\ConfigurationInterface')
+                                  ->setMethods(get_class_methods('TechDivision\Import\Configuration\ConfigurationInterface'))
                                   ->getMock();
 
         // mock the necessary methods

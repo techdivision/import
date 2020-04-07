@@ -26,7 +26,7 @@ use TechDivision\Import\Utils\RegistryKeys;
 use TechDivision\Import\Utils\ConfigurationUtil;
 use TechDivision\Import\Utils\ConfigurationKeys;
 use TechDivision\Import\Services\RegistryProcessorInterface;
-use TechDivision\Import\ConfigurationInterface;
+use TechDivision\Import\Configuration\ConfigurationInterface;
 use TechDivision\Import\Configuration\Logger\HandlerConfigurationInterface;
 use Ramsey\Uuid\Uuid;
 
@@ -74,8 +74,8 @@ class StreamHandlerFactory implements HandlerFactoryInterface
     /**
      * Initialize the processor with the actual configuration and registry processor instance.
      *
-     * @param \TechDivision\Import\ConfigurationInterface              $configuration     The actual configuration instance
-     * @param \TechDivision\Import\Services\RegistryProcessorInterface $registryProcessor The registry processor instance
+     * @param \TechDivision\Import\Configuration\ConfigurationInterface $configuration     The actual configuration instance
+     * @param \TechDivision\Import\Services\RegistryProcessorInterface  $registryProcessor The registry processor instance
      */
     public function __construct(ConfigurationInterface $configuration, RegistryProcessorInterface $registryProcessor)
     {

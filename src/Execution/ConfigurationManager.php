@@ -20,7 +20,7 @@
 
 namespace TechDivision\Import\Execution;
 
-use TechDivision\Import\ConfigurationInterface;
+use TechDivision\Import\Configuration\ConfigurationInterface;
 use TechDivision\Import\ConfigurationManagerInterface;
 
 /**
@@ -38,7 +38,7 @@ class ConfigurationManager implements ConfigurationManagerInterface
     /**
      * The configuration instance we want to handle.
      *
-     * @var \TechDivision\Import\ConfigurationInterface
+     * @var \TechDivision\Import\Configuration\ConfigurationInterface
      */
     private $configuration;
 
@@ -69,7 +69,7 @@ class ConfigurationManager implements ConfigurationManagerInterface
     /**
      * Initializes the manager with the configuration instance.
      *
-     * @param \TechDivision\Import\ConfigurationInterface $configuration The configuration instance
+     * @param \TechDivision\Import\Configuration\ConfigurationInterface $configuration The configuration instance
      */
     public function __construct(ConfigurationInterface $configuration)
     {
@@ -79,7 +79,7 @@ class ConfigurationManager implements ConfigurationManagerInterface
     /**
      * Return's the managed configuration instance.
      *
-     * @return \TechDivision\Import\ConfigurationInterface The configuration instance
+     * @return \TechDivision\Import\Configuration\ConfigurationInterface The configuration instance
      */
     public function getConfiguration()
     {

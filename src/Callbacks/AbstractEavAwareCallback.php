@@ -21,7 +21,7 @@
 namespace TechDivision\Import\Callbacks;
 
 use TechDivision\Import\Utils\MemberNames;
-use TechDivision\Import\ConfigurationInterface;
+use TechDivision\Import\Configuration\ConfigurationInterface;
 use TechDivision\Import\Services\EavAwareProcessorInterface;
 
 /**
@@ -46,15 +46,15 @@ abstract class AbstractEavAwareCallback extends AbstractCallback
     /**
      * The configuration instance.
      *
-     * @var \TechDivision\Import\ConfigurationInterface
+     * @var \TechDivision\Import\Configuration\ConfigurationInterface
      */
     protected $configuration;
 
     /**
      * Initialize the callback with the passed processor instance.
      *
-     * @param \TechDivision\Import\ConfigurationInterface              $configuration     The configuration instance
-     * @param \TechDivision\Import\Services\EavAwareProcessorInterface $eavAwareProcessor The processor instance
+     * @param \TechDivision\Import\Configuration\ConfigurationInterface $configuration     The configuration instance
+     * @param \TechDivision\Import\Services\EavAwareProcessorInterface  $eavAwareProcessor The processor instance
      */
     public function __construct(ConfigurationInterface $configuration, EavAwareProcessorInterface $eavAwareProcessor)
     {
@@ -75,7 +75,7 @@ abstract class AbstractEavAwareCallback extends AbstractCallback
     /**
      * Returns the configuration instance.
      *
-     * @return \TechDivision\Import\ConfigurationInterface The configuration instance
+     * @return \TechDivision\Import\Configuration\ConfigurationInterface The configuration instance
      */
     protected function getConfiguration()
     {

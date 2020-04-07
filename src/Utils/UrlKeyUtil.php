@@ -20,7 +20,7 @@
 
 namespace TechDivision\Import\Utils;
 
-use TechDivision\Import\ConfigurationInterface;
+use TechDivision\Import\Configuration\ConfigurationInterface;
 use TechDivision\Import\Subjects\UrlKeyAwareSubjectInterface;
 use TechDivision\Import\Services\UrlKeyAwareProcessorInterface;
 
@@ -39,7 +39,7 @@ class UrlKeyUtil implements UrlKeyUtilInterface
     /**
      * The configuration instance.
      *
-     * @var \TechDivision\Import\ConfigurationInterface
+     * @var \TechDivision\Import\Configuration\ConfigurationInterface
      */
     protected $configuration;
 
@@ -53,7 +53,7 @@ class UrlKeyUtil implements UrlKeyUtilInterface
     /**
      * Construct a new instance.
      *
-     * @param \TechDivision\Import\ConfigurationInterface                 $configuration        The configuration instance
+     * @param \TechDivision\Import\Configuration\ConfigurationInterface   $configuration        The configuration instance
      * @param \TechDivision\Import\Services\UrlKeyAwareProcessorInterface $urlKeyAwareProcessor The URL key aware processor instance
      */
     public function __construct(

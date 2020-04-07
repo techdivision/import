@@ -26,7 +26,7 @@ use Doctrine\Common\Collections\Collection;
 use TechDivision\Import\SystemLoggerTrait;
 use TechDivision\Import\Utils\RegistryKeys;
 use TechDivision\Import\ApplicationInterface;
-use TechDivision\Import\ConfigurationInterface;
+use TechDivision\Import\Configuration\ConfigurationInterface;
 use TechDivision\Import\Services\ImportProcessorInterface;
 use TechDivision\Import\Services\RegistryProcessorInterface;
 
@@ -66,17 +66,17 @@ class ArchiveListener extends AbstractListener
     /**
      * The configuration instance.
      *
-     * @var \TechDivision\Import\ConfigurationInterface
+     * @var \TechDivision\Import\Configuration\ConfigurationInterface
      */
     protected $configuration;
 
     /**
      * Initializes the plugin with the application instance.
      *
-     * @param \TechDivision\Import\Services\RegistryProcessorInterface $registryProcessor The registry processor instance
-     * @param \TechDivision\Import\Services\ImportProcessorInterface   $importProcessor   The import processor instance
-     * @param \Doctrine\Common\Collections\Collection                  $systemLoggers     The array with the system loggers instances
-     * @param \TechDivision\Import\ConfigurationInterface              $configuration     The configuration instance
+     * @param \TechDivision\Import\Services\RegistryProcessorInterface  $registryProcessor The registry processor instance
+     * @param \TechDivision\Import\Services\ImportProcessorInterface    $importProcessor   The import processor instance
+     * @param \Doctrine\Common\Collections\Collection                   $systemLoggers     The array with the system loggers instances
+     * @param \TechDivision\Import\Configuration\ConfigurationInterface $configuration     The configuration instance
      */
     public function __construct(
         RegistryProcessorInterface $registryProcessor,
@@ -115,7 +115,7 @@ class ArchiveListener extends AbstractListener
     /**
      * Return's the configuration instance.
      *
-     * @return \TechDivision\Import\ConfigurationInterface The configuration instance
+     * @return \TechDivision\Import\Configuration\ConfigurationInterface The configuration instance
      */
     protected function getConfiguration()
     {

@@ -20,7 +20,7 @@
 
 namespace TechDivision\Import\Utils;
 
-use TechDivision\Import\ConfigurationInterface;
+use TechDivision\Import\Configuration\ConfigurationInterface;
 
 /**
  * A utility class to create cache keys.
@@ -51,7 +51,7 @@ class CacheKeyUtil implements CacheKeyUtilInterface
     /**
      * Initializes the cache key util with the passed configuration.
      *
-     * @param \TechDivision\Import\ConfigurationInterface $configuration The configuration instance
+     * @param \TechDivision\Import\Configuration\ConfigurationInterface $configuration The configuration instance
      */
     public function __construct(ConfigurationInterface $configuration)
     {

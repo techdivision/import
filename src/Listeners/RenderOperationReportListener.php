@@ -25,7 +25,7 @@ use League\Event\EventInterface;
 use League\Event\AbstractListener;
 use TechDivision\Import\Utils\RegistryKeys;
 use TechDivision\Import\ApplicationInterface;
-use TechDivision\Import\ConfigurationInterface;
+use TechDivision\Import\Configuration\ConfigurationInterface;
 use TechDivision\Import\Services\RegistryProcessorInterface;
 
 /**
@@ -43,7 +43,7 @@ class RenderOperationReportListener extends AbstractListener
     /**
      * The configuration instance.
      *
-     * @var \TechDivision\Import\ConfigurationInterface
+     * @var \TechDivision\Import\Configuration\ConfigurationInterface
      */
     protected $configuration;
 
@@ -57,8 +57,8 @@ class RenderOperationReportListener extends AbstractListener
     /**
      * Initializes the event.
      *
-     * @param \TechDivision\Import\Services\RegistryProcessorInterface $registryProcessor The registry processor instance
-     * @param \TechDivision\Import\ConfigurationInterface              $configuration     The configuration instance
+     * @param \TechDivision\Import\Services\RegistryProcessorInterface  $registryProcessor The registry processor instance
+     * @param \TechDivision\Import\Configuration\ConfigurationInterface $configuration     The configuration instance
      */
     public function __construct(RegistryProcessorInterface $registryProcessor, ConfigurationInterface $configuration)
     {
@@ -113,7 +113,7 @@ class RenderOperationReportListener extends AbstractListener
     /**
      * Returns the configuration instance.
      *
-     * @return \TechDivision\Import\ConfigurationInterface The configuration instance
+     * @return \TechDivision\Import\Configuration\ConfigurationInterface The configuration instance
      */
     protected function getConfiguration()
     {

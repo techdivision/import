@@ -21,7 +21,7 @@
 namespace TechDivision\Import\Loggers;
 
 use Monolog\Processor\ProcessorInterface;
-use TechDivision\Import\ConfigurationInterface;
+use TechDivision\Import\Configuration\ConfigurationInterface;
 
 /**
  * Serial processor implementation.
@@ -45,7 +45,7 @@ class SerialProcessor implements ProcessorInterface
     /**
      * Initialize the processor with the serial of the actual import process.
      *
-     * @param \TechDivision\Import\ConfigurationInterface $configuration The serial of the actual import process
+     * @param \TechDivision\Import\Configuration\ConfigurationInterface $configuration The serial of the actual import process
      */
     public function __construct(ConfigurationInterface $configuration)
     {

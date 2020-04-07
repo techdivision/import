@@ -20,7 +20,7 @@
 
 namespace TechDivision\Import\Utils;
 
-use TechDivision\Import\ConfigurationInterface;
+use TechDivision\Import\Configuration\ConfigurationInterface;
 use TechDivision\Import\Configuration\LoggerConfigurationInterface;
 
 /**
@@ -40,7 +40,7 @@ class LoggerFactory
     /**
      * Creates a new logger instance based on the passed logger configuration.
      *
-     * @param \TechDivision\Import\ConfigurationInterface                     $configuration       The system configuration
+     * @param \TechDivision\Import\Configuration\ConfigurationInterface       $configuration       The system configuration
      * @param \TechDivision\Import\Configuration\LoggerConfigurationInterface $loggerConfiguration The logger configuration
      *
      * @return \Psr\Log\LoggerInterface The logger instance

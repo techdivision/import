@@ -22,7 +22,7 @@ namespace TechDivision\Import\Listeners\Renderer\Validations;
 
 use TechDivision\Import\SystemLoggerTrait;
 use Doctrine\Common\Collections\Collection;
-use TechDivision\Import\ConfigurationInterface;
+use TechDivision\Import\Configuration\ConfigurationInterface;
 
 /**
  * A renderer implementation that renders the validations as JSON content to a file in the target directory.
@@ -46,15 +46,15 @@ class SystemLoggerRenderer implements ValidationRendererInterface
     /**
      * The configuration instance.
      *
-     * @var \TechDivision\Import\ConfigurationInterface
+     * @var \TechDivision\Import\Configuration\ConfigurationInterface
      */
     protected $configuration;
 
     /**
      * Initializes the renderer with the registry processor instance.
      *
-     * @param \TechDivision\Import\ConfigurationInterface $configuration The configuration instance
-     * @param \Doctrine\Common\Collections\Collection     $systemLoggers The array with the system loggers instances
+     * @param \TechDivision\Import\Configuration\ConfigurationInterface $configuration The configuration instance
+     * @param \Doctrine\Common\Collections\Collection                   $systemLoggers The array with the system loggers instances
      */
     public function __construct(ConfigurationInterface $configuration, Collection $systemLoggers)
     {
@@ -65,7 +65,7 @@ class SystemLoggerRenderer implements ValidationRendererInterface
     /**
      * Return's the configuration instance.
      *
-     * @return \TechDivision\Import\ConfigurationInterface The configuration instance
+     * @return \TechDivision\Import\Configuration\ConfigurationInterface The configuration instance
      */
     protected function getConfiguration()
     {

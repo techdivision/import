@@ -1,3 +1,11 @@
+# Version 16.0.0
+
+## Bugfixes
+
+## Features
+
+* Add #PAC-85
+
 # Version 15.2.1
 
 ## Bugfixes

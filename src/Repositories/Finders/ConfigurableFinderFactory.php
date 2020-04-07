@@ -20,7 +20,7 @@
 
 namespace TechDivision\Import\Repositories\Finders;
 
-use TechDivision\Import\ConfigurationInterface;
+use TechDivision\Import\Configuration\ConfigurationInterface;
 use Symfony\Component\DependencyInjection\TaggedContainerInterface;
 use TechDivision\Import\Repositories\FinderAwareRepositoryInterface;
 
@@ -46,7 +46,7 @@ class ConfigurableFinderFactory implements FinderFactoryInterface
     /**
      * The configuration instance.
      *
-     * @var \TechDivision\Import\ConfigurationInterface
+     * @var \TechDivision\Import\Configuration\ConfigurationInterface
      */
     protected $configuration;
 
@@ -54,7 +54,7 @@ class ConfigurableFinderFactory implements FinderFactoryInterface
      * The constructor to initialize the instance.
      *
      * @param \Symfony\Component\DependencyInjection\TaggedContainerInterface $container     The container instance
-     * @param \TechDivision\Import\ConfigurationInterface                     $configuration The configuration instance
+     * @param \TechDivision\Import\Configuration\ConfigurationInterface       $configuration The configuration instance
      */
     public function __construct(TaggedContainerInterface $container, ConfigurationInterface $configuration)
     {

@@ -25,7 +25,7 @@ use Monolog\Handler\ErrorLogHandler;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use TechDivision\Import\Utils\LoggerKeys;
-use TechDivision\Import\ConfigurationInterface;
+use TechDivision\Import\Configuration\ConfigurationInterface;
 
 /**
  * The logger factory implementation.
@@ -49,7 +49,7 @@ class LoggerFactory implements LoggerFactoryInterface
     /**
      * The actual configuration instance.
      *
-     * @var \TechDivision\Import\ConfigurationInterface
+     * @var \TechDivision\Import\Configuration\ConfigurationInterface
      */
     protected $configuration;
 
@@ -57,7 +57,7 @@ class LoggerFactory implements LoggerFactoryInterface
      * Initialize the factory with the the DI container instance and the actual configuration instance.
      *
      * @param \Symfony\Component\DependencyInjection\ContainerInterface $container     The DI container instance
-     * @param \TechDivision\Import\ConfigurationInterface               $configuration The configuration with the data to create the loggers with
+     * @param \TechDivision\Import\Configuration\ConfigurationInterface $configuration The configuration with the data to create the loggers with
      */
     public function __construct(ContainerInterface $container, ConfigurationInterface $configuration)
     {
@@ -68,7 +68,7 @@ class LoggerFactory implements LoggerFactoryInterface
     /**
      * Returns the actual configuration instance.
      *
-     * @return \TechDivision\Import\ConfigurationInterface The configuration instance
+     * @return \TechDivision\Import\Configuration\ConfigurationInterface The configuration instance
      */
     protected function getConfiguration()
     {

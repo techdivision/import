@@ -35,7 +35,7 @@ interface ConfigurationManagerInterface
     /**
      * Return's the managed configuration instance.
      *
-     * @return \TechDivision\Import\ConfigurationInterface The configuration instance
+     * @return \TechDivision\Import\Configuration\ConfigurationInterface The configuration instance
      */
     public function getConfiguration();
 

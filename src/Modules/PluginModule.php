@@ -53,7 +53,7 @@ class PluginModule implements ModuleInterface
     /**
      * The configuration manager instance.
      *
-     * @var \TechDivision\Import\ConfigurationInterface
+     * @var \TechDivision\Import\Configuration\ConfigurationInterface
      */
     protected $configurationManager;
 
@@ -89,7 +89,7 @@ class PluginModule implements ModuleInterface
     /**
      * Return's the configuration manager instance.
      *
-     * @return \TechDivision\Import\ConfigurationInterface The configuration manager instance
+     * @return \TechDivision\Import\Configuration\ConfigurationInterface The configuration manager instance
      */
     protected function getConfigurationManager()
     {

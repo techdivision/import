@@ -20,7 +20,7 @@
 
 namespace TechDivision\Import\Utils;
 
-use TechDivision\Import\ConfigurationInterface;
+use TechDivision\Import\Configuration\ConfigurationInterface;
 
 /**
  * Utility class for edition based primary key handling.
@@ -37,7 +37,7 @@ class PrimaryKeyUtil implements PrimaryKeyUtilInterface
     /**
      * The configuration instance.
      *
-     * @var \TechDivision\Import\ConfigurationInterface
+     * @var \TechDivision\Import\Configuration\ConfigurationInterface
      */
     protected $configuration;
 
@@ -54,7 +54,7 @@ class PrimaryKeyUtil implements PrimaryKeyUtilInterface
     /**
      * Construct a new instance.
      *
-     * @param \TechDivision\Import\ConfigurationInterface $configuration The configuration instance
+     * @param \TechDivision\Import\Configuration\ConfigurationInterface $configuration The configuration instance
      */
     public function __construct(ConfigurationInterface $configuration)
     {

@@ -20,6 +20,8 @@
 
 namespace TechDivision\Import;
 
+use TechDivision\Import\Configuration\ConfigurationInterface;
+
 /**
  * Interface for console option loader implementations.
  *
@@ -35,7 +37,7 @@ interface ConsoleOptionLoaderInterface
     /**
      * Load's the input options ans try's to initialize the configuration with the values found.
      *
-     * @param \TechDivision\Import\ConfigurationInterface $instance The configuration instance to load the values for
+     * @param \TechDivision\Import\Configuration\ConfigurationInterface $instance The configuration instance to load the values for
      *
      * @return void
      */

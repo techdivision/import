@@ -20,7 +20,7 @@
 
 namespace TechDivision\Import\Subjects\FileResolver;
 
-use TechDivision\Import\ConfigurationInterface;
+use TechDivision\Import\Configuration\ConfigurationInterface;
 use TechDivision\Import\Services\RegistryProcessorInterface;
 use TechDivision\Import\Configuration\Subject\FileResolverConfigurationInterface;
 
@@ -40,15 +40,15 @@ class MoveFilesFileResolver extends OkFileAwareFileResolver
     /**
      * The configuration instance.
      *
-     * @var \TechDivision\Import\ConfigurationInterface
+     * @var \TechDivision\Import\Configuration\ConfigurationInterface
      */
     private $configuration;
 
     /**
      * Initializes the file resolver with the application and the registry instance.
      *
-     * @param \TechDivision\Import\ConfigurationInterface              $configuration     The configuration instance
-     * @param \TechDivision\Import\Services\RegistryProcessorInterface $registryProcessor The registry instance
+     * @param \TechDivision\Import\Configuration\ConfigurationInterface $configuration     The configuration instance
+     * @param \TechDivision\Import\Services\RegistryProcessorInterface  $registryProcessor The registry instance
      */
     public function __construct(
         ConfigurationInterface $configuration,
@@ -65,7 +65,7 @@ class MoveFilesFileResolver extends OkFileAwareFileResolver
     /**
      * Return's the configuration instance.
      *
-     * @return \TechDivision\Import\ConfigurationInterface The configuration instance
+     * @return \TechDivision\Import\Configuration\ConfigurationInterface The configuration instance
      */
     protected function getConfiguration() : ConfigurationInterface
     {

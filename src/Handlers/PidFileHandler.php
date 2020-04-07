@@ -20,7 +20,7 @@
 
 namespace TechDivision\Import\Handlers;
 
-use TechDivision\Import\ConfigurationInterface;
+use TechDivision\Import\Configuration\ConfigurationInterface;
 use TechDivision\Import\Exceptions\LineNotFoundException;
 use TechDivision\Import\Exceptions\FileNotFoundException;
 use TechDivision\Import\Exceptions\ImportAlreadyRunningException;
@@ -54,7 +54,7 @@ class PidFileHandler implements PidFileHandlerInterface
     /**
      * The system configuration.
      *
-     * @var \TechDivision\Import\ConfigurationInterface
+     * @var \TechDivision\Import\Configuration\ConfigurationInterface
      */
     private $configuration;
 
@@ -68,7 +68,7 @@ class PidFileHandler implements PidFileHandlerInterface
     /**
      * Initializes the file handler instance.
      *
-     * @param \TechDivision\Import\ConfigurationInterface               $configuration      The actual configuration instance
+     * @param \TechDivision\Import\Configuration\ConfigurationInterface $configuration      The actual configuration instance
      * @param \TechDivision\Import\Handlers\GenericFileHandlerInterface $genericFileHandler The actual file handler instance
      */
     public function __construct(
@@ -82,7 +82,7 @@ class PidFileHandler implements PidFileHandlerInterface
     /**
      * Return's the system configuration.
      *
-     * @return \TechDivision\Import\ConfigurationInterface The system configuration
+     * @return \TechDivision\Import\Configuration\ConfigurationInterface The system configuration
      */
     protected function getConfiguration()
     {

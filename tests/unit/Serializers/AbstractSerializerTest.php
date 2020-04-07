@@ -24,7 +24,7 @@ use PHPUnit\Framework\TestCase;
 use TechDivision\Import\Utils\MemberNames;
 use TechDivision\Import\Utils\EntityTypeCodes;
 use TechDivision\Import\Utils\FrontendInputTypes;
-use TechDivision\Import\ConfigurationInterface;
+use TechDivision\Import\Configuration\ConfigurationInterface;
 use TechDivision\Import\Configuration\CsvConfigurationInterface;
 
 /**
@@ -267,7 +267,7 @@ abstract class AbstractSerializerTest extends TestCase
      *
      * @param array $configuration The configuration to use (will override with the default one)
      *
-     * @return \TechDivision\Import\ConfigurationInterface The configuration instance
+     * @return \TechDivision\Import\Configuration\ConfigurationInterface The configuration instance
      */
     protected function getMockConfiguration(array $configuration = array())
     {

@@ -146,8 +146,8 @@ class SubjectPluginTest extends TestCase
                               ->willReturn(null);
 
         // mock the configuration
-        $mockConfiguration = $this->getMockBuilder('TechDivision\Import\ConfigurationInterface')
-                                  ->setMethods(get_class_methods('TechDivision\Import\ConfigurationInterface'))
+        $mockConfiguration = $this->getMockBuilder('TechDivision\Import\Configuration\ConfigurationInterface')
+                                  ->setMethods(get_class_methods('TechDivision\Import\Configuration\ConfigurationInterface'))
                                   ->getMock();
 
         // mock the application methods
