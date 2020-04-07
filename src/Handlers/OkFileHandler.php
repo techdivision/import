@@ -238,9 +238,9 @@ class OkFileHandler implements OkFileHandlerInterface
             } else {
                 // if the OK filename matches the CSV filename AND the OK file is empty
                 foreach ($this->getFilesystemAdapter()->read($okFilename) as $line) {
-                    if (strcmp(basename($filename), trim($line, PHP_EOL)) === 0) {
+                    if (strcmp(basename($filename), $trimmedLine = trim($line, PHP_EOL)) === 0) {
                         // else, remove the CSV filename from the OK file
-                        $this->removeLineFromFilename($line, $okFilename);
+                        $this->removeLineFromFilename($trimmedLine, $okFilename);
                         // finally delete the .OK file, if empty
                         if ($this->size($okFilename) === 0) {
                             $this->delete($okFilename);
