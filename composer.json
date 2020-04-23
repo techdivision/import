@@ -14,7 +14,7 @@
         "ramsey/uuid": "~3.7.3|3.8.*",
         "swiftmailer/swiftmailer": "5.4.*",
         "laminas/laminas-filter": "~2.0",
-        "techdivision/import-configuration": "~1.0"
+        "techdivision/import-configuration": "~2.0"
     },
     "require-dev": {
         "doctrine/dbal": "2.5.*",
