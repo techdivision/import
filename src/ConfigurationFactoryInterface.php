@@ -47,14 +47,16 @@ interface ConfigurationFactoryInterface
      * Factory implementation to create a new initialized configuration instance from a file
      * with configurations that'll be parsed and merged.
      *
-     * @param array  $directories An array with diretories to parse and merge
-     * @param string $format      The format of the configuration file, either one of json, yaml or xml
-     * @param string $params      A serialized string with additional params that'll be passed to the configuration
-     * @param string $paramsFile  A filename that contains serialized data with additional params that'll be passed to the configuration
+     * @param string $installationDir         The assumed Magento installation directory
+     * @param string $defaultConfigurationDir The default configuration directory
+     * @param array  $directories             An array with diretories to parse and merge
+     * @param string $format                  The format of the configuration file, either one of json, yaml or xml
+     * @param string $params                  A serialized string with additional params that'll be passed to the configuration
+     * @param string $paramsFile              A filename that contains serialized data with additional params that'll be passed to the configuration
      *
      * @return void
      */
-    public function factoryFromDirectories(array $directories = array(), $format = 'json', $params = null, $paramsFile = null);
+    public function factoryFromDirectories($installationDir, $defaultConfigurationDir = 'etc', array $directories = array(), $format = 'json', $params = null, $paramsFile = null);
 
     /**
      * Factory implementation to create a new initialized configuration instance.
