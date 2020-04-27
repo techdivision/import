@@ -22,8 +22,11 @@ namespace TechDivision\Import\Listeners;
 
 use League\Event\EventInterface;
 use League\Event\AbstractListener;
+use TechDivision\Import\SystemLoggerTrait;
 use TechDivision\Import\Loaders\LoaderInterface;
+use TechDivision\Import\Configuration\ConfigurationInterface;
 use TechDivision\Import\Adapter\PhpFilesystemAdapterInterface;
+use Doctrine\Common\Collections\Collection;
 
 /**
  * An listener implementation that clears the artefact files.
@@ -36,6 +39,13 @@ use TechDivision\Import\Adapter\PhpFilesystemAdapterInterface;
  */
 class ClearArtefactsListener extends AbstractListener
 {
+
+    /**
+     * The trait that provides basic system logger functionality.
+     *
+     * @var \TechDivision\Import\SystemLoggerTrait
+     */
+    use SystemLoggerTrait;
 
     /**
      * The iterator with the directory names that has to be cleared.
@@ -52,16 +62,29 @@ class ClearArtefactsListener extends AbstractListener
     protected $filesystemAdapter;
 
     /**
+     * The actual configuration instance.
+     *
+     * @var \TechDivision\Import\Configuration\ConfigurationInterface
+     */
+    protected $configuration;
+
+    /**
      * Initializes the event.
      *
+     * @param \TechDivision\Import\Configuration\ConfigurationInterface  $configuration     The actual configuration instance
      * @param \TechDivision\Import\Adapter\PhpFilesystemAdapterInterface $filesystemAdapter The filesystem adapter used to clear the directories
+     * @param \Doctrine\Common\Collections\Collection                    $systemLoggers     The array with the system loggers instances
      * @param \TechDivision\Import\Loaders\LoaderInterface               $loader            The directory loader instance
      */
     public function __construct(
+        ConfigurationInterface $configuration,
         PhpFilesystemAdapterInterface $filesystemAdapter,
+        Collection $systemLoggers,
         LoaderInterface $loader
     ) {
+        $this->configuration = $configuration;
         $this->filesystemAdapter = $filesystemAdapter;
+        $this->systemLoggers = $systemLoggers;
         $this->loader = $loader;
     }
 
@@ -75,12 +98,19 @@ class ClearArtefactsListener extends AbstractListener
     public function handle(EventInterface $event)
     {
 
+        // query whether or not we've to clear the artefacts
+        if (!$this->getConfiguration()->haveClearArtefacts()) {
+            $this->getSystemLogger()->info('Clear artefacts functionality has not been activated');
+            return;
+        }
+
         // clear the filecache
         clearstatcache();
 
         // load the serial and directories to clear
         $files = $this->getLoader()->load();
 
+        // initialize the array for the patterns
         $patterns = array();
 
         // iterate over the artefacts and clear
@@ -110,6 +140,16 @@ class ClearArtefactsListener extends AbstractListener
                 $this->getFilesystemAdapter()->delete($filename);
             }
         }
+    }
+
+    /**
+     * Return's the configuration instance.
+     *
+     * @return \TechDivision\Import\Configuration\ConfigurationInterface The configuration instance
+     */
+    protected function getConfiguration()
+    {
+        return $this->configuration;
     }
 
     /**

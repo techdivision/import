@@ -10,6 +10,7 @@
 
 ## Bugfixes
 
+* Add techdivision/import-cli-simple#244
 * Add entity type code CATALOG_PRODUCT_URL to EntityTypeCodes list
 * Add missing mapping EntityTypeCodes::CATALOG_PRODUCT_URL => EntityTypeCodes::CATALOG_PRODUCT to AbstractSubject
 

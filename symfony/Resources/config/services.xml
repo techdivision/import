@@ -724,7 +724,9 @@
             <argument type="service" id="import.processor.registry"/>
         </service>
         <service id="import.listener.clear.artefacts" class="TechDivision\Import\Listeners\ClearArtefactsListener">
+            <argument type="service" id="configuration"/>
             <argument type="service" id="import.adapter.filesystem.php"/>
+            <argument type="service" id="loggers"/>
             <argument type="service" id="import.loader.artefacts"/>
         </service>
         <service id="import.listener.clear.directories" class="TechDivision\Import\Listeners\ClearDirectoriesListener">
