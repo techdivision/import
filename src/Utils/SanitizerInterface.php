@@ -36,9 +36,9 @@ interface SanitizerInterface
      * Sanitizes and returns row data for given statement.
      *
      * @param array $row The current row data
-     * @param \PDOStatement $statement The SQL statement to sanitize for
+     * @param string $statement The SQL statement to sanitize for
      *
      * @return array The sanitized row data
      */
-    public function execute(array $row, \PDOStatement $statement);
+    public function execute(array $row, string $statement);
 }

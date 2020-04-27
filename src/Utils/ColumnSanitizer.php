@@ -41,7 +41,7 @@ class ColumnSanitizer implements SanitizerInterface
     /**
      * @inheritDoc
      */
-    public function execute(array $row, \PDOStatement $statement)
+    public function execute(array $row, string $statement)
     {
         $allowedColumns = $this->getAllowedColumns($statement);
 
@@ -51,17 +51,16 @@ class ColumnSanitizer implements SanitizerInterface
     /**
      * Determines allowed columns for current statement.
      *
-     * @param \PDOStatement $statement
+     * @param string $statement
      * @return array The allowed columns for this statement
      */
-    protected function getAllowedColumns(\PDOStatement $statement): array
+    protected function getAllowedColumns(string $statement): array
     {
-        $sql = $statement->queryString;
-        $queryCacheKey = $this->getKey($sql);
+        $queryCacheKey = $this->getKey($statement);
         if (!isset($this->queryCache[$queryCacheKey])) {
 
-            $statementColumns = $this->extractAllowedColumns($sql);
-            $allowedColumns = array_merge($statementColumns, $this->getProtectedColumns());
+            $statementColumns = $this->extractAllowedColumns($statement);
+            $allowedColumns = array_merge($statementColumns, $this->getSpecialColumns());
 
             $this->queryCache[$queryCacheKey] = array_combine($allowedColumns, $allowedColumns);
         }
@@ -101,7 +100,7 @@ class ColumnSanitizer implements SanitizerInterface
      *
      * @return array
      */
-    protected function getProtectedColumns()
+    protected function getSpecialColumns()
     {
         return [EntityStatus::MEMBER_NAME];
     }

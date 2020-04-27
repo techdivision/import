@@ -214,7 +214,7 @@ abstract class AbstractBaseProcessor extends AbstractProcessor
             $statement->execute($this->prepareRow($row));
         } catch (\PDOException $pdoe) {
             // initialize the SQL statement with the placeholders
-            $sql = $this->getPreparedStatement($name, $this->getDefaultStatementName())->queryString;
+            $sql = $statement->queryString;
 
             // replace the placeholders with the values
             foreach ($row as $key => $value) {
@@ -283,9 +283,10 @@ abstract class AbstractBaseProcessor extends AbstractProcessor
      */
     protected function sanitize(array $row, \PDOStatement $statement)
     {
+        $rawStatement = $statement->queryString;
         /** @var SanitizerInterface $sanitizer */
         foreach ($this->sanitizers as $sanitizer) {
-            $row = $sanitizer->execute($row, $statement);
+            $row = $sanitizer->execute($row, $rawStatement);
         }
 
         return $row;
