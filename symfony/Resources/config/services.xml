@@ -96,6 +96,7 @@
             <argument type="service" id="import.loader.exclude.primary.key.column.name"/>
             <argument type="service" id="import.util.table.prefix"/>
         </service>
+        <service id="import.util.sanitizer.column" class="TechDivision\Import\Utils\ColumnSanitizer"/>
 
         <!--
          | The DI finder factory configuration
@@ -690,8 +691,8 @@
             <argument>%array_validator.nullable.true%</argument>
         </service>
 
-        <!-- 
-         ! The DI configuration for the event emitter/listeners 
+        <!--
+         ! The DI configuration for the event emitter/listeners
          !-->
         <service id="import.events.emitter.factory" class="TechDivision\Import\Events\EmitterFactory">
             <argument type="service" id="import.configuration.manager"/>
@@ -701,8 +702,8 @@
             <factory service="import.events.emitter.factory" method="createEmitter"/>
         </service>
 
-        <!-- 
-         ! The DI configuration for the value/additional attribute serializers 
+        <!--
+         ! The DI configuration for the value/additional attribute serializers
          !-->
         <service id="import.serializer.csv.value" class="TechDivision\Import\Serializers\ValueCsvSerializer"/>
         <service id="import.serializer.csv.additional.attribute" class="TechDivision\Import\Serializers\AdditionalAttributeCsvSerializer">
@@ -717,7 +718,7 @@
             <argument type="service" id="service_container"/>
         </service>
 
-        <!-- 
+        <!--
          ! The DI configuration for the listeners
          !-->
         <service id="import.listener.clear.registry" class="TechDivision\Import\Listeners\ClearRegistryListener">
@@ -788,7 +789,7 @@
             <argument type="service" id="loggers"/>
         </service>
 
-        <!-- 
+        <!--
          ! The DI configuration for the modules
          !-->
         <service id="import.modules" class="\ArrayObject">

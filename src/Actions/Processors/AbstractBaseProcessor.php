@@ -21,6 +21,9 @@
 namespace TechDivision\Import\Actions\Processors;
 
 use TechDivision\Import\Utils\EntityStatus;
+use TechDivision\Import\Connection\ConnectionInterface;
+use TechDivision\Import\Repositories\SqlStatementRepositoryInterface;
+use TechDivision\Import\Utils\SanitizerInterface;
 
 /**
  * An abstract processor implementation provide basic CRUD functionality.
@@ -49,11 +52,34 @@ abstract class AbstractBaseProcessor extends AbstractProcessor
     protected $preparedStatements = array();
 
     /**
+     * The array holding row data sanitizer.
+     *
+     * @var \ArrayObject
+     */
+    protected $sanitizers;
+
+    /**
      * The default statement name.
      *
      * @var string
      */
     protected $defaultStatementName;
+
+    /**
+     * Initialize the processor with the passed connection and utility class name, as well as optional sanitizers.
+     *
+     * @param ConnectionInterface $connection
+     * @param SqlStatementRepositoryInterface $sqlStatementRepository
+     * @param \ArrayObject $sanitizers
+     */
+    public function __construct(
+        ConnectionInterface $connection,
+        SqlStatementRepositoryInterface $sqlStatementRepository,
+        \ArrayObject $sanitizers = null
+    ) {
+        parent::__construct($connection, $sqlStatementRepository);
+        $this->setSanitizers($sanitizers ?? new \ArrayObject());
+    }
 
     /**
      * Return's the array with the SQL statements that has to be prepared.
@@ -96,6 +122,26 @@ abstract class AbstractBaseProcessor extends AbstractProcessor
 
         // return the default prepared statement
         return $this->preparedStatements[$defaultName];
+    }
+
+    /**
+     * Gets sanitizers list.
+     *
+     * @return \ArrayObject
+     */
+    public function getSanitizers(): \ArrayObject
+    {
+        return $this->sanitizers;
+    }
+
+    /**
+     * Sets sanitizers list.
+     *
+     * @param \ArrayObject $sanitizers
+     */
+    public function setSanitizers(\ArrayObject $sanitizers): void
+    {
+        $this->sanitizers = $sanitizers;
     }
 
     /**
@@ -160,12 +206,15 @@ abstract class AbstractBaseProcessor extends AbstractProcessor
      */
     public function execute($row, $name = null, $primaryKeyMemberName = null)
     {
+        $statement = $this->getPreparedStatement($name, $this->getDefaultStatementName());
+        $row = $this->sanitize($row, $statement);
+
         try {
             // finally execute the prepared statement
-            $this->getPreparedStatement($name, $this->getDefaultStatementName())->execute($this->prepareRow($row));
+            $statement->execute($this->prepareRow($row));
         } catch (\PDOException $pdoe) {
             // initialize the SQL statement with the placeholders
-            $sql = $this->getPreparedStatement($name, $this->getDefaultStatementName())->queryString;
+            $sql = $statement->queryString;
 
             // replace the placeholders with the values
             foreach ($row as $key => $value) {
@@ -223,5 +272,23 @@ abstract class AbstractBaseProcessor extends AbstractProcessor
 
         // return NULL otherwise
         return null;
+    }
+
+    /**
+     * Passes row data and statement to sanitizers list.
+     *
+     * @param array $row
+     * @param \PDOStatement $statement
+     * @return array
+     */
+    protected function sanitize(array $row, \PDOStatement $statement)
+    {
+        $rawStatement = $statement->queryString;
+        /** @var SanitizerInterface $sanitizer */
+        foreach ($this->sanitizers as $sanitizer) {
+            $row = $sanitizer->execute($row, $rawStatement);
+        }
+
+        return $row;
     }
 }
