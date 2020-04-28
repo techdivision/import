@@ -361,11 +361,6 @@ class OkFileFilter extends PregMatchFilter
                     break;
                 }
             }
-
-            // reset the matches because we've a new bunch
-            if ($inOkFile === false) {
-                $this->reset();
-            }
         }
 
         // stop processing, because the filename doesn't match the subjects pattern

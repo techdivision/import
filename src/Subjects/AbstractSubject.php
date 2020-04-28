@@ -412,10 +412,23 @@ abstract class AbstractSubject implements SubjectInterface, FilesystemSubjectInt
      * @param string $value The value to format
      *
      * @return string|null The formatted date or NULL if the date is not valid
+     * @throws \InvalidArgumentException Is thrown, if the passed can not be formatted according to the configured date format
      */
     public function formatDate($value)
     {
-        return $this->getDateConverter()->convert($value);
+
+        // try to format the date according to the configured date format
+        $formattedDate = $this->getDateConverter()->convert($value);
+
+        // query whether or not the formatting was successufull
+        if ($formattedDate === null) {
+            throw new \InvalidArgumentException(
+                sprintf('Can\'t format date "%s" according given format "%s"', $value, $this->getSourceDateFormat())
+            );
+        }
+
+        // return the formatted date
+        return $formattedDate;
     }
 
     /**

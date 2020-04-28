@@ -90,6 +90,17 @@ interface SubjectInterface
     public function getDefaultCallbackMappings();
 
     /**
+     * Tries to format the passed value to a valid date with format 'Y-m-d H:i:s'.
+     * If the passed value is NOT a valid date, NULL will be returned.
+     *
+     * @param string $value The value to format
+     *
+     * @return string|null The formatted date or NULL if the date is not valid
+     * @throws \InvalidArgumentException Is thrown, if the passed can not be formatted according to the configured date format
+     */
+    public function formatDate($value);
+
+    /**
      * Return's the source date format to use.
      *
      * @return string The source date format
