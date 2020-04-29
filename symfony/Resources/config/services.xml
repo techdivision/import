@@ -132,6 +132,7 @@
             <argument type="service" id="import.processor.registry"/>
         </service>
         <service id="import.renderer.console.table" class="TechDivision\Import\Listeners\Renderer\Validations\GenericConsoleTableRenderer">
+            <argument type="service" id="input"/>
             <argument type="service" id="output"/>
         </service>
         <service id="import.renderer.validations.system.logger" class="TechDivision\Import\Listeners\Renderer\Validations\SystemLoggerRenderer">

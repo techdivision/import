@@ -23,6 +23,8 @@ namespace TechDivision\Import\Listeners\Renderer\Validations;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Output\OutputInterface;
 use TechDivision\Import\Listeners\Renderer\RendererInterface;
+use Symfony\Component\Console\Input\InputInterface;
+use TechDivision\Import\Utils\InputOptionKeysInterface;
 
 /**
  * A renderer implementation that renders the rows as table to the console output.
@@ -37,6 +39,13 @@ class GenericConsoleTableRenderer implements RendererInterface
 {
 
     /**
+     * The input instance.
+     *
+     * @var \Symfony\Component\Console\Input\InputInterface
+     */
+    protected $input;
+
+    /**
      * The output instance.
      *
      * @var \Symfony\Component\Console\Output\OutputInterface
@@ -46,10 +55,12 @@ class GenericConsoleTableRenderer implements RendererInterface
     /**
      * Initializes the plugin with the application instance.
      *
+     * @param \Symfony\Component\Console\Input\InputInterface   $input  The input instance
      * @param \Symfony\Component\Console\Output\OutputInterface $output The output instance
      */
-    public function __construct(OutputInterface $output)
+    public function __construct(InputInterface $input, OutputInterface $output)
     {
+        $this->input = $input;
         $this->output = $output;
     }
 
@@ -68,6 +79,9 @@ class GenericConsoleTableRenderer implements RendererInterface
         if (sizeof($rows) === 0) {
             return;
         }
+
+        // slice the number of messages, that has to be rendered, out of the rows
+        $rows = array_slice($rows, 0, $this->input->getOption(InputOptionKeysInterface::RENDER_VALIDATION_ISSUES));
 
         // initialize the console table/set the headers
         $table = new Table($this->output);
