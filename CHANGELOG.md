@@ -6,6 +6,7 @@
 
 ## Features
 
+* Add #PAC-34
 * Add #PAC-85
 
 # Version 15.2.1
