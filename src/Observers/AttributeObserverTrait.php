@@ -179,7 +179,7 @@ trait AttributeObserverTrait
             $this->getSystemLogger()->warning(
                 $this->appendExceptionSuffix(
                     sprintf(
-                        'Attributes for %s "%s" + store view code "%s" has already been processed',
+                        'Attributes for "%s" "%s" + store view code "%s" has already been processed',
                         $this->getPrimaryKeyColumnName(),
                         $pk,
                         $storeViewCode
@@ -210,7 +210,7 @@ trait AttributeObserverTrait
                     $this->getSystemLogger()->debug(
                         $this->appendExceptionSuffix(
                             sprintf(
-                                'Can\'t find attribute with attribute code %s',
+                                'Can\'t find attribute with attribute code "%s"',
                                 $attributeCode
                             )
                         )
@@ -226,7 +226,7 @@ trait AttributeObserverTrait
                     $this->getSystemLogger()->debug(
                         $this->appendExceptionSuffix(
                             sprintf(
-                                'Found attribute with attribute code %s',
+                                'Found attribute with attribute code "%s"',
                                 $attributeCode
                             )
                         )
@@ -244,7 +244,7 @@ trait AttributeObserverTrait
                 $this->getSystemLogger()->warning(
                     $this->appendExceptionSuffix(
                         sprintf(
-                            'Found EMTPY backend type for attribute %s',
+                            'Found EMTPY backend type for attribute "%s"',
                             $attributeCode
                         )
                     )
@@ -297,7 +297,7 @@ trait AttributeObserverTrait
             $this->getSystemLogger()->debug(
                 $this->getSubject()->appendExceptionSuffix(
                     sprintf(
-                        'Found invalid backend type %s for attribute %s',
+                        'Found invalid backend type %s for attribute "%s"',
                         $backendType,
                         $attributeCode
                     )

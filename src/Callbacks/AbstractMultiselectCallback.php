@@ -58,7 +58,7 @@ abstract class AbstractMultiselectCallback extends AbstractEavAwareCallback
         $storeId = $this->getStoreId(StoreViewCodes::ADMIN);
 
         // explode the multiselect values
-        $vals = explode('|', $attributeValue);
+        $vals = $this->explode($attributeValue);
 
         // initialize the array for the mapped values
         $mappedValues = array();
@@ -77,7 +77,7 @@ abstract class AbstractMultiselectCallback extends AbstractEavAwareCallback
                 $this->getSystemLogger()->warning(
                     $this->appendExceptionSuffix(
                         sprintf(
-                            'Can\'t find multiselect option value "%s" for attribute %s',
+                            'Can\'t find multiselect option value "%s" for attribute "%s"',
                             $val,
                             $attributeCode
                         )
@@ -106,7 +106,7 @@ abstract class AbstractMultiselectCallback extends AbstractEavAwareCallback
             throw new \Exception(
                 $this->appendExceptionSuffix(
                     sprintf(
-                        'Can\'t find multiselect option value "%s" for attribute %s',
+                        'Can\'t find multiselect option value "%s" for attribute "%s"',
                         $val,
                         $attributeCode
                     )
@@ -121,5 +121,18 @@ abstract class AbstractMultiselectCallback extends AbstractEavAwareCallback
 
         // re-concatenate and return the values
         return implode(',', $mappedValues);
+    }
+
+    /**
+     * Extracts the elements of the passed value by exploding them
+     * with the also passed delimiter.
+     *
+     * @param string|null $value The value to extract
+     *
+     * @return array The exploded values
+     */
+    protected function explode($value) : array
+    {
+        return $value === null || $value === '' ? array() : $this->getSubject()->explode($value, $this->getSubject()->getMultipleValueDelimiter());
     }
 }

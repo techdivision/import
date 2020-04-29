@@ -115,6 +115,13 @@ interface SubjectInterface
     public function getMultipleFieldDelimiter();
 
     /**
+     * Return's the multiple value delimiter character to use, default value is comma (|).
+     *
+     * @return string The multiple value delimiter character
+     */
+    public function getMultipleValueDelimiter();
+
+    /**
      * Return's the callback mappings for this subject.
      *
      * @return array The array with the subject's callback mappings

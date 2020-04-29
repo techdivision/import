@@ -35,10 +35,10 @@ interface SanitizerInterface
     /**
      * Sanitizes and returns row data for given statement.
      *
-     * @param array $row The current row data
+     * @param array  $row       The current row data
      * @param string $statement The SQL statement to sanitize for
      *
      * @return array The sanitized row data
      */
-    public function execute(array $row, string $statement);
+    public function execute(array $row, string $statement) : array;
 }

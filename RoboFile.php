@@ -52,12 +52,12 @@ class RoboFile extends \Robo\Tasks
     /**
      * Run's the composer install command.
      *
-     * @return void
+     * @return \Robo\Result The result
      */
     public function composerInstall()
     {
         // optimize autoloader with custom path
-        $this->taskComposerInstall()
+        return $this->taskComposerInstall()
              ->preferDist()
              ->optimizeAutoloader()
              ->run();
@@ -66,12 +66,12 @@ class RoboFile extends \Robo\Tasks
     /**
      * Run's the composer update command.
      *
-     * @return void
+     * @return \Robo\Result The result
      */
     public function composerUpdate()
     {
         // optimize autoloader with custom path
-        $this->taskComposerUpdate()
+        return $this->taskComposerUpdate()
              ->preferDist()
              ->optimizeAutoloader()
              ->run();
@@ -80,21 +80,21 @@ class RoboFile extends \Robo\Tasks
     /**
      * Clean up the environment for a new build.
      *
-     * @return void
+     * @return \Robo\Result The result
      */
     public function clean()
     {
-        $this->taskDeleteDir($this->properties['target.dir'])->run();
+        return $this->taskDeleteDir($this->properties['target.dir'])->run();
     }
 
     /**
      * Prepare's the environment for a new build.
      *
-     * @return void
+     * @return \Robo\Result The result
      */
     public function prepare()
     {
-        $this->taskFileSystemStack()
+        return $this->taskFileSystemStack()
              ->mkdir($this->properties['dist.dir'])
              ->mkdir($this->properties['target.dir'])
              ->mkdir(sprintf('%s/reports', $this->properties['target.dir']))
@@ -104,13 +104,13 @@ class RoboFile extends \Robo\Tasks
     /**
      * Run's the PHPMD.
      *
-     * @return void
+     * @return \Robo\Result The result
      */
     public function runMd()
     {
 
         // run the mess detector
-        $this->_exec(
+        return $this->_exec(
             sprintf(
                 '%s/bin/phpmd %s xml phpmd.xml --reportfile %s/reports/pmd.xml --ignore-violations-on-exit',
                 $this->properties['vendor.dir'],
@@ -123,13 +123,13 @@ class RoboFile extends \Robo\Tasks
     /**
      * Run's the PHPCPD.
      *
-     * @return void
+     * @return \Robo\Result The result
      */
     public function runCpd()
     {
 
         // run the copy past detector
-        $this->_exec(
+        return $this->_exec(
             sprintf(
                 '%s/bin/phpcpd --regexps-exclude MissingOptionValuesPlugin %s --log-pmd %s/reports/pmd-cpd.xml',
                 $this->properties['vendor.dir'],
@@ -142,13 +142,13 @@ class RoboFile extends \Robo\Tasks
     /**
      * Run's the PHPCodeSniffer.
      *
-     * @return void
+     * @return \Robo\Result The result
      */
     public function runCs()
     {
 
         // run the code sniffer
-        $this->_exec(
+        return $this->_exec(
             sprintf(
                 '%s/bin/phpcs -n --report-full --extensions=php --standard=phpcs.xml --report-checkstyle=%s/reports/phpcs.xml %s',
                 $this->properties['vendor.dir'],
@@ -161,13 +161,13 @@ class RoboFile extends \Robo\Tasks
     /**
      * Run's the PHPUnit tests.
      *
-     * @return void
+     * @return \Robo\Result The result
      */
     public function runTests()
     {
 
         // run PHPUnit
-        $this->taskPHPUnit(sprintf('%s/bin/phpunit', $this->properties['vendor.dir']))
+        return $this->taskPHPUnit(sprintf('%s/bin/phpunit', $this->properties['vendor.dir']))
              ->configFile('phpunit.xml')
              ->run();
     }
@@ -179,6 +179,11 @@ class RoboFile extends \Robo\Tasks
      */
     public function build()
     {
+
+        // stop the build on first failure of a task
+        $this->stopOnFail(true);
+
+        // process the build
         $this->clean();
         $this->prepare();
         $this->runCs();

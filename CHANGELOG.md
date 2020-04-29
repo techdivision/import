@@ -3,6 +3,7 @@
 ## Bugfixes
 
 * Fixed #PAC-101
+* Add techdivision/import-cli-simple#243
 
 ## Features
 

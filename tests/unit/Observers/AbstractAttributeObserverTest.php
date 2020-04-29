@@ -94,7 +94,7 @@ class AbstractAttributeObserverTest extends TestCase
                                  ->getMock();
         $mockSystemLogger->expects($this->once())
                          ->method('debug')
-                         ->with(sprintf('Can\'t find attribute with attribute code %s', $attributeCode))
+                         ->with(sprintf('Can\'t find attribute with attribute code "%s"', $attributeCode))
                          ->willReturn(null);
 
         // mock a subject configuration
@@ -186,11 +186,11 @@ class AbstractAttributeObserverTest extends TestCase
                                  ->getMock();
         $mockSystemLogger->expects($this->once())
                          ->method('debug')
-                         ->with(sprintf('Found attribute with attribute code %s', $attributeCode))
+                         ->with(sprintf('Found attribute with attribute code "%s"', $attributeCode))
                          ->willReturn(null);
         $mockSystemLogger->expects($this->once())
                         ->method('warning')
-                        ->with(sprintf('Found EMTPY backend type for attribute %s', $attributeCode))
+                        ->with(sprintf('Found EMTPY backend type for attribute "%s"', $attributeCode))
                         ->willReturn(null);
 
         // mock a subject configuration
@@ -290,7 +290,7 @@ class AbstractAttributeObserverTest extends TestCase
                                  ->getMock();
         $mockSystemLogger->expects($this->once())
                          ->method('debug')
-                         ->with(sprintf('Found attribute with attribute code %s', $attributeCode))
+                         ->with(sprintf('Found attribute with attribute code "%s"', $attributeCode))
                          ->willReturn(null);
 
         // mock a subject configuration
@@ -557,7 +557,7 @@ class AbstractAttributeObserverTest extends TestCase
                                  ->getMock();
         $mockSystemLogger->expects($this->once())
                          ->method('debug')
-                         ->with(sprintf('Found invalid backend type %s for attribute %s', $backendType, $attributeCode))
+                         ->with(sprintf('Found invalid backend type %s for attribute "%s"', $backendType, $attributeCode))
                          ->willReturn(null);
 
         // mock a subject configuration

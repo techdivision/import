@@ -67,17 +67,21 @@ abstract class AbstractBaseProcessor extends AbstractProcessor
 
     /**
      * Initialize the processor with the passed connection and utility class name, as well as optional sanitizers.
-     *
-     * @param ConnectionInterface $connection
-     * @param SqlStatementRepositoryInterface $sqlStatementRepository
-     * @param \ArrayObject $sanitizers
+     * .
+     * @param \TechDivision\Import\Connection\ConnectionInterface               $connection             The connection instance
+     * @param \TechDivision\Import\Repositories\SqlStatementRepositoryInterface $sqlStatementRepository The repository instance
+     * @param \ArrayObject                                                      $sanitizers             The array with the sanitizer instances
      */
     public function __construct(
         ConnectionInterface $connection,
         SqlStatementRepositoryInterface $sqlStatementRepository,
         \ArrayObject $sanitizers = null
     ) {
+
+        // pass the connection and the SQL statement repository to the parent class
         parent::__construct($connection, $sqlStatementRepository);
+
+        // set the sanititzes, if available
         $this->setSanitizers($sanitizers ?? new \ArrayObject());
     }
 
@@ -127,7 +131,7 @@ abstract class AbstractBaseProcessor extends AbstractProcessor
     /**
      * Gets sanitizers list.
      *
-     * @return \ArrayObject
+     * @return \ArrayObject The sanitizers
      */
     public function getSanitizers(): \ArrayObject
     {
@@ -137,7 +141,9 @@ abstract class AbstractBaseProcessor extends AbstractProcessor
     /**
      * Sets sanitizers list.
      *
-     * @param \ArrayObject $sanitizers
+     * @param \ArrayObject $sanitizers The sanitizers
+     *
+     * @return void
      */
     public function setSanitizers(\ArrayObject $sanitizers): void
     {
@@ -277,18 +283,24 @@ abstract class AbstractBaseProcessor extends AbstractProcessor
     /**
      * Passes row data and statement to sanitizers list.
      *
-     * @param array $row
-     * @param \PDOStatement $statement
-     * @return array
+     * @param array         $row       The row that has to be sanitized
+     * @param \PDOStatement $statement The statement that has to be sanitzied
+     *
+     * @return array The sanitized row
      */
-    protected function sanitize(array $row, \PDOStatement $statement)
+    protected function sanitize(array $row, \PDOStatement $statement) : array
     {
+
+        // load the raw statement that has to be sanitized
         $rawStatement = $statement->queryString;
+
+        // invoke the registered sanitizers on the statement
         /** @var SanitizerInterface $sanitizer */
         foreach ($this->sanitizers as $sanitizer) {
             $row = $sanitizer->execute($row, $rawStatement);
         }
 
+        // return the sanizized row
         return $row;
     }
 }

@@ -66,6 +66,11 @@ abstract class AbstractBooleanCallback extends AbstractCallback
         $attributeCode = $observer->getAttributeCode();
         $attributeValue = $observer->getAttributeValue();
 
+        // return NULL, if the value is empty
+        if ($attributeValue === null || $attributeValue === '') {
+            return;
+        }
+
         // query whether or not, the passed value can be mapped to a boolean representation
         if (isset($this->booleanValues[strtolower($attributeValue)])) {
             return (boolean) $this->booleanValues[strtolower($attributeValue)];
@@ -106,7 +111,7 @@ abstract class AbstractBooleanCallback extends AbstractCallback
         throw new \Exception(
             $this->appendExceptionSuffix(
                 sprintf(
-                    'Can\'t map option value "%s" for attribute %s to a boolean representation',
+                    'Can\'t map option value "%s" for attribute "%s" to a boolean representation',
                     $attributeValue,
                     $attributeCode
                 )

@@ -68,7 +68,7 @@ abstract class AbstractSelectCallback extends AbstractEavAwareCallback
             $this->getSystemLogger()->warning(
                 $this->appendExceptionSuffix(
                     sprintf(
-                        'Can\'t find select option value "%s" for attribute %s',
+                        'Can\'t find select option value "%s" for attribute "%s"',
                         $attributeValue,
                         $attributeCode
                     )
@@ -98,7 +98,7 @@ abstract class AbstractSelectCallback extends AbstractEavAwareCallback
         throw new \Exception(
             $this->appendExceptionSuffix(
                 sprintf(
-                    'Can\'t find select option value "%s" for attribute %s',
+                    'Can\'t find select option value "%s" for attribute "%s"',
                     $attributeValue,
                     $attributeCode
                 )
