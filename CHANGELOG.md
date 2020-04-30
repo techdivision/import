@@ -8,6 +8,7 @@
 ## Features
 
 * Add #PAC-34
+* Add #PAC-52
 * Add #PAC-85
 * Add techdivision/import#175
 

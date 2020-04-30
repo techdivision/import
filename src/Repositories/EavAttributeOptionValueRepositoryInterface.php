@@ -20,8 +20,6 @@
 
 namespace TechDivision\Import\Repositories;
 
-use TechDivision\Import\Repositories\CacheWarmer\CacheWarmerAwareRepositoryInterface;
-
 /**
  * The interface for a repository that loads EAV attribute option value data.
  *
@@ -31,8 +29,15 @@ use TechDivision\Import\Repositories\CacheWarmer\CacheWarmerAwareRepositoryInter
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
  */
-interface EavAttributeOptionValueRepositoryInterface extends CacheWarmerAwareRepositoryInterface, RepositoryInterface
+interface EavAttributeOptionValueRepositoryInterface extends RepositoryInterface
 {
+
+    /**
+     * THe cache adapter instance used to warm the repository.
+     *
+     * @return \TechDivision\Import\Cache\CacheAdapterInterface The repository's cache adapter instance
+     */
+    public function getCacheAdapter();
 
     /**
      * Return's the primary key name of the entity.
