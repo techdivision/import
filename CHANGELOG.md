@@ -2,7 +2,7 @@
 
 ## Bugfixes
 
-* Fixed dependency to techdivision/import-configuration to version 4.0.0
+* Fixed dependency to techdivision/import-configuration to version 4.*
 
 ## Features
 
