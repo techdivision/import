@@ -309,12 +309,18 @@ abstract class AbstractTest extends TestCase
                             ->setMethods(\get_class_methods('League\Event\EmitterInterface'))
                             ->getMock();
 
+        // mock the loader
+        $mockLoader = $this->getMockBuilder('TechDivision\Import\Loaders\LoaderInterface')
+            ->setMethods(get_class_methods('TechDivision\Import\Loaders\LoaderInterface'))
+            ->getMock();
+
         // prepare the constructor arguments
         return array(
             $mockRegistryProcessor,
             $mockGenerator,
             $mockLoggers,
-            $mockEmitter
+            $mockEmitter,
+            $mockLoader
         );
     }
 

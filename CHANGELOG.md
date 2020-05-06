@@ -1,3 +1,13 @@
+# Version 17.0.0
+
+## Bugfixes
+
+* None
+
+## Features
+
+* Update tests for PAC-73 (Image import sort order)
+
 # Version 16.0.1
 
 ## Bugfixes
