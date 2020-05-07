@@ -20,7 +20,7 @@
 
 namespace TechDivision\Import\Utils\Filter;
 
-use Laminas\Filter\FilterInterface;
+use Zend\Filter\FilterInterface;
 
 /**
  * Convert Literal Filter implementation.

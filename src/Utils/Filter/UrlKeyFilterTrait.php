@@ -35,14 +35,14 @@ trait UrlKeyFilterTrait
     /**
      * The URL filter instance.
      *
-     * @var \Laminas\Filter\FilterInterface
+     * @var \Zend\Filter\FilterInterface
      */
     protected $convertLiteralUrlFilter;
 
     /**
      * Initialize's and return's the URL key filter.
      *
-     * @return \Laminas\Filter\FilterInterface The URL key filter
+     * @return \Zend\Filter\FilterInterface The URL key filter
      */
     protected function getConvertLiteralUrlFilter()
     {

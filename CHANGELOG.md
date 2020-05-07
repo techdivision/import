@@ -1,3 +1,13 @@
+# Version 16.0.2
+
+## Bugfixes
+
+* Fixed techdivision/import-cli-simple#246 by reverting PR #165
+
+## Features
+
+* None
+
 # Version 16.0.1
 
 ## Bugfixes
