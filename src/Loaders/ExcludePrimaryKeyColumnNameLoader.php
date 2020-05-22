@@ -64,7 +64,7 @@ class ExcludePrimaryKeyColumnNameLoader implements LoaderInterface
 
         // exclude the primary key columns and return the column names only
         return array_keys(array_filter($columns, function ($value) {
-            return $value['Key'] !== 'PRI';
+            return !($value['Key'] === 'PRI' && $value['Extra'] === 'auto_increment');
         }));
     }
 }

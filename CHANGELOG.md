@@ -1,3 +1,13 @@
+# Version 16.1.1
+
+## Bugfixes
+
+* None
+
+## Features
+
+* Exclude primary key fields from column list in column name loader only, if they are auto increment
+
 # Version 16.1.0
 
 ## Bugfixes
