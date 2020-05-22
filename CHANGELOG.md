@@ -1,12 +1,12 @@
-# Version 16.1.1
+# Version 16.2.0
 
 ## Bugfixes
 
-* None
+* Fixed #PAC-47: Exclude primary key fields from column list in column name loader only, if they are auto increment
 
 ## Features
 
-* Exclude primary key fields from column list in column name loader only, if they are auto increment
+* Add #PAC-96
 
 # Version 16.1.0
 
