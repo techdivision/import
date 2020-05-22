@@ -62,29 +62,32 @@ trait FileUploadTrait
 
     /**
      * Whether or not to override images with the same name.
+     * TODO: Refactor to make protected
      *
      * @var boolean
      */
-    protected $overrideImages = false;
+    private $overrideImages = false;
 
     /**
      * Sets whether or not to override images with the same name.
+     * TODO: Refactor to make public
      *
      * @param boolean $overrideImages Whether or not to override images
      *
      * @return void
      */
-    public function setOverrideImages($overrideImages)
+    private function setOverrideImages($overrideImages)
     {
         $this->overrideImages = $overrideImages;
     }
 
     /**
      * Returns whether or not we should override images with the same name.
+     * TODO: Refactor to make public or protected
      *
      * @return bool
      */
-    public function shouldOverride()
+    private function shouldOverride()
     {
         return $this->overrideImages;
     }

@@ -1,3 +1,13 @@
+# Version 16.2.0
+
+## Bugfixes
+
+* None
+
+## Features
+
+* Add #PAC-96
+
 # Version 16.1.0
 
 ## Bugfixes
