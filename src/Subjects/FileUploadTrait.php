@@ -61,6 +61,35 @@ trait FileUploadTrait
     protected $copyImages = false;
 
     /**
+     * Whether or not to override images with the same name.
+     *
+     * @var bool
+     */
+    protected $overrideImages = false;
+
+    /**
+     * Sets whether or not to override images with the same name.
+     *
+     * @param $overrideImages
+     *
+     * @return void
+     */
+    public function setOverrideImages($overrideImages)
+    {
+        $this->overrideImages = $overrideImages;
+    }
+
+    /**
+     * Returns whether or not we should override images with the same name.
+     *
+     * @return bool
+     */
+    public function shouldOverride()
+    {
+        return $this->overrideImages;
+    }
+
+    /**
      * Set's the flag to copy the images or not.
      *
      * @param boolean $copyImages The flag
@@ -214,8 +243,8 @@ trait FileUploadTrait
         // load the file information
         $fileInfo = pathinfo($targetFilename);
 
-        // query whether or not, the file exists
-        if ($this->getFilesystemAdapter()->isFile($targetFilename)) {
+        // query whether or not the file exists and if we should override it
+        if ($this->getFilesystemAdapter()->isFile($targetFilename) && $this->shouldOverride() === false) {
             // initialize the index and the basename
             $index = 1;
             $baseName = $fileInfo['filename'] . '.' . $fileInfo['extension'];
