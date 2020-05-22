@@ -63,14 +63,14 @@ trait FileUploadTrait
     /**
      * Whether or not to override images with the same name.
      *
-     * @var bool
+     * @var boolean
      */
     protected $overrideImages = false;
 
     /**
      * Sets whether or not to override images with the same name.
      *
-     * @param $overrideImages
+     * @param boolean $overrideImages Whether or not to override images
      *
      * @return void
      */
