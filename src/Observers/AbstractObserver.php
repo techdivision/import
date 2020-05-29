@@ -25,7 +25,6 @@ use TechDivision\Import\Utils\ScopeKeys;
 use TechDivision\Import\Utils\LoggerKeys;
 use TechDivision\Import\Utils\EntityStatus;
 use TechDivision\Import\Subjects\SubjectInterface;
-use TechDivision\Import\Subjects\CleanUpColumnsSubjectInterface;
 
 /**
  * An abstract observer implementation.
@@ -149,31 +148,9 @@ abstract class AbstractObserver implements ObserverInterface
      * @param string|null $changeSetName The change set name to use
      *
      * @return array The merged entity
-     * @todo https://github.com/techdivision/import/issues/179
      */
     protected function mergeEntity(array $entity, array $attr, $changeSetName = null)
     {
-
-        // query whether or not the subject has columns that has to be cleaned-up
-        if (($subject = $this->getSubject()) instanceof CleanUpColumnsSubjectInterface) {
-            // load the columns that has to be cleaned-up
-            $cleanUpColumns =  $subject->getCleanUpColumns();
-            // load the column/member names from the attributes
-            $columnNames = array_keys($attr);
-
-            // iterate over the column names
-            foreach ($columnNames as $columnName) {
-                // we do NOT clean-up members that HAS a value or ARE in
-                // the array with column names that has to be cleaned-up
-                if ($this->hasValue($columnName) || in_array($columnName, $cleanUpColumns)) {
-                    continue;
-                }
-                // unset the column, because it has NOT been cleaned-up
-                unset($attr[$columnName]);
-            }
-        }
-
-        // detect the state
         return array_merge($entity, $attr, array(EntityStatus::MEMBER_NAME => $this->detectState($entity, $attr, $changeSetName)));
     }
 

@@ -1,3 +1,13 @@
+# Version 16.3.0
+
+## Bugfixes
+
+* Add #PAC-47: Reverse engineer AbstractObserver::mergeEntity() method
+
+## Features
+
+* Add #PAC-47: Add entity merger implementation to allow fine grained entity merging
+
 # Version 16.2.0
 
 ## Bugfixes

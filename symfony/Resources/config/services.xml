@@ -83,6 +83,15 @@
             <call method="append">
                 <argument id="import.util.table.prefix" type="service"/>
             </call>
+            <call method="append">
+                <argument id="import.util.column.names" type="service"/>
+            </call>
+            <call method="append">
+                <argument id="import.util.column.placeholders" type="service"/>
+            </call>
+            <call method="append">
+                <argument id="import.util.column.values" type="service"/>
+            </call>
         </service>
         <service id="import.util.column.names" class="TechDivision\Import\Utils\ColumnNamesUtil">
             <argument type="service" id="import.loader.exclude.primary.key.column.name"/>
@@ -97,6 +106,11 @@
             <argument type="service" id="import.util.table.prefix"/>
         </service>
         <service id="import.util.sanitizer.column" class="TechDivision\Import\Utils\ColumnSanitizer"/>
+        <service id="import.util.sql.sanitizers" class="\ArrayObject">
+            <call method="append">
+                <argument id="import.util.sanitizer.column" type="service"/>
+            </call>
+        </service>
 
         <!--
          | The DI finder factory configuration
@@ -225,6 +239,9 @@
         <service id="import.loader.factory.proposed.ok.filename" class="TechDivision\Import\Loaders\ProposedOkFilenameLoaderFactory">
             <argument type="service" id="service_container"/>
             <argument type="service" id="import.processor.registry"/>
+        </service>
+        <service id="import.loader.header.mapping" class="TechDivision\Import\Loaders\HeaderMappingLoader">
+            <argument type="service" id="configuration"/>
         </service>
 
         <!--
