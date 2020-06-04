@@ -142,6 +142,32 @@ class ValueCsvSerializerTest extends AbstractSerializerTest
     }
 
     /**
+     * Tests if the unserialize() method returns the serialized value from a string with categories that contains qoutes.
+     *
+     * @return void
+     */
+    public function testUnserializeCategoriesWithQuotesAroundSlash()
+    {
+        $this->assertEquals(
+            array('Default Category', '"Meine/Euere"', 'Produkte'),
+            $this->valueCsvSerializer->unserialize('Default Category/"""Meine/Euere"""/Produkte', '/')
+        );
+    }
+
+    /**
+     * Tests if the unserialize() method returns the serialized value from a string with categories that contains qoutes.
+     *
+     * @return void
+     */
+    public function testUnserializeCategoriesWithQuotesAndSlash()
+    {
+        $this->assertEquals(
+            array('Default Category', 'Meine', '"Unsere"', 'Produkte'),
+            $this->valueCsvSerializer->unserialize('Default Category/Meine/"""Unsere"""/Produkte', '/')
+        );
+    }
+
+    /**
      * Tests if the unserialize() method returns the serialized value from a string with categories that contains a slash.
      *
      * @return void

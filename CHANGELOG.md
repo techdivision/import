@@ -1,3 +1,13 @@
+# Version 16.3.1
+
+## Bugfixes
+
+* None
+
+## Features
+
+* Add PHP unit test for unserializing categories with slashs and quotes inside names
+
 # Version 16.3.0
 
 ## Bugfixes
