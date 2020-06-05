@@ -185,6 +185,23 @@ class ValueCsvSerializerTest extends AbstractSerializerTest
     }
 
     /**
+     * Tests if the unserialize() method returns the serialized value from a string with categories that contains a slash in a middle element.
+     *
+     * @return void
+     */
+    public function testUnserializeCategoriesFromAColumnWithSlashInMiddleElement()
+    {
+
+        // first extract the the column value (simulating what happens when column will be extracted with $this->getValue(ColumnKeys::PATH) from the CSV file)
+        $column = $this->valueCsvSerializer->unserialize('"Default Category/""Deine/Meine""/Produkte/Subkategorie"');
+
+        $this->assertEquals(
+            array('Default Category', 'Deine/Meine', 'Produkte', 'Subkategorie'),
+            $this->valueCsvSerializer->unserialize(array_shift($column), '/')
+        );
+    }
+
+    /**
      * Tests if the unserialize() method returns the serialized value from a column with categories that contains a slash within qoutes.
      *
      * @return void
