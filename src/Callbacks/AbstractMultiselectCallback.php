@@ -54,6 +54,11 @@ abstract class AbstractMultiselectCallback extends AbstractEavAwareCallback
         $attributeCode = $observer->getAttributeCode();
         $attributeValue = $observer->getAttributeValue();
 
+        // query whether or not a value for the attibute with the diven code has been set
+        if ($attributeValue == null || $attributeValue === '') {
+            return;
+        }
+
         // load the ID of the actual store
         $storeId = $this->getStoreId(StoreViewCodes::ADMIN);
 

@@ -1,3 +1,13 @@
+# Version 16.3.2
+
+## Bugfixes
+
+* Fixed techdivision/import#183
+
+## Features
+
+* None
+
 # Version 16.3.1
 
 ## Bugfixes
