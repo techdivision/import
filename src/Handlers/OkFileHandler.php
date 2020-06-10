@@ -123,7 +123,7 @@ class OkFileHandler implements OkFileHandlerInterface
      */
     protected function stripSuffix(string $filename) : string
     {
-        return basename($filename, sprintf('.%s', pathinfo($filename, PATHINFO_BASENAME)));
+        return basename($filename, sprintf('.%s', pathinfo($filename, PATHINFO_EXTENSION)));
     }
 
     /**
