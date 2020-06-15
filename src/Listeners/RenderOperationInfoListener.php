@@ -68,7 +68,7 @@ class RenderOperationInfoListener extends AbstractListener
 
         // write a warning for low performance, if XDebug extension is activated
         if (in_array('xdebug', get_loaded_extensions())) {
-            $application->log('Low performance exptected, as result of enabled XDebug extension!', LogLevel::WARNING);
+            $application->log('Low performance expected, as result of enabled XDebug extension!', LogLevel::WARNING);
         }
 
         // prepare the operation name and the entity type code
