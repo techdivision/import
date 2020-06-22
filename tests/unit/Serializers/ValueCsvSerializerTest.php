@@ -55,11 +55,310 @@ class ValueCsvSerializerTest extends AbstractSerializerTest
     }
 
     /**
+     * Tests the serialization of the values in the column `attribute_option_values` which contains a
+     * list with the attributes available option values and has to serialized/unserialized two times.
+     *
+     * @return void
+     * @attributes
+     */
+    public function testSerializeAttributeOptionValuesWithSuccess()
+    {
+
+        // initialize the array containing the unserialized value
+        $unserialized = array('Ventilsicherung von 2" bis 8", nur in geschlossener Position');
+
+        // initialize the serialization result
+        $expectedResult = '"""Ventilsicherung von 2"""" bis 8"""", nur in geschlossener Position"""';
+
+        // serialize the value two times
+        $serialized = $this->valueCsvSerializer->serialize(array($this->valueCsvSerializer->serialize($unserialized)));
+
+        // assert that the result matchtes the expected result
+        $this->assertEquals($expectedResult, $serialized);
+
+        // unserialize the serialized value and query whether or not we've the source value
+        $values = current($this->valueCsvSerializer->unserialize($serialized));
+        $this->assertEquals($unserialized, $this->valueCsvSerializer->unserialize($values));
+    }
+
+    /**
+     * Tests if the serialize() method returns the serialized value.
+     *
+     * @return void
+     * @attributes
+     */
+    public function testSerializeAttributeOptionValuesWithSingleQuotes()
+    {
+
+        // initialize the array containing the unserialized value
+        $unserialized = array(
+            'Aushang-Set "Allgemeine Betriebsanweisungen für Tätigkeiten mit Gefahrstoffen"',
+            'Aushang "ADR-Transportplaner"',
+            'Damit nicht nur Ihre Räume, sondern auch Ihre Reinigungspläne "sauber" sind.'
+        );
+
+        // initialize the expected result
+        $expectedResult = '"""Aushang-Set """"Allgemeine Betriebsanweisungen für Tätigkeiten mit Gefahrstoffen"""""",""Aushang """"ADR-Transportplaner"""""",""Damit nicht nur Ihre Räume, sondern auch Ihre Reinigungspläne """"sauber"""" sind."""';
+
+        // serialize the value two times
+        $serialized = $this->valueCsvSerializer->serialize(array($this->valueCsvSerializer->serialize($unserialized)));
+
+        // assert that the result matchtes the expected result
+        $this->assertEquals($expectedResult, $serialized);
+
+        // unserialize the serialized value and query whether or not we've the source value
+        $values = current($this->valueCsvSerializer->unserialize($serialized));
+        $this->assertEquals($unserialized, $this->valueCsvSerializer->unserialize($values));
+    }
+
+    /**
+     * Test (un-)serialization process of a value for the column `configurable_variations` without quotes.
+     *
+     * @return void
+     * @products
+     */
+    public function testSerializeConfigurableVariations()
+    {
+
+        // initialize the array with the values that have to be serialized
+        $unserialized = array(
+            'sku=configurable-test-Black-55 cm,color=Black,size=55 cm',
+            'sku=configurable-test-Black-XS,color=Black,size=XS',
+            'sku=configurable-test-Blue-XS,color=Blue,size=XS',
+            'sku=configurable-test-Blue-55 cm,color=Blue,size=55 cm'
+        );
+
+        // initialize the expected serialization result
+        $expectedResult = '"sku=configurable-test-Black-55 cm,color=Black,size=55 cm"|sku=configurable-test-Black-XS,color=Black,size=XS|sku=configurable-test-Blue-XS,color=Blue,size=XS|"sku=configurable-test-Blue-55 cm,color=Blue,size=55 cm"';
+
+        // assert that the (un-)serialization contains the source values/the expected result
+        $this->assertEquals($expectedResult, $serialized = $this->valueCsvSerializer->serialize($unserialized, '|'));
+        $this->assertEquals($unserialized, $this->valueCsvSerializer->unserialize($serialized, '|'));
+    }
+
+    /**
+     * Test (un-)serialization process of a value for the column `configurable_variations` with single quotes.
+     *
+     * @return void
+     * @products
+     */
+    public function testSerializeConfigurableVariationsWithOneValueAndQuotes()
+    {
+
+        // initialize the array with the values that have to be serialized
+        $unserialized = array(
+            'sku=12345,dmeu_lockingmechanism="Anschlussgewinde: 3/4"'
+        );
+
+        // initialize the expected serialization result
+        $expectedResult = '"sku=12345,dmeu_lockingmechanism=""Anschlussgewinde: 3/4"""';
+
+        // assert that the (un-)serialization contains the source values/the expected result
+        $this->assertEquals($expectedResult, $serialized = $this->valueCsvSerializer->serialize($unserialized, '|'));
+        $this->assertEquals($unserialized, $this->valueCsvSerializer->unserialize($serialized, '|'));
+    }
+
+    /**
+     * Test the (un-)serialization for values in the column `configurable_variations` for
+     * the product import which contains quotes and has manually been downgraded.
+     *
+     * @return void
+     * @products
+     */
+    public function testSerializeMultipleConfigurableVariationsWithQuotes()
+    {
+
+        // initialize the array with the values that have to be serialized
+        $unserialized = array(
+            array(
+                'sku=12345',
+                'dmeu_lockingmechanism="Anschlussgewinde: 3/4"'
+            ),
+            array(
+                'sku=12346',
+                'dmeu_lockingmechanism="Anschlussgewinde: 2/4"'
+            )
+        );
+
+        // initialize the expected serialization result
+        $expectedResult = '"sku=12345,""dmeu_lockingmechanism=""""Anschlussgewinde: 3/4"""""""|"sku=12346,""dmeu_lockingmechanism=""""Anschlussgewinde: 2/4"""""""';
+
+        // serialize the values
+        $vals = array();
+        foreach ($unserialized as $configurable) {
+            $vals[] = $this->valueCsvSerializer->serialize($configurable);
+        }
+
+        // assert that the serialization contains the expected result
+        $this->assertEquals($expectedResult, $serialized = $this->valueCsvSerializer->serialize($vals, '|'));
+
+        // unserialize the serialized value
+        $attributes = array();
+        foreach ($this->valueCsvSerializer->unserialize($serialized, '|') as $configurable) {
+            $attributes[] = $this->valueCsvSerializer->unserialize($configurable);
+        }
+
+        // assert that the unserialization contains the source values
+        $this->assertEquals($unserialized, $attributes);
+    }
+
+    /**
+     * Test the unserialization for values in the column `configurable_variations` for
+     * the product import which contains quotes and has manually been downgraded.
+     *
+     * @return
+     * @products
+     */
+    public function testUnserializeMultipleConfigurableVariationsWithQuotesManuallyDowngraded()
+    {
+
+        // initialize the array with the values that have to be serialized
+        $unserialized = array(
+            array(
+                'sku=12345',
+                'dmeu_lockingmechanism="Anschlussgewinde: 3/4"'
+            ),
+            array(
+                'sku=12346',
+                'dmeu_lockingmechanism="Anschlussgewinde: 2/4"'
+            )
+        );
+
+        // initialize the expected serialization result
+        $expectedResult = '"sku=12345,dmeu_lockingmechanism=""Anschlussgewinde: 3/4"""|"sku=12346,dmeu_lockingmechanism=""Anschlussgewinde: 2/4"""';
+
+        // unserializa the serialized value
+        $vals = array();
+        foreach ($this->valueCsvSerializer->unserialize($expectedResult, '|') as $configurable) {
+            $vals[] = $this->valueCsvSerializer->unserialize($configurable);
+        }
+
+        // assert that the unserialization contains the source values
+        $this->assertEquals($unserialized, $vals);
+    }
+
+    /**
+     * Test the serialization for values in a EAV attribute column of type `multiselect`
+     * for the product import which contains quotes.
+     *
+     * @return
+     * @products
+     */
+    public function testSerializeMultiselectValuesWithQuotes()
+    {
+
+
+        // initialize the array with the values that have to be serialized
+        $unserialized = array(
+            '"lorem", ipsum "dolor" somit',
+            'Sic transit gloria mundi'
+        );
+
+        // initialize the expected serialization result
+        $expectedResult = '"""""""lorem"""", ipsum """"dolor"""" somit""|""Sic transit gloria mundi"""';
+
+        // assert that the serialization has the expected result
+        $this->assertEquals($expectedResult, $this->valueCsvSerializer->serialize(array($this->valueCsvSerializer->serialize($unserialized, '|'))));
+
+        // unserializa the serialized value
+        $vals = array();
+        foreach ($this->valueCsvSerializer->unserialize($expectedResult) as $v) {
+            $vals = array_merge($vals, $this->valueCsvSerializer->unserialize($v, '|'));
+        }
+
+        // assert that the unserialization contains the source values
+        $this->assertEquals($unserialized, $vals);
+    }
+
+    /**
+     * Test the serialization for values in a EAV attribute column of type `multiselect`
+     * for the product import which contains quotes and a pipe.
+     *
+     * @return
+     * @products
+     */
+    public function testSerializeMultiselectValuesWithSingleQuotesAndPipe()
+    {
+
+        // initialize the array with the values that have to be serialized
+        $unserialized = array(
+            '"lorem", ipsum "dolor" somit | Sic transit gloria mundi'
+        );
+
+        // initialize the expected serialization result
+        $expectedResult = '"""""""lorem"""", ipsum """"dolor"""" somit | Sic transit gloria mundi"""';
+
+        // assert that the serialization has the expected result
+        $this->assertEquals($expectedResult, $this->valueCsvSerializer->serialize(array($this->valueCsvSerializer->serialize($unserialized, '|'))));
+
+        // unserializa the serialized value
+        $vals = array();
+        foreach ($this->valueCsvSerializer->unserialize($expectedResult) as $v) {
+            $vals = array_merge($vals, $this->valueCsvSerializer->unserialize($v, '|'));
+        }
+
+        // assert that the unserialization contains the source values
+        $this->assertEquals($unserialized, $vals);
+    }
+
+    /**
+     * Test the serialization for values in a EAV attribute column of type `multiselect`
+     * for the product import which contains quotes and pipes.
+     *
+     * @return
+     * @products
+     */
+    public function testSerializeMultiselectValuesAndQuotesAndPipes()
+    {
+
+        // initialize the array with the values that have to be serialized
+        $unserialized = array(
+            '"lorem", ipsum "dolor" somit | Sic transit gloria mundi 1',
+            '"lorem", ipsum "dolor" somit | Sic transit gloria mundi 2'
+        );
+
+        // initialize the expected serialization result
+        $expectedResult = '"""""""lorem"""", ipsum """"dolor"""" somit | Sic transit gloria mundi 1""|""""""lorem"""", ipsum """"dolor"""" somit | Sic transit gloria mundi 2"""';
+
+        // assert that the serialization has the expected result
+        $this->assertEquals($expectedResult, $this->valueCsvSerializer->serialize(array($this->valueCsvSerializer->serialize($unserialized, '|'))));
+
+        // unserializa the serialized value
+        $vals = array();
+        foreach ($this->valueCsvSerializer->unserialize($expectedResult) as $v) {
+            $vals = array_merge($vals, $this->valueCsvSerializer->unserialize($v, '|'));
+        }
+
+        // assert that the unserialization contains the source values
+        $this->assertEquals($unserialized, $vals);
+    }
+
+    /**
+     * Test the unserialization for values in a EAV attribute column for the product import
+     * which contains a single value, e. g. description.
+     *
+     * @return void
+     * @products
+     */
+    public function testUnserializeProductAttributeOptionValueWithSuccess()
+    {
+
+        // initialize the value we want to unserialized
+        $serialized = '"Ventilsicherung von 2"" bis 8"", nur in geschlossener Position"';
+
+        // initialize the expected result
+        $expectedResult = array('Ventilsicherung von 2" bis 8", nur in geschlossener Position');
+
+        // unserialize the value and assert the expected result has been returned
+        $this->assertEquals($expectedResult, $this->valueCsvSerializer->unserialize($serialized));
+    }
+
+    /**
      * Tests if the serialize() method returns the serialized value.
      *
      * @return void
      */
-    public function testSerializeUnserializeWithSuccess()
+    public function testSerializeAttributeOptionsWithQuotesAndSuccess()
     {
         $this->assertEquals('"ac_\01",ov_01', $serialized = $this->valueCsvSerializer->serialize($unserialized = array('ac_\\01','ov_01')));
         $this->assertEquals($unserialized, $this->valueCsvSerializer->unserialize($serialized));
