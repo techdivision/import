@@ -1,3 +1,13 @@
+# Version 14.0.10
+
+## Bugfixes
+
+* Fixed #PAC-141: `clean-up-empty-columns` only works for attributes in column `additional_attributes` that are available in the first row
+
+## Features
+
+* None
+
 # Version 14.0.9
 
 ## Bugfixes
