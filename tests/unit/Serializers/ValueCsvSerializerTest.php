@@ -82,6 +82,66 @@ class ValueCsvSerializerTest extends AbstractSerializerTest
     }
 
     /**
+     * Tests the serialization of the values in the column `attribute_option_values` which contains a
+     * list with the attributes available option values and has to serialized/unserialized two times.
+     *
+     * @return void
+     * @attributes
+     */
+    public function testSerializeAttributeOptionValuesWithExampleValues()
+    {
+
+        // initialize the array containing the unserialized value
+        $unserialized = array(
+            'bla',
+            'bla "blub"',
+            'bla, blub',
+            'bla, "blub" bla',
+            'bla "blub, bla"'
+        );
+
+        // initialize the serialization result
+        $firstResult = 'bla,"bla ""blub""","bla, blub","bla, ""blub"" bla","bla ""blub, bla"""';
+        $secondResult = '"bla,""bla """"blub"""""",""bla, blub"",""bla, """"blub"""" bla"",""bla """"blub, bla"""""""';
+
+        // serialize and assert that the result matchtes the expected result two times
+        $this->assertEquals($firstResult, $first = $this->valueCsvSerializer->serialize($unserialized));
+        $this->assertEquals($secondResult, $serialized = $this->valueCsvSerializer->serialize(array($first)));
+
+        // unserialize the serialized value and query whether or not we've the source value
+        $values = current($this->valueCsvSerializer->unserialize($serialized));
+        $this->assertEquals($unserialized, $this->valueCsvSerializer->unserialize($values));
+    }
+
+    /**
+     * Tests the unserialization of the values in the column `attribute_option_values` which contains a
+     * list with the attributes available option values and has to unserialized two times.
+     *
+     * @return void
+     * @attributes
+     */
+    public function testUnserializeAttributeOptionValuesWithExampleValues()
+    {
+
+        // initialize the array containing the unserialized value
+        $unserialized = array(
+            'bla',
+            'bla "blub"',
+            'bla, blub',
+            'bla, "blub" bla',
+            'bla "blub, bla"'
+        );
+
+        // initialize the serialization result
+        // optional: '"""bla"",""bla """"blub"""""",""bla, blub"",""bla, """"blub"""" bla"",""bla """"blub, bla"""""""';
+        $secondResult = '"bla,""bla """"blub"""""",""bla, blub"",""bla, """"blub"""" bla"",""bla """"blub, bla"""""""';
+
+        // unserialize the serialized value and query whether or not we've the source value
+        $values = current($this->valueCsvSerializer->unserialize($secondResult));
+        $this->assertEquals($unserialized, $this->valueCsvSerializer->unserialize($values));
+    }
+
+    /**
      * Tests if the serialize() method returns the serialized value.
      *
      * @return void

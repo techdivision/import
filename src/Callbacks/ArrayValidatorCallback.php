@@ -42,19 +42,28 @@ class ArrayValidatorCallback extends AbstractValidatorCallback
     protected $nullable = false;
 
     /**
+     * The flag to query whether or not the value has to be validated on the main row only.
+     *
+     * @var boolean
+     */
+    protected $mainRowOnly = false;
+
+    /**
      * Initializes the callback with the loader instance.
      *
-     * @param \TechDivision\Import\Loaders\LoaderInterface $loader   The loader instance to load the validations with
-     * @param boolean                                      $nullable The flag to decide whether or not the value can be empty
+     * @param \TechDivision\Import\Loaders\LoaderInterface $loader      The loader instance to load the validations with
+     * @param boolean                                      $nullable    The flag to decide whether or not the value can be empty
+     * @param boolean                                      $mainRowOnly The flag to decide whether or not the value has to be validated on the main row only
      */
-    public function __construct(LoaderInterface $loader, $nullable = false)
+    public function __construct(LoaderInterface $loader, $nullable = false, $mainRowOnly = false)
     {
 
         // pass the loader to the parent instance
         parent::__construct($loader);
 
-        // initialize the flag with the passed value
+        // initialize the flags with the passed values
         $this->nullable = $nullable;
+        $this->mainRowOnly = $mainRowOnly;
     }
 
     /**
@@ -103,6 +112,11 @@ class ArrayValidatorCallback extends AbstractValidatorCallback
      */
     protected function isNullable($attributeValue)
     {
-        return $this->nullable && ($attributeValue === '' || $attributeValue === null);
+
+        // query whether or not the value can be nullable
+        $isNullable = $this->nullable && ($attributeValue === '' || $attributeValue === null);
+
+        // query whether or not the validation should happen on the main row only
+        return $this->mainRowOnly ? $this->isMainRow() && $isNullable : $isNullable;
     }
 }

@@ -71,6 +71,7 @@ trait AttributeObserverTrait
      * The array with the column keys that has to be cleaned up when their values are empty.
      *
      * @var array
+     * @deprecated Will be removed up from version 17.0.0
      */
     protected $cleanUpEmptyColumnKeys;
 
@@ -110,21 +111,18 @@ trait AttributeObserverTrait
     protected function clearRow()
     {
 
-        // query whether or not the column keys has been initialized
-        if ($this->cleanUpEmptyColumnKeys === null) {
-            // initialize the array with the column keys that has to be cleaned-up
-            $this->cleanUpEmptyColumnKeys = array();
+        // initialize the array with the column keys that has to be cleaned-up
+        $this->cleanUpEmptyColumnKeys = array();
 
-            // query whether or not column names that has to be cleaned up have been configured
-            if ($this->getSubject()->getConfiguration()->hasParam(ConfigurationKeys::CLEAN_UP_EMPTY_COLUMNS)) {
-                // if yes, load the column names
-                $cleanUpEmptyColumns = $this->getSubject()->getCleanUpColumns();
+        // query whether or not column names that has to be cleaned up have been configured
+        if ($this->getSubject()->getConfiguration()->hasParam(ConfigurationKeys::CLEAN_UP_EMPTY_COLUMNS)) {
+            // if yes, load the column names
+            $cleanUpEmptyColumns = $this->getSubject()->getCleanUpColumns();
 
-                // translate the column names into column keys
-                foreach ($cleanUpEmptyColumns as $cleanUpEmptyColumn) {
-                    if ($this->hasHeader($cleanUpEmptyColumn)) {
-                        $this->cleanUpEmptyColumnKeys[] = $this->getHeader($cleanUpEmptyColumn);
-                    }
+            // translate the column names into column keys
+            foreach ($cleanUpEmptyColumns as $cleanUpEmptyColumn) {
+                if ($this->hasHeader($cleanUpEmptyColumn)) {
+                    $this->cleanUpEmptyColumnKeys[] = $this->getHeader($cleanUpEmptyColumn);
                 }
             }
         }

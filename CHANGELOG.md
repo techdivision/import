@@ -1,3 +1,13 @@
+# Version 16.5.0
+
+## Bugfixes
+
+* Fixed #PAC-141: `clean-up-empty-columns` only works for attributes in column `additional_attributes` that are available in the first row
+
+## Features
+
+* Add techdivision/import-attribute#51
+
 # Version 16.4.0
 
 ## Bugfixes
