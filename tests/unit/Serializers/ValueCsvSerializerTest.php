@@ -172,8 +172,8 @@ class ValueCsvSerializerTest extends AbstractSerializerTest
     }
 
     /**
-     * Tests the unserialization of the values in the column `configurable_variations` which contains a
-     * list with the attributes available option values and has to unserialized two times.
+     * Tests the (un-)serialization of the values in the column `configurable_variations` which contains a
+     * list with the SKU and the configurable attributes option values and has to unserialized four times.
      *
      * @return void
      * @products
@@ -181,16 +181,42 @@ class ValueCsvSerializerTest extends AbstractSerializerTest
     public function testSerializeConfigurableVariationsWithExampleValues()
     {
 
-        // initialize the array with the values that have to be serialized
-        $unserialized = array(
-            'sku=12345,color=bla,size=blub',
-            'sku=12346,color=bla "blub",size=bla, blub',
-            'sku=12347,color=bla, "blub" bla,size=bla "blub, bla"'
+        // initialize the inital list
+        $vars = array(
+            array(
+                array('sku','12345'),
+                array('color','bla'),
+                array('size','blub|diblub')),
+            array(
+                array('sku','12346'),
+                array('color','bla "blub|diblub"'),
+                array('size','bla, blub')),
+            array(
+                array('sku','12347'),
+                array('color','bla, = "blub" bla'),
+                array('size','bla = | "blub, bla|diblub" du')
+            )
         );
 
         // initialize the expected serialization result
-        $firstResult = 'sku=12345,color=bla,size=blub|"sku=12346,color=bla ""blub"",size=bla, blub"|"sku=12347,color=bla, ""blub"" bla,size=bla ""blub, bla"""';
-        $secondResult = '"sku=12345,color=bla,size=blub|""sku=12346,color=bla """"blub"""",size=bla, blub""|""sku=12347,color=bla, """"blub"""" bla,size=bla """"blub, bla"""""""';
+        $firstResult = '"sku=12345,color=bla,size=blub|diblub"|"sku=12346,""color=""""bla """"""""blub|diblub"""""""""""""",""size=""""bla, blub"""""""|"sku=12347,""color=""""bla, = """"""""blub"""""""" bla"""""",""size=""""bla = | """"""""blub, bla|diblub"""""""" du"""""""';
+        $secondResult = '"""sku=12345,color=bla,size=blub|diblub""|""sku=12346,""""color=""""""""bla """"""""""""""""blub|diblub"""""""""""""""""""""""""""",""""size=""""""""bla, blub""""""""""""""|""sku=12347,""""color=""""""""bla, = """"""""""""""""blub"""""""""""""""" bla"""""""""""",""""size=""""""""bla = | """"""""""""""""blub, bla|diblub"""""""""""""""" du"""""""""""""""';
+
+
+        // initialize the array with the values that have to be serialized
+        $unserialized = array();
+
+        // prepare the values
+        foreach ($vars as $var) {
+            // initialize an array with the elements
+            $loop1 = array();
+            // serialize them with a (=) as separator
+            foreach ($var as $el) {
+                $loop1[] = $this->valueCsvSerializer->serialize($el, '=');
+            }
+            // serialize the attributes of ONE configurable variation with a (,) as separator
+            $unserialized[] = $this->valueCsvSerializer->serialize($loop1);
+        }
 
         // assert that the (un-)serialization contains the source values/the expected result
         $this->assertEquals($firstResult, $first = $this->valueCsvSerializer->serialize($unserialized, '|'));
@@ -198,7 +224,15 @@ class ValueCsvSerializerTest extends AbstractSerializerTest
 
         // unserialize the serialized value and query whether or not we've the source value
         $values = current($this->valueCsvSerializer->unserialize($serialized));
-        $this->assertEquals($unserialized, $this->valueCsvSerializer->unserialize($values, '|'));
+        $this->assertEquals($unserialized, $variations = $this->valueCsvSerializer->unserialize($values, '|'));
+
+        // validate that we've the single values when we desrialize the values
+        foreach ($variations as $key => $variation) {
+            $keyValuePair = $this->valueCsvSerializer->unserialize($variation);
+            foreach ($keyValuePair as $k => $pairs) {
+                $this->assertEquals($vars[$key][$k], $this->valueCsvSerializer->unserialize($pairs, '='));
+            }
+        }
     }
 
     /**
