@@ -172,6 +172,36 @@ class ValueCsvSerializerTest extends AbstractSerializerTest
     }
 
     /**
+     * Tests the unserialization of the values in the column `configurable_variations` which contains a
+     * list with the attributes available option values and has to unserialized two times.
+     *
+     * @return void
+     * @products
+     */
+    public function testSerializeConfigurableVariationsWithExampleValues()
+    {
+
+        // initialize the array with the values that have to be serialized
+        $unserialized = array(
+            'sku=12345,color=bla,size=blub',
+            'sku=12346,color=bla "blub",size=bla, blub',
+            'sku=12347,color=bla, "blub" bla,size=bla "blub, bla"'
+        );
+
+        // initialize the expected serialization result
+        $firstResult = 'sku=12345,color=bla,size=blub|"sku=12346,color=bla ""blub"",size=bla, blub"|"sku=12347,color=bla, ""blub"" bla,size=bla ""blub, bla"""';
+        $secondResult = '"sku=12345,color=bla,size=blub|""sku=12346,color=bla """"blub"""",size=bla, blub""|""sku=12347,color=bla, """"blub"""" bla,size=bla """"blub, bla"""""""';
+
+        // assert that the (un-)serialization contains the source values/the expected result
+        $this->assertEquals($firstResult, $first = $this->valueCsvSerializer->serialize($unserialized, '|'));
+        $this->assertEquals($secondResult, $serialized = $this->valueCsvSerializer->serialize(array($first)));
+
+        // unserialize the serialized value and query whether or not we've the source value
+        $values = current($this->valueCsvSerializer->unserialize($serialized));
+        $this->assertEquals($unserialized, $this->valueCsvSerializer->unserialize($values, '|'));
+    }
+
+    /**
      * Test (un-)serialization process of a value for the column `configurable_variations` without quotes.
      *
      * @return void
