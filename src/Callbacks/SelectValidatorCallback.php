@@ -47,24 +47,21 @@ class SelectValidatorCallback extends IndexedArrayValidatorCallback
         $subject = $this->getSubject();
 
         // explode the additional attributes
-        if ($this->isNullable($optionValues = $subject->explode($attributeValue, '='))) {
+        if ($this->isNullable($attributeValue)) {
             return;
         }
 
         // load the validations for the attribute with the passed code
         $validations = $this->getValidations($attributeCode);
 
-        // iterate over the attributes and append them to the row
-        foreach ($optionValues as $optionValue) {
-            // query whether or not the value is valid
-            if (in_array($optionValue, $validations)) {
-                continue;
-            }
-
-            // throw an exception if the value is NOT in the array
-            throw new \InvalidArgumentException(
-                sprintf('Found invalid option value "%s" for attribute with code "%s"', $optionValue, $attributeCode)
-            );
+        // query whether or not the value is valid
+        if (in_array($attributeValue, $validations)) {
+            return;
         }
+
+        // throw an exception if the value is NOT in the array
+        throw new \InvalidArgumentException(
+            sprintf('Found invalid option value "%s" for attribute with code "%s"', $attributeValue, $attributeCode)
+        );
     }
 }

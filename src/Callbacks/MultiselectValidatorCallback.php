@@ -47,26 +47,27 @@ class MultiselectValidatorCallback extends IndexedArrayValidatorCallback
         $subject = $this->getSubject();
 
         // explode the additional attributes
-        if ($this->isNullable($optionValues = $subject->explode($attributeValue, '='))) {
+        if ($this->isNullable($attributeValue)) {
             return;
         }
 
+        // load the validations for the attribute with the passed code
+        $validations = $this->getValidations($attributeCode);
+
+        // extract the option values
+        $optionValues = $subject->explode($attributeValue, $subject->getMultipleValueDelimiter());
+
         // iterate over the attributes and append them to the row
         foreach ($optionValues as $optionValue) {
-            // load the validations for the attribute with the passed code
-            $validations = $this->getValidations($attributeCode);
-            // explode the values that have to be validated
-            foreach ($subject->explode($optionValue, $subject->getMultipleValueDelimiter()) as $val) {
-                // query whether or not the value is valid
-                if (in_array($val, $validations)) {
-                    continue;
-                }
-
-                // throw an exception if the value is NOT in the array
-                throw new \InvalidArgumentException(
-                    sprintf('Found invalid option value "%s" for attribute with code "%s"', $val, $attributeCode)
-                );
+            // query whether or not the value is valid
+            if (in_array($optionValue, $validations)) {
+                continue;
             }
+
+            // throw an exception if the value is NOT in the array
+            throw new \InvalidArgumentException(
+                sprintf('Found invalid option value "%s" for attribute with code "%s"', $optionValue, $attributeCode)
+            );
         }
     }
 }

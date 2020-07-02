@@ -1,3 +1,13 @@
+# Version 16.5.1
+
+## Bugfixes
+
+* Fixed #PAC-153: Valdiation of columns for attributes of frontend input type `select` and `multiselect` fails
+
+## Features
+
+* Add techdivision/import-attribute#51
+
 # Version 16.5.0
 
 ## Bugfixes
