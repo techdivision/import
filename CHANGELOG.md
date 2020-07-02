@@ -6,7 +6,7 @@
 
 ## Features
 
-* Add techdivision/import-attribute#51
+* None
 
 # Version 16.5.0
 
