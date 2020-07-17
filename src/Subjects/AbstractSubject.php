@@ -550,7 +550,7 @@ abstract class AbstractSubject implements SubjectInterface, FilesystemSubjectInt
      */
     public function mergeStatus(array $status)
     {
-        $this->status = array_merge_recursive($this->status, $status);
+        $this->status = array_replace_recursive($this->status, $status);
     }
 
     /**

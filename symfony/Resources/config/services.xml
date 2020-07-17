@@ -5,6 +5,7 @@
 
     <parameters>
         <parameter key="array_validator.nullable.true">true</parameter>
+        <parameter key="array_validator.nullable.false">false</parameter>
         <parameter key="cache_type.static" type="constant">TechDivision\Import\Utils\CacheTypes::TYPE_STATIC</parameter>
         <parameter key="cache_type.configurable" type="constant">TechDivision\Import\Utils\CacheTypes::TYPE_CONFIGURABLE</parameter>
     </parameters>

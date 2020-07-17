@@ -1,3 +1,13 @@
+# Version 16.5.2
+
+## Bugfixes
+
+* Fixed techdivision/import-product#156
+
+## Features
+
+* None
+
 # Version 16.5.1
 
 ## Bugfixes

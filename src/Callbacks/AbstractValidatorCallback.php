@@ -155,6 +155,6 @@ abstract class AbstractValidatorCallback implements CallbackInterface, CallbackF
         $storeViewCode = $this->getSubject()->getValue(ColumnKeys::STORE_VIEW_CODE);
 
         // query whether or not it is empty
-        return ($storeViewCode !== null || $storeViewCode !== '');
+        return ($storeViewCode === null || $storeViewCode === '');
     }
 }

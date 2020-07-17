@@ -113,10 +113,30 @@ class ArrayValidatorCallback extends AbstractValidatorCallback
     protected function isNullable($attributeValue)
     {
 
-        // query whether or not the value can be nullable
-        $isNullable = $this->nullable && ($attributeValue === '' || $attributeValue === null);
+        // query whether or not the passed value IS empty
+        if ($attributeValue === '' || $attributeValue === null) {
+            // z1: value can NEVER be empty
+            if ($this->nullable === false && $this->mainRowOnly === false) {
+                return false;
+            }
 
-        // query whether or not the validation should happen on the main row only
-        return $this->mainRowOnly ? $this->isMainRow() && $isNullable : $isNullable;
+            // z3: value can ALWAYS be empty
+            if ($this->nullable === true && $this->mainRowOnly === false) {
+                return true;
+            }
+
+            // z2: value MUST NOT be empty in the main row
+            if ($this->nullable === false && $this->mainRowOnly === true) {
+                return $this->isMainRow() ? false : true;
+            }
+
+            // z4: value can ONLY be empty in the main row
+            if ($this->nullable === true && $this->mainRowOnly === true) {
+                return $this->isMainRow() ? true : false;
+            }
+        }
+
+        // if not, return TRUE immediately
+        return true;
     }
 }
