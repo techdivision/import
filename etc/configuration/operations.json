@@ -1,0 +1,82 @@
+{
+  "operations": {
+    "general": {
+      "general": {
+        "create-ok-files": {
+          "plugins": {
+            "create-ok-files": {
+              "id": "import.plugin.create.ok.files"
+            }
+          }
+        },
+        "global-data": {
+          "plugins": {
+            "global-data": {
+              "id": "import.plugin.global.data"
+            }
+          }
+        },
+        "initialize": {
+          "name": "initialize",
+          "plugins": {
+            "initialize": {
+              "id": "import.plugin.initialize",
+              "listeners": [
+                {
+                  "plugin.process.success": [
+                    "import.listener.render.ansi.art",
+                    "import.listener.render.operation.info",
+                    "import.listener.render.debug.info",
+                    "import.listener.initialize.registry"
+                  ]
+                }
+              ]
+            }
+          }
+        },
+        "clean-up": {
+          "plugins": {
+            "clean-up": {
+              "id": "import.plugin.clean.up",
+              "listeners": [
+                {
+                  "plugin.process.success": [
+                    "import.listener.finalize.registry",
+                    "import.listener.archive",
+                    "import.listener.clear.artefacts",
+                    "import.listener.clear.directories",
+                    "import.listener.import.history",
+                    "import.listener.clear.registry"
+                  ]
+                }
+              ]
+            }
+          }
+        },
+        "move-files": {
+          "plugins": {
+            "subject": {
+              "id": "import.plugin.subject",
+              "listeners": [
+                {
+                  "plugin.process.success": [
+                    "import.listener.reset.logger"
+                  ]
+                }
+              ],
+              "subjects": [
+                {
+                  "id": "import.subject.move.files",
+                  "file-resolver": {
+                    "id": "import.subject.file.resolver.move.files"
+                  },
+                  "ok-file-needed": true
+                }
+              ]
+            }
+          }
+        }
+      }
+    }
+  }
+}

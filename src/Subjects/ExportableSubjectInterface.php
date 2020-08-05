@@ -35,6 +35,13 @@ interface ExportableSubjectInterface
 {
 
     /**
+     * Return's the artefacts for post-processing.
+     *
+     * @return array The artefacts
+     */
+    public function getArtefacts();
+
+    /**
      * Set's the exporter adapter instance.
      *
      * @param \TechDivision\Import\Adapter\ExportAdapterInterface $exportAdapter The exporter adapter instance
@@ -49,13 +56,6 @@ interface ExportableSubjectInterface
      * @return \TechDivision\Import\Adapter\ExportAdapterInterface The exporter adapter instance
      */
     public function getExportAdapter();
-
-    /**
-     * Return's the artefacts for post-processing.
-     *
-     * @return array The artefacts
-     */
-    public function getArtefacts();
 
     /**
      * Return the artefacts for the passed type and entity ID.
@@ -91,7 +91,7 @@ interface ExportableSubjectInterface
     public function newArtefact(array $columns, array $originalColumnNames = array());
 
     /**
-     * Export's the artefacts to CSV files.
+     * Export's the artefacts to CSV files and resets the array with the artefacts to free the memory.
      *
      * @param integer $timestamp The timestamp part of the original import file
      * @param string  $counter   The counter part of the origin import file

@@ -35,9 +35,9 @@ trait FilesystemTrait
 {
 
     /**
-     * Return's the root directory for the virtual filesystem.
+     * The filesystem adapter instance.
      *
-     * @return string The root directory for the virtual filesystem
+     * @return \TechDivision\Import\Adapter\FilesystemAdapterInterface
      */
     protected $filesystemAdapater;
 

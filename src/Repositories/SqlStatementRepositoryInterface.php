@@ -33,6 +33,13 @@ interface SqlStatementRepositoryInterface
 {
 
     /**
+     * The variable name for the PK.
+     *
+     * @var string
+     */
+    const PK_MEMBER_NAME = 'pk_member_name';
+
+    /**
      * Returns the SQL statement with the passed ID.
      *
      * @param string $id The ID of the SQL statement to return

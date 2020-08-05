@@ -1,3 +1,596 @@
+# Version 16.5.2
+
+## Bugfixes
+
+* Fixed techdivision/import-product#156
+
+## Features
+
+* None
+
+# Version 16.5.1
+
+## Bugfixes
+
+* Fixed #PAC-153: Valdiation of columns for attributes of frontend input type `select` and `multiselect` fails
+
+## Features
+
+* None
+
+# Version 16.5.0
+
+## Bugfixes
+
+* Fixed #PAC-141: `clean-up-empty-columns` only works for attributes in column `additional_attributes` that are available in the first row
+
+## Features
+
+* Add techdivision/import-attribute#51
+
+# Version 16.4.0
+
+## Bugfixes
+
+* None
+
+## Features
+
+* Add #PAC-102: Dedicated CLI command to import videos (professional + enterpries edition)
+
+# Version 16.3.3
+
+## Bugfixes
+
+* Fixed techdivision/import#186
+
+## Features
+
+* None
+
+# Version 16.3.2
+
+## Bugfixes
+
+* Fixed techdivision/import#183
+
+## Features
+
+* None
+
+# Version 16.3.1
+
+## Bugfixes
+
+* None
+
+## Features
+
+* Add PHP unit test for unserializing categories with slashs and quotes inside names
+
+# Version 16.3.0
+
+## Bugfixes
+
+* Add #PAC-47: Reverse engineer AbstractObserver::mergeEntity() method
+
+## Features
+
+* Add #PAC-47: Add entity merger implementation to allow fine grained entity merging
+
+# Version 16.2.0
+
+## Bugfixes
+
+* Fixed #PAC-47: Exclude primary key fields from column list in column name loader only, if they are auto increment
+
+## Features
+
+* Add #PAC-96
+
+# Version 16.1.0
+
+## Bugfixes
+
+* None
+
+## Features
+
+* Add #PAC-47
+
+# Version 16.0.2
+
+## Bugfixes
+
+* Fixed techdivision/import-cli-simple#246 by reverting PR #165
+
+## Features
+
+* None
+
+# Version 16.0.1
+
+## Bugfixes
+
+* Fixed dependency to techdivision/import-configuration to version 4.*
+
+## Features
+
+* None
+
+# Version 16.0.0
+
+## Bugfixes
+
+* Fixed #PAC-101
+* Add techdivision/import-cli-simple#243
+
+## Features
+
+* Add #PAC-34
+* Add #PAC-52
+* Add #PAC-85
+* Add techdivision/import#175
+
+# Version 15.2.1
+
+## Bugfixes
+
+* Add techdivision/import-cli-simple#244
+* Add entity type code CATALOG_PRODUCT_URL to EntityTypeCodes list
+* Add missing mapping EntityTypeCodes::CATALOG_PRODUCT_URL => EntityTypeCodes::CATALOG_PRODUCT to AbstractSubject
+
+## Features
+
+* Extract the import.configuration.manager DI configuration to techdivision/import-cli to make it overwritable
+
+# Version 15.2.0
+
+## Bugfixes
+
+* None
+
+## Features
+
+* Add compiler implementations for dynamic column handling
+
+# Version 15.1.2
+
+## Bugfixes
+
+* Remove unnecessary and slow reference clean-up when removing an item from cache
+
+## Features
+
+* None
+
+# Version 15.1.1
+
+## Bugfixes
+
+* Remove extract dev autoloading
+
+## Features
+
+* None
+
+# Version 15.1.0
+
+## Bugfixes
+
+* None
+
+## Features
+
+* Extract dev autoloading
+* Add command to import URL rewrites as well as necessary class constants
+
+# Version 15.0.5
+
+## Bugfixes
+
+* None
+
+## Features
+
+* Remove not referenced legacy code
+* Optimize additional attribute destruction to avoid unnecessary warnings
+
+# Version 15.0.4
+
+## Bugfixes
+
+* None
+
+## Features
+
+* Clear cache references also, when an cache item has been removed
+
+# Version 15.0.3
+
+## Bugfixes
+
+* None
+
+## Features
+
+* Remove unnecessary composer dependency to cache/* libraries
+
+# Version 15.0.2
+
+## Bugfixes
+
+* Fixed incompatibility with several PHP versions
+
+## Features
+
+* None
+
+# Version 15.0.1
+
+## Bugfixes
+
+* None
+
+## Features
+
+* Add NULL log handler for testing purposes
+
+# Version 15.0.0
+
+## Bugfixes
+
+* Add missing event triggers to AbstractSubject
+* Fixed techdivision/import-cli-simple#233
+* Fixed techdivision/import-cli-simple#234
+
+## Features
+
+* Remove deprecated classes and methods
+* Add techdivision/import#146
+* Add techdivision/import#162
+* Add techdivision/import#163
+* Add techdivision/import-cli-simple#216
+* Add techdivision/import-configuration-jms#25
+* Add new events that will be triggered before and after the header has been initialized
+* Add functionality to render recommendations for performce relevant MySQL configurations
+
+# Version 14.0.6
+
+## Bugfixes
+
+* Fixed PHPUnit tests
+
+## Features
+
+* None
+
+# Version 14.0.5
+
+## Bugfixes
+
+* Fixed invalid CacheAdapterTrait::raiseCounter() method that overrides import status
+
+## Features
+
+* None
+
+# Version 14.0.4
+
+## Bugfixes
+
+* Bugfixing invalid delimiter parameter usage for ValueCsvSerializer::serialize() and ValueCsvSerializer::unserialize() methods
+
+## Features
+
+* None
+
+# Version 14.0.3
+
+## Bugfixes
+
+* Bugfix for attribute import with empty option labels
+
+## Features
+
+* None
+
+# Version 14.0.2
+
+## Bugfixes
+
+* Invoke flushCache() instead of invlidateTags() method when finally cleaning cache
+
+## Features
+
+* None
+
+# Version 14.0.1
+
+## Bugfixes
+
+* Fix for invalid type casting e.g. for special_price
+
+## Features
+
+* None
+
+# Version 14.0.0
+
+## Bugfixes
+
+* None
+
+## Features
+
+* Extend additional attribute serializer functionality
+* Make SQL for loading EAV attribute option values case sensitive
+* Extend observer and callback instanciation with the possibility to use a factory
+
+# Version 13.0.1
+
+## Bugfixes
+
+* Fixed issue when formatting float/decimals on a localized system
+
+## Features
+
+* None
+
+# Version 13.0.0
+
+## Bugfixes
+
+* Fixed issue when formatting decimals greater than 999
+
+## Features
+
+* Add Magento Edition + Version output to RenderAnsiArtListener implementation
+* Extend NumberConverterInterface + DateConverterInterface as well as implementations
+
+# Version 12.0.7
+
+## Bugfixes
+
+* None
+
+## Features
+
+* Make ZIP archive created by Archive flat (remove directory structure)
+
+# Version 12.0.6
+
+## Bugfixes
+
+* Add missing command mapping for attribute set import
+
+## Features
+
+* None
+
+# Version 12.0.5
+
+## Bugfixes
+
+* Remove unnecessary dependency to ramsey/uuid
+
+## Features
+
+* None
+
+# Version 12.0.4
+
+## Bugfixes
+
+* Fixed issue with ignored --cache-enabled option when not cache configuration is available
+
+## Features
+
+* None
+
+# Version 12.0.3
+
+## Bugfixes
+
+* Fixed issue in cache warmer functionality
+
+## Features
+
+* None
+
+# Version 12.0.2
+
+## Bugfixes
+
+* Fixed issue in LocalCacheAdapter::invalidateTags() method that leads to inconsistent cache data
+
+## Features
+
+* None
+
+# Version 12.0.1
+
+## Bugfixes
+
+* Add missing method MissingOptionValuesPlugin::isDebugMode()
+
+## Features
+
+* None
+
+# Version 12.0.0
+
+## Bugfixes
+
+* Fixed issue with invalid return value of LocalCacheAdapter::isCached($key) method
+* Fixed issue when renaming images with the same filename withing one import process
+
+## Features
+
+* Optimize SQL to load image types in the optimal order for further processing
+* Impovements to significantly lower the memory footprint in production mode
+
+# Version 11.1.0
+
+## Bugfixes
+
+* None
+
+## Features
+
+* Add LocalCacheAdapter implementation for maximum performance and declare it as the default one
+
+# Version 11.0.0
+
+## Bugfixes
+
+* Fixed issue in SimpleFileResolver that causes an exception when old CSV files without a .ok file are available in the source directory
+
+## Features
+
+* Refactor cache integration to optimize in multiprocess and -threaed environments
+
+# Version 10.0.1
+
+## Bugfixes
+
+* Fixed invalid cache initialization on missing default configuration
+
+## Features
+
+* None
+
+# Version 10.0.0
+
+## Bugfixes
+
+* None
+
+## Features
+
+* Switch to http://www.php-cache.com as PSR-6 compliant cache implementation
+
+# Version 9.0.0
+
+## Bugfixes
+
+* None
+
+## Features
+
+* Refactor Cache Integration for PSR-6 compliance
+* Add additional events on plugin and subject level
+
+# Version 8.0.0
+
+## Bugfixes
+
+* Fixed issue in CommandNames::isCommandName() method
+
+## Features
+
+* Add customer group repository functionality
+* Add utility class with Magento edition names
+* Add utility class to handle CE/EE primary key functionality
+* Add commands for importing MSI inventory + product tier prices
+
+# Version 7.0.1
+
+## Bugfixes
+
+* Fixed some PSR-2 errors
+
+## Features
+
+* None
+
+# Version 7.0.0
+
+## Bugfixes
+
+* None
+
+## Features
+
+* Refactoring tasks to make implementation more generic
+
+# Version 6.0.1
+
+## Bugfixes
+
+* Fix File permission for create folder
+
+## Features
+
+* None
+
+# Version 6.0.0
+
+## Bugfixes
+
+* Add methods to load attribute option values by entity type ID to replace methods without entity type ID
+
+## Features
+
+* None
+
+# Version 5.0.0
+
+## Bugfixes
+
+* None
+
+## Features
+
+* Add constants for customer + customer address import commands
+* Refactoring AbstractAttributeTrait to support customer import functionality
+
+# Version 4.0.0
+
+## Bugfixes
+
+* None
+
+## Features
+
+* Add Converter for numbers and date
+* Move CSV configuration from subject to import/export adapter configuration
+* Add Serializer implementation to serialize/unserialize values from import files
+* Add FileResolver implementation to make configuration of import file + OK file handling more generic
+
+# Version 3.0.0
+
+## Bugfixes
+
+* None
+
+## Features
+
+* Tap doctrine/dbal to version 2.5.x
+
+# Version 2.0.1
+
+## Bugfixes
+
+* Add missing artefact initialization in ExportableTrait::newArtefact() method
+* Fixed invalid .inProgress file deletion in AbstractSubject::import() method
+
+## Features
+
+* None
+
+# Version 2.0.0
+
+## Bugfixes
+
+* Fixed issue that creates column original_data also if no original data is available
+
+## Features
+
+* Add configuration option create-imported-file to subject configuration
+* Add getter SubjectConfigurationInterface::isCreatingImportedFile() method
+* Add functionality to NOT create .imported flagfile based on configuration value to enable multiple subjects processing the same CSV file
+
 # Version 1.0.0
 
 ## Bugfixes

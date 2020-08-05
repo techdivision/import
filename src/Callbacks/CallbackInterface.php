@@ -20,8 +20,6 @@
 
 namespace TechDivision\Import\Callbacks;
 
-use TechDivision\Import\Observers\AttributeCodeAndValueAwareObserverInterface;
-
 /**
  * interface for all callback implementations.
  *
@@ -37,9 +35,7 @@ interface CallbackInterface
     /**
      * Will be invoked by a observer it has been registered for.
      *
-     * @param \TechDivision\Import\Observers\ObserverInterface $observer The observer
-     *
      * @return mixed The modified value
      */
-    public function handle(AttributeCodeAndValueAwareObserverInterface $observer);
+    public function handle();
 }

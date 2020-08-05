@@ -90,6 +90,17 @@ interface SubjectInterface
     public function getDefaultCallbackMappings();
 
     /**
+     * Tries to format the passed value to a valid date with format 'Y-m-d H:i:s'.
+     * If the passed value is NOT a valid date, NULL will be returned.
+     *
+     * @param string $value The value to format
+     *
+     * @return string|null The formatted date or NULL if the date is not valid
+     * @throws \InvalidArgumentException Is thrown, if the passed can not be formatted according to the configured date format
+     */
+    public function formatDate($value);
+
+    /**
      * Return's the source date format to use.
      *
      * @return string The source date format
@@ -102,6 +113,13 @@ interface SubjectInterface
      * @return string The multiple field delimiter character
      */
     public function getMultipleFieldDelimiter();
+
+    /**
+     * Return's the multiple value delimiter character to use, default value is comma (|).
+     *
+     * @return string The multiple value delimiter character
+     */
+    public function getMultipleValueDelimiter();
 
     /**
      * Return's the callback mappings for this subject.
@@ -177,17 +195,6 @@ interface SubjectInterface
      * @return string The target directory for the artefact export
      */
     public function getTargetDir();
-
-    /**
-     * Return's the next source directory, which will be the target directory
-     * of this subject, in most cases.
-     *
-     * @param string $serial The serial of the actual import
-     *
-     * @return string The new source directory
-     */
-    public function getNewSourceDir($serial);
-
     /**
      * Set's the import adapter instance.
      *
@@ -405,4 +412,43 @@ interface SubjectInterface
      * @return string The message with the appended exception suffix
      */
     public function appendExceptionSuffix($message = null, $filename = null, $lineNumber = null);
+
+    /**
+     * Return's the entity type code to be used.
+     *
+     * @return string The entity type code to be used
+     */
+    public function getEntityTypeCode();
+
+    /**
+     * Return's the subject's execution context configuration.
+     *
+     * @return \TechDivision\Import\ExecutionContextInterface The execution context configuration to use
+     */
+    public function getExecutionContext();
+
+    /**
+     * Merge's the passed status into the actual one.
+     *
+     * @param array $status The status to MergeBuilder
+     *
+     * @return void
+     */
+    public function mergeStatus(array $status);
+
+    /**
+     * Retur's the actual status.
+     *
+     * @return array The actual status
+     */
+    public function getStatus();
+
+    /**
+     * Return's the full opration name, which consists of the Magento edition, the entity type code and the operation name.
+     *
+     * @param string $separator The separator used to seperate the elements
+     *
+     * @return string The full operation name
+     */
+    public function getFullOperationName($separator = '/');
 }

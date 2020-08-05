@@ -328,4 +328,95 @@ class MemberNames
      * @var string
      */
     const ROOT_CATEGORY_ID = 'root_category_id';
+
+    /**
+     * Name for the member 'customer_group_code'.
+     *
+     * @var string
+     */
+    const CUSTOMER_GROUP_CODE = 'customer_group_code';
+
+    /**
+     * Name for the member 'row_id'.
+     *
+     * @var string
+     */
+    const ROW_ID = 'row_id';
+
+    /**
+     * Name for the member 'url_key'.
+     *
+     * @var string
+     */
+    const URL_KEY = 'url_key';
+
+    /**
+     * Name for the member 'history_id'.
+     *
+     * @var string
+     */
+    const HISTORY_ID = 'history_id';
+
+    /**
+     * Name for the member 'user_id'.
+     *
+     * @var string
+     */
+    const USER_ID = 'user_id';
+
+    /**
+     * Name for the member 'username'.
+     *
+     * @var string
+     */
+    const USERNAME = 'username';
+
+    /**
+     * Name for the member 'started_at'.
+     *
+     * @var string
+     */
+    const STARTED_AT = 'started_at';
+
+    /**
+     * Name for the member 'imported_file'.
+     *
+     * @var string
+     */
+    const IMPORTED_FILE = 'imported_file';
+
+    /**
+     * Name for the member 'execution_time'.
+     *
+     * @var string
+     */
+    const EXECUTION_TIME = 'execution_time';
+
+    /**
+     * Name for the member 'summary'.
+     *
+     * @var string
+     */
+    const SUMMARY = 'summary';
+
+    /**
+     * Name for the member 'error_file'.
+     *
+     * @var string
+     */
+    const ERROR_FILE = 'error_file';
+
+    /**
+     * Name for the parameter name 'pk'.
+     *
+     * @var string
+     */
+    const PK = 'pk';
+
+    /**
+     * Name for the member 'entity_table'.
+     *
+     * @var string
+     */
+    const ENTITY_TABLE = 'entity_table';
 }

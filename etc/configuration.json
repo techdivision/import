@@ -1,0 +1,17 @@
+{
+  "magento-edition": "CE",
+  "magento-version": "2.2.0",
+  "archive-artefacts": true,
+  "debug-mode": false,
+  "username": "admin",
+  "entity-type-code": "catalog_product",
+  "shortcuts": [],
+  "listeners": [],
+  "databases": [],
+  "loggers": [],
+  "operations": {
+    "general": [],
+    "ce": [],
+    "ee": []
+  }
+}

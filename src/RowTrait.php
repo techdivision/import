@@ -40,13 +40,42 @@ trait RowTrait
     protected $row = array();
 
     /**
+     * The flag that stop's overserver execution on the actual row.
+     *
+     * @var boolean
+     */
+    protected $skipRow = false;
+
+    /**
+     * Stop's observer execution on the actual row.
+     *
+     * @param boolean $skip The flag to skip row exection or not
+     *
+     * @return void
+     */
+    public function skipRow($skip = true)
+    {
+        $this->skipRow = $skip;
+    }
+
+    /**
+     * Query's whether or not the observer execution for the given row has to be skipped.
+     *
+     * @return boolean TRUE if the observer execution has to be skipped, else FALSE
+     */
+    public function rowHasToBeSkipped()
+    {
+        return $this->skipRow;
+    }
+
+    /**
      * Set's the actual row, that has to be processed.
      *
      * @param array $row The row
      *
      * @return void
      */
-    protected function setRow(array $row)
+    public function setRow(array $row)
     {
         $this->row = $row;
     }

@@ -23,7 +23,6 @@ namespace TechDivision\Import\Subjects;
 use TechDivision\Import\Utils\MemberNames;
 use TechDivision\Import\Utils\RegistryKeys;
 use TechDivision\Import\Utils\BackendTypeKeys;
-use TechDivision\Import\Utils\EntityTypeCodes;
 
 /**
  * An abstract EAV subject implementation.
@@ -34,8 +33,15 @@ use TechDivision\Import\Utils\EntityTypeCodes;
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
  */
-abstract class AbstractEavSubject extends AbstractSubject implements EavSubjectInterface
+abstract class AbstractEavSubject extends AbstractSubject implements EavSubjectInterface, NumberConverterSubjectInterface
 {
+
+    /**
+     * The trait that provides number converting functionality.
+     *
+     * @var \TechDivision\Import\Subjects\NumberConverterTrait
+     */
+    use NumberConverterTrait;
 
     /**
      * The available EAV attributes, grouped by their attribute set and the attribute set name as keys.
@@ -79,20 +85,6 @@ abstract class AbstractEavSubject extends AbstractSubject implements EavSubjectI
     );
 
     /**
-     * The mappings for the entity type code to attribute set.
-     *
-     * @var array
-     */
-    protected $entityTypeCodeToAttributeSetMappings = array(
-        EntityTypeCodes::CATALOG_PRODUCT           => EntityTypeCodes::CATALOG_PRODUCT,
-        EntityTypeCodes::CATALOG_PRODUCT_PRICE     => EntityTypeCodes::CATALOG_PRODUCT,
-        EntityTypeCodes::CATALOG_PRODUCT_INVENTORY => EntityTypeCodes::CATALOG_PRODUCT,
-        EntityTypeCodes::CATALOG_CATEGORY          => EntityTypeCodes::CATALOG_CATEGORY,
-        EntityTypeCodes::EAV_ATTRIBUTE             => EntityTypeCodes::EAV_ATTRIBUTE,
-        EntityTypeCodes::NONE                      => EntityTypeCodes::NONE
-    );
-
-    /**
      * The default mappings for the user defined attributes, based on the attributes frontend input type.
      *
      * @var array
@@ -120,25 +112,33 @@ abstract class AbstractEavSubject extends AbstractSubject implements EavSubjectI
     {
 
         // load the status of the actual import
-        $status = $this->getRegistryProcessor()->getAttribute($serial);
+        $status = $this->getRegistryProcessor()->getAttribute(RegistryKeys::STATUS);
 
-        // load the global data we've prepared initially
-        $this->attributes = $status[RegistryKeys::GLOBAL_DATA][RegistryKeys::EAV_ATTRIBUTES];
-        $this->attributeSets = $status[RegistryKeys::GLOBAL_DATA][RegistryKeys::ATTRIBUTE_SETS];
-        $this->userDefinedAttributes = $status[RegistryKeys::GLOBAL_DATA][RegistryKeys::EAV_USER_DEFINED_ATTRIBUTES];
+        // load the global data, if prepared initially
+        if (isset($status[RegistryKeys::GLOBAL_DATA])) {
+            $this->attributes = $status[RegistryKeys::GLOBAL_DATA][RegistryKeys::EAV_ATTRIBUTES];
+            $this->attributeSets = $status[RegistryKeys::GLOBAL_DATA][RegistryKeys::ATTRIBUTE_SETS];
+            $this->userDefinedAttributes = $status[RegistryKeys::GLOBAL_DATA][RegistryKeys::EAV_USER_DEFINED_ATTRIBUTES];
+        }
 
         // load the default frontend callback mappings from the child instance and merge with the one from the configuration
         $defaultFrontendInputCallbackMappings = $this->getDefaultFrontendInputCallbackMappings();
 
+        // load the available frontend input callbacks from the configuration
+        $availableFrontendInputCallbacks = $this->getConfiguration()->getFrontendInputCallbacks();
+
         // merge the default mappings with the one's found in the configuration
-        foreach ($this->getConfiguration()->getFrontendInputCallbacks() as $frontendInputCallbackMappings) {
+        foreach ($availableFrontendInputCallbacks as $frontendInputCallbackMappings) {
             foreach ($frontendInputCallbackMappings as $frontendInput => $frontentInputMappings) {
                 $defaultFrontendInputCallbackMappings[$frontendInput] = $frontentInputMappings;
             }
         }
 
+        // load the user defined EAV attributes
+        $eavUserDefinedAttributes = $this->getEavUserDefinedAttributes();
+
         // load the user defined attributes and add the callback mappings
-        foreach ($this->getEavUserDefinedAttributes() as $eavAttribute) {
+        foreach ($eavUserDefinedAttributes as $eavAttribute) {
             // load attribute code and frontend input type
             $attributeCode = $eavAttribute[MemberNames::ATTRIBUTE_CODE];
             $frontendInput = $eavAttribute[MemberNames::FRONTEND_INPUT];
@@ -205,41 +205,25 @@ abstract class AbstractEavSubject extends AbstractSubject implements EavSubjectI
 
         // cast the value to a valid timestamp
         if ($backendType === BackendTypeKeys::BACKEND_TYPE_DATETIME) {
-            return \DateTime::createFromFormat($this->getSourceDateFormat(), $value)->format('Y-m-d H:i:s');
+            return $this->getDateConverter()->convert($value);
         }
 
-        // cast the value to a float value
-        if ($backendType === BackendTypeKeys::BACKEND_TYPE_FLOAT) {
-            return (float) $value;
+        // cast the value to a string that represents the float/decimal value, because
+        // PHP will cast float values implicitly to the system locales format when
+        // rendering as string, e. g. with echo
+        if ($backendType === BackendTypeKeys::BACKEND_TYPE_FLOAT ||
+            $backendType === BackendTypeKeys::BACKEND_TYPE_DECIMAL
+        ) {
+            return (string) $this->getNumberConverter()->parse($value);
         }
 
         // cast the value to an integer
         if ($backendType === BackendTypeKeys::BACKEND_TYPE_INT) {
-            return (int) $value;
+            return (integer) $value;
         }
 
         // we don't need to cast strings
         return $value;
-    }
-
-    /**
-     * Return's the entity type code to be used.
-     *
-     * @return string The entity type code to be used
-     */
-    public function getEntityTypeCode()
-    {
-
-        // load the entity type code from the configuration
-        $entityTypeCode = $this->getConfiguration()->getConfiguration()->getEntityTypeCode();
-
-        // try to map the entity type code
-        if (isset($this->entityTypeCodeToAttributeSetMappings[$entityTypeCode])) {
-            $entityTypeCode = $this->entityTypeCodeToAttributeSetMappings[$entityTypeCode];
-        }
-
-        // return the (mapped) entity type code
-        return $entityTypeCode;
     }
 
     /**
@@ -293,17 +277,25 @@ abstract class AbstractEavSubject extends AbstractSubject implements EavSubjectI
             // load the attributes for the entity type code
             $attributes = $this->attributes[$entityTypeCode];
 
-            // query whether or not attributes for the actual attribute set name
-            if (isset($attributes[$attributeSetName = $this->attributeSet[MemberNames::ATTRIBUTE_SET_NAME]])) {
-                return $attributes[$attributeSetName];
-            }
+            // query whether or not an attribute set has been loaded from the source file
+            if (is_array($this->attributeSet) && isset($this->attributeSet[MemberNames::ATTRIBUTE_SET_NAME])) {
+                // load the attribute set name
+                $attributeSetName = $this->attributeSet[MemberNames::ATTRIBUTE_SET_NAME];
 
-            // throw an exception, if not
-            throw new \Exception(
-                $this->appendExceptionSuffix(
-                    sprintf('Found invalid attribute set name "%s"', $attributeSetName)
-                )
-            );
+                // query whether or not attributes for the actual attribute set name
+                if ($attributeSetName && isset($attributes[$attributeSetName])) {
+                    return $attributes[$attributeSetName];
+                }
+
+                // throw an exception, if not
+                throw new \Exception(
+                    $this->appendExceptionSuffix(
+                        sprintf('Found invalid attribute set name "%s"', $attributeSetName)
+                    )
+                );
+            } else {
+                return call_user_func_array('array_merge', $attributes);
+            }
         }
 
         // throw an exception, if not

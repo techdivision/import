@@ -47,11 +47,25 @@ class EntityTypeCodes extends \ArrayObject
     const CATALOG_PRODUCT = 'catalog_product';
 
     /**
+     * Key for the product entity 'catalog_product_url'.
+     *
+     * @var integer
+     */
+    const CATALOG_PRODUCT_URL = 'catalog_product_url';
+
+    /**
      * Key for the product entity 'catalog_product_price'.
      *
      * @var integer
      */
     const CATALOG_PRODUCT_PRICE = 'catalog_product_price';
+
+    /**
+     * Key for the product entity 'catalog_product_tier_price'.
+     *
+     * @var integer
+     */
+    const CATALOG_PRODUCT_TIER_PRICE = 'catalog_product_tier_price';
 
     /**
      * Key for the product entity 'catalog_product_inventory'.
@@ -61,6 +75,13 @@ class EntityTypeCodes extends \ArrayObject
     const CATALOG_PRODUCT_INVENTORY = 'catalog_product_inventory';
 
     /**
+     * Key for the product entity 'catalog_product_inventory_msi'.
+     *
+     * @var integer
+     */
+    const CATALOG_PRODUCT_INVENTORY_MSI = 'catalog_product_inventory_msi';
+
+    /**
      * Key for the category entity 'catalog_category'.
      *
      * @var integer
@@ -68,11 +89,32 @@ class EntityTypeCodes extends \ArrayObject
     const CATALOG_CATEGORY = 'catalog_category';
 
     /**
+     * Key for the customer entity 'customer'.
+     *
+     * @var integer
+     */
+    const CUSTOMER = 'customer';
+
+    /**
+     * Key for the customer entity 'customer_address'.
+     *
+     * @var integer
+     */
+    const CUSTOMER_ADDRESS = 'customer_address';
+
+    /**
      * Key for the attribute entity 'eav_attribute'.
      *
      * @var integer
      */
     const EAV_ATTRIBUTE = 'eav_attribute';
+
+    /**
+     * Key for the attribute entity 'eav_attribute_set'.
+     *
+     * @var integer
+     */
+    const EAV_ATTRIBUTE_SET = 'eav_attribute_set';
 
     /**
      * Construct a new entity type codes instance.
@@ -88,10 +130,14 @@ class EntityTypeCodes extends \ArrayObject
             array(
                 EntityTypeCodes::NONE,
                 EntityTypeCodes::CATALOG_PRODUCT,
+                EntityTypeCodes::CATALOG_PRODUCT_URL,
                 EntityTypeCodes::CATALOG_PRODUCT_PRICE,
                 EntityTypeCodes::CATALOG_PRODUCT_INVENTORY,
                 EntityTypeCodes::CATALOG_CATEGORY,
-                EntityTypeCodes::EAV_ATTRIBUTE
+                EntityTypeCodes::EAV_ATTRIBUTE,
+                EntityTypeCodes::EAV_ATTRIBUTE_SET,
+                EntityTypeCodes::CUSTOMER,
+                EntityTypeCodes::CUSTOMER_ADDRESS
             ),
             $entityTypeCodes
         );

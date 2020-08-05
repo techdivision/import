@@ -33,6 +33,15 @@ interface EavAttributeRepositoryInterface extends RepositoryInterface
 {
 
     /**
+     * Return's the EAV attribute with the passed ID.
+     *
+     * @param string $attributeId The ID of the EAV attribute to return
+     *
+     * @return array The EAV attribute
+     */
+    public function load($attributeId);
+
+    /**
      * Return's the EAV attribute with the passed entity type ID and code.
      *
      * @param integer $entityTypeId  The entity type ID of the EAV attributes to return
@@ -81,6 +90,15 @@ interface EavAttributeRepositoryInterface extends RepositoryInterface
      * @return array The array with the EAV attributes matching the passed entity type and user defined flag
      */
     public function findAllByEntityTypeIdAndIsUserDefined($entityTypeId, $isUserDefined = 1);
+
+    /**
+     * Return's an array with the available EAV attributes for the passed is entity type.
+     *
+     * @param integer $entityTypeId The entity type ID of the EAV attributes to return
+     *
+     * @return array The array with the EAV attributes matching the passed entity type
+     */
+    public function findAllByEntityTypeId($entityTypeId);
 
     /**
      * Return's the first EAV attribute for the passed option value and store ID.

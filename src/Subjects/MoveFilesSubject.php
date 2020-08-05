@@ -20,6 +20,8 @@
 
 namespace TechDivision\Import\Subjects;
 
+use TechDivision\Import\Utils\RegistryKeys;
+
 /**
  * The subject implementation to move the files to their target directory.
  *
@@ -33,21 +35,42 @@ class MoveFilesSubject extends AbstractSubject
 {
 
     /**
+     * Clean up the global data after importing the variants.
+     *
+     * @param string $serial The serial of the actual import
+     *
+     * @return void
+     */
+    public function tearDown($serial)
+    {
+
+        // load the registry processor
+        $registryProcessor = $this->getRegistryProcessor();
+
+        // update target and source directory for the next subject
+        $registryProcessor->mergeAttributesRecursive(
+            RegistryKeys::STATUS,
+            array(
+                RegistryKeys::TARGET_DIRECTORY => $newSourceDir = $this->getNewSourceDir($serial),
+                RegistryKeys::SOURCE_DIRECTORY => $newSourceDir
+            )
+        );
+
+        // log a debug message with the new source directory
+        $this->getSystemLogger()->debug(
+            sprintf('Subject %s successfully updated source directory to %s', get_class($this), $newSourceDir)
+        );
+
+        // invoke the parent method
+        parent::tearDown($serial);
+    }
+
+    /**
      * Return's the header mappings for the actual entity.
      *
      * @return array The header mappings
      */
     public function getHeaderMappings()
-    {
-        return array();
-    }
-
-    /**
-     * Return's the default callback mappings.
-     *
-     * @return array The default callback mappings
-     */
-    public function getDefaultCallbackMappings()
     {
         return array();
     }
@@ -63,6 +86,19 @@ class MoveFilesSubject extends AbstractSubject
     }
 
     /**
+     * Return's the next source directory, which will be the target directory
+     * of this subject, in most cases.
+     *
+     * @param string $serial The serial of the actual import
+     *
+     * @return string The new source directory
+     */
+    public function getNewSourceDir($serial)
+    {
+        return sprintf('%s/%s', $this->getConfiguration()->getSourceDir(), $serial);
+    }
+
+    /**
      * Imports the content of the file with the passed filename.
      *
      * @param string $serial   The serial of the actual import
@@ -74,19 +110,32 @@ class MoveFilesSubject extends AbstractSubject
     public function import($serial, $filename)
     {
 
-        // only process the file, if the filename match
-        if ($this->match($filename)) {
-            // initialize the serial/filename
-            $this->setSerial($serial);
-            $this->setFilename($filename);
+        // initialize the serial/filename
+        $this->setSerial($serial);
+        $this->setFilename($filename);
 
-            // query whether the new source directory has to be created or not
-            if (!$this->isDir($newSourceDir = $this->getNewSourceDir($serial))) {
-                $this->mkdir($newSourceDir);
-            }
-
-            // move the file to the new source directory
-            $this->rename($filename, sprintf('%s/%s', $newSourceDir, basename($filename)));
+        // query whether the new source directory has to be created or not
+        if (!$this->isDir($newSourceDir = $this->getNewSourceDir($serial))) {
+            $this->mkdir($newSourceDir);
         }
+
+        // move the file to the new source directory
+        $this->rename($filename, sprintf('%s/%s', $newSourceDir, basename($filename)));
+
+        // update the status
+        $this->mergeStatus(
+            array(
+                RegistryKeys::STATUS => array(
+                    RegistryKeys::FILES => array(
+                        $filename => array(
+                            $this->getUniqueId() => array(
+                                RegistryKeys::STATUS         => 1,
+                                RegistryKeys::PROCESSED_ROWS => $this->getLineNumber()
+                            )
+                        )
+                    )
+                )
+            )
+        );
     }
 }

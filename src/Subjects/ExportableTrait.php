@@ -21,6 +21,7 @@
 namespace TechDivision\Import\Subjects;
 
 use TechDivision\Import\Utils\ColumnKeys;
+use TechDivision\Import\Utils\RegistryKeys;
 use TechDivision\Import\Adapter\ExportAdapterInterface;
 
 /**
@@ -40,7 +41,7 @@ trait ExportableTrait
      *
      * @var array
      */
-    protected $artefacs = array();
+    protected $artefacts = array();
 
     /**
      * The export adapter instance.
@@ -63,7 +64,17 @@ trait ExportableTrait
      */
     public function getArtefacts()
     {
-        return $this->artefacs;
+        return $this->artefacts;
+    }
+
+    /**
+     * Reset the array with the artefacts to free the memory.
+     *
+     * @return void
+     */
+    protected function resetArtefacts()
+    {
+        $this->artefacts = array();
     }
 
     /**
@@ -85,12 +96,13 @@ trait ExportableTrait
             return;
         }
 
-        // serialize the original data
-        array_walk($artefacts, function(&$artefact) {
-            if (isset($artefact[ColumnKeys::ORIGINAL_DATA])) {
-                $artefact[ColumnKeys::ORIGINAL_DATA] = serialize($artefact[ColumnKeys::ORIGINAL_DATA]);
+        // serialize the original data, if we're in debug mode
+        $keys = array_keys($artefacts);
+        foreach ($keys as $key) {
+            if (isset($artefacts[$key][ColumnKeys::ORIGINAL_DATA])) {
+                $artefacts[$key][ColumnKeys::ORIGINAL_DATA] = $this->isDebugMode() ? serialize($artefacts[$key][ColumnKeys::ORIGINAL_DATA]) : null;
             }
-        });
+        }
 
         // query whether or not, existing artefacts has to be overwritten
         if ($override === true) {
@@ -112,7 +124,7 @@ trait ExportableTrait
     protected function overrideArtefacts($type, array $artefacts)
     {
         foreach ($artefacts as $key => $artefact) {
-            $this->artefacs[$type][$this->getLastEntityId()][$key] = $artefact;
+            $this->artefacts[$type][$this->getLastEntityId()][$key] = $artefact;
         }
     }
 
@@ -128,7 +140,7 @@ trait ExportableTrait
     protected function appendArtefacts($type, array $artefacts)
     {
         foreach ($artefacts as $artefact) {
-            $this->artefacs[$type][$this->getLastEntityId()][] = $artefact;
+            $this->artefacts[$type][$this->getLastEntityId()][] = $artefact;
         }
     }
 
@@ -145,16 +157,17 @@ trait ExportableTrait
     {
 
         // query whether or not, artefacts for the passed params are available
-        if (isset($this->artefacs[$type][$entityId])) {
+        if (isset($this->artefacts[$type][$entityId])) {
             // load the artefacts
-            $artefacts = $this->artefacs[$type][$entityId];
+            $artefacts = $this->artefacts[$type][$entityId];
 
-            // unserialize the original data
-            array_walk($artefacts, function(&$artefact) {
-                if (isset($artefact[ColumnKeys::ORIGINAL_DATA])) {
-                    $artefact[ColumnKeys::ORIGINAL_DATA] = unserialize($artefact[ColumnKeys::ORIGINAL_DATA]);
+            // unserialize the original data, if we're in debug mode
+            $keys = array_keys($artefacts);
+            foreach ($keys as $key) {
+                if (isset($artefacts[$key][ColumnKeys::ORIGINAL_DATA])) {
+                    $artefacts[$key][ColumnKeys::ORIGINAL_DATA] = $this->isDebugMode() ? unserialize($artefacts[$key][ColumnKeys::ORIGINAL_DATA]) : null;
                 }
-            });
+            }
 
             // return the artefacts
             return $artefacts;
@@ -180,7 +193,7 @@ trait ExportableTrait
      */
     public function hasArtefactsByTypeAndEntityId($type, $entityId)
     {
-        return isset($this->artefacs[$type][$entityId]);
+        return isset($this->artefacts[$type][$entityId]);
     }
 
     /**
@@ -194,23 +207,27 @@ trait ExportableTrait
     public function newArtefact(array $columns, array $originalColumnNames = array())
     {
 
-        // initialize the original data
+        // initialize the original data and the artefact
+        $artefact = array();
         $originalData = array();
+
+        // query whether or not, we've original columns
         if (sizeof($originalColumnNames) > 0) {
+            // prepare the original column data
             $originalData[ColumnKeys::ORIGINAL_FILENAME] = $this->getFilename();
             $originalData[ColumnKeys::ORIGINAL_LINE_NUMBER] = $this->getLineNumber();
             $originalData[ColumnKeys::ORIGINAL_COLUMN_NAMES] =  $originalColumnNames;
-        }
 
-        // prepare a new artefact entity
-        $artefact = array(ColumnKeys::ORIGINAL_DATA => $originalData);
+            // add the original column data to the new artefact
+            $artefact = array(ColumnKeys::ORIGINAL_DATA => $originalData);
+        }
 
         // merge the columns into the artefact entity and return it
         return array_merge($artefact, $columns);
     }
 
     /**
-     * Export's the artefacts to CSV files.
+     * Export's the artefacts to CSV files and resets the array with the artefacts to free the memory.
      *
      * @param integer $timestamp The timestamp part of the original import file
      * @param string  $counter   The counter part of the origin import file
@@ -219,7 +236,29 @@ trait ExportableTrait
      */
     public function export($timestamp, $counter)
     {
+
+        // export the artefacts
         $this->getExportAdapter()->export($this->getArtefacts(), $this->getTargetDir(), $timestamp, $counter);
+
+        // initialize the array with the status
+        $status = array();
+
+        // add the exported artefacts to the status
+        foreach ($this->getExportAdapter()->getExportedFilenames() as $filename) {
+            $status[$filename] = array();
+        }
+
+        // merge the status
+        $this->mergeStatus(
+            array(
+                RegistryKeys::STATUS => array(
+                    RegistryKeys::FILES => $status
+                )
+            )
+        );
+
+        // reset the artefacts
+        $this->resetArtefacts();
     }
 
     /**
@@ -265,4 +304,20 @@ trait ExportableTrait
     {
         return $this->lastEntityId;
     }
+
+    /**
+     * Queries whether or not debug mode is enabled or not, default is TRUE.
+     *
+     * @return boolean TRUE if debug mode is enabled, else FALSE
+     */
+    abstract public function isDebugMode();
+
+    /**
+     * Merge's the passed status into the actual one.
+     *
+     * @param array $status The status to MergeBuilder
+     *
+     * @return void
+     */
+    abstract public function mergeStatus(array $status);
 }

@@ -22,24 +22,25 @@ namespace TechDivision\Import\Services;
 
 use TechDivision\Import\Utils\MemberNames;
 use TechDivision\Import\Utils\RegistryKeys;
+use TechDivision\Import\Actions\ActionInterface;
 use TechDivision\Import\Connection\ConnectionInterface;
-use TechDivision\Import\Actions\StoreActionInterface;
-use TechDivision\Import\Actions\StoreGroupActionInterface;
-use TechDivision\Import\Actions\StoreWebsiteActionInterface;
 use TechDivision\Import\Assembler\CategoryAssemblerInterface;
 use TechDivision\Import\Repositories\StoreRepositoryInterface;
 use TechDivision\Import\Repositories\CategoryRepositoryInterface;
 use TechDivision\Import\Repositories\TaxClassRepositoryInterface;
 use TechDivision\Import\Repositories\LinkTypeRepositoryInterface;
+use TechDivision\Import\Repositories\AdminUserRepositoryInterface;
 use TechDivision\Import\Repositories\ImageTypeRepositoryInterface;
 use TechDivision\Import\Repositories\EavAttributeRepositoryInterface;
 use TechDivision\Import\Repositories\StoreWebsiteRepositoryInterface;
+use TechDivision\Import\Repositories\CustomerGroupRepositoryInterface;
 use TechDivision\Import\Repositories\EavEntityTypeRepositoryInterface;
 use TechDivision\Import\Repositories\LinkAttributeRepositoryInterface;
 use TechDivision\Import\Repositories\CoreConfigDataRepositoryInterface;
 use TechDivision\Import\Repositories\CategoryVarcharRepositoryInterface;
 use TechDivision\Import\Repositories\EavAttributeSetRepositoryInterface;
 use TechDivision\Import\Repositories\EavAttributeGroupRepositoryInterface;
+use TechDivision\Import\Repositories\EavAttributeOptionValueRepositoryInterface;
 
 /**
  * Processor implementation to load global data.
@@ -103,6 +104,13 @@ class ImportProcessor implements ImportProcessorInterface
     protected $eavAttributeGroupRepository;
 
     /**
+     * The repository to access EAV attribute groups.
+     *
+     * @var \TechDivision\Import\Repositories\EavAttributeOptionValueRepositoryInterface
+     */
+    protected $eavAttributeOptionValueRepository;
+
+    /**
      * The repository to access EAV entity types.
      *
      * @var \TechDivision\Import\Repositories\EavEntityTypeRepositoryInterface
@@ -159,47 +167,72 @@ class ImportProcessor implements ImportProcessorInterface
     protected $coreConfigDataRepository;
 
     /**
+     * The repository to access the customer groups.
+     *
+     * @var \TechDivision\Import\Repositories\CustomerGroupRepositoryInterface
+     */
+    protected $customerGroupRepository;
+
+    /**
+     * The repository to access the admin user.
+     *
+     * @var \TechDivision\Import\Repositories\AdminUserRepositoryInterface
+     */
+    protected $adminUserRepository;
+
+    /**
      * The action for store CRUD methods.
      *
-     * @var \TechDivision\Import\Actions\StoreActionInterface
+     * @var \TechDivision\Import\Actions\ActionInterface
      */
     protected $storeAction;
 
     /**
      * The action for store group CRUD methods.
      *
-     * @var \TechDivision\Import\Actions\StoreGroupActionInterface
+     * @var \TechDivision\Import\Actions\ActionInterface
      */
     protected $storeGroupAction;
 
     /**
      * The action for store website CRUD methods.
      *
-     * @var \TechDivision\Import\Actions\StoreWebsiteActionInterface
+     * @var \TechDivision\Import\Actions\ActionInterface
      */
     protected $storeWebsiteAction;
 
     /**
+     * The action for import history CRUD methods.
+     *
+     * @var \TechDivision\Import\Actions\ActionInterface
+     */
+    protected $importHistoryAction;
+
+    /**
      * Initialize the processor with the necessary assembler and repository instances.
      *
-     * @param \TechDivision\Import\Connection\ConnectionInterface                    $connection                  The connection to use
-     * @param \TechDivision\Import\Assembler\CategoryAssemblerInterface              $categoryAssembler           The category assembler instance
-     * @param \TechDivision\Import\Repositories\CategoryRepositoryInterface          $categoryRepository          The repository to access categories
-     * @param \TechDivision\Import\Repositories\CategoryVarcharRepositoryInterface   $categoryVarcharRepository   The repository to access category varchar values
-     * @param \TechDivision\Import\Repositories\EavAttributeRepositoryInterface      $eavAttributeRepository      The repository to access EAV attributes
-     * @param \TechDivision\Import\Repositories\EavAttributeSetRepositoryInterface   $eavAttributeSetRepository   The repository to access EAV attribute sets
-     * @param \TechDivision\Import\Repositories\EavAttributeGroupRepositoryInterface $eavAttributeGroupRepository The repository to access EAV attribute groups
-     * @param \TechDivision\Import\Repositories\EavEntityTypeRepositoryInterface     $eavEntityTypeRepository     The repository to access EAV entity types
-     * @param \TechDivision\Import\Repositories\StoreRepositoryInterface             $storeRepository             The repository to access stores
-     * @param \TechDivision\Import\Repositories\StoreWebsiteRepositoryInterface      $storeWebsiteRepository      The repository to access store websites
-     * @param \TechDivision\Import\Repositories\TaxClassRepositoryInterface          $taxClassRepository          The repository to access tax classes
-     * @param \TechDivision\Import\Repositories\LinkTypeRepositoryInterface          $linkTypeRepository          The repository to access link types
-     * @param \TechDivision\Import\Repositories\LinkAttributeRepositoryInterface     $linkAttributeRepository     The repository to access link attributes
-     * @param \TechDivision\Import\Repositories\CoreConfigDataRepositoryInterface    $coreConfigDataRepository    The repository to access the configuration
-     * @param \TechDivision\Import\Actions\StoreActionInterface                      $storeAction                 The action with the store CRUD methods
-     * @param \TechDivision\Import\Actions\StoreGroupActionInterface                 $storeGroupAction            The action with the store group CRUD methods
-     * @param \TechDivision\Import\Actions\StoreWebsiteActionInterface               $storeWebsiteAction          The action with the store website CRUD methods
-     * @param \TechDivision\Import\Repositories\ImageTypeRepositoryInterface         $imageTypeRepository         The repository to access images types
+     * @param \TechDivision\Import\Connection\ConnectionInterface                          $connection                        The connection to use
+     * @param \TechDivision\Import\Assembler\CategoryAssemblerInterface                    $categoryAssembler                 The category assembler instance
+     * @param \TechDivision\Import\Repositories\CategoryRepositoryInterface                $categoryRepository                The repository to access categories
+     * @param \TechDivision\Import\Repositories\CategoryVarcharRepositoryInterface         $categoryVarcharRepository         The repository to access category varchar values
+     * @param \TechDivision\Import\Repositories\EavAttributeRepositoryInterface            $eavAttributeRepository            The repository to access EAV attributes
+     * @param \TechDivision\Import\Repositories\EavAttributeSetRepositoryInterface         $eavAttributeSetRepository         The repository to access EAV attribute sets
+     * @param \TechDivision\Import\Repositories\EavAttributeGroupRepositoryInterface       $eavAttributeGroupRepository       The repository to access EAV attribute groups
+     * @param \TechDivision\Import\Repositories\EavAttributeOptionValueRepositoryInterface $eavAttributeOptionValueRepository The repository to access EAV attribute option value repository
+     * @param \TechDivision\Import\Repositories\EavEntityTypeRepositoryInterface           $eavEntityTypeRepository           The repository to access EAV entity types
+     * @param \TechDivision\Import\Repositories\StoreRepositoryInterface                   $storeRepository                   The repository to access stores
+     * @param \TechDivision\Import\Repositories\StoreWebsiteRepositoryInterface            $storeWebsiteRepository            The repository to access store websites
+     * @param \TechDivision\Import\Repositories\TaxClassRepositoryInterface                $taxClassRepository                The repository to access tax classes
+     * @param \TechDivision\Import\Repositories\LinkTypeRepositoryInterface                $linkTypeRepository                The repository to access link types
+     * @param \TechDivision\Import\Repositories\LinkAttributeRepositoryInterface           $linkAttributeRepository           The repository to access link attributes
+     * @param \TechDivision\Import\Repositories\CoreConfigDataRepositoryInterface          $coreConfigDataRepository          The repository to access the configuration
+     * @param \TechDivision\Import\Repositories\CustomerGroupRepositoryInterface           $customerGroupRepository           The repository to access the customer groups
+     * @param \TechDivision\Import\Repositories\ImageTypeRepositoryInterface               $imageTypeRepository               The repository to access images types
+     * @param \TechDivision\Import\Repositories\AdminUserRepositoryInterface               $adminUserRepository               The repository to access admin users
+     * @param \TechDivision\Import\Actions\ActionInterface                                 $storeAction                       The action with the store CRUD methods
+     * @param \TechDivision\Import\Actions\ActionInterface                                 $storeGroupAction                  The action with the store group CRUD methods
+     * @param \TechDivision\Import\Actions\ActionInterface                                 $storeWebsiteAction                The action with the store website CRUD methods
+     * @param \TechDivision\Import\Actions\ActionInterface                                 $importHistoryAction               The action with the import history CRUD methods
      */
     public function __construct(
         ConnectionInterface $connection,
@@ -209,6 +242,7 @@ class ImportProcessor implements ImportProcessorInterface
         EavAttributeRepositoryInterface $eavAttributeRepository,
         EavAttributeSetRepositoryInterface $eavAttributeSetRepository,
         EavAttributeGroupRepositoryInterface $eavAttributeGroupRepository,
+        EavAttributeOptionValueRepositoryInterface $eavAttributeOptionValueRepository,
         EavEntityTypeRepositoryInterface $eavEntityTypeRepository,
         StoreRepositoryInterface $storeRepository,
         StoreWebsiteRepositoryInterface $storeWebsiteRepository,
@@ -216,10 +250,13 @@ class ImportProcessor implements ImportProcessorInterface
         LinkTypeRepositoryInterface $linkTypeRepository,
         LinkAttributeRepositoryInterface $linkAttributeRepository,
         CoreConfigDataRepositoryInterface $coreConfigDataRepository,
-        StoreActionInterface $storeAction,
-        StoreGroupActionInterface $storeGroupAction,
-        StoreWebsiteActionInterface $storeWebsiteAction,
-        ImageTypeRepositoryInterface $imageTypeRepository
+        CustomerGroupRepositoryInterface $customerGroupRepository,
+        ImageTypeRepositoryInterface $imageTypeRepository,
+        AdminUserRepositoryInterface $adminUserRepository,
+        ActionInterface $storeAction,
+        ActionInterface $storeGroupAction,
+        ActionInterface $storeWebsiteAction,
+        ActionInterface $importHistoryAction
     ) {
         $this->setConnection($connection);
         $this->setCategoryAssembler($categoryAssembler);
@@ -228,6 +265,7 @@ class ImportProcessor implements ImportProcessorInterface
         $this->setEavAttributeRepository($eavAttributeRepository);
         $this->setEavAttributeSetRepository($eavAttributeSetRepository);
         $this->setEavAttributeGroupRepository($eavAttributeGroupRepository);
+        $this->setEavAttributeOptionValueRepository($eavAttributeOptionValueRepository);
         $this->setEavEntityTypeRepository($eavEntityTypeRepository);
         $this->setStoreRepository($storeRepository);
         $this->setStoreWebsiteRepository($storeWebsiteRepository);
@@ -235,10 +273,13 @@ class ImportProcessor implements ImportProcessorInterface
         $this->setLinkTypeRepository($linkTypeRepository);
         $this->setLinkAttributeRepository($linkAttributeRepository);
         $this->setCoreConfigDataRepository($coreConfigDataRepository);
+        $this->setImageTypeRepository($imageTypeRepository);
+        $this->setCustomerGroupRepository($customerGroupRepository);
+        $this->setAdminUserRepository($adminUserRepository);
         $this->setStoreAction($storeAction);
         $this->setStoreGroupAction($storeGroupAction);
         $this->setStoreWebsiteAction($storeWebsiteAction);
-        $this->setImageTypeRepository($imageTypeRepository);
+        $this->setImportHistoryAction($importHistoryAction);
     }
 
     /**
@@ -440,6 +481,28 @@ class ImportProcessor implements ImportProcessorInterface
     }
 
     /**
+     * Set's the repository to access EAV attribute option values.
+     *
+     * @param \TechDivision\Import\Repositories\EavAttributeOptionValueRepositoryInterface $eavAttributeOptionValueRepository The repository the access EAV attribute option values
+     *
+     * @return void
+     */
+    public function setEavAttributeOptionValueRepository(EavAttributeOptionValueRepositoryInterface $eavAttributeOptionValueRepository)
+    {
+        $this->eavAttributeOptionValueRepository = $eavAttributeOptionValueRepository;
+    }
+
+    /**
+     * Return's the repository to access EAV attribute option values.
+     *
+     * @return \TechDivision\Import\Repositories\EavAttributeOptionValueRepositoryInterface The repository instance
+     */
+    public function getEavAttributeOptionValueRepository()
+    {
+        return $this->eavAttributeOptionValueRepository;
+    }
+
+    /**
      * Return's the repository to access EAV entity types.
      *
      * @return \TechDivision\Import\Repositories\EavEntityTypeRepositoryInterface The repository instance
@@ -616,13 +679,57 @@ class ImportProcessor implements ImportProcessorInterface
     }
 
     /**
-     * Set's the action with the store CRUD methods.
+     * Set's the repository to access the customer groups.
      *
-     * @param \TechDivision\Import\Actions\StoreActionInterface $storeAction The action with the store CRUD methods
+     * @param \TechDivision\Import\Repositories\CustomerGroupRepositoryInterface $customerGroupRepository The repository to access the customer groups
      *
      * @return void
      */
-    public function setStoreAction(StoreActionInterface $storeAction)
+    public function setCustomerGroupRepository(CustomerGroupRepositoryInterface $customerGroupRepository)
+    {
+        $this->customerGroupRepository = $customerGroupRepository;
+    }
+
+    /**
+     * Return's the repository to access the customer groups.
+     *
+     * @return \TechDivision\Import\Repositories\CustomerGroupRepositoryInterface The repository instance
+     */
+    public function getCustomerGroupRepository()
+    {
+        return $this->customerGroupRepository;
+    }
+
+    /**
+     * Set's the repository to access the admin users.
+     *
+     * @param \TechDivision\Import\Repositories\AdminUserRepositoryInterface $adminUserRepository The repository to access the admin users
+     *
+     * @return void
+     */
+    public function setAdminUserRepository(AdminUserRepositoryInterface $adminUserRepository)
+    {
+        $this->adminUserRepository = $adminUserRepository;
+    }
+
+    /**
+     * Return's the repository to access the admin users.
+     *
+     * @return \TechDivision\Import\Repositories\AdminUserRepositoryInterface The repository instance
+     */
+    public function getAdminUserRepository()
+    {
+        return $this->adminUserRepository;
+    }
+
+    /**
+     * Set's the action with the store CRUD methods.
+     *
+     * @param \TechDivision\Import\Actions\ActionInterface $storeAction The action with the store CRUD methods
+     *
+     * @return void
+     */
+    public function setStoreAction(ActionInterface $storeAction)
     {
         $this->storeAction = $storeAction;
     }
@@ -630,7 +737,7 @@ class ImportProcessor implements ImportProcessorInterface
     /**
      * Return's the action with the store CRUD methods.
      *
-     * @return \TechDivision\Import\Actions\StoreActionInterface The action instance
+     * @return \TechDivision\Import\Actions\ActionInterface The action instance
      */
     public function getStoreAction()
     {
@@ -640,11 +747,11 @@ class ImportProcessor implements ImportProcessorInterface
     /**
      * Set's the action with the store group CRUD methods.
      *
-     * @param \TechDivision\Import\Actions\StoreGroupActionInterface $storeGroupAction The action with the store group CRUD methods
+     * @param \TechDivision\Import\Actions\ActionInterface $storeGroupAction The action with the store group CRUD methods
      *
      * @return void
      */
-    public function setStoreGroupAction(StoreGroupActionInterface $storeGroupAction)
+    public function setStoreGroupAction(ActionInterface $storeGroupAction)
     {
         $this->storeGroupAction = $storeGroupAction;
     }
@@ -652,7 +759,7 @@ class ImportProcessor implements ImportProcessorInterface
     /**
      * Return's the action with the store group CRUD methods.
      *
-     * @return \TechDivision\Import\Actions\StoreGroupActionInterface The action instance
+     * @return \TechDivision\Import\Actions\ActionInterface The action instance
      */
     public function getStoreGroupAction()
     {
@@ -662,11 +769,11 @@ class ImportProcessor implements ImportProcessorInterface
     /**
      * Set's the action with the store website CRUD methods.
      *
-     * @param \TechDivision\Import\Actions\StoreWebsiteActionInterface $storeWebsiteAction The action with the store website CRUD methods
+     * @param \TechDivision\Import\Actions\ActionInterface $storeWebsiteAction The action with the store website CRUD methods
      *
      * @return void
      */
-    public function setStoreWebsiteAction(StoreWebsiteActionInterface $storeWebsiteAction)
+    public function setStoreWebsiteAction(ActionInterface $storeWebsiteAction)
     {
         $this->storeWebsiteAction = $storeWebsiteAction;
     }
@@ -674,11 +781,33 @@ class ImportProcessor implements ImportProcessorInterface
     /**
      * Return's the action with the store website CRUD methods.
      *
-     * @return \TechDivision\Import\Actions\StoreWebsiteActionInterface The action instance
+     * @return \TechDivision\Import\Actions\ActionInterface The action instance
      */
     public function getStoreWebsiteAction()
     {
         return $this->storeWebsiteAction;
+    }
+
+    /**
+     * Set's the action with the import history CRUD methods.
+     *
+     * @param \TechDivision\Import\Actions\ActionInterface $importHistoryAction The action with the import history CRUD methods
+     *
+     * @return void
+     */
+    public function setImportHistoryAction(ActionInterface $importHistoryAction)
+    {
+        $this->importHistoryAction = $importHistoryAction;
+    }
+
+    /**
+     * Return's the action with the import history CRUD methods.
+     *
+     * @return \TechDivision\Import\Actions\ActionInterface The action instance
+     */
+    public function getImportHistoryAction()
+    {
+        return $this->importHistoryAction;
     }
 
     /**
@@ -716,6 +845,19 @@ class ImportProcessor implements ImportProcessorInterface
     public function getEavAttributeGroupsByAttributeSetId($attributeSetId)
     {
         return $this->getEavAttributeGroupRepository()->findAllByAttributeSetId($attributeSetId);
+    }
+
+    /**
+     * Load's and return's the available EAV attribute option values by the passed entity type and store ID.
+     *
+     * @param integer $entityTypeId The entity type ID of the attribute option values to return
+     * @param integer $storeId      The store ID of the attribute option values to return
+     *
+     * @return array The EAV attribute option values
+     */
+    public function getEavAttributeOptionValuesByEntityTypeIdAndStoreId($entityTypeId, $storeId)
+    {
+        return $this->getEavAttributeOptionValueRepository()->findAllByEntityTypeIdAndStoreId($entityTypeId, $storeId);
     }
 
     /**
@@ -781,6 +923,43 @@ class ImportProcessor implements ImportProcessorInterface
     public function getEavAttributesByEntityTypeIdAndIsUserDefined($entityTypeId, $isUserDefined = 1)
     {
         return $this->getEavAttributeRepository()->findAllByEntityTypeIdAndIsUserDefined($entityTypeId, $isUserDefined);
+    }
+
+    /**
+     * Return's an array with the availabe EAV attributes for the passed entity type.
+     *
+     * @param integer $entityTypeId The entity type ID of the EAV attributes to return
+     *
+     * @return array The array with the EAV attributes matching the passed entity type
+     */
+    public function getEavAttributesByEntityTypeId($entityTypeId)
+    {
+        return $this->getEavAttributeRepository()->findAllByEntityTypeId($entityTypeId);
+    }
+
+    /**
+     * Return's the EAV attribute with the passed entity type ID and code.
+     *
+     * @param integer $entityTypeId  The entity type ID of the EAV attribute to return
+     * @param string  $attributeCode The code of the EAV attribute to return
+     *
+     * @return array The EAV attribute
+     */
+    public function getEavAttributeByEntityTypeIdAndAttributeCode($entityTypeId, $attributeCode)
+    {
+        return $this->getEavAttributeRepository()->findOneByEntityTypeIdAndAttributeCode($entityTypeId, $attributeCode);
+    }
+
+    /**
+     * Return's an EAV entity type with the passed entity type code.
+     *
+     * @param string $entityTypeCode The code of the entity type to return
+     *
+     * @return array The entity type with the passed entity type code
+     */
+    public function getEavEntityTypeByEntityTypeCode($entityTypeCode)
+    {
+        return $this->getEavEntityTypeRepository()->findOneByEntityTypeCode($entityTypeCode);
     }
 
     /**
@@ -907,6 +1086,38 @@ class ImportProcessor implements ImportProcessorInterface
     }
 
     /**
+     * Returns the customer groups.
+     *
+     * @return array The customer groups
+     */
+    public function getCustomerGroups()
+    {
+        return $this->getCustomerGroupRepository()->findAll();
+    }
+
+    /**
+     * Return's an array with all available admin users.
+     *
+     * @return array The available admin users
+     */
+    public function getAdminUsers()
+    {
+        return $this->getAdminUserRepository()->findAll();
+    }
+
+    /**
+     * Load's and return's the admin user with the passed username.
+     *
+     * @param string $username The username of the admin user to return
+     *
+     * @return array|null The admin user with the passed username
+     */
+    public function getAdminUserByUsername($username)
+    {
+        return $this->getAdminUserRepository()->findOneByUsername($username);
+    }
+
+    /**
      * Persist's the passed store.
      *
      * @param array $store The store to persist
@@ -943,6 +1154,18 @@ class ImportProcessor implements ImportProcessorInterface
     }
 
     /**
+     * Persist's the passed import history.
+     *
+     * @param array $importHistory The import history to persist
+     *
+     * @return void
+     */
+    public function persistImportHistory(array $importHistory)
+    {
+        return $this->getImportHistoryAction()->persist($importHistory);
+    }
+
+    /**
      * Returns the array with the global data necessary for the
      * import process.
      *
@@ -958,13 +1181,14 @@ class ImportProcessor implements ImportProcessorInterface
         $globalData[RegistryKeys::STORES] = $this->getStores();
         $globalData[RegistryKeys::LINK_TYPES] = $this->getLinkTypes();
         $globalData[RegistryKeys::TAX_CLASSES] = $this->getTaxClasses();
+        $globalData[RegistryKeys::IMAGE_TYPES] = $this->getImageTypes();
         $globalData[RegistryKeys::DEFAULT_STORE] = $this->getDefaultStore();
         $globalData[RegistryKeys::STORE_WEBSITES] = $this->getStoreWebsites();
         $globalData[RegistryKeys::LINK_ATTRIBUTES] = $this->getLinkAttributes();
         $globalData[RegistryKeys::ROOT_CATEGORIES] = $this->getRootCategories();
+        $globalData[RegistryKeys::CUSTOMER_GROUPS] = $this->getCustomerGroups();
         $globalData[RegistryKeys::CORE_CONFIG_DATA] = $this->getCoreConfigData();
         $globalData[RegistryKeys::ENTITY_TYPES] = $eavEntityTypes = $this->getEavEntityTypes();
-        $globalData[RegistryKeys::IMAGE_TYPES] = $this->getImageTypes();
 
         // prepare the attribute sets
         $eavAttributes = array();

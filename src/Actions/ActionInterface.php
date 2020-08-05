@@ -54,14 +54,22 @@ interface ActionInterface
     public function getUpdateProcessor();
 
     /**
+     * Return's the primary key member name of the entity to persist.
+     *
+     * @return string The primary key member name
+     */
+    public function getPrimaryKeyMemberName();
+
+    /**
      * Helper method that create/update the passed entity, depending on
      * the entity's status.
      *
-     * @param array $row The entity data to create/update
+     * @param array       $row  The entity data to create/update
+     * @param string|null $name The name of the prepared statement that has to be executed
      *
      * @return void
      */
-    public function persist(array $row);
+    public function persist(array $row, $name = null);
 
     /**
      * Creates's the entity with the passed attributes.
@@ -71,7 +79,7 @@ interface ActionInterface
      *
      * @return void
      */
-    public function create($row, $name = null);
+    public function create(array $row, $name = null);
 
     /**
      * Delete's the entity with the passed attributes.
@@ -81,7 +89,7 @@ interface ActionInterface
      *
      * @return void
      */
-    public function delete($row, $name = null);
+    public function delete(array $row, $name = null);
 
     /**
      * Update's the entity with the passed attributes.
@@ -91,5 +99,5 @@ interface ActionInterface
      *
      * @return void
      */
-    public function update($row, $name = null);
+    public function update(array $row, $name = null);
 }

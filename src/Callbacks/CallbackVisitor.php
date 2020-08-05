@@ -61,8 +61,12 @@ class CallbackVisitor implements CallbackVisitorInterface
      */
     public function visit(SubjectInterface $subject)
     {
+
+        // load the callback mappings
+        $callbackMappings = $subject->getCallbackMappings();
+
         // prepare the callbacks
-        foreach ($subject->getCallbackMappings() as $type => $callbacks) {
+        foreach ($callbackMappings as $type => $callbacks) {
             $this->prepareCallbacks($subject, $callbacks, $type);
         }
     }
@@ -90,7 +94,23 @@ class CallbackVisitor implements CallbackVisitorInterface
             if (is_array($callback)) {
                 $this->prepareCallbacks($subject, $callback, $type);
             } else {
-                $subject->registerCallback($this->container->get($callback), $type);
+                // create the instance of the callback/factory
+                $instance = $this->container->get($callback);
+                // query whether or not a factory has been specified
+                if ($instance instanceof CallbackFactoryInterface) {
+                    $subject->registerCallback($instance->createCallback($subject), $type);
+                } elseif ($instance instanceof CallbackInterface) {
+                    $subject->registerCallback($instance, $type);
+                } else {
+                    throw new \InvalidArgumentException(
+                        sprintf(
+                            'Instance of "%s" doesn\'t implement interface "%s" or "%s"',
+                            $callback,
+                            CallbackFactoryInterface::class,
+                            CallbackInterface::class
+                        )
+                    );
+                }
             }
         }
     }

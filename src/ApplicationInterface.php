@@ -85,7 +85,7 @@ interface ApplicationInterface extends ContainerInterface
     /**
      * Return's the system configuration.
      *
-     * @return \TechDivision\Import\ConfigurationInterface The system configuration
+     * @return \TechDivision\Import\Configuration\ConfigurationInterface The system configuration
      */
     public function getConfiguration();
 
@@ -95,6 +95,17 @@ interface ApplicationInterface extends ContainerInterface
      * @return \Symfony\Component\DependencyInjection\TaggedContainerInterface The container instance
      */
     public function getContainer();
+
+    /**
+     * Simple method that writes the passed method the the console and the
+     * system logger, if configured and a log level has been passed.
+     *
+     * @param string $msg      The message to log
+     * @param string $logLevel The log level to use
+     *
+     * @return void
+     */
+    public function log($msg, $logLevel = null);
 
     /**
      * Persist the UUID of the actual import process to the PID file.
@@ -126,10 +137,12 @@ interface ApplicationInterface extends ContainerInterface
     /**
      * Process the given operation.
      *
-     * @return void
+     * @param string $serial The unique serial of the actual import process
+     *
+     * @return null|int null or 0 if everything went fine, or an error code
      * @throws \Exception Is thrown if the operation can't be finished successfully
      */
-    public function process();
+    public function process($serial);
 
     /**
      * Stop processing the operation.
@@ -137,6 +150,7 @@ interface ApplicationInterface extends ContainerInterface
      * @param string $reason The reason why the operation has been stopped
      *
      * @return void
+     * @throws \TechDivision\Import\Exceptions\ApplicationStoppedException Is thrown if the application has been stopped
      */
     public function stop($reason);
 
@@ -146,4 +160,18 @@ interface ApplicationInterface extends ContainerInterface
      * @return boolean TRUE if the process has been stopped, else FALSE
      */
     public function isStopped();
+
+    /**
+     * Returns the actual application version.
+     *
+     * @return string The application's version
+     */
+    public function getVersion();
+
+    /**
+     * Returns the actual application name.
+     *
+     * @return string The application's name
+     */
+    public function getName();
 }

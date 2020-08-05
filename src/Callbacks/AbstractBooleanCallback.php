@@ -14,7 +14,7 @@
  * @author    Tim Wagner <t.wagner@techdivision.com>
  * @copyright 2016 TechDivision GmbH <info@techdivision.com>
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
- * @link      https://github.com/techdivision/import-category
+ * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
  */
 
@@ -29,7 +29,7 @@ use TechDivision\Import\Observers\AttributeCodeAndValueAwareObserverInterface;
  * @author    Tim Wagner <t.wagner@techdivision.com>
  * @copyright 2016 TechDivision GmbH <info@techdivision.com>
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
- * @link      https://github.com/techdivision/import-category
+ * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
  */
 abstract class AbstractBooleanCallback extends AbstractCallback
@@ -52,11 +52,11 @@ abstract class AbstractBooleanCallback extends AbstractCallback
     /**
      * Will be invoked by a observer it has been registered for.
      *
-     * @param \TechDivision\Import\Observers\ObserverInterface $observer The observer
+     * @param \TechDivision\Import\Observers\AttributeCodeAndValueAwareObserverInterface|null $observer The observer
      *
      * @return mixed The modified value
      */
-    public function handle(AttributeCodeAndValueAwareObserverInterface $observer)
+    public function handle(AttributeCodeAndValueAwareObserverInterface $observer = null)
     {
 
         // set the observer
@@ -65,6 +65,11 @@ abstract class AbstractBooleanCallback extends AbstractCallback
         // load the attribute code and value
         $attributeCode = $observer->getAttributeCode();
         $attributeValue = $observer->getAttributeValue();
+
+        // return NULL, if the value is empty
+        if ($attributeValue === null || $attributeValue === '') {
+            return;
+        }
 
         // query whether or not, the passed value can be mapped to a boolean representation
         if (isset($this->booleanValues[strtolower($attributeValue)])) {
@@ -106,7 +111,7 @@ abstract class AbstractBooleanCallback extends AbstractCallback
         throw new \Exception(
             $this->appendExceptionSuffix(
                 sprintf(
-                    'Can\'t map option value "%s" for attribute %s to a boolean representation',
+                    'Can\'t map option value "%s" for attribute "%s" to a boolean representation',
                     $attributeValue,
                     $attributeCode
                 )

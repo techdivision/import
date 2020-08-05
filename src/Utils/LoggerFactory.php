@@ -20,17 +20,19 @@
 
 namespace TechDivision\Import\Utils;
 
-use TechDivision\Import\ConfigurationInterface;
+use TechDivision\Import\Configuration\ConfigurationInterface;
 use TechDivision\Import\Configuration\LoggerConfigurationInterface;
 
 /**
  * Logger factory implementation.
  *
- * @author    Tim Wagner <t.wagner@techdivision.com>
- * @copyright 2016 TechDivision GmbH <info@techdivision.com>
- * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
- * @link      https://github.com/techdivision/import
- * @link      http://www.techdivision.com
+ * @author     Tim Wagner <t.wagner@techdivision.com>
+ * @copyright  2016 TechDivision GmbH <info@techdivision.com>
+ * @license    http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
+ * @link       https://github.com/techdivision/import
+ * @link       http://www.techdivision.com
+ * @deprecated Since 15.0.0
+ * @see        TechDivision\Import\Loggers\MonologLoggerFactory
  */
 class LoggerFactory
 {
@@ -38,7 +40,7 @@ class LoggerFactory
     /**
      * Creates a new logger instance based on the passed logger configuration.
      *
-     * @param \TechDivision\Import\ConfigurationInterface                     $configuration       The system configuration
+     * @param \TechDivision\Import\Configuration\ConfigurationInterface       $configuration       The system configuration
      * @param \TechDivision\Import\Configuration\LoggerConfigurationInterface $loggerConfiguration The logger configuration
      *
      * @return \Psr\Log\LoggerInterface The logger instance
@@ -48,18 +50,24 @@ class LoggerFactory
         LoggerConfigurationInterface $loggerConfiguration
     ) {
 
+        // load the available processors from the configuration
+        $availableProcessors = $loggerConfiguration->getProcessors();
+
         // initialize the processors
         $processors = array();
         /** @var \TechDivision\Import\Configuration\Logger\ProcessorConfigurationInterface $processorConfiguration */
-        foreach ($loggerConfiguration->getProcessors() as $processorConfiguration) {
+        foreach ($availableProcessors as $processorConfiguration) {
             $reflectionClass = new \ReflectionClass($processorConfiguration->getType());
             $processors[] = $reflectionClass->newInstanceArgs(ConfigurationUtil::prepareConstructorArgs($reflectionClass, $processorConfiguration->getParams()));
         }
 
+        // load the available handlers from the configuration
+        $availableHandlers = $loggerConfiguration->getHandlers();
+
         // initialize the handlers
         $handlers = array();
         /** @var \TechDivision\Import\Configuration\Logger\HandlerConfigurationInterface $handlerConfiguration */
-        foreach ($loggerConfiguration->getHandlers() as $handlerConfiguration) {
+        foreach ($availableHandlers as $handlerConfiguration) {
             // query whether or not, we've a swift mailer configuration
             if ($swiftMailerConfiguration = $handlerConfiguration->getSwiftMailer()) {
                 // load the factory that creates the swift mailer instance
@@ -87,7 +95,6 @@ class LoggerFactory
                 // initialize the handler node
                 $reflectionClass = new \ReflectionClass($handlerConfiguration->getType());
                 $handler = $reflectionClass->newInstanceArgs(array($swiftMailer, $message, $logLevel, $bubble));
-
             } else {
                 // initialize the handler node
                 $reflectionClass = new \ReflectionClass($handlerConfiguration->getType());

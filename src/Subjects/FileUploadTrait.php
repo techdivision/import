@@ -47,11 +47,50 @@ trait FileUploadTrait
     protected $imagesFileDir;
 
     /**
+     * Contains the mappings for the image names that has been uploaded (old => new image name).
+     *
+     * @var array
+     */
+    protected $imageMappings = array();
+
+    /**
      * The flag whether to copy the images or not.
      *
      * @var boolean
      */
     protected $copyImages = false;
+
+    /**
+     * Whether or not to override images with the same name.
+     *
+     * @var boolean
+     * @todo https://github.com/techdivision/import/issues/181
+     */
+    private $overrideImages = false;
+
+    /**
+     * Sets whether or not to override images with the same name.
+     *
+     * @param boolean $overrideImages Whether or not to override images
+     *
+     * @return void
+     * @todo https://github.com/techdivision/import/issues/181
+     */
+    private function setOverrideImages($overrideImages)
+    {
+        $this->overrideImages = $overrideImages;
+    }
+
+    /**
+     * Returns whether or not we should override images with the same name.
+     *
+     * @return bool
+     * @todo https://github.com/techdivision/import/issues/181
+     */
+    private function shouldOverride()
+    {
+        return $this->overrideImages;
+    }
 
     /**
      * Set's the flag to copy the images or not.
@@ -120,9 +159,84 @@ trait FileUploadTrait
     }
 
     /**
-     * Get new file name if the same is already exists.
+     * Adds the mapping from the filename => new filename.
      *
-     * @param string $targetFilename The name of the exisising files
+     * @param string $filename    The filename
+     * @param string $newFilename The new filename
+     *
+     * @return void
+     */
+    public function addImageMapping($filename, $newFilename)
+    {
+        $this->imageMappings[$filename] = $newFilename;
+    }
+
+    /**
+     * Returns the mapped filename (which is the new filename).
+     *
+     * @param string $filename The filename to map
+     *
+     * @return string The mapped filename
+     */
+    public function getImageMapping($filename)
+    {
+
+        // query whether or not a mapping is available, if yes return the mapped name
+        if (isset($this->imageMappings[$filename])) {
+            return $this->imageMappings[$filename];
+        }
+
+        // return the passed filename otherwise
+        return $filename;
+    }
+
+    /**
+     * Returns TRUE, if the passed filename has already been mapped.
+     *
+     * @param string $filename The filename to query for
+     *
+     * @return boolean TRUE if the filename has already been mapped, else FALSE
+     */
+    public function imageHasBeenMapped($filename)
+    {
+        return isset($this->imageMappings[$filename]);
+    }
+
+    /**
+     * Returns TRUE, if the passed filename has NOT been mapped yet.
+     *
+     * @param string $filename The filename to query for
+     *
+     * @return boolean TRUE if the filename has NOT been mapped yet, else FALSE
+     */
+    public function imageHasNotBeenMapped($filename)
+    {
+        return !isset($this->imageMappings[$filename]);
+    }
+
+    /**
+     * Returns the original filename for passed one (which is the new filename).
+     *
+     * @param string $newFilename The new filename to return the original one for
+     *
+     * @return string The original filename
+     */
+    public function getInversedImageMapping($newFilename)
+    {
+
+        // try to load the original filename
+        if ($filename = array_search($newFilename, $this->imageMappings)) {
+            return $filename;
+        }
+
+        // return the new one otherwise
+        return $newFilename;
+    }
+
+    /**
+     * Get new file name, if a filename with the same name already exists.
+     *
+     * @param string $targetFilename The name of target file
      *
      * @return string The new filename
      */
@@ -132,9 +246,9 @@ trait FileUploadTrait
         // load the file information
         $fileInfo = pathinfo($targetFilename);
 
-        // query whether or not, the file exists
-        if ($this->getFilesystemAdapter()->isFile($targetFilename)) {
-            // initialize the incex and the basename
+        // query whether or not the file exists and if we should override it
+        if ($this->getFilesystemAdapter()->isFile($targetFilename) && $this->shouldOverride() === false) {
+            // initialize the index and the basename
             $index = 1;
             $baseName = $fileInfo['filename'] . '.' . $fileInfo['extension'];
 
@@ -146,7 +260,6 @@ trait FileUploadTrait
 
             // set the new filename
             $targetFilename = $baseName;
-
         } else {
             // if not, simply return the filename
             return $fileInfo['basename'];
@@ -180,23 +293,30 @@ trait FileUploadTrait
 
         // query whether or not the image file to be imported is available
         if (!$this->getFilesystemAdapter()->isFile($sourceFilename)) {
-            throw new \Exception(sprintf('Media file %s not available', $sourceFilename));
+            throw new \Exception(sprintf('Media file "%s" is not available', $sourceFilename));
         }
 
-        // prepare the target filename, if necessary
-        $newTargetFilename = $this->getNewFileName($targetFilename);
-        $targetFilename = str_replace(basename($targetFilename), $newTargetFilename, $targetFilename);
+        // query whether or not, the file has already been processed
+        if ($this->imageHasNotBeenMapped($filename)) {
+            // load the new filename, e. g. if a file with the same name already exists
+            $newTargetFilename =  $this->getNewFileName($targetFilename);
+            // replace the old filename with the new one
+            $targetFilename = str_replace(basename($targetFilename), $newTargetFilename, $targetFilename);
 
-        // make sure, the target directory exists
-        if (!$this->getFilesystemAdapter()->isDir($targetDirectory = dirname($targetFilename))) {
-            $this->getFilesystemAdapter()->mkdir($targetDirectory, 0755);
+            // make sure, the target directory exists
+            if (!$this->getFilesystemAdapter()->isDir($targetDirectory = dirname($targetFilename))) {
+                $this->getFilesystemAdapter()->mkdir($targetDirectory, 0755);
+            }
+
+            // copy the image to the target directory
+            $this->getFilesystemAdapter()->copy($sourceFilename, $targetFilename);
+
+            // add the mapping and return the mapped filename
+            $this->addImageMapping($filename, str_replace($mediaDir, '', $targetFilename));
         }
 
-        // copy the image to the target directory
-        $this->getFilesystemAdapter()->copy($sourceFilename, $targetFilename);
-
-        // return the new target filename
-        return str_replace($mediaDir, '', $targetFilename);
+        // simply return the mapped filename
+        return $this->getImageMapping($filename);
     }
 
     /**
@@ -218,7 +338,7 @@ trait FileUploadTrait
 
         // query whether or not the image file to be deleted is available
         if (!$this->getFilesystemAdapter()->isFile($targetFilename)) {
-            throw new \Exception(sprintf('Media file %s not available', $targetFilename));
+            throw new \Exception(sprintf('Media file "%s" is not available', $targetFilename));
         }
 
         // delte the image from the target directory

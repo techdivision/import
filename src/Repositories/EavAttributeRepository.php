@@ -36,6 +36,13 @@ class EavAttributeRepository extends AbstractRepository implements EavAttributeR
 {
 
     /**
+     * The prepared statement to load the attribute by the passed attribute ID.
+     *
+     * @var \PDOStatement
+     */
+    protected $eavAttributeStmt;
+
+    /**
      * The prepared statement to load the attributes by the passed is user defined flag.
      *
      * @var \PDOStatement
@@ -79,6 +86,8 @@ class EavAttributeRepository extends AbstractRepository implements EavAttributeR
     {
 
         // initialize the prepared statements
+        $this->eavAttributeStmt =
+            $this->getConnection()->prepare($this->loadStatement(SqlStatementKeys::EAV_ATTRIBUTE));
         $this->eavAttributesByUserDefinedStmt =
             $this->getConnection()->prepare($this->loadStatement(SqlStatementKeys::EAV_ATTRIBUTES_BY_IS_USER_DEFINED));
         $this->eavAttributesByOptionValueAndStoreIdStmt =
@@ -89,6 +98,20 @@ class EavAttributeRepository extends AbstractRepository implements EavAttributeR
             $this->getConnection()->prepare($this->loadStatement(SqlStatementKeys::EAV_ATTRIBUTES_BY_ENTITY_TYPE_ID_AND_IS_USER_DEFINED));
         $this->eavAttributesByEntityTypeIdAndAttributeSetNameStmt =
             $this->getConnection()->prepare($this->loadStatement(SqlStatementKeys::EAV_ATTRIBUTES_BY_ENTITY_TYPE_ID_AND_ATTRIBUTE_SET_NAME));
+    }
+
+    /**
+     * Return's the EAV attribute with the passed ID.
+     *
+     * @param string $attributeId The ID of the EAV attribute to return
+     *
+     * @return array The EAV attribute
+     */
+    public function load($attributeId)
+    {
+        // execute the prepared statement and return the EAV attribute with the passed entity type ID and code
+        $this->eavAttributeStmt->execute(array(MemberNames::ATTRIBUTE_ID => $attributeId));
+        return $this->eavAttributeStmt->fetch(\PDO::FETCH_ASSOC);
     }
 
     /**
@@ -135,7 +158,10 @@ class EavAttributeRepository extends AbstractRepository implements EavAttributeR
 
         // execute the prepared statement and return the array with the EAV attributes
         $this->eavAttributesByEntityTypeIdAndAttributeSetNameStmt->execute($params);
-        foreach ($this->eavAttributesByEntityTypeIdAndAttributeSetNameStmt->fetchAll(\PDO::FETCH_ASSOC) as $eavAttribute) {
+
+        // load the available EAV attributes
+        $availableEavAttributes = $this->eavAttributesByEntityTypeIdAndAttributeSetNameStmt->fetchAll(\PDO::FETCH_ASSOC);
+        foreach ($availableEavAttributes as $eavAttribute) {
             $eavAttributes[$eavAttribute[MemberNames::ATTRIBUTE_CODE]] = $eavAttribute;
         }
 
@@ -183,7 +209,10 @@ class EavAttributeRepository extends AbstractRepository implements EavAttributeR
 
         // execute the prepared statement and return the array with the EAV attributes
         $this->eavAttributesByUserDefinedStmt->execute($params);
-        foreach ($this->eavAttributesByUserDefinedStmt->fetchAll(\PDO::FETCH_ASSOC) as $eavAttribute) {
+
+        // load the available EAV attributes
+        $availableEavAttributes = $this->eavAttributesByUserDefinedStmt->fetchAll(\PDO::FETCH_ASSOC);
+        foreach ($availableEavAttributes as $eavAttribute) {
             $eavAttributes[$eavAttribute[MemberNames::ATTRIBUTE_CODE]] = $eavAttribute;
         }
 
@@ -214,7 +243,36 @@ class EavAttributeRepository extends AbstractRepository implements EavAttributeR
 
         // execute the prepared statement and return the array with the EAV attributes
         $this->eavAttributesByEntityTypeIdAndUserDefinedStmt->execute($params);
-        foreach ($this->eavAttributesByEntityTypeIdAndUserDefinedStmt->fetchAll(\PDO::FETCH_ASSOC) as $eavAttribute) {
+
+        // load the available EAV attributes
+        $availableEavAttributes = $this->eavAttributesByEntityTypeIdAndUserDefinedStmt->fetchAll(\PDO::FETCH_ASSOC);
+        foreach ($availableEavAttributes as $eavAttribute) {
+            $eavAttributes[$eavAttribute[MemberNames::ATTRIBUTE_CODE]] = $eavAttribute;
+        }
+
+        // return the array with the EAV attributes
+        return $eavAttributes;
+    }
+
+    /**
+     * Return's an array with the available EAV attributes for the passed is entity type.
+     *
+     * @param integer $entityTypeId The entity type ID of the EAV attributes to return
+     *
+     * @return array The array with the EAV attributes matching the passed entity type
+     */
+    public function findAllByEntityTypeId($entityTypeId)
+    {
+
+        // initialize the array for the EAV attributes
+        $eavAttributes = array();
+
+        // execute the prepared statement and return the array with the EAV attributes
+        $this->eavAttributesByEntityTypeIdAndUserDefinedStmt->execute(array(MemberNames::ENTITY_TYPE_ID  => $entityTypeId));
+
+        // load the available EAV attributes
+        $availableEavAttributes = $this->eavAttributesByEntityTypeIdAndUserDefinedStmt->fetchAll(\PDO::FETCH_ASSOC);
+        foreach ($availableEavAttributes as $eavAttribute) {
             $eavAttributes[$eavAttribute[MemberNames::ATTRIBUTE_CODE]] = $eavAttribute;
         }
 

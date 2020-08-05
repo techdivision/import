@@ -21,6 +21,9 @@
 namespace TechDivision\Import\Actions\Processors;
 
 use TechDivision\Import\Utils\EntityStatus;
+use TechDivision\Import\Connection\ConnectionInterface;
+use TechDivision\Import\Repositories\SqlStatementRepositoryInterface;
+use TechDivision\Import\Utils\SanitizerInterface;
 
 /**
  * An abstract processor implementation provide basic CRUD functionality.
@@ -49,6 +52,40 @@ abstract class AbstractBaseProcessor extends AbstractProcessor
     protected $preparedStatements = array();
 
     /**
+     * The array holding row data sanitizer.
+     *
+     * @var \ArrayObject
+     */
+    protected $sanitizers;
+
+    /**
+     * The default statement name.
+     *
+     * @var string
+     */
+    protected $defaultStatementName;
+
+    /**
+     * Initialize the processor with the passed connection and utility class name, as well as optional sanitizers.
+     * .
+     * @param \TechDivision\Import\Connection\ConnectionInterface               $connection             The connection instance
+     * @param \TechDivision\Import\Repositories\SqlStatementRepositoryInterface $sqlStatementRepository The repository instance
+     * @param \ArrayObject                                                      $sanitizers             The array with the sanitizer instances
+     */
+    public function __construct(
+        ConnectionInterface $connection,
+        SqlStatementRepositoryInterface $sqlStatementRepository,
+        \ArrayObject $sanitizers = null
+    ) {
+
+        // pass the connection and the SQL statement repository to the parent class
+        parent::__construct($connection, $sqlStatementRepository);
+
+        // set the sanititzes, if available
+        $this->setSanitizers($sanitizers ?? new \ArrayObject());
+    }
+
+    /**
      * Return's the array with the SQL statements that has to be prepared.
      *
      * @return array The SQL statements to be prepared
@@ -72,13 +109,14 @@ abstract class AbstractBaseProcessor extends AbstractProcessor
     }
 
     /**
-     * Return's the prepared statement.
+     * Return's the prepared statement with the passed name or the default one.
      *
-     * @param string $name The name of the prepared statement to return
+     * @param string|null $name        The name of the prepared statement to return
+     * @param string|null $defaultName The name of the default prepared statement
      *
      * @return \PDOStatement The prepared statement
      */
-    protected function getPreparedStatement($name = null)
+    protected function getPreparedStatement($name = null, $defaultName = null)
     {
 
         // try to load the prepared statement, or use the default one
@@ -86,8 +124,30 @@ abstract class AbstractBaseProcessor extends AbstractProcessor
             return $this->preparedStatements[$name];
         }
 
-        // return the first (default) prepared statement
-        return reset($this->preparedStatements);
+        // return the default prepared statement
+        return $this->preparedStatements[$defaultName];
+    }
+
+    /**
+     * Gets sanitizers list.
+     *
+     * @return \ArrayObject The sanitizers
+     */
+    public function getSanitizers(): \ArrayObject
+    {
+        return $this->sanitizers;
+    }
+
+    /**
+     * Sets sanitizers list.
+     *
+     * @param \ArrayObject $sanitizers The sanitizers
+     *
+     * @return void
+     */
+    public function setSanitizers(\ArrayObject $sanitizers): void
+    {
+        $this->sanitizers = $sanitizers;
     }
 
     /**
@@ -131,23 +191,36 @@ abstract class AbstractBaseProcessor extends AbstractProcessor
     }
 
     /**
+     * Return's the name of the processor's default statement.
+     *
+     * @return string The statement name
+     */
+    public function getDefaultStatementName()
+    {
+        return $this->defaultStatementName;
+    }
+
+    /**
      * Implements the CRUD functionality the processor is responsible for,
      * can be one of CREATE, READ, UPDATE or DELETE a entity.
      *
-     * @param array       $row  The data to handle
-     * @param string|null $name The name of the prepared statement to execute
+     * @param array       $row                  The row to persist
+     * @param string|null $name                 The name of the prepared statement that has to be executed
+     * @param string|null $primaryKeyMemberName The primary key member name of the entity to use
      *
      * @return void
      */
-    public function execute($row, $name = null)
+    public function execute($row, $name = null, $primaryKeyMemberName = null)
     {
+        $statement = $this->getPreparedStatement($name, $this->getDefaultStatementName());
+        $row = $this->sanitize($row, $statement);
+
         try {
             // finally execute the prepared statement
-            $this->getPreparedStatement($name)->execute($this->prepareRow($row));
-
+            $statement->execute($this->prepareRow($row));
         } catch (\PDOException $pdoe) {
             // initialize the SQL statement with the placeholders
-            $sql = $this->getPreparedStatement($name)->queryString;
+            $sql = $statement->queryString;
 
             // replace the placeholders with the values
             foreach ($row as $key => $value) {
@@ -169,8 +242,65 @@ abstract class AbstractBaseProcessor extends AbstractProcessor
      */
     public function init()
     {
-        foreach ($this->getStatements() as $name => $statement) {
+
+        // load the statements
+        $statements = $this->getStatements();
+
+        // initialize the default statement name
+        $this->defaultStatementName = $this->firstKey($statements);
+
+        foreach ($statements as $name => $statement) {
             $this->addPreparedStatement($name, $this->getConnection()->prepare($statement));
         }
+    }
+
+    /**
+     * Returns the first key of the passed array.
+     *
+     * This method has been used instead of the PHP function array_key_first, because
+     * this function will be available with PHP >= 7.3.0.
+     *
+     * @param array $array The array to return the first key for
+     *
+     * @return mixed|NULL The first key or NULL
+     * @link https://www.php.net/array_key_first
+     */
+    private function firstKey(array $array)
+    {
+
+        // load the array keys
+        $keys = array_keys($array);
+
+        // try to load and return the first key
+        foreach ($keys as $key) {
+            return $key;
+        }
+
+        // return NULL otherwise
+        return null;
+    }
+
+    /**
+     * Passes row data and statement to sanitizers list.
+     *
+     * @param array         $row       The row that has to be sanitized
+     * @param \PDOStatement $statement The statement that has to be sanitzied
+     *
+     * @return array The sanitized row
+     */
+    protected function sanitize(array $row, \PDOStatement $statement) : array
+    {
+
+        // load the raw statement that has to be sanitized
+        $rawStatement = $statement->queryString;
+
+        // invoke the registered sanitizers on the statement
+        /** @var SanitizerInterface $sanitizer */
+        foreach ($this->sanitizers as $sanitizer) {
+            $row = $sanitizer->execute($row, $rawStatement);
+        }
+
+        // return the sanizized row
+        return $row;
     }
 }

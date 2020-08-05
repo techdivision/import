@@ -43,6 +43,13 @@ class EavEntityTypeRepository extends AbstractRepository implements EavEntityTyp
     protected $eavEntityTypeStmt;
 
     /**
+     * The prepared statement to load an existing EAV entity type by its entity type code.
+     *
+     * @var \PDOStatement
+     */
+    protected $eavEntityTypeByEntityTypeACodeStmt;
+
+    /**
      * Initializes the repository's prepared statements.
      *
      * @return void
@@ -53,6 +60,8 @@ class EavEntityTypeRepository extends AbstractRepository implements EavEntityTyp
         // initialize the prepared statements
         $this->eavEntityTypeStmt =
             $this->getConnection()->prepare($this->loadStatement(SqlStatementKeys::EAV_ENTITY_TYPES));
+        $this->eavEntityTypeByEntityTypeACodeStmt =
+            $this->getConnection()->prepare($this->loadStatement(SqlStatementKeys::EAV_ENTITY_TYPE_BY_ENTITY_TYPE_CODE));
     }
 
     /**
@@ -69,12 +78,29 @@ class EavEntityTypeRepository extends AbstractRepository implements EavEntityTyp
         // try to load the EAV entity types
         $this->eavEntityTypeStmt->execute();
 
+        // load the available EAV entity types
+        $availableEntityTypes = $this->eavEntityTypeStmt->fetchAll(\PDO::FETCH_ASSOC);
+
         // prepare the EAV entity types => we need the entity type code as key
-        foreach ($this->eavEntityTypeStmt->fetchAll(\PDO::FETCH_ASSOC) as $eavEntityType) {
+        foreach ($availableEntityTypes as $eavEntityType) {
             $eavEntityTypes[$eavEntityType[MemberNames::ENTITY_TYPE_CODE]] = $eavEntityType;
         }
 
         // return the array with the EAV entity types
         return $eavEntityTypes;
+    }
+
+    /**
+     * Return's an EAV entity type with the passed entity type code.
+     *
+     * @param string $entityTypeCode The code of the entity type to return
+     *
+     * @return array The entity type with the passed entity type code
+     */
+    public function findOneByEntityTypeCode($entityTypeCode)
+    {
+        // load and return the EAV attribute with the passed params
+        $this->eavEntityTypeByEntityTypeACodeStmt->execute(array(MemberNames::ENTITY_TYPE_CODE => $entityTypeCode));
+        return $this->eavEntityTypeByEntityTypeACodeStmt->fetch(\PDO::FETCH_ASSOC);
     }
 }

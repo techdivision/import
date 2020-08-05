@@ -20,6 +20,7 @@
 
 namespace TechDivision\Import\Subjects;
 
+use Ramsey\Uuid\Uuid;
 use League\Event\EmitterInterface;
 use Doctrine\Common\Collections\Collection;
 use TechDivision\Import\RowTrait;
@@ -27,8 +28,10 @@ use TechDivision\Import\HeaderTrait;
 use TechDivision\Import\SystemLoggerTrait;
 use TechDivision\Import\Utils\ScopeKeys;
 use TechDivision\Import\Utils\ColumnKeys;
+use TechDivision\Import\Utils\EventNames;
 use TechDivision\Import\Utils\MemberNames;
 use TechDivision\Import\Utils\RegistryKeys;
+use TechDivision\Import\Utils\EntityTypeCodes;
 use TechDivision\Import\Utils\Generators\GeneratorInterface;
 use TechDivision\Import\Callbacks\CallbackInterface;
 use TechDivision\Import\Observers\ObserverInterface;
@@ -36,7 +39,6 @@ use TechDivision\Import\Adapter\ImportAdapterInterface;
 use TechDivision\Import\Exceptions\WrappedColumnException;
 use TechDivision\Import\Services\RegistryProcessorInterface;
 use TechDivision\Import\Configuration\SubjectConfigurationInterface;
-use TechDivision\Import\Utils\EventNames;
 
 /**
  * An abstract subject implementation.
@@ -47,36 +49,50 @@ use TechDivision\Import\Utils\EventNames;
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
  */
-abstract class AbstractSubject implements SubjectInterface
+abstract class AbstractSubject implements SubjectInterface, FilesystemSubjectInterface, DateConverterSubjectInterface
 {
 
     /**
      * The trait that provides basic filesystem handling functionality.
      *
-     * @var TechDivision\Import\Subjects\FilesystemTrait
+     * @var \TechDivision\Import\Subjects\FilesystemTrait
      */
     use FilesystemTrait;
 
     /**
      * The trait that provides basic filesystem handling functionality.
      *
-     * @var TechDivision\Import\SystemLoggerTrait
+     * @var \TechDivision\Import\SystemLoggerTrait
      */
     use SystemLoggerTrait;
 
     /**
+     * The trait that provides date converting functionality.
+     *
+     * @var \TechDivision\Import\DateConverterTrait
+     */
+    use DateConverterTrait;
+
+    /**
      * The trait that provides header handling functionality.
      *
-     * @var TechDivision\Import\HeaderTrait
+     * @var \TechDivision\Import\HeaderTrait
      */
     use HeaderTrait;
 
     /**
      * The trait that provides row handling functionality.
      *
-     * @var TechDivision\Import\RowTrait
+     * @var \TechDivision\Import\RowTrait
      */
     use RowTrait;
+
+    /**
+     * The unique identifier for the actual invocation.
+     *
+     * @var string
+     */
+    protected $uniqueId;
 
     /**
      * The name of the file to be imported.
@@ -93,20 +109,6 @@ abstract class AbstractSubject implements SubjectInterface
     protected $lineNumber = 0;
 
     /**
-     * The actual operation name.
-     *
-     * @var string
-     */
-    protected $operationName ;
-
-    /**
-     * The flag that stop's overserver execution on the actual row.
-     *
-     * @var boolean
-     */
-    protected $skipRow = false;
-
-    /**
      * The import adapter instance.
      *
      * @var \TechDivision\Import\Adapter\ImportAdapterInterface
@@ -114,11 +116,18 @@ abstract class AbstractSubject implements SubjectInterface
     protected $importAdapter;
 
     /**
-     * The system configuration.
+     * The subject configuration.
      *
      * @var \TechDivision\Import\Configuration\SubjectConfigurationInterface
      */
     protected $configuration;
+
+    /**
+     * The plugin configuration.
+     *
+     * @var \TechDivision\Import\Configuration\PluginConfigurationInterface
+     */
+    protected $pluginConfiguration;
 
     /**
      * The RegistryProcessor instance to handle running threads.
@@ -225,6 +234,42 @@ abstract class AbstractSubject implements SubjectInterface
     protected $emitter;
 
     /**
+     * The status of the file (0 = not processed, 1 = successfully processed, 2 = processed with failure)
+     *
+     * @var array
+     */
+    protected $status = array();
+
+    /**
+     * The default values for the columns from the configuration.
+     *
+     * @var array
+     */
+    protected $defaultColumnValues = array();
+
+    /**
+     * The values of the actual column, pre-initialized with the default values.
+     *
+     * @var array
+     */
+    protected $columnValues = array();
+
+    /**
+     * Mapping for the virtual entity type code to the real Magento 2 EAV entity type code.
+     *
+     * @var array
+     */
+    protected $entityTypeCodeMappings = array(
+        EntityTypeCodes::EAV_ATTRIBUTE                 => EntityTypeCodes::CATALOG_PRODUCT,
+        EntityTypeCodes::EAV_ATTRIBUTE_SET             => EntityTypeCodes::CATALOG_PRODUCT,
+        EntityTypeCodes::CATALOG_PRODUCT_URL           => EntityTypeCodes::CATALOG_PRODUCT,
+        EntityTypeCodes::CATALOG_PRODUCT_PRICE         => EntityTypeCodes::CATALOG_PRODUCT,
+        EntityTypeCodes::CATALOG_PRODUCT_INVENTORY     => EntityTypeCodes::CATALOG_PRODUCT,
+        EntityTypeCodes::CATALOG_PRODUCT_INVENTORY_MSI => EntityTypeCodes::CATALOG_PRODUCT,
+        EntityTypeCodes::CATALOG_PRODUCT_TIER_PRICE    => EntityTypeCodes::CATALOG_PRODUCT
+    );
+
+    /**
      * Initialize the subject instance.
      *
      * @param \TechDivision\Import\Services\RegistryProcessorInterface $registryProcessor          The registry processor instance
@@ -277,28 +322,6 @@ abstract class AbstractSubject implements SubjectInterface
     }
 
     /**
-     * Set's the actual operation name.
-     *
-     * @param string $operationName The actual operation name
-     *
-     * @return void
-     */
-    public function setOperationName($operationName)
-    {
-        $this->operationName = $operationName;
-    }
-
-    /**
-     * Return's the actual operation name.
-     *
-     * @return string
-     */
-    public function getOperationName()
-    {
-        return $this->operationName;
-    }
-
-    /**
      * Set's the actual line number.
      *
      * @param integer $lineNumber The line number
@@ -321,16 +344,6 @@ abstract class AbstractSubject implements SubjectInterface
     }
 
     /**
-     * Stop's observer execution on the actual row.
-     *
-     * @return void
-     */
-    public function skipRow()
-    {
-        $this->skipRow = true;
-    }
-
-    /**
      * Return's the default callback mappings.
      *
      * @return array The default callback mappings
@@ -341,23 +354,81 @@ abstract class AbstractSubject implements SubjectInterface
     }
 
     /**
+     * Load the default column values from the configuration.
+     *
+     * @return array The array with the default column values
+     */
+    public function getDefaultColumnValues()
+    {
+
+        // initialize the array for the default column values
+        $defaultColumnValues = array();
+
+        // load the entity type from the execution context
+        $entityTypeCode = $this->getExecutionContext()->getEntityTypeCode();
+
+        // load the column values from the configuration
+        $columnValues = $this->getConfiguration()->getDefaultValues();
+
+        // query whether or not default column values for the entity type are available
+        if (isset($columnValues[$entityTypeCode])) {
+            $defaultColumnValues = $columnValues[$entityTypeCode];
+        }
+
+        // return the default column values
+        return $defaultColumnValues;
+    }
+
+    /**
+     * Load the default header mappings from the configuration.
+     *
+     * @return array The array with the default header mappings
+     */
+    public function getDefaultHeaderMappings()
+    {
+
+        // initialize the array for the default header mappings
+        $defaultHeaderMappings = array();
+
+        // load the entity type from the execution context
+        $entityTypeCode = $this->getExecutionContext()->getEntityTypeCode();
+
+        // load the header mappings from the configuration
+        $headerMappings = $this->getConfiguration()->getHeaderMappings();
+
+        // query whether or not header mappings for the entity type are available
+        if (isset($headerMappings[$entityTypeCode])) {
+            $defaultHeaderMappings = $headerMappings[$entityTypeCode];
+        }
+
+        // return the default header mappings
+        return $defaultHeaderMappings;
+    }
+
+    /**
      * Tries to format the passed value to a valid date with format 'Y-m-d H:i:s'.
      * If the passed value is NOT a valid date, NULL will be returned.
      *
      * @param string $value The value to format
      *
      * @return string|null The formatted date or NULL if the date is not valid
+     * @throws \InvalidArgumentException Is thrown, if the passed can not be formatted according to the configured date format
      */
     public function formatDate($value)
     {
 
-        // create a DateTime instance from the passed value
-        if ($dateTime = \DateTime::createFromFormat($this->getSourceDateFormat(), $value)) {
-            return $dateTime->format('Y-m-d H:i:s');
+        // try to format the date according to the configured date format
+        $formattedDate = $this->getDateConverter()->convert($value);
+
+        // query whether or not the formatting was successufull
+        if ($formattedDate === null) {
+            throw new \InvalidArgumentException(
+                sprintf('Can\'t format date "%s" according given format "%s"', $value, $this->getSourceDateFormat())
+            );
         }
 
-        // return NULL, if the passed value is NOT a valid date
-        return null;
+        // return the formatted date
+        return $formattedDate;
     }
 
     /**
@@ -371,16 +442,7 @@ abstract class AbstractSubject implements SubjectInterface
      */
     public function explode($value, $delimiter = null)
     {
-        // load the global configuration
-        $configuration = $this->getConfiguration();
-
-        // initializet delimiter, enclosure and escape char
-        $delimiter = $delimiter ? $delimiter : $configuration->getDelimiter();
-        $enclosure = $configuration->getEnclosure();
-        $escape = $configuration->getEscape();
-
-        // parse and return the found data as array
-        return str_getcsv($value, $delimiter, $enclosure, $escape);
+        return $this->getImportAdapter()->explode($value, $delimiter);
     }
 
     /**
@@ -391,6 +453,16 @@ abstract class AbstractSubject implements SubjectInterface
     public function isDebugMode()
     {
         return $this->getConfiguration()->isDebugMode();
+    }
+
+    /**
+     * Return's the subject's execution context configuration.
+     *
+     * @return \TechDivision\Import\ExecutionContextInterface The execution context configuration to use
+     */
+    public function getExecutionContext()
+    {
+        return $this->getConfiguration()->getPluginConfiguration()->getExecutionContext();
     }
 
     /**
@@ -470,6 +542,38 @@ abstract class AbstractSubject implements SubjectInterface
     }
 
     /**
+     * Merge's the passed status into the actual one.
+     *
+     * @param array $status The status to MergeBuilder
+     *
+     * @return void
+     */
+    public function mergeStatus(array $status)
+    {
+        $this->status = array_replace_recursive($this->status, $status);
+    }
+
+    /**
+     * Retur's the actual status.
+     *
+     * @return array The actual status
+     */
+    public function getStatus()
+    {
+        return $this->status;
+    }
+
+    /**
+     * Return's the unique identifier for the actual invocation.
+     *
+     * @return string The unique identifier
+     */
+    public function getUniqueId()
+    {
+        return $this->uniqueId;
+    }
+
+    /**
      * Return's the source date format to use.
      *
      * @return string The source date format
@@ -509,27 +613,35 @@ abstract class AbstractSubject implements SubjectInterface
     public function setUp($serial)
     {
 
+        // initialize the unique ID for the actual invocation
+        $this->uniqueId = Uuid::uuid4()->toString();
+
         // load the status of the actual import
-        $status = $this->getRegistryProcessor()->getAttribute($serial);
+        $status = $this->getRegistryProcessor()->getAttribute(RegistryKeys::STATUS);
 
-        // load the global data we've prepared initially
-        $this->stores = $status[RegistryKeys::GLOBAL_DATA][RegistryKeys::STORES];
-        $this->defaultStore = $status[RegistryKeys::GLOBAL_DATA][RegistryKeys::DEFAULT_STORE];
-        $this->storeWebsites  = $status[RegistryKeys::GLOBAL_DATA][RegistryKeys::STORE_WEBSITES];
-        $this->rootCategories = $status[RegistryKeys::GLOBAL_DATA][RegistryKeys::ROOT_CATEGORIES];
-        $this->coreConfigData = $status[RegistryKeys::GLOBAL_DATA][RegistryKeys::CORE_CONFIG_DATA];
+        // load the global data, if prepared initially
+        if (isset($status[RegistryKeys::GLOBAL_DATA])) {
+            $this->stores = $status[RegistryKeys::GLOBAL_DATA][RegistryKeys::STORES];
+            $this->defaultStore = $status[RegistryKeys::GLOBAL_DATA][RegistryKeys::DEFAULT_STORE];
+            $this->storeWebsites  = $status[RegistryKeys::GLOBAL_DATA][RegistryKeys::STORE_WEBSITES];
+            $this->rootCategories = $status[RegistryKeys::GLOBAL_DATA][RegistryKeys::ROOT_CATEGORIES];
+            $this->coreConfigData = $status[RegistryKeys::GLOBAL_DATA][RegistryKeys::CORE_CONFIG_DATA];
+        }
 
-        // initialize the operation name
-        $this->operationName = $this->getConfiguration()->getConfiguration()->getOperationName();
+        // merge the header mappings with the values found in the configuration
+        $this->headerMappings = array_merge($this->headerMappings, $this->getDefaultHeaderMappings());
 
         // merge the callback mappings with the mappings from the child instance
         $this->callbackMappings = array_merge($this->callbackMappings, $this->getDefaultCallbackMappings());
 
-        // merge the header mappings with the values found in the configuration
-        $this->headerMappings = array_merge($this->headerMappings, $this->getConfiguration()->getHeaderMappings());
+        // merge the default column values with the values found in the configuration
+        $this->defaultColumnValues = array_merge($this->defaultColumnValues, $this->getDefaultColumnValues());
+
+        // load the available callbacks from the configuration
+        $availableCallbacks = $this->getConfiguration()->getCallbacks();
 
         // merge the callback mappings the the one from the configuration file
-        foreach ($this->getConfiguration()->getCallbacks() as $callbackMappings) {
+        foreach ($availableCallbacks as $callbackMappings) {
             foreach ($callbackMappings as $attributeCode => $mappings) {
                 // write a log message, that default callback configuration will
                 // be overwritten with the one from the configuration file
@@ -559,17 +671,13 @@ abstract class AbstractSubject implements SubjectInterface
         $registryProcessor = $this->getRegistryProcessor();
 
         // update the source directory for the next subject
-        $registryProcessor->mergeAttributesRecursive(
-            $serial,
-            array(
-                RegistryKeys::SOURCE_DIRECTORY => $newSourceDir = $this->getNewSourceDir($serial),
-                RegistryKeys::FILES => array($this->getFilename() => array(RegistryKeys::STATUS => 1))
-            )
-        );
+        foreach ($this->getStatus() as $key => $status) {
+            $registryProcessor->mergeAttributesRecursive($key, $status);
+        }
 
         // log a debug message with the new source directory
         $this->getSystemLogger()->debug(
-            sprintf('Subject %s successfully updated source directory to %s', get_class($this), $newSourceDir)
+            sprintf('Subject %s successfully updated status data for import %s', get_class($this), $serial)
         );
     }
 
@@ -580,20 +688,17 @@ abstract class AbstractSubject implements SubjectInterface
      */
     public function getTargetDir()
     {
-        return $this->getNewSourceDir($this->getSerial());
-    }
 
-    /**
-     * Return's the next source directory, which will be the target directory
-     * of this subject, in most cases.
-     *
-     * @param string $serial The serial of the actual import
-     *
-     * @return string The new source directory
-     */
-    public function getNewSourceDir($serial)
-    {
-        return sprintf('%s/%s', $this->getConfiguration()->getTargetDir(), $serial);
+        // load the status from the registry processor
+        $status = $this->getRegistryProcessor()->getAttribute(RegistryKeys::STATUS);
+
+        // query whether or not a target directory (mandatory) has been configured
+        if (isset($status[RegistryKeys::TARGET_DIRECTORY])) {
+            return $status[RegistryKeys::TARGET_DIRECTORY];
+        }
+
+        // throw an exception if the root category is NOT available
+        throw new \Exception(sprintf('Can\'t find a target directory in status data for import %s', $this->getSerial()));
     }
 
     /**
@@ -704,17 +809,13 @@ abstract class AbstractSubject implements SubjectInterface
     {
 
         try {
-            // stop processing, if the filename doesn't match
-            if (!$this->match($filename)) {
-                return;
-            }
-
             // initialize the serial/filename
             $this->setSerial($serial);
             $this->setFilename($filename);
 
             // invoke the events that has to be fired before the artfact will be processed
             $this->getEmitter()->emit(EventNames::SUBJECT_ARTEFACT_PROCESS_START, $this);
+            $this->getEmitter()->emit($this->getEventName(EventNames::SUBJECT_ARTEFACT_PROCESS_START), $this);
 
             // load the system logger instance
             $systemLogger = $this->getSystemLogger();
@@ -730,7 +831,7 @@ abstract class AbstractSubject implements SubjectInterface
                 $this->isFile($inProgressFilename)
             ) {
                 // log a debug message and exit
-                $systemLogger->debug(sprintf('Import running, found inProgress file %s', $inProgressFilename));
+                $systemLogger->debug(sprintf('Import running, found inProgress file "%s"', $inProgressFilename));
                 return;
             }
 
@@ -744,7 +845,10 @@ abstract class AbstractSubject implements SubjectInterface
             $this->lastLog = time();
 
             // log a message that the file has to be imported
-            $systemLogger->info(sprintf('Now start processing file %s', $filename));
+            $systemLogger->info(
+                sprintf('Now start processing file "%s"', basename($filename)),
+                array('operation-name' => $operationName = $this->getFullOperationName())
+            );
 
             // let the adapter process the file
             $this->getImportAdapter()->import(array($this, 'importRow'), $filename);
@@ -753,21 +857,62 @@ abstract class AbstractSubject implements SubjectInterface
             $endTime = microtime(true) - $startTime;
 
             // log a message that the file has successfully been imported
-            $systemLogger->info(sprintf('Successfully processed file %s with %d lines in %f s', $filename, $this->lineNumber, $endTime));
+            $systemLogger->info(
+                sprintf('Successfully processed file "%s" with "%d" lines in "%f" s', basename($filename), $this->lineNumber, $endTime),
+                array('operation-name' => $operationName)
+            );
 
             // rename flag file, because import has been successfull
-            $this->rename($inProgressFilename, $importedFilename);
+            if ($this->getConfiguration()->isCreatingImportedFile()) {
+                $this->rename($inProgressFilename, $importedFilename);
+            } else {
+                $this->getFilesystemAdapter()->delete($inProgressFilename);
+            }
+
+            // update the status
+            $this->mergeStatus(
+                array(
+                    RegistryKeys::STATUS => array(
+                        RegistryKeys::FILES => array(
+                            $filename => array(
+                                $this->getUniqueId() => array(
+                                    RegistryKeys::STATUS => 1,
+                                    RegistryKeys::PROCESSED_ROWS => $this->getLineNumber()
+                                )
+                            )
+                        )
+                    )
+                )
+            );
 
             // invoke the events that has to be fired when the artfact has been successfully processed
             $this->getEmitter()->emit(EventNames::SUBJECT_ARTEFACT_PROCESS_SUCCESS, $this);
-
+            $this->getEmitter()->emit($this->getEventName(EventNames::SUBJECT_ARTEFACT_PROCESS_SUCCESS), $this);
         } catch (\Exception $e) {
             // rename the flag file, because import failed and write the stack trace
             $this->rename($inProgressFilename, $failedFilename);
             $this->write($failedFilename, $e->__toString());
 
+            // update the status with the error message
+            $this->mergeStatus(
+                array(
+                    RegistryKeys::STATUS => array(
+                        RegistryKeys::FILES => array(
+                            $filename => array(
+                                $this->getUniqueId() => array(
+                                    RegistryKeys::STATUS         => 2,
+                                    RegistryKeys::ERROR_MESSAGE  => $e->getMessage(),
+                                    RegistryKeys::PROCESSED_ROWS => $this->getLineNumber()
+                                )
+                            )
+                        )
+                    )
+                )
+            );
+
             // invoke the events that has to be fired when the artfact can't be processed
             $this->getEmitter()->emit(EventNames::SUBJECT_ARTEFACT_PROCESS_FAILURE, $this, $e);
+            $this->getEmitter()->emit($this->getEventName(EventNames::SUBJECT_ARTEFACT_PROCESS_FAILURE), $this, $e);
 
             // do not wrap the exception if not already done
             if ($e instanceof WrappedColumnException) {
@@ -777,28 +922,6 @@ abstract class AbstractSubject implements SubjectInterface
             // else wrap and throw the exception
             throw $this->wrapException(array(), $e);
         }
-    }
-
-    /**
-     * This method queries whether or not the passed filename matches
-     * the pattern, based on the subjects configured prefix.
-     *
-     * @param string $filename The filename to match
-     *
-     * @return boolean TRUE if the filename matches, else FALSE
-     */
-    protected function match($filename)
-    {
-
-        // prepare the pattern to query whether the file has to be processed or not
-        $pattern = sprintf(
-            '/^.*\/%s.*\\.%s$/',
-            $this->getConfiguration()->getPrefix(),
-            $this->getConfiguration()->getSuffix()
-        );
-
-        // stop processing, if the filename doesn't match
-        return (boolean) preg_match($pattern, $filename);
     }
 
     /**
@@ -821,52 +944,80 @@ abstract class AbstractSubject implements SubjectInterface
 
         // invoke the events that has to be fired before the artfact's row will be processed
         $this->getEmitter()->emit(EventNames::SUBJECT_ARTEFACT_ROW_PROCESS_START, $this);
+        $this->getEmitter()->emit($this->getEventName(EventNames::SUBJECT_ARTEFACT_ROW_PROCESS_START), $this);
 
         // initialize the headers with the columns from the first line
         if (sizeof($this->headers) === 0) {
+            // invoke the events that has to be fired before the artfact's header row will be processed
+            $this->getEmitter()->emit(EventNames::SUBJECT_ARTEFACT_HEADER_ROW_PROCESS_START, $this);
+            $this->getEmitter()->emit($this->getEventName(EventNames::SUBJECT_ARTEFACT_HEADER_ROW_PROCESS_START), $this);
+
+            // iterate over the column name => key an map the header names, if necessary
             foreach ($this->row as $value => $key) {
                 $this->headers[$this->mapAttributeCodeByHeaderMapping($key)] = $value;
             }
-            return;
-        }
 
-        // process the observers
-        foreach ($this->getObservers() as $observers) {
-            // invoke the pre-import/import and post-import observers
-            foreach ($observers as $observer) {
-                // query whether or not we have to skip the row
-                if ($this->skipRow) {
-                    // log a debug message with the actual line nr/file information
-                    $this->getSystemLogger()->warning(
-                        $this->appendExceptionSuffix(
-                            sprintf(
-                                'Skip processing operation "%s" after observer "%s"',
-                                $this->operationName,
-                                $this->getConfiguration()->getId()
-                            )
-                        )
-                    );
-
-                    // skip the row
-                    break 2;
+            // iterate over the default column values to figure out whether or not the column exists
+            foreach ($this->defaultColumnValues as $name => $value) {
+                // do nothing, if the column already exists
+                if (array_key_exists($key = $this->mapAttributeCodeByHeaderMapping($name), $this->headers)) {
+                    continue;
                 }
+                // add the header and the default value for the column
+                $this->headers[$key] = $columnKey = sizeof($this->headers);
+                $this->columnValues[$columnKey] = $value;
+            }
 
-                // if not, set the subject and process the observer
-                if ($observer instanceof ObserverInterface) {
-                    $this->row = $observer->handle($this);
+            // invoke the events that has to be fired when the artfact's header row has been successfully processed
+            $this->getEmitter()->emit(EventNames::SUBJECT_ARTEFACT_HEADER_ROW_PROCESS_SUCCESS, $this);
+            $this->getEmitter()->emit($this->getEventName(EventNames::SUBJECT_ARTEFACT_HEADER_ROW_PROCESS_SUCCESS), $this);
+        } else {
+            // merge the default column value into the actual row
+            $this->row = array_replace($this->row, $this->columnValues);
+
+            // load the available observers
+            $availableObservers = $this->getObservers();
+
+            // process the observers
+            foreach ($availableObservers as $observers) {
+                // invoke the pre-import/import and post-import observers
+                /** @var \TechDivision\Import\Observers\ObserverInterface $observer */
+                foreach ($observers as $observer) {
+                    // query whether or not we have to skip the row
+                    if ($this->skipRow) {
+                        // log a debug message with the actual line nr/file information
+                        $this->getSystemLogger()->debug(
+                            $this->appendExceptionSuffix(
+                                sprintf(
+                                    'Skip processing operation "%s" after observer "%s"',
+                                    $this->getFullOperationName(),
+                                    get_class($observer)
+                                )
+                            )
+                        );
+
+                        // skip the row
+                        break 2;
+                    }
+
+                    // if not, set the subject and process the observer
+                    if ($observer instanceof ObserverInterface) {
+                        $this->row = $observer->handle($this);
+                    }
                 }
             }
         }
 
         // query whether or not a minute has been passed
-        if ($this->lastLog < time() - 60) {
+        if ($this->lastLog < time() - 59) {
             // log the number processed rows per minute
             $this->getSystemLogger()->info(
                 sprintf(
-                    'Successfully processed "%d (%d)" rows per minute of file "%s"',
+                    'Operation "%s" successfully processed "%d (%d)" rows per minute of file "%s"',
+                    $this->getFullOperationName(),
                     $this->lineNumber - $this->lastLineNumber,
                     $this->lineNumber,
-                    $this->getFilename()
+                    basename($this->getFilename())
                 )
             );
 
@@ -880,13 +1031,14 @@ abstract class AbstractSubject implements SubjectInterface
             $this->appendExceptionSuffix(
                 sprintf(
                     'Successfully processed operation "%s"',
-                    $this->operationName
+                    implode(' > ', $this->getConfiguration()->getConfiguration()->getOperationNames())
                 )
             )
         );
 
         // invoke the events that has to be fired when the artfact's row has been successfully processed
         $this->getEmitter()->emit(EventNames::SUBJECT_ARTEFACT_ROW_PROCESS_SUCCESS, $this);
+        $this->getEmitter()->emit($this->getEventName(EventNames::SUBJECT_ARTEFACT_ROW_PROCESS_SUCCESS), $this);
     }
 
     /**
@@ -1223,7 +1375,6 @@ abstract class AbstractSubject implements SubjectInterface
                 $originalData[ColumnKeys::ORIGINAL_FILENAME],
                 $originalData[ColumnKeys::ORIGINAL_LINE_NUMBER]
             );
-
         } else {
             // append filename and line number to the original message
             $message = $this->appendExceptionSuffix(
@@ -1288,11 +1439,11 @@ abstract class AbstractSubject implements SubjectInterface
 
         // if no message has been passed, only return the suffix
         if ($message === null) {
-            return sprintf(' in file %s on line %d', $filename, $lineNumber);
+            return sprintf(' in file %s on line %d', basename($filename), $lineNumber);
         }
 
         // concatenate the message with the suffix and return it
-        return sprintf('%s in file %s on line %d', $message, $filename, $lineNumber);
+        return sprintf('%s in file %s on line %d', $message, basename($filename), $lineNumber);
     }
 
     /**
@@ -1307,7 +1458,7 @@ abstract class AbstractSubject implements SubjectInterface
 
         // raise the counter with the passed name
         return $this->getRegistryProcessor()->raiseCounter(
-            $this->getSerial(),
+            RegistryKeys::COUNTERS,
             $counterName
         );
     }
@@ -1323,9 +1474,58 @@ abstract class AbstractSubject implements SubjectInterface
     {
 
         // merge the passed status
-        $this->getRegistryProcessor()->mergeAttributesRecursive(
-            $this->getSerial(),
+        return $this->getRegistryProcessor()->mergeAttributesRecursive(
+            RegistryKeys::STATUS,
             $status
         );
+    }
+
+    /**
+     * Return's the entity type code to be used.
+     *
+     * @return string The entity type code to be used
+     */
+    public function getEntityTypeCode()
+    {
+
+        // load the configuration specific entity type code from the plugin configuration
+        $entityTypeCode = $this->getExecutionContext()->getEntityTypeCode();
+
+        // try to map the entity type code
+        if (isset($this->entityTypeCodeMappings[$entityTypeCode])) {
+            $entityTypeCode = $this->entityTypeCodeMappings[$entityTypeCode];
+        }
+
+        // return the (mapped) entity type code
+        return $entityTypeCode;
+    }
+
+    /**
+     * Concatenates and returns the event name for the actual plugin and subject context.
+     *
+     * @param string $eventName The event name to concatenate
+     *
+     * @return string The concatenated event name
+     */
+    protected function getEventName($eventName)
+    {
+        return  sprintf(
+            '%s.%s.%s',
+            $this->getConfiguration()->getPluginConfiguration()->getId(),
+            $this->getConfiguration()->getId(),
+            $eventName
+        );
+    }
+
+    /**
+     * Return's the full opration name, which consists of the Magento edition, the entity type code and the operation name.
+     *
+     * @param string $separator The separator used to seperate the elements
+     *
+     * @return string The full operation name
+     */
+    public function getFullOperationName($separator = '/')
+    {
+        return $this->getConfiguration()->getFullOperationName($separator);
     }
 }

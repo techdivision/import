@@ -78,8 +78,11 @@ class LinkTypeRepository extends AbstractRepository implements LinkTypeRepositor
             // initialize the array for the link types
             $linkTypes = array();
 
+            // load the available link types
+            $availableLinkTypes = $this->linkTypeStmt->fetchAll(\PDO::FETCH_ASSOC);
+
             // prepare the link types => we need the code as key
-            foreach ($this->linkTypeStmt->fetchAll(\PDO::FETCH_ASSOC) as $linkType) {
+            foreach ($availableLinkTypes as $linkType) {
                 $linkTypes[$linkType[MemberNames::CODE]] = $linkType;
             }
 

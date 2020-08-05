@@ -90,6 +90,16 @@ class Exporter implements ExporterInterface
     }
 
     /**
+     * Returns the exporter configuration.
+     *
+     * @return \Goodby\CSV\Export\Standard\ExporterConfig The configuration instance
+     */
+    public function getConfig()
+    {
+        return $this->config;
+    }
+
+    /**
      * Export data as CSV file.
      *
      * @param string $filename The filename to export to
@@ -125,7 +135,7 @@ class Exporter implements ExporterInterface
 
         // query whether we've to convert the charset
         if ($toCharset) {
-            $csv->setCsvFilter(function($line) use ($toCharset, $fromCharset) {
+            $csv->setCsvFilter(function ($line) use ($toCharset, $fromCharset) {
                 return mb_convert_encoding($line, $toCharset, $fromCharset);
             });
         }

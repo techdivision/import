@@ -68,17 +68,27 @@ class AdditionalAttributeObserver extends AbstractObserver
 
         // query whether or not the row has additional attributes
         if ($additionalAttributes = $this->getValue(ColumnKeys::ADDITIONAL_ATTRIBUTES)) {
-            // explode the additional attributes
-            $additionalAttributes = $this->parseAdditionaAttributes($additionalAttributes);
             // load the subject instance
             $subject = $this->getSubject();
+            // explode the additional attributes
+            $additionalAttributes = $subject->explode($additionalAttributes, $this->getMultipleFieldDelimiter());
             // iterate over the attributes and append them to the row
             foreach ($additionalAttributes as $additionalAttribute) {
-                // explode attribute code/option value from the attribute
-                list ($attributeCode, $optionValue) = $subject->explode($additionalAttribute, '=');
+                // initialize the option value
+                $optionValue = '';
+                // explode the attribute code/option value from the attribute
+                $exploded = $subject->explode($additionalAttribute, '=');
+                // initialize attribute code and option value, depending on what we've exploded
+                if (sizeof($exploded) < 1) {
+                    continue;
+                } elseif (sizeof($exploded) === 1) {
+                    list ($attributeCode) = $exploded;
+                } else {
+                    list ($attributeCode, $optionValue) = $exploded;
+                }
 
                 // try to load the appropriate key for the value
-                if (!$subject->hasHeader($attributeCode)) {
+                if ($subject->hasHeader($attributeCode) === false) {
                     $subject->addHeader($attributeCode);
                 }
 
@@ -100,28 +110,5 @@ class AdditionalAttributeObserver extends AbstractObserver
                 }
             }
         }
-    }
-
-    /**
-     * Parses the string with the additional attributes as CSV and returns an array.
-     *
-     * @param string $additionalAttributes The string with the additional attributes
-     *
-     * @return array The array with the parsed
-     * @link http://php.net/manual/de/function.str-getcsv.php
-     */
-    protected function parseAdditionaAttributes($additionalAttributes)
-    {
-
-        // load the global configuration
-        $configuration = $this->getSubject()->getConfiguration()->getConfiguration();
-
-        // initializet delimiter, enclosure and escape char
-        $delimiter = $configuration->getDelimiter();
-        $enclosure = $configuration->getEnclosure();
-        $escape = $configuration->getEscape();
-
-        // parse and return the found data as array
-        return str_getcsv($additionalAttributes, $delimiter, $enclosure, $escape);
     }
 }

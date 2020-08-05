@@ -104,4 +104,32 @@ class ConfigurationKeys
      * @var string
      */
     const CLEAN_UP_EMPTY_COLUMNS = 'clean-up-empty-columns';
+
+    /**
+     * Name for the configuration key 'cache-enabled',
+     *
+     * @var string
+     */
+    const CACHE_ENABLED = 'cache-enabled';
+
+    /**
+     * Name for the configuration key 'custom-validations'.
+     *
+     * @var string
+     */
+    const CUSTOM_VALIDATIONS = 'custom-validations';
+
+    /**
+     * Name for the configuration key 'collect-columns'.
+     *
+     * @var string
+     */
+    const COLLECT_COLUMNS = 'collect-columns';
+
+    /**
+     * Name for the configuration key 'stream'.
+     *
+     * @var string
+     */
+    const STREAM = 'stream';
 }

@@ -29,7 +29,7 @@ namespace TechDivision\Import\Subjects;
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
  */
-interface EavSubjectInterface
+interface EavSubjectInterface extends CastValueSubjectInterface
 {
 
     /**
@@ -63,16 +63,6 @@ interface EavSubjectInterface
      * @return array The mapping for the supported backend types
      */
     public function getBackendTypes();
-
-    /**
-     * Cast's the passed value based on the backend type information.
-     *
-     * @param string $backendType The backend type to cast to
-     * @param mixed  $value       The value to be casted
-     *
-     * @return mixed The casted value
-     */
-    public function castValueByBackendType($backendType, $value);
 
     /**
      * Set's the attribute set of the product that has to be created.

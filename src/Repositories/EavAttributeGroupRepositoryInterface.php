@@ -50,4 +50,15 @@ interface EavAttributeGroupRepositoryInterface extends RepositoryInterface
      * @return array|boolean The EAV attribute groups for the passed attribute ID
      */
     public function findAllByAttributeSetId($attributeSetId);
+
+    /**
+     * Return's the EAV attribute group with the passed entity type code, attribute set and attribute group name.
+     *
+     * @param string $entityTypeCode     The entity type code of the EAV attribute group to return
+     * @param string $attributeSetName   The attribute set name of the EAV attribute group to return
+     * @param string $attributeGroupName The attribute group name of the EAV attribute group to return
+     *
+     * @return array The EAV attribute group
+     */
+    public function findOneByEntityTypeCodeAndAttributeSetNameAndAttributeGroupName($entityTypeCode, $attributeSetName, $attributeGroupName);
 }

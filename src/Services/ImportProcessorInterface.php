@@ -118,6 +118,13 @@ interface ImportProcessorInterface
     public function getEavAttributeGroupRepository();
 
     /**
+     * Return's the repository to access EAV attribute option values.
+     *
+     * @return \TechDivision\Import\Repositories\EavAttributeOptionValueRepositoryInterface The repository instance
+     */
+    public function getEavAttributeOptionValueRepository();
+
+    /**
      * Return's the repository to access stores.
      *
      * @return \TechDivision\Import\Repositories\StoreRepositoryInterface The repository instance
@@ -167,25 +174,46 @@ interface ImportProcessorInterface
     public function getCoreConfigDataRepository();
 
     /**
+     * Return's the repository to access the customer groups.
+     *
+     * @return \TechDivision\Import\Repositories\CustomerGroupRepositoryInterface The repository instance
+     */
+    public function getCustomerGroupRepository();
+
+    /**
+     * Return's the repository to access the admin users.
+     *
+     * @return \TechDivision\Import\Repositories\AdminUserRepositoryInterface The repository instance
+     */
+    public function getAdminUserRepository();
+
+    /**
      * Return's the action with the store CRUD methods.
      *
-     * @return \TechDivision\Import\Actions\StoreActionInterface The action instance
+     * @return \TechDivision\Import\Actions\ActionInterface The action instance
      */
     public function getStoreAction();
 
     /**
      * Return's the action with the store group CRUD methods.
      *
-     * @return \TechDivision\Import\Actions\StoreGroupActionInterface The action instance
+     * @return \TechDivision\Import\Actions\ActionInterface The action instance
      */
     public function getStoreGroupAction();
 
     /**
      * Return's the action with the store website CRUD methods.
      *
-     * @return \TechDivision\Import\Actions\StoreWebsiteActionInterface The action instance
+     * @return \TechDivision\Import\Actions\ActionInterface The action instance
      */
     public function getStoreWebsiteAction();
+
+    /**
+     * Return's the action with the import history CRUD methods.
+     *
+     * @return \TechDivision\Import\Actions\ActionInterface The action instance
+     */
+    public function getImportHistoryAction();
 
     /**
      * Return's the EAV attribute set with the passed ID.
@@ -214,6 +242,16 @@ interface ImportProcessorInterface
      * @return array|boolean The EAV attribute groups for the passed attribute ID
      */
     public function getEavAttributeGroupsByAttributeSetId($attributeSetId);
+
+    /**
+     * Load's and return's the available EAV attribute option values by the passed entity type and store ID.
+     *
+     * @param integer $entityTypeId The entity type ID of the attribute option values to return
+     * @param integer $storeId      The store ID of the attribute option values to return
+     *
+     * @return array The EAV attribute option values
+     */
+    public function getEavAttributeOptionValuesByEntityTypeIdAndStoreId($entityTypeId, $storeId);
 
     /**
      * Return's an array with the EAV attributes for the passed entity type ID and attribute set name.
@@ -264,6 +302,34 @@ interface ImportProcessorInterface
      * @return array The array with the EAV attributes matching the passed entity type and user defined flag
      */
     public function getEavAttributesByEntityTypeIdAndIsUserDefined($entityTypeId, $isUserDefined = 1);
+
+    /**
+     * Return's an array with the availabe EAV attributes for the passed entity type.
+     *
+     * @param integer $entityTypeId The entity type ID of the EAV attributes to return
+     *
+     * @return array The array with the EAV attributes matching the passed entity type
+     */
+    public function getEavAttributesByEntityTypeId($entityTypeId);
+
+    /**
+     * Return's the EAV attribute with the passed entity type ID and code.
+     *
+     * @param integer $entityTypeId  The entity type ID of the EAV attribute to return
+     * @param string  $attributeCode The code of the EAV attribute to return
+     *
+     * @return array The EAV attribute
+     */
+    public function getEavAttributeByEntityTypeIdAndAttributeCode($entityTypeId, $attributeCode);
+
+    /**
+     * Return's an EAV entity type with the passed entity type code.
+     *
+     * @param string $entityTypeCode The code of the entity type to return
+     *
+     * @return array The entity type with the passed entity type code
+     */
+    public function getEavEntityTypeByEntityTypeCode($entityTypeCode);
 
     /**
      * Return's an array with all available EAV entity types with the entity type code as key.
@@ -353,6 +419,29 @@ interface ImportProcessorInterface
     public function getCoreConfigData();
 
     /**
+     * Returns the customer groups.
+     *
+     * @return array The customer groups
+     */
+    public function getCustomerGroups();
+
+    /**
+     * Return's an array with all available admin users.
+     *
+     * @return array The available admin users
+     */
+    public function getAdminUsers();
+
+    /**
+     * Load's and return's the admin user with the passed username.
+     *
+     * @param string $username The username of the admin user to return
+     *
+     * @return array|null The admin user with the passed username
+     */
+    public function getAdminUserByUsername($username);
+
+    /**
      * Persist's the passed store.
      *
      * @param array $store The store to persist
@@ -378,6 +467,15 @@ interface ImportProcessorInterface
      * @return void
      */
     public function persistStoreWebsite(array $storeWebsite);
+
+    /**
+     * Persist's the passed import history.
+     *
+     * @param array $importHistory The import history to persist
+     *
+     * @return void
+     */
+    public function persistImportHistory(array $importHistory);
 
     /**
      * Returns the array with the global data necessary for the

@@ -1,0 +1,28 @@
+{
+  "listeners": [
+    {
+      "app.set.up": [
+        "import.listener.render.ansi.art",
+        "import.listener.render.operation.info",
+        "import.listener.render.mysql.info",
+        "import.listener.render.debug.info",
+        "import.listener.initialize.registry"
+      ],
+      "app.process.transaction.success": [
+        "import.listener.finalize.registry",
+        "import.listener.archive",
+        "import.listener.clear.artefacts",
+        "import.listener.clear.directories",
+        "import.listener.operation.report"
+      ],
+      "app.process.transaction.failure": [
+        "import.listener.finalize.registry",
+        "import.listener.render.validations"
+      ],
+      "app.tear.down": [
+        "import.listener.import.history",
+        "import.listener.clear.registry"
+      ]
+    }
+  ]
+}

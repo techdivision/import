@@ -71,6 +71,7 @@ trait AttributeObserverTrait
      * The array with the column keys that has to be cleaned up when their values are empty.
      *
      * @var array
+     * @deprecated Will be removed up from version 17.0.0
      */
     protected $cleanUpEmptyColumnKeys;
 
@@ -105,37 +106,48 @@ trait AttributeObserverTrait
      * Remove all the empty values from the row and return the cleared row.
      *
      * @return array The cleared row
+     * @todo Move initialization of $this->cleanUpEmptyColumnKeys to createObserver() method and implement ObserverFactoryInterface
      */
     protected function clearRow()
     {
 
-        // query whether or not the column keys has been initialized
-        if ($this->cleanUpEmptyColumnKeys === null) {
-            // initialize the array with the column keys that has to be cleaned-up
-            $this->cleanUpEmptyColumnKeys = array();
+        // initialize the array with the column keys that has to be cleaned-up
+        $this->cleanUpEmptyColumnKeys = array();
 
-            // query whether or not column names that has to be cleaned up have been configured
-            if ($this->getSubject()->getConfiguration()->hasParam(ConfigurationKeys::CLEAN_UP_EMPTY_COLUMNS)) {
-                // if yes, load the column names
-                $cleanUpEmptyColumns = $this->getSubject()->getCleanUpColumns();
+        // query whether or not column names that has to be cleaned up have been configured
+        if ($this->getSubject()->getConfiguration()->hasParam(ConfigurationKeys::CLEAN_UP_EMPTY_COLUMNS)) {
+            // if yes, load the column names
+            $cleanUpEmptyColumns = $this->getSubject()->getCleanUpColumns();
 
-                // translate the column names into column keys
-                foreach ($cleanUpEmptyColumns as $cleanUpEmptyColumn) {
-                    if ($this->hasHeader($cleanUpEmptyColumn)) {
-                        $this->cleanUpEmptyColumnKeys[] = $this->getHeader($cleanUpEmptyColumn);
-                    }
+            // translate the column names into column keys
+            foreach ($cleanUpEmptyColumns as $cleanUpEmptyColumn) {
+                if ($this->hasHeader($cleanUpEmptyColumn)) {
+                    $this->cleanUpEmptyColumnKeys[] = $this->getHeader($cleanUpEmptyColumn);
                 }
             }
         }
 
         // remove all the empty values from the row, expected the columns has to be cleaned-up
-        return array_filter(
-            $this->row,
-            function ($value, $key) {
-                return ($value !== null && $value !== '') || in_array($key, $this->cleanUpEmptyColumnKeys);
-            },
-            ARRAY_FILTER_USE_BOTH
-        );
+        foreach ($this->row as $key => $value) {
+            // query whether or not the value is empty AND the column has NOT to be cleaned-up
+            if (($value === null || $value === '') && in_array($key, $this->cleanUpEmptyColumnKeys) === false) {
+                unset($this->row[$key]);
+            }
+        }
+
+        // finally return the clean row
+        return $this->row;
+    }
+
+    /**
+     * Returns the value(s) of the primary key column(s). As the primary key column can
+     * also consist of two columns, the return value can be an array also.
+     *
+     * @return mixed The primary key value(s)
+     */
+    protected function getPrimaryKeyValue()
+    {
+        return $this->getValue($this->getPrimaryKeyColumnName());
     }
 
     /**
@@ -149,9 +161,6 @@ trait AttributeObserverTrait
         // initialize the store view code
         $this->prepareStoreViewCode();
 
-        // load the PK
-        $pk = $this->getValue($this->getPrimaryKeyColumnName());
-
         // load the store ID, use the admin store if NO store view code has been set
         $storeId = $this->getRowStoreId(StoreViewCodes::ADMIN);
 
@@ -163,12 +172,12 @@ trait AttributeObserverTrait
         $storeViewCode = $this->getSubject()->getStoreViewCode(StoreViewCodes::ADMIN);
 
         // query whether or not the row has already been processed
-        if ($this->storeViewHasBeenProcessed($pk, $storeViewCode)) {
+        if ($this->storeViewHasBeenProcessed($pk = $this->getPrimaryKeyValue(), $storeViewCode)) {
             // log a message
             $this->getSystemLogger()->warning(
                 $this->appendExceptionSuffix(
                     sprintf(
-                        'Attributes for %s "%s" + store view code "%s" has already been processed',
+                        'Attributes for "%s" "%s" + store view code "%s" has already been processed',
                         $this->getPrimaryKeyColumnName(),
                         $pk,
                         $storeViewCode
@@ -199,7 +208,7 @@ trait AttributeObserverTrait
                     $this->getSystemLogger()->debug(
                         $this->appendExceptionSuffix(
                             sprintf(
-                                'Can\'t find attribute with attribute code %s',
+                                'Can\'t find attribute with attribute code "%s"',
                                 $attributeCode
                             )
                         )
@@ -208,7 +217,6 @@ trait AttributeObserverTrait
 
                 // stop processing
                 continue;
-
             } else {
                 // log a message in debug mode
                 if ($this->isDebugMode()) {
@@ -216,7 +224,7 @@ trait AttributeObserverTrait
                     $this->getSystemLogger()->debug(
                         $this->appendExceptionSuffix(
                             sprintf(
-                                'Found attribute with attribute code %s',
+                                'Found attribute with attribute code "%s"',
                                 $attributeCode
                             )
                         )
@@ -234,7 +242,7 @@ trait AttributeObserverTrait
                 $this->getSystemLogger()->warning(
                     $this->appendExceptionSuffix(
                         sprintf(
-                            'Found EMTPY backend type for attribute %s',
+                            'Found EMTPY backend type for attribute "%s"',
                             $attributeCode
                         )
                     )
@@ -261,18 +269,22 @@ trait AttributeObserverTrait
                 // set the attribute value
                 $this->attributeValue = $attributeValue;
 
-                // prepare/initialize the attribute value
-                $value = $this->initializeAttribute($this->prepareAttributes());
-
-                // query whether or not the entity's value has to be persisted or deleted. if the value is
-                // an empty string and the status is UPDATE, then the value exists and has to be deleted
-                if ($value[MemberNames::VALUE] === '' && $value[EntityStatus::MEMBER_NAME] === EntityStatus::STATUS_UPDATE) {
-                    $this->$deleteMethod(array(MemberNames::VALUE_ID => $value[MemberNames::VALUE_ID]));
-                } elseif ($value[MemberNames::VALUE] !== '' && $value[MemberNames::VALUE] !== null) {
-                    $this->$persistMethod($value);
+                // prepare the attribute vale and query whether or not it has to be persisted
+                if ($this->hasChanges($value = $this->initializeAttribute($this->prepareAttributes()))) {
+                    // query whether or not the entity's value has to be persisted or deleted. if the value is
+                    // an empty string and the status is UPDATE, then the value exists and has to be deleted
+                    // We need to user $attributeValue instead of $value[MemberNames::VALUE] in cases where
+                    // value was casted by attribute type. E.g. special_price = 0 if value is empty string in CSV
+                    if ($attributeValue === '' && $value[EntityStatus::MEMBER_NAME] === EntityStatus::STATUS_UPDATE) {
+                        $this->$deleteMethod(array(MemberNames::VALUE_ID => $value[MemberNames::VALUE_ID]));
+                    } elseif ($attributeValue !== '' && $value[MemberNames::VALUE] !== null) {
+                        $this->$persistMethod($value);
+                    } else {
+                        // log a debug message, because this should never happen
+                        $this->getSubject()->getSystemLogger()->debug(sprintf('Found empty value for attribute "%s"', $attributeCode));
+                    }
                 } else {
-                    // log a debug message, because this should never happen
-                    $this->getSubject()->getSystemLogger()->debug(sprintf('Found empty value for attribute "%s"', $attributeCode));
+                    $this->getSubject()->getSystemLogger()->debug(sprintf('Skip to persist value for attribute "%s"', $attributeCode));
                 }
 
                 // continue with the next value
@@ -283,7 +295,7 @@ trait AttributeObserverTrait
             $this->getSystemLogger()->debug(
                 $this->getSubject()->appendExceptionSuffix(
                     sprintf(
-                        'Found invalid backend type %s for attribute %s',
+                        'Found invalid backend type %s for attribute "%s"',
                         $backendType,
                         $attributeCode
                     )
@@ -518,4 +530,13 @@ trait AttributeObserverTrait
      * @return void
      */
     abstract protected function deleteVarcharAttribute(array $row, $name = null);
+
+    /**
+     * Query whether or not the entity has to be processed.
+     *
+     * @param array $entity The entity to query for
+     *
+     * @return boolean TRUE if the entity has to be processed, else FALSE
+     */
+    abstract protected function hasChanges(array $entity);
 }

@@ -38,4 +38,13 @@ interface EavEntityTypeRepositoryInterface extends RepositoryInterface
      * @return array The available link types
      */
     public function findAll();
+
+    /**
+     * Return's an EAV entity type with the passed entity type code.
+     *
+     * @param string $entityTypeCode The code of the entity type to return
+     *
+     * @return array The entity type with the passed entity type code
+     */
+    public function findOneByEntityTypeCode($entityTypeCode);
 }

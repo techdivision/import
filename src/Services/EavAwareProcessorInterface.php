@@ -33,13 +33,23 @@ interface EavAwareProcessorInterface
 {
 
     /**
-     * Load's and return's the EAV attribute option value with the passed code, store ID and value.
+     * Return's an EAV entity type with the passed entity type code.
      *
+     * @param string $entityTypeCode The code of the entity type to return
+     *
+     * @return array The entity type with the passed entity type code
+     */
+    public function loadEavEntityTypeByEntityTypeCode($entityTypeCode);
+
+    /**
+     * Load's and return's the EAV attribute option value with the passed entity type ID, code, store ID and value.
+     *
+     * @param string  $entityTypeId  The entity type ID of the EAV attribute to load the option value for
      * @param string  $attributeCode The code of the EAV attribute option to load
      * @param integer $storeId       The store ID of the attribute option to load
      * @param string  $value         The value of the attribute option to load
      *
      * @return array The EAV attribute option value
      */
-    public function loadEavAttributeOptionValueByAttributeCodeAndStoreIdAndValue($attributeCode, $storeId, $value);
+    public function loadAttributeOptionValueByEntityTypeIdAndAttributeCodeAndStoreIdAndValue($entityTypeId, $attributeCode, $storeId, $value);
 }

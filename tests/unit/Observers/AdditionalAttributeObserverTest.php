@@ -20,6 +20,7 @@
 
 namespace TechDivision\Import\Observers;
 
+use PHPUnit\Framework\TestCase;
 use TechDivision\Import\Utils\ColumnKeys;
 
 /**
@@ -31,7 +32,7 @@ use TechDivision\Import\Utils\ColumnKeys;
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
  */
-class AdditionalAttributeObserverTest extends \PHPUnit_Framework_TestCase
+class AdditionalAttributeObserverTest extends TestCase
 {
 
     /**
@@ -46,7 +47,7 @@ class AdditionalAttributeObserverTest extends \PHPUnit_Framework_TestCase
      * This method is called before a test is executed.
      *
      * @return void
-     * @see \PHPUnit_Framework_TestCase::setUp()
+     * @see \PHPUnit\Framework\TestCase::setUp()
      */
     protected function setUp()
     {
@@ -70,28 +71,6 @@ class AdditionalAttributeObserverTest extends \PHPUnit_Framework_TestCase
 
         // create a dummy CSV file row
         $row = array(0 => $additionalAttributes);
-
-        // create a mock configuration
-        $mockConfiguration = $this->getMockBuilder('TechDivision\Import\ConfigurationInterface')
-                                  ->setMethods(get_class_methods('TechDivision\Import\ConfigurationInterface'))
-                                  ->getMock();
-        $mockConfiguration->expects($this->once())
-                          ->method('getDelimiter')
-                          ->willReturn(',');
-        $mockConfiguration->expects($this->once())
-                          ->method('getEnclosure')
-                          ->willReturn('"');
-        $mockConfiguration->expects($this->once())
-                          ->method('getEscape')
-                          ->willReturn('\\');
-
-        // create a mock subject configuruation
-        $mockSubjectConfiguration = $this->getMockBuilder('TechDivision\Import\Configuration\SubjectConfigurationInterface')
-                                         ->setMethods(get_class_methods('TechDivision\Import\Configuration\SubjectConfigurationInterface'))
-                                         ->getMock();
-        $mockSubjectConfiguration->expects($this->once())
-                                 ->method('getConfiguration')
-                                 ->willReturn($mockConfiguration);
 
         // mock a system logger
         $mockSystemLogger = $this->getMockBuilder('Psr\Log\LoggerInterface')
@@ -128,9 +107,6 @@ class AdditionalAttributeObserverTest extends \PHPUnit_Framework_TestCase
                             ->setMethods(get_class_methods('TechDivision\Import\Subjects\SubjectInterface'))
                             ->getMock();
         $mockSubject->expects($this->any())
-                    ->method('getConfiguration')
-                    ->willReturn($mockSubjectConfiguration);
-        $mockSubject->expects($this->any())
                     ->method('isDebugMode')
                     ->willReturn(true);
         $mockSubject->expects($this->once())
@@ -145,6 +121,9 @@ class AdditionalAttributeObserverTest extends \PHPUnit_Framework_TestCase
         $mockSubject->expects($this->exactly(2))
                     ->method('getLineNumber')
                     ->willReturn($lineNumber);
+        $mockSubject->expects($this->once())
+                    ->method('getMultipleFieldDelimiter')
+                    ->willReturn($multipleFieldDelimiter = ',');
         $mockSubject->expects($this->any())
                     ->method('hasHeader')
                     ->withConsecutive(
@@ -168,13 +147,15 @@ class AdditionalAttributeObserverTest extends \PHPUnit_Framework_TestCase
                         array($col2)
                      )
                     ->willReturn(0);
-        $mockSubject->expects($this->exactly(2))
+        $mockSubject->expects($this->exactly(3))
                     ->method('explode')
                     ->withConsecutive(
+                        array(sprintf('%s=%s,%s=%s', $col1, $val1, $col2, $val2), $multipleFieldDelimiter),
                         array(sprintf('%s=%s', $col1, $val1)),
                         array(sprintf('%s=%s', $col2, $val2))
                     )
                     ->willReturnOnConsecutiveCalls(
+                        array(sprintf('%s=%s', $col1, $val1), sprintf('%s=%s', $col2, $val2)),
                         array($col1, $val1),
                         array($col2, $val2)
                     );
@@ -222,28 +203,6 @@ class AdditionalAttributeObserverTest extends \PHPUnit_Framework_TestCase
 
         // create a dummy CSV file row
         $row = array(0 => $additionalAttributes);
-
-        // create a mock configuration
-        $mockConfiguration = $this->getMockBuilder('TechDivision\Import\ConfigurationInterface')
-            ->setMethods(get_class_methods('TechDivision\Import\ConfigurationInterface'))
-            ->getMock();
-        $mockConfiguration->expects($this->once())
-            ->method('getDelimiter')
-            ->willReturn(',');
-        $mockConfiguration->expects($this->once())
-            ->method('getEnclosure')
-            ->willReturn('"');
-        $mockConfiguration->expects($this->once())
-            ->method('getEscape')
-            ->willReturn('\\');
-
-        // create a mock subject configuruation
-        $mockSubjectConfiguration = $this->getMockBuilder('TechDivision\Import\Configuration\SubjectConfigurationInterface')
-            ->setMethods(get_class_methods('TechDivision\Import\Configuration\SubjectConfigurationInterface'))
-            ->getMock();
-        $mockSubjectConfiguration->expects($this->once())
-            ->method('getConfiguration')
-            ->willReturn($mockConfiguration);
 
         // mock a system logger
         $mockSystemLogger = $this->getMockBuilder('Psr\Log\LoggerInterface')
@@ -369,9 +328,6 @@ class AdditionalAttributeObserverTest extends \PHPUnit_Framework_TestCase
             ->setMethods(get_class_methods('TechDivision\Import\Subjects\SubjectInterface'))
             ->getMock();
         $mockSubject->expects($this->any())
-            ->method('getConfiguration')
-            ->willReturn($mockSubjectConfiguration);
-        $mockSubject->expects($this->any())
             ->method('isDebugMode')
             ->willReturn(true);
         $mockSubject->expects($this->once())
@@ -386,6 +342,9 @@ class AdditionalAttributeObserverTest extends \PHPUnit_Framework_TestCase
         $mockSubject->expects($this->exactly(11))
             ->method('getLineNumber')
             ->willReturn($lineNumber);
+        $mockSubject->expects($this->once())
+            ->method('getMultipleFieldDelimiter')
+            ->willReturn($multipleFieldDelimiter = ',');
         $mockSubject->expects($this->exactly(12))
             ->method('hasHeader')
             ->withConsecutive(
@@ -436,9 +395,26 @@ class AdditionalAttributeObserverTest extends \PHPUnit_Framework_TestCase
                 array($col11)
             )
             ->willReturn(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11);
-        $mockSubject->expects($this->exactly(11))
+        $mockSubject->expects($this->exactly(12))
             ->method('explode')
             ->withConsecutive(
+                array(
+                    sprintf(
+                        '"%s=%s","%s=%s","%s=%s","%s=%s","%s=%s","%s=%s","%s=%s","%s=%s","%s=%s","%s=%s","%s=%s"',
+                        $col1, $val1,
+                        $col2, $val2,
+                        $col3, $val3,
+                        $col4, $val4,
+                        $col5, $val5,
+                        $col6, $val6,
+                        $col7, $val7,
+                        $col8, $val8,
+                        $col9, $val9,
+                        $col10, $val10,
+                        $col11, $val11
+                    ),
+                    $multipleFieldDelimiter
+                ),
                 array(sprintf('%s=%s', $col1, $val1)),
                 array(sprintf('%s=%s', $col2, $val2)),
                 array(sprintf('%s=%s', $col3, $val3)),
@@ -452,6 +428,19 @@ class AdditionalAttributeObserverTest extends \PHPUnit_Framework_TestCase
                 array(sprintf('%s=%s', $col11, $val11))
             )
             ->willReturnOnConsecutiveCalls(
+                array(
+                    sprintf('%s=%s', $col1, $val1),
+                    sprintf('%s=%s', $col2, $val2),
+                    sprintf('%s=%s', $col3, $val3),
+                    sprintf('%s=%s', $col4, $val4),
+                    sprintf('%s=%s', $col5, $val5),
+                    sprintf('%s=%s', $col6, $val6),
+                    sprintf('%s=%s', $col7, $val7),
+                    sprintf('%s=%s', $col8, $val8),
+                    sprintf('%s=%s', $col9, $val9),
+                    sprintf('%s=%s', $col10, $val10),
+                    sprintf('%s=%s', $col11, $val11)
+                ),
                 array($col1, $val1),
                 array($col2, $val2),
                 array($col3, $val3),

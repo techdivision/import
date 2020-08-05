@@ -63,8 +63,11 @@ class TaxClassRepository extends AbstractRepository implements TaxClassRepositor
         // execute the prepared statement
         $this->taxClassesStmt->execute();
 
+        // load the available tax classes
+        $availableTaxClasses = $this->taxClassesStmt->fetchAll();
+
         // fetch the tax classes and assemble them as array with the class name as key
-        foreach ($this->taxClassesStmt->fetchAll() as $taxClass) {
+        foreach ($availableTaxClasses as $taxClass) {
             $taxClasses[$taxClass[MemberNames::CLASS_NAME]] = $taxClass;
         }
 

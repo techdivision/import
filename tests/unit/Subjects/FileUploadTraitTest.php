@@ -20,6 +20,8 @@
 
 namespace TechDivision\Import\Subjects;
 
+use PHPUnit\Framework\TestCase;
+
 /**
  * Test class for the file upload trait implementation.
  *
@@ -29,7 +31,7 @@ namespace TechDivision\Import\Subjects;
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
  */
-class FileUploadTraitTest extends \PHPUnit_Framework_TestCase
+class FileUploadTraitTest extends TestCase
 {
 
     /**
@@ -44,7 +46,7 @@ class FileUploadTraitTest extends \PHPUnit_Framework_TestCase
      * This method is called before a test is executed.
      *
      * @return void
-     * @see \PHPUnit_Framework_TestCase::setUp()
+     * @see \PHPUnit\Framework\TestCase::setUp()
      */
     protected function setUp()
     {
@@ -190,7 +192,7 @@ class FileUploadTraitTest extends \PHPUnit_Framework_TestCase
      * @return void
      *
      * @expectedException \Exception
-     * @expectedExceptionMessage Media file pub/images/a/b/test.jpg not available
+     * @expectedExceptionMessage Media file "pub/images/a/b/test.jpg" is not available
      */
     public function testUploadFileWithNotExistingFile()
     {

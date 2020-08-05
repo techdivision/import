@@ -61,8 +61,12 @@ class ObserverVisitor implements ObserverVisitorInterface
      */
     public function visit(SubjectInterface $subject)
     {
+
+        // load the observers from the configuration
+        $availableObservers = $subject->getConfiguration()->getObservers();
+
         // prepare the observers
-        foreach ($subject->getConfiguration()->getObservers() as $observers) {
+        foreach ($availableObservers as $observers) {
             $this->prepareObservers($subject, $observers);
         }
     }
@@ -90,7 +94,23 @@ class ObserverVisitor implements ObserverVisitorInterface
             if (is_array($observer)) {
                 $this->prepareObservers($subject, $observer, $type);
             } else {
-                $subject->registerObserver($this->container->get($observer), $type);
+                // create the instance of the observer/factory
+                $instance = $this->container->get($observer);
+                // query whether or not a factory has been specified
+                if ($instance instanceof ObserverFactoryInterface) {
+                    $subject->registerObserver($instance->createObserver($subject), $type);
+                } elseif ($instance instanceof ObserverInterface) {
+                    $subject->registerObserver($instance, $type);
+                } else {
+                    throw new \InvalidArgumentException(
+                        sprintf(
+                            'Instance of "%s" doesn\'t implement interface "%s" or "%s"',
+                            $observer,
+                            ObserverFactoryInterface::class,
+                            ObserverInterface::class
+                        )
+                    );
+                }
             }
         }
     }

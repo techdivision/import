@@ -20,6 +20,8 @@
 
 namespace TechDivision\Import\Repositories;
 
+use PHPUnit\Framework\TestCase;
+use TechDivision\Import\Utils\TablePrefixUtil;
 use TechDivision\Import\Utils\SqlStatementKeys;
 
 /**
@@ -31,7 +33,7 @@ use TechDivision\Import\Utils\SqlStatementKeys;
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
  */
-class SqlStatementRepositoryTest extends \PHPUnit_Framework_TestCase
+class SqlStatementRepositoryTest extends TestCase
 {
 
     /**
@@ -46,11 +48,26 @@ class SqlStatementRepositoryTest extends \PHPUnit_Framework_TestCase
      * This method is called before a test is executed.
      *
      * @return void
-     * @see \PHPUnit_Framework_TestCase::setUp()
+     * @see \PHPUnit\Framework\TestCase::setUp()
      */
     protected function setUp()
     {
-        $this->sqlStatementRepository = new SqlStatementRepository();
+
+        // initialize the mock compiler instance
+        $mockCompiler = $this->getMockBuilder(TablePrefixUtil::class)
+            ->disableOriginalConstructor()
+            ->setMethods(array('getPrefixedTableName'))
+            ->getMock();
+        $mockCompiler->expects($this->any())
+            ->method('getPrefixedTableName')
+            ->willReturnArgument(0);
+
+        // initialize the traversable with the mock compilers
+        $compilers = new \ArrayObject();
+        $compilers->append($mockCompiler);
+
+        // initialize the SQL statement repository
+        $this->sqlStatementRepository = new SqlStatementRepository($compilers);
     }
 
     /**
@@ -61,7 +78,7 @@ class SqlStatementRepositoryTest extends \PHPUnit_Framework_TestCase
     public function testFindWithSuccess()
     {
 
-        // query whether or not the SQL statement can be loade
+        // query whether or not the SQL statement can be loaded
         $this->assertEquals('SELECT * FROM core_config_data', $this->sqlStatementRepository->load(SqlStatementKeys::CORE_CONFIG_DATA));
     }
 

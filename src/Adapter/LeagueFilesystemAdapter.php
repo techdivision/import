@@ -60,7 +60,7 @@ class LeagueFilesystemAdapter implements FilesystemAdapterInterface
      *
      * @return boolean TRUE on success, else FALSE
      */
-    public function mkdir($pathname, $mode = 0700)
+    public function mkdir($pathname, $mode = 0755)
     {
         return $this->filesystem->createDir($pathname, array('visibility' => $mode === 0755 ? 'public' : 'private'));
     }
@@ -167,11 +167,67 @@ class LeagueFilesystemAdapter implements FilesystemAdapterInterface
         $files = array();
 
         // load the filenames of the passed directory
-        foreach ($this->filesystem->listContents($directory, $recursive) as $key => $file) {
+        $contents = $this->filesystem->listContents($directory, $recursive);
+
+        // prepare the array with the file names
+        foreach ($contents as $key => $file) {
             $files[$key] = $file['path'];
         }
 
         // return the filenames
         return $files;
+    }
+
+    /**
+     * Removes the passed directory recursively.
+     *
+     * @param string  $src       Name of the directory to remove
+     * @param boolean $recursive TRUE if the directory has to be deleted recursive, else FALSE
+     *
+     * @return void
+     * @throws \Exception Is thrown, if the directory can not be removed
+     */
+    public function removeDir($src, $recursive = false)
+    {
+        $this->filesystem->deleteDir($src);
+    }
+
+    /**
+     * Find and return pathnames matching a pattern
+     *
+     * @param string $pattern No tilde expansion or parameter substitution is done.
+     * @param int    $flags   Flags that changes the behaviour
+     *
+     * @return array Containing the matched files/directories, an empty array if no file matched or FALSE on error
+     */
+    public function glob(string $pattern, int $flags = 0)
+    {
+        throw new \Exception(sprintf('Method "%s" has not yet been implemented', __METHOD__));
+    }
+
+    /**
+     * Return's the size of the file with the passed name.
+     *
+     * @param string $filename The name of the file to return the size for
+     *
+     * @return int The size of the file in bytes
+     * @throws \Exception  Is thrown, if the size can not be calculated
+     */
+    public function size($filename)
+    {
+        return $this->filesystem->getSize($filename);
+    }
+
+    /**
+     * Read's and return's the content of the file with the passed name as array.
+     *
+     * @param string $filename The name of the file to return its content for
+     *
+     * @return array The content of the file as array
+     * @throws \Exception  Is thrown, if the file is not accessible
+     */
+    public function read($filename)
+    {
+        return $this->filesystem->read($filename);
     }
 }

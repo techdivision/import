@@ -29,7 +29,7 @@ namespace TechDivision\Import\Adapter;
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
  */
-class PhpFilesystemAdapter implements FilesystemAdapterInterface
+class PhpFilesystemAdapter implements PhpFilesystemAdapterInterface
 {
 
     /**
@@ -41,7 +41,7 @@ class PhpFilesystemAdapter implements FilesystemAdapterInterface
      * @return boolean TRUE on success, else FALSE
      * @link http://php.net/mkdir
      */
-    public function mkdir($pathname, $mode = 0700)
+    public function mkdir($pathname, $mode = 0755)
     {
         return mkdir($pathname, $mode, true);
     }
@@ -149,17 +149,120 @@ class PhpFilesystemAdapter implements FilesystemAdapterInterface
     public function listContents($directory = '', $recursive = false)
     {
 
+        // clear the filecache
+        clearstatcache();
+
         // parse the directory
-        $files = glob($pattern = sprintf('%s/*', $directory), 0);
+        $files = $this->glob($pattern = sprintf('%s/*', $directory), 0);
 
         // parse all subdirectories, if recursive parsing is wanted
         if ($recursive !== false) {
-            foreach (glob(dirname($pattern). DIRECTORY_SEPARATOR . '*', GLOB_ONLYDIR|GLOB_NOSORT|GLOB_BRACE) as $dir) {
+            // load the directories
+            $dirs = $this->glob(dirname($pattern). DIRECTORY_SEPARATOR . '*', GLOB_ONLYDIR|GLOB_NOSORT|GLOB_BRACE);
+            // iterate over the subdirectories for its files
+            foreach ($dirs as $dir) {
                 $files = array_merge($files, $this->listContents($dir . DIRECTORY_SEPARATOR . basename($pattern), $recursive));
             }
         }
 
         // return the array with the files matching the glob pattern
         return $files;
+    }
+
+    /**
+     * Removes the passed directory recursively.
+     *
+     * @param string  $src       Name of the directory to remove
+     * @param boolean $recursive TRUE if the directory has to be deleted recursive, else FALSE
+     *
+     * @return void
+     * @throws \Exception Is thrown, if the directory can not be removed
+     */
+    public function removeDir($src, $recursive = false)
+    {
+
+        // open the directory
+        $dir = opendir($src);
+
+        // remove files/folders recursively
+        while (false !== ($file = readdir($dir))) {
+            if (($file != '.') && ($file != '..')) {
+                $full = $src . '/' . $file;
+                if ($this->isDir($full)) {
+                    $recursive ?? $this->removeDir($full, $recursive);
+                } else {
+                    if (!$this->delete($full)) {
+                        throw new \Exception(sprintf('Can\'t remove file %s', $full));
+                    }
+                }
+            }
+        }
+
+        // close handle and remove directory itself
+        closedir($dir);
+        if (!rmdir($src)) {
+            throw new \Exception(sprintf('Can\'t remove directory %s', $src));
+        }
+    }
+
+    /**
+     * Find and return pathnames matching a pattern
+     *
+     * @param string $pattern No tilde expansion or parameter substitution is done.
+     * @param int    $flags   Flags that changes the behaviour
+     *
+     * @return array Containing the matched files/directories, an empty array if no file matched or FALSE on error
+     * @link https://www.php.net/glob
+     */
+    public function glob(string $pattern, int $flags = 0)
+    {
+
+        // clear the filecache
+        clearstatcache();
+
+        // invoke the glob and return the array with the found files
+        return glob($pattern, $flags);
+    }
+
+    /**
+     * Return's the size of the file with the passed name.
+     *
+     * @param string $filename The name of the file to return the size for
+     *
+     * @return int The size of the file in bytes
+     * @throws \Exception  Is thrown, if the size can not be calculated
+     * @link https://php.net/filesize
+     */
+    public function size($filename)
+    {
+
+        // calculate the size of the file and return it
+        if (is_int($size = filesize($filename))) {
+            return $size;
+        }
+
+        // throw an exception if the size can not be calculated
+        throw new \Exception(sprintf('Can\'t calculate size of file "%s"', $filename));
+    }
+
+    /**
+     * Read's and return's the content of the file with the passed name as array.
+     *
+     * @param string $filename The name of the file to return its content for
+     *
+     * @return array The content of the file as array
+     * @throws \Exception  Is thrown, if the file is not accessible
+     * @link https://php.net/file
+     */
+    public function read($filename)
+    {
+
+        // read the content of the file and return it
+        if ($content = file($filename)) {
+            return $content;
+        }
+
+        // throw an exception if the content of the file is not accessible
+        throw new \Exception(sprintf('Can\'t read the content of file "%s"', $filename));
     }
 }

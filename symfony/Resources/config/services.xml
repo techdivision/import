@@ -3,17 +3,296 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
+    <parameters>
+        <parameter key="array_validator.nullable.true">true</parameter>
+        <parameter key="array_validator.nullable.false">false</parameter>
+        <parameter key="cache_type.static" type="constant">TechDivision\Import\Utils\CacheTypes::TYPE_STATIC</parameter>
+        <parameter key="cache_type.configurable" type="constant">TechDivision\Import\Utils\CacheTypes::TYPE_CONFIGURABLE</parameter>
+    </parameters>
+
     <services>
-    
+
+        <!--
+         | The DI configuration for the synthetic services
+         |-->
+        <!--
         <service id="configuration.import.plugin.archive" synthetic="true" />
         <service id="configuration.import.plugin.subject" synthetic="true" />
         <service id="configuration.import.plugin.global.data" synthetic="true" />
         <service id="configuration.import.plugin.missing.option.values" synthetic="true" />
         <service id="configuration.import.subject.move.files" synthetic="true" />
+        -->
 
+        <!--
+         | The DI configuration for the logger services
+         |-->
+        <service id="import.logger.processor.memory.peak.usage" class="Monolog\Processor\MemoryPeakUsageProcessor"/>
+        <service id="import.logger.factory.formatter.line" class="TechDivision\Import\Loggers\LineFormatterFactory"/>
+        <service id="import.logger.processor.serial" class="TechDivision\Import\Loggers\SerialProcessor">
+            <argument type="service" id="configuration"/>
+        </service>
+        <service id="import.logger.factory.monolog.formatter" class="TechDivision\Import\Loggers\MonologLoggerFormatterFactory">
+            <argument type="service" id="service_container"/>
+        </service>
+        <service id="import.logger.factory.monolog.handler" class="TechDivision\Import\Loggers\MonologLoggerHandlerFactory">
+            <argument type="service" id="service_container"/>
+            <argument type="service" id="import.logger.factory.monolog.formatter"/>
+        </service>
+        <service id="import.logger.factory.monolog" class="TechDivision\Import\Loggers\MonologLoggerFactory">
+            <argument type="service" id="service_container"/>
+            <argument type="service" id="import.logger.factory.monolog.handler"/>
+        </service>
+        <service id="import.logger.factory.handler.error.log" class="TechDivision\Import\Loggers\ErrorLogHandlerFactory">
+            <argument type="service" id="configuration"/>
+        </service>
+        <service id="import.logger.factory.handler.swift" class="TechDivision\Import\Loggers\SwiftMailerHandlerFactory">
+            <argument type="service" id="service_container"/>
+            <argument type="service" id="configuration"/>
+        </service>
+        <service id="import.logger.factory.handler.stream" class="TechDivision\Import\Loggers\StreamHandlerFactory">
+            <argument type="service" id="configuration"/>
+            <argument type="service" id="import.processor.registry"/>
+        </service>
+        <service id="import.logger.factory.transport.swift.smtp" class="TechDivision\Import\Loggers\SwiftMailer\SmtpTransportMailerFactory"/>
+        <service id="import.logger.factory.transport.swift.sendmail" class="TechDivision\Import\Loggers\SwiftMailer\SendmailTransportMailerFactory"/>
+        <service id="import.logger.factory.handler.stream.wrapper" class="TechDivision\Import\Loggers\WrapperHandlerFactory">
+            <argument type="service" id="import.logger.factory.handler.stream"/>
+        </service>
+        <service id="import.logger.handler.null" class="Monolog\Handler\NullHandler"/>
+
+        <!--
+         | The DI configuration for the UID generator
+         |-->
         <service id="import.generator.core.config.data.uid" class="TechDivision\Import\Utils\Generators\CoreConfigDataUidGenerator"/>
 
-        <service id="import.repository.sql.statement" class="TechDivision\Import\Repositories\SqlStatementRepository"/>
+        <!--
+         | The DI utility configuration
+         |-->
+        <service id="import.util.cache.key" class="TechDivision\Import\Utils\CacheKeyUtil">
+            <argument type="service" id="configuration"/>
+        </service>
+        <service id="import.util.primary.key" class="TechDivision\Import\Utils\PrimaryKeyUtil">
+            <argument type="service" id="configuration"/>
+        </service>
+        <service id="import.util.table.prefix" class="TechDivision\Import\Utils\TablePrefixUtil">
+            <argument type="service" id="configuration"/>
+        </service>
+        <service id="import.util.sql.compilers" class="\ArrayObject">
+            <call method="append">
+                <argument id="import.util.primary.key" type="service"/>
+            </call>
+            <call method="append">
+                <argument id="import.util.table.prefix" type="service"/>
+            </call>
+            <call method="append">
+                <argument id="import.util.column.names" type="service"/>
+            </call>
+            <call method="append">
+                <argument id="import.util.column.placeholders" type="service"/>
+            </call>
+            <call method="append">
+                <argument id="import.util.column.values" type="service"/>
+            </call>
+        </service>
+        <service id="import.util.column.names" class="TechDivision\Import\Utils\ColumnNamesUtil">
+            <argument type="service" id="import.loader.exclude.primary.key.column.name"/>
+            <argument type="service" id="import.util.table.prefix"/>
+        </service>
+        <service id="import.util.column.placeholders" class="TechDivision\Import\Utils\ColumnPlaceholdersUtil">
+            <argument type="service" id="import.loader.exclude.primary.key.column.name"/>
+            <argument type="service" id="import.util.table.prefix"/>
+        </service>
+        <service id="import.util.column.values" class="TechDivision\Import\Utils\ColumnValuesUtil">
+            <argument type="service" id="import.loader.exclude.primary.key.column.name"/>
+            <argument type="service" id="import.util.table.prefix"/>
+        </service>
+        <service id="import.util.sanitizer.column" class="TechDivision\Import\Utils\ColumnSanitizer"/>
+        <service id="import.util.sql.sanitizers" class="\ArrayObject">
+            <call method="append">
+                <argument id="import.util.sanitizer.column" type="service"/>
+            </call>
+        </service>
+
+        <!--
+         | The DI finder factory configuration
+         |-->
+        <service id="import.repository.finder.factory.simple" class="TechDivision\Import\Repositories\Finders\SimpleFinderFactory"/>
+        <service id="import.repository.finder.factory.yielded" class="TechDivision\Import\Repositories\Finders\YieldedFinderFactory"/>
+        <service id="import.repository.finder.factory.unique" class="TechDivision\Import\Repositories\Finders\UniqueFinderFactory"/>
+        <service id="import.repository.finder.factory.configurable" class="TechDivision\Import\Repositories\Finders\ConfigurableFinderFactory">
+            <argument type="service" id="service_container"/>
+            <argument type="service" id="configuration"/>
+        </service>
+
+        <!--
+         | The DI state detector configuration
+         |-->
+        <service id="import.observers.state.detector.simple" class="TechDivision\Import\Observers\StateDetectors\SimpleStateDetector"/>
+
+        <!--
+         | The DI validation renderer configuration
+         |-->
+        <service id="import.renderer.validations" class="\ArrayObject">
+            <call method="append">
+                <argument id="import.renderer.console.table" type="service"/>
+            </call>
+            <call method="append">
+                <argument id="import.renderer.validations.json.file" type="service"/>
+            </call>
+            <call method="append">
+                <argument id="import.renderer.validations.system.logger" type="service"/>
+            </call>
+        </service>
+        <service id="import.renderer.validations.json.file" class="TechDivision\Import\Listeners\Renderer\Validations\JsonFileRenderer">
+            <argument type="service" id="import.processor.registry"/>
+        </service>
+        <service id="import.renderer.console.table" class="TechDivision\Import\Listeners\Renderer\Validations\GenericConsoleTableRenderer">
+            <argument type="service" id="input"/>
+            <argument type="service" id="output"/>
+        </service>
+        <service id="import.renderer.validations.system.logger" class="TechDivision\Import\Listeners\Renderer\Validations\SystemLoggerRenderer">
+            <argument type="service" id="configuration"/>
+            <argument type="service" id="loggers"/>
+        </service>
+
+        <!--
+         | The DI loader configuration
+         |-->
+        <service id="import.loader.attribute.set.name" class="TechDivision\Import\Loaders\AttributeSetNameLoader">
+            <argument type="service" id="import.processor.import"/>
+        </service>
+        <service id="import.loader.attribute.group.name" class="TechDivision\Import\Loaders\AttributeGroupNameLoader">
+            <argument type="service" id="import.processor.import"/>
+        </service>
+        <service id="import.loader.entity.type.code" class="TechDivision\Import\Loaders\EntityTypeCodeLoader">
+            <argument type="service" id="import.processor.import"/>
+        </service>
+        <service id="import.loader.custom.validations" class="TechDivision\Import\Loaders\ConfigurationValueLoader">
+            <argument type="constant">TechDivision\Import\Utils\ConfigurationKeys::CUSTOM_VALIDATIONS</argument>
+        </service>
+        <service id="import.loader.collect.columns" class="TechDivision\Import\Loaders\ConfigurationValueLoader">
+            <argument type="constant">TechDivision\Import\Utils\ConfigurationKeys::COLLECT_COLUMNS</argument>
+        </service>
+        <service id="import.loader.boolean.option.value" class="TechDivision\Import\Loaders\BooleanOptionValueLoader"/>
+        <service id="import.loader.artefacts" class="TechDivision\Import\Loaders\ArtefactsLoader">
+            <argument type="service" id="import.processor.registry"/>
+        </service>
+        <service id="import.loader.attribute.set.name.filtered.by.entity.type.code" class="TechDivision\Import\Loaders\FilteredByEntityTypeCodeLoader">
+            <argument type="service" id="import.loader.attribute.set.name"/>
+        </service>
+        <service id="import.loader.attribute.set.name.filtered.by.execution.context.entity.type.code" class="TechDivision\Import\Loaders\FilteredByExecutionContextEntityTypeCodeLoader">
+            <argument type="service" id="import.loader.attribute.set.name.filtered.by.entity.type.code"/>
+        </service>
+        <service id="import.loader.attribute.group.name.filtered.by.entity.type.code" class="TechDivision\Import\Loaders\FilteredByEntityTypeCodeLoader">
+            <argument type="service" id="import.loader.attribute.group.name"/>
+        </service>
+        <service id="import.loader.attribute.group.name.filtered.by.execution.context.entity.type.code" class="TechDivision\Import\Loaders\FilteredByExecutionContextEntityTypeCodeLoader">
+            <argument type="service" id="import.loader.attribute.group.name.filtered.by.entity.type.code"/>
+        </service>
+        <service id="import.loader.store.website" class="TechDivision\Import\Loaders\StoreWebsiteLoader">
+            <argument type="service" id="import.processor.import"/>
+        </service>
+        <service id="import.loader.store.view.code" class="TechDivision\Import\Loaders\StoreViewCodeLoader">
+            <argument type="service" id="import.processor.import"/>
+        </service>
+        <service id="import.loader.source.and.target.dir" class="TechDivision\Import\Loaders\SourceAndTargetDirLoader">
+            <argument type="service" id="import.processor.registry"/>
+        </service>
+        <service id="import.loader.eav.attribute.option.value" class="TechDivision\Import\Loaders\EavAttributeOptionValueLoader">
+            <argument type="service" id="import.processor.import"/>
+        </service>
+        <service id="import.loader.mysql.variables" class="TechDivision\Import\Loaders\MysqlVariablesLoader">
+            <argument type="service" id="connection"/>
+            <argument type="string">GLOBAL</argument>
+            <argument type="string">innodb%</argument>
+        </service>
+        <service id="import.loader.registry.validations" class="TechDivision\Import\Loaders\RegistryLoader">
+            <argument type="service" id="import.processor.registry"/>
+            <argument type="constant">TechDivision\Import\Utils\RegistryKeys::VALIDATIONS</argument>
+        </service>
+        <service id="import.loader.validations" class="TechDivision\Import\Loaders\ValidationLoader">
+            <argument type="service" id="import.loader.registry.validations"/>
+        </service>
+        <service id="import.loader.column.metadata" class="TechDivision\Import\Loaders\ColumnMetadataLoader">
+            <argument type="service" id="connection"/>
+        </service>
+        <service id="import.loader.column.name" class="TechDivision\Import\Loaders\ColumnNameLoader">
+            <argument type="service" id="import.loader.column.metadata"/>
+        </service>
+        <service id="import.loader.exclude.primary.key.column.name" class="TechDivision\Import\Loaders\ExcludePrimaryKeyColumnNameLoader">
+            <argument type="service" id="import.loader.column.metadata"/>
+        </service>
+        <service id="import.loader.raw.entity" class="TechDivision\Import\Loaders\RawEntityLoader">
+            <argument type="service" id="connection"/>
+            <argument type="service" id="import.loader.column.metadata"/>
+            <argument type="service" id="import.processor.import"/>
+        </service>
+        <service id="import.loader.filter.ok.file" class="TechDivision\Import\Loaders\Filters\OkFileFilter"/>
+        <service id="import.loader.filesystem" class="TechDivision\Import\Loaders\FilesystemLoader">
+            <argument type="service" id="import.adapter.filesystem.php"/>
+        </service>
+        <service id="import.loader.sorted.filesystem" class="TechDivision\Import\Loaders\SortedFilesystemLoader">
+            <argument type="service" id="import.loader.filesystem"/>
+        </service>
+        <service id="import.loader.filtered.filesystem" class="TechDivision\Import\Loaders\FilteredFilesystemLoader">
+            <argument type="service" id="import.loader.sorted.filesystem"/>
+        </service>
+        <service id="import.loader.factory.proposed.ok.filename" class="TechDivision\Import\Loaders\ProposedOkFilenameLoaderFactory">
+            <argument type="service" id="service_container"/>
+            <argument type="service" id="import.processor.registry"/>
+        </service>
+        <service id="import.loader.header.mapping" class="TechDivision\Import\Loaders\HeaderMappingLoader">
+            <argument type="service" id="configuration"/>
+        </service>
+
+        <!--
+         | The DI handler configuration
+         |-->
+        <service id="import.handler.file.generic" class="TechDivision\Import\Handlers\GenericFileHandler"/>
+        <service id="import.handler.file.pid" class="TechDivision\Import\Handlers\PidFileHandler">
+            <argument type="service" id="configuration"/>
+            <argument type="service" id="import.handler.file.generic"/>
+        </service>
+        <service id="import.handler.factory.ok.file" class="TechDivision\Import\Handlers\OkFileHandlerFactory">
+            <argument type="service" id="service_container"/>
+            <argument type="service" id="import.loader.factory.proposed.ok.filename"/>
+        </service>
+
+        <!--
+         | The DI cache configuration
+         |-->
+        <service id="import.cache.adapter.local" class="TechDivision\Import\Cache\LocalCacheAdapter">
+            <argument type="service" id="import.util.cache.key"/>
+        </service>
+        <service id="import.cache.adapter.static" class="TechDivision\Import\Cache\ConfigurableCacheAdapter">
+            <argument type="service" id="cache.adapter"/>
+            <argument type="service" id="configuration"/>
+            <argument>%cache_type.static%</argument>
+        </service>
+        <service id="import.cache.adapter.configurable" class="TechDivision\Import\Cache\ConfigurableCacheAdapter">
+            <argument type="service" id="cache.adapter"/>
+            <argument type="service" id="configuration"/>
+            <argument>%cache_type.configurable%</argument>
+        </service>
+
+        <!--
+         | The DI default aliases
+         |-->
+        <service id="cache.adapter" alias="import.cache.adapter.local"/>
+        <service id="cache.static" alias="import.cache.adapter.static"/>
+        <service id="cache.configurable" alias="import.cache.adapter.configurable"/>
+
+        <!--
+         | The DI repository configuration
+         |-->
+        <service id="import.repository.sql.statement" class="TechDivision\Import\Repositories\SqlStatementRepository">
+            <argument type="service" id="import.util.sql.compilers"/>
+        </service>
+        <service id="import.repository.eav.attribute.option.value" class="TechDivision\Import\Repositories\EavAttributeOptionValueRepository">
+            <argument type="service" id="connection"/>
+            <argument type="service" id="import.repository.sql.statement"/>
+            <argument type="service" id="cache.configurable"/>
+        </service>
         <service id="import.repository.category" class="TechDivision\Import\Repositories\CategoryRepository">
             <argument type="service" id="connection"/>
             <argument type="service" id="import.repository.sql.statement"/>
@@ -35,10 +314,6 @@
             <argument type="service" id="import.repository.sql.statement"/>
         </service>
         <service id="import.repository.eav.attribute.group" class="TechDivision\Import\Repositories\EavAttributeGroupRepository">
-            <argument type="service" id="connection"/>
-            <argument type="service" id="import.repository.sql.statement"/>
-        </service>
-        <service id="import.repository.eav.attribute.option.value" class="TechDivision\Import\Repositories\EavAttributeOptionValueRepository">
             <argument type="service" id="connection"/>
             <argument type="service" id="import.repository.sql.statement"/>
         </service>
@@ -79,11 +354,18 @@
             <argument type="service" id="connection"/>
             <argument type="service" id="import.repository.sql.statement"/>
         </service>
-
-        <service id="import.repository.cache.warmer.eav.attribute.option.value" class="TechDivision\Import\Repositories\CacheWarmer\EavAttributeOptionValueCacheWarmer">
-            <argument type="service" id="import.repository.eav.attribute.option.value"/>
+        <service id="import.repository.customer.group" class="TechDivision\Import\Repositories\CustomerGroupRepository">
+            <argument type="service" id="connection"/>
+            <argument type="service" id="import.repository.sql.statement"/>
+        </service>
+        <service id="import.repository.admin.user" class="TechDivision\Import\Repositories\AdminUserRepository">
+            <argument type="service" id="connection"/>
+            <argument type="service" id="import.repository.sql.statement"/>
         </service>
 
+        <!--
+         | The DI action processor configuration
+         |-->
         <service id="import.action.processor.url.rewrite.product.create" class="TechDivision\Import\Actions\Processors\UrlRewriteCreateProcessor">
             <argument type="service" id="connection"/>
             <argument type="service" id="import.repository.sql.statement"/>
@@ -120,32 +402,59 @@
             <argument type="service" id="connection"/>
             <argument type="service" id="import.repository.sql.statement"/>
         </service>
+        <service id="import.action.processor.import.history.create" class="TechDivision\Import\Actions\Processors\ImportHistoryCreateProcessor">
+            <argument type="service" id="connection"/>
+            <argument type="service" id="import.repository.sql.statement"/>
+        </service>
+        <service id="import.action.processor.import.history.update" class="TechDivision\Import\Actions\Processors\ImportHistoryUpdateProcessor">
+            <argument type="service" id="connection"/>
+            <argument type="service" id="import.repository.sql.statement"/>
+        </service>
+        <service id="import.action.processor.import.history.delete" class="TechDivision\Import\Actions\Processors\ImportHistoryDeleteProcessor">
+            <argument type="service" id="connection"/>
+            <argument type="service" id="import.repository.sql.statement"/>
+        </service>
 
-        <service id="import.action.url.rewrite" class="TechDivision\Import\Actions\UrlRewriteAction">
+        <!--
+         | The DI action configuration
+         |-->
+        <service id="import.action.url.rewrite" class="TechDivision\Import\Actions\GenericIdentifierAction">
             <argument type="service" id="import.action.processor.url.rewrite.product.create"/>
             <argument type="service" id="import.action.processor.url.rewrite.product.update"/>
             <argument type="service" id="import.action.processor.url.rewrite.product.delete"/>
         </service>
-        <service id="import.action.store" class="TechDivision\Import\Actions\StoreAction">
+        <service id="import.action.store" class="TechDivision\Import\Actions\GenericIdentifierAction">
             <argument type="service" id="import.action.processor.store.create"/>
             <argument type="service" id="import.action.processor.store.update"/>
         </service>
-        <service id="import.action.store.group" class="TechDivision\Import\Actions\StoreGroupAction">
+        <service id="import.action.store.group" class="TechDivision\Import\Actions\GenericIdentifierAction">
             <argument type="service" id="import.action.processor.store.group.create"/>
             <argument type="service" id="import.action.processor.store.group.update"/>
         </service>
-        <service id="import.action.store.website" class="TechDivision\Import\Actions\StoreWebsiteAction">
+        <service id="import.action.store.website" class="TechDivision\Import\Actions\GenericIdentifierAction">
             <argument type="service" id="import.action.processor.store.website.create"/>
             <argument type="service" id="import.action.processor.store.website.update"/>
         </service>
+        <service id="import.action.import.history" class="TechDivision\Import\Actions\GenericIdentifierAction">
+            <argument type="service" id="import.action.processor.import.history.create"/>
+            <argument type="service" id="import.action.processor.import.history.update"/>
+            <argument type="service" id="import.action.processor.import.history.delete"/>
+        </service>
 
+        <!--
+         | The DI assembler configuration
+         |-->
         <service id="import.assembler.category" class="TechDivision\Import\Assembler\CategoryAssembler">
             <argument type="service" id="import.repository.category"/>
             <argument type="service" id="import.repository.category.varchar"/>
         </service>
 
-        <service id="import.processor.registry" class="TechDivision\Import\Services\RegistryProcessor"/>
-
+        <!--
+         | The DI configuration for processors
+         |-->
+        <service id="import.processor.registry" class="TechDivision\Import\Services\RegistryProcessor">
+            <argument type="service" id="cache.static"/>
+        </service>
         <service id="import.processor.import" class="TechDivision\Import\Services\ImportProcessor">
             <argument type="service" id="connection"/>
             <argument type="service" id="import.assembler.category"/>
@@ -154,6 +463,7 @@
             <argument type="service" id="import.repository.eav.attribute"/>
             <argument type="service" id="import.repository.eav.attribute.set"/>
             <argument type="service" id="import.repository.eav.attribute.group"/>
+            <argument type="service" id="import.repository.eav.attribute.option.value"/>
             <argument type="service" id="import.repository.eav.entity.type"/>
             <argument type="service" id="import.repository.store"/>
             <argument type="service" id="import.repository.store.website"/>
@@ -161,10 +471,64 @@
             <argument type="service" id="import.repository.link.type"/>
             <argument type="service" id="import.repository.link.attribute"/>
             <argument type="service" id="import.repository.core.config.data"/>
+            <argument type="service" id="import.repository.customer.group"/>
+            <argument type="service" id="import.repository.image.type"/>
+            <argument type="service" id="import.repository.admin.user"/>
             <argument type="service" id="import.action.store"/>
             <argument type="service" id="import.action.store.group"/>
             <argument type="service" id="import.action.store.website"/>
-            <argument type="service" id="import.repository.image.type"/>
+            <argument type="service" id="import.action.import.history"/>
+        </service>
+
+        <!--
+         | The DI configuration for the file resolvers and their factories
+         |-->
+        <service id="import.subject.file.resolver.factory" class="TechDivision\Import\Subjects\FileResolver\FileResolverFactory">
+            <argument type="service" id="service_container"/>
+            <argument type="service" id="import.handler.factory.ok.file"/>
+            <argument type="service" id="import.processor.registry"/>
+        </service>
+        <service id="import.subject.file.resolver.ok.file.aware" class="TechDivision\Import\Subjects\FileResolver\OkFileAwareFileResolver">
+            <argument type="service" id="import.processor.registry"/>
+        </service>
+        <service id="import.subject.file.resolver.move.files" class="TechDivision\Import\Subjects\FileResolver\MoveFilesFileResolver">
+            <argument type="service" id="configuration"/>
+            <argument type="service" id="import.processor.registry"/>
+        </service>
+
+        <!--
+         | The DI configuration for the file writers and their factories
+         |-->
+        <service id="import.subject.file.writer.filter.default.ok.file" class="TechDivision\Import\Subjects\FileWriter\Filters\DefaultOkFileFilter"/>
+        <service id="import.subject.file.writer.sorter,default.ok.file" class="TechDivision\Import\Subjects\FileWriter\Sorters\DefaultOkFileSorter"/>
+        <service id="import.subject.file.writer.factory" class="TechDivision\Import\Subjects\FileWriter\FileWriterFactory">
+            <argument type="service" id="service_container"/>
+            <argument type="service" id="import.handler.factory.ok.file"/>
+        </service>
+        <service id="import.subject.file.writer.ok.file.aware" class="TechDivision\Import\Subjects\FileWriter\OkFileAwareFileWriter">
+            <argument id="import.processor.registry" type="service"/>
+        </service>
+
+        <!--
+         | The DI configuration for the number converters and their factories
+         |-->
+        <service id="import.subject.number.converter.factory" class="TechDivision\Import\Subjects\I18n\NumberConverterFactory">
+            <argument type="service" id="service_container"/>
+        </service>
+        <service id="import.subject.number.converter.simple" class="TechDivision\Import\Subjects\I18n\SimpleNumberConverter">
+            <argument type="service" id="import_app_simple.simple"/>
+            <argument type="service" id="import.processor.registry"/>
+        </service>
+
+        <!--
+         | The DI configuration for the date converters and their factories
+         |-->
+        <service id="import.subject.date.converter.factory" class="TechDivision\Import\Subjects\I18n\DateConverterFactory">
+            <argument type="service" id="service_container"/>
+        </service>
+        <service id="import.subject.date.converter.simple" class="TechDivision\Import\Subjects\I18n\SimpleDateConverter">
+            <argument type="service" id="import_app_simple.simple"/>
+            <argument type="service" id="import.processor.registry"/>
         </service>
 
         <!--
@@ -172,6 +536,9 @@
          |-->
         <service id="import.subject.factory" class="TechDivision\Import\Subjects\SubjectFactory">
             <argument type="service" id="service_container"/>
+            <argument type="service" id="loggers"/>
+            <argument type="service" id="import.subject.number.converter.factory"/>
+            <argument type="service" id="import.subject.date.converter.factory"/>
         </service>
 
         <!--
@@ -184,27 +551,37 @@
         <!--
          | The DI configuration for the plugins
          |-->
-        <service id="import.plugin.subject.executor" class="TechDivision\Import\Plugins\SubjectExecutor">
+        <service id="import.plugin.executor" class="TechDivision\Import\Plugins\PluginExecutor">
+            <argument type="service" id="import.plugin.factory"/>
+            <argument type="service" id="import.events.emitter"/>
+        </service>
+        <service id="import.plugin.subject.executor" class="TechDivision\Import\Subjects\SubjectExecutor">
             <argument type="service" id="import.visitor.callback"/>
             <argument type="service" id="import.visitor.observer"/>
             <argument type="service" id="import.subject.factory"/>
+            <argument type="service" id="import.events.emitter"/>
         </service>
-        <service id="import.plugin.archive" class="TechDivision\Import\Plugins\ArchivePlugin">
+        <service id="import.plugin.initialize" class="TechDivision\Import\Plugins\VoidPlugin">
+            <argument type="service" id="import_app_simple.simple"/>
+        </service>
+        <service id="import.plugin.clean.up" class="TechDivision\Import\Plugins\VoidPlugin">
             <argument type="service" id="import_app_simple.simple"/>
         </service>
         <service id="import.plugin.subject" class="TechDivision\Import\Plugins\SubjectPlugin">
             <argument type="service" id="import_app_simple.simple"/>
             <argument type="service" id="import.plugin.subject.executor"/>
+            <argument type="service" id="import.subject.file.resolver.factory"/>
         </service>
         <service id="import.plugin.global.data" class="TechDivision\Import\Plugins\GlobalDataPlugin">
-            <argument type="service" id="import_app_simple.simple"/>
-        </service>
-        <service id="import.plugin.cache.warmer" class="TechDivision\Import\Plugins\CacheWarmerPlugin">
             <argument type="service" id="import_app_simple.simple"/>
         </service>
         <service id="import.plugin.missing.option.values" class="TechDivision\Import\Plugins\MissingOptionValuesPlugin">
             <argument type="service" id="import_app_simple.simple"/>
             <argument type="service" id="import.adapter.export.csv"/>
+        </service>
+        <service id="import.plugin.create.ok.files" class="TechDivision\Import\Plugins\CreateOkFilesPlugin">
+            <argument type="service" id="import_app_simple.simple"/>
+            <argument type="service" id="import.subject.file.writer.factory"/>
         </service>
 
         <!--
@@ -224,6 +601,9 @@
             <argument type="service" id="import.adapter.lexer"/>
             <argument type="service" id="import.adapter.interpreter"/>
         </service>
+        <service id="import.adapter.import.csv.factory" class="TechDivision\Import\Adapter\CsvImportAdapterFactory">
+            <argument type="service" id="service_container"/>
+        </service>
 
         <!--
          | The DI configuration for the export adapter
@@ -240,16 +620,26 @@
         <service id="import.adapter.export.csv" class="TechDivision\Import\Adapter\CsvExportAdapter">
             <argument type="service" id="import.adapter.export"/>
         </service>
+        <service id="import.adapter.export.csv.factory" class="TechDivision\Import\Adapter\CsvExportAdapterFactory">
+            <argument type="service" id="service_container"/>
+        </service>
 
         <!--
          | The DI configuration for the filesystem adapter
          |-->
+        <service id="import.adapter.filesystem.php" class="TechDivision\Import\Adapter\PhpFilesystemAdapter"/>
         <service id="import.adapter.filesystem.factory.php" class="TechDivision\Import\Adapter\PhpFilesystemAdapterFactory"/>
         <service id="import.adapter.filesystem.factory.league" class="TechDivision\Import\Adapter\LeagueFilesystemAdapterFactory"/>
 
         <!--
          | The DI configuration for the subjects provided by this library
          |-->
+        <service id="import.subject.validator" class="TechDivision\Import\Subjects\ValidatorSubject" shared="false">
+            <argument type="service" id="import.processor.registry"/>
+            <argument type="service" id="import.generator.core.config.data.uid"/>
+            <argument type="service" id="loggers"/>
+            <argument type="service" id="import.events.emitter"/>
+        </service>
         <service id="import.subject.move.files" class="TechDivision\Import\Subjects\MoveFilesSubject" shared="false">
             <argument type="service" id="import.processor.registry"/>
             <argument type="service" id="import.generator.core.config.data.uid"/>
@@ -257,24 +647,179 @@
             <argument type="service" id="import.events.emitter"/>
         </service>
 
-        <service id="import.observer.attribute.set" class="TechDivision\Import\Observers\AttributeSetObserver"/>
-        <service id="import.observer.dynamic.attribute.loader" class="TechDivision\Import\Observers\DynamicAttributeLoader"/>
-        <service id="import.observer.additional.attribute" class="TechDivision\Import\Observers\AdditionalAttributeObserver"/>
-
-        <service id="import.visitor.callback" class="TechDivision\Import\Callbacks\CallbackVisitor">
-            <argument type="service" id="service_container"/>
-        </service>
         <service id="import.visitor.observer" class="TechDivision\Import\Observers\ObserverVisitor">
             <argument type="service" id="service_container"/>
         </service>
+        <service id="import.observer.attribute.set" class="TechDivision\Import\Observers\AttributeSetObserver"/>
+        <service id="import.observer.dynamic.attribute.loader" class="TechDivision\Import\Observers\DynamicAttributeLoader"/>
+        <service id="import.observer.additional.attribute" class="TechDivision\Import\Observers\AdditionalAttributeObserver"/>
+        <service id="import.observer.generic.column.collector" class="TechDivision\Import\Observers\GenericColumnCollectorObserver">
+            <argument type="service" id="import.loader.collect.columns"/>
+            <argument type="service" id="import.processor.registry"/>
+        </service>
+        <service id="import.observer.generic.validator" class="TechDivision\Import\Observers\GenericValidatorObserver">
+            <argument type="service" id="import.processor.registry"/>
+        </service>
+        
+        <service id="import.visitor.callback" class="TechDivision\Import\Callbacks\CallbackVisitor">
+            <argument type="service" id="service_container"/>
+        </service>
+        <service id="import.callback.custom.array.validator" class="TechDivision\Import\Callbacks\IndexedArrayValidatorCallback">
+            <argument type="service" id="import.loader.custom.validations"/>
+        </service>
+        <service id="import.callback.custom.regex.validator" class="TechDivision\Import\Callbacks\RegexValidatorCallback">
+            <argument type="service" id="import.loader.custom.validations"/>
+        </service>
+        <service id="import.callback.attribute.set.name.validator" class="TechDivision\Import\Callbacks\ArrayValidatorCallback">
+            <argument type="service" id="import.loader.attribute.set.name.filtered.by.execution.context.entity.type.code"/>
+        </service>
+        <service id="import.callback.attribute.group.name.validator" class="TechDivision\Import\Callbacks\ArrayValidatorCallback">
+            <argument type="service" id="import.loader.attribute.group.name"/>
+        </service>
+        <service id="import.callback.entity.type.code.validator" class="TechDivision\Import\Callbacks\ArrayValidatorCallback">
+            <argument type="service" id="import.loader.entity.type.code"/>
+        </service>
+        <service id="import.callback.visibility.validator" class="TechDivision\Import\Callbacks\IndexedArrayValidatorCallback">
+            <argument type="service" id="import.loader.custom.validations"/>
+            <argument>%array_validator.nullable.true%</argument>
+        </service>
+        <service id="import.callback.store.website.validator" class="TechDivision\Import\Callbacks\MultipleValuesValidatorCallback">
+            <argument type="service" id="import.loader.store.website"/>
+            <argument>%array_validator.nullable.true%</argument>
+        </service>
+        <service id="import.callback.store.view.code.validator" class="TechDivision\Import\Callbacks\ArrayValidatorCallback">
+            <argument type="service" id="import.loader.store.view.code"/>
+            <argument>%array_validator.nullable.true%</argument>
+        </service>
+        <service id="import.callback.validator.boolean" class="TechDivision\Import\Callbacks\BooleanValidatorCallback">
+            <argument type="service" id="import.loader.boolean.option.value"/>
+            <argument>%array_validator.nullable.true%</argument>
+        </service>
+        <service id="import.callback.validator.select" class="TechDivision\Import\Callbacks\SelectValidatorCallback">
+            <argument type="service" id="import.loader.eav.attribute.option.value"/>
+            <argument>%array_validator.nullable.true%</argument>
+        </service>
+        <service id="import.callback.validator.multiselect" class="TechDivision\Import\Callbacks\MultiselectValidatorCallback">
+            <argument type="service" id="import.loader.eav.attribute.option.value"/>
+            <argument>%array_validator.nullable.true%</argument>
+        </service>
+        <service id="import.callback.validator.number" class="TechDivision\Import\Callbacks\NumberValidatorCallback">
+            <argument>%array_validator.nullable.true%</argument>
+        </service>
+        <service id="import.callback.validator.datetime" class="TechDivision\Import\Callbacks\DatetimeValidatorCallback">
+            <argument>%array_validator.nullable.true%</argument>
+        </service>
 
-        <!-- The DI configuration for the event emitter/listeners -->
+        <!--
+         ! The DI configuration for the event emitter/listeners
+         !-->
         <service id="import.events.emitter.factory" class="TechDivision\Import\Events\EmitterFactory">
-            <argument type="service" id="configuration"/>
+            <argument type="service" id="import.configuration.manager"/>
             <argument type="service" id="service_container"/>
         </service>
         <service id="import.events.emitter" class="League\Event\Emitter">
             <factory service="import.events.emitter.factory" method="createEmitter"/>
+        </service>
+
+        <!--
+         ! The DI configuration for the value/additional attribute serializers
+         !-->
+        <service id="import.serializer.csv.value" class="TechDivision\Import\Serializers\ValueCsvSerializer"/>
+        <service id="import.serializer.csv.additional.attribute" class="TechDivision\Import\Serializers\AdditionalAttributeCsvSerializer">
+            <argument type="service" id="configuration"/>
+            <argument type="service" id="import.processor.import"/>
+            <argument type="service" id="import.serializer.factory.csv.value"/>
+        </service>
+        <service id="import.serializer.factory.csv.value" class="TechDivision\Import\Serializers\ValueCsvSerializerFactory">
+            <argument type="service" id="service_container"/>
+        </service>
+        <service id="import.serializer.factory.csv.additional.attribute" class="TechDivision\Import\Serializers\AdditionalAttributeCsvSerializerFactory">
+            <argument type="service" id="service_container"/>
+        </service>
+
+        <!--
+         ! The DI configuration for the listeners
+         !-->
+        <service id="import.listener.clear.registry" class="TechDivision\Import\Listeners\ClearRegistryListener">
+            <argument type="service" id="import.processor.registry"/>
+        </service>
+        <service id="import.listener.clear.artefacts" class="TechDivision\Import\Listeners\ClearArtefactsListener">
+            <argument type="service" id="configuration"/>
+            <argument type="service" id="import.adapter.filesystem.php"/>
+            <argument type="service" id="loggers"/>
+            <argument type="service" id="import.loader.artefacts"/>
+        </service>
+        <service id="import.listener.clear.directories" class="TechDivision\Import\Listeners\ClearDirectoriesListener">
+            <argument type="service" id="import.adapter.filesystem.php"/>
+            <argument type="service" id="import.loader.source.and.target.dir"/>
+        </service>
+        <service id="import.listener.initialize.registry" class="TechDivision\Import\Listeners\InitializeRegistryListener">
+            <argument type="service" id="configuration"/>
+            <argument type="service" id="import.processor.registry"/>
+        </service>
+        <service id="import.listener.finalize.registry" class="TechDivision\Import\Listeners\FinalizeRegistryListener">
+            <argument type="service" id="import.processor.registry"/>
+        </service>
+        <service id="import.listener.initialize.directories" class="TechDivision\Import\Listeners\InitializeDirectoriesListener">
+            <argument type="service" id="import.adapter.filesystem.php"/>
+            <argument type="service" id="import.loader.source.and.target.dir"/>
+        </service>
+        <service id="import.listener.render.ansi.art" class="TechDivision\Import\Listeners\RenderAnsiArtListener"/>
+        <service id="import.listener.render.debug.info" class="TechDivision\Import\Listeners\RenderDebugInfoListener">
+            <argument type="service" id="configuration"/>
+        </service>
+        <service id="import.listener.render.operation.info" class="TechDivision\Import\Listeners\RenderOperationInfoListener">
+            <argument type="service" id="configuration"/>
+        </service>
+        <service id="import.listener.operation.report" class="TechDivision\Import\Listeners\RenderOperationReportListener">
+            <argument type="service" id="import.processor.registry"/>
+            <argument type="service" id="configuration"/>
+        </service>
+        <service id="import.listener.render.mysql.info" class="TechDivision\Import\Listeners\RenderMysqlInfoListener">
+            <argument type="service" id="import.loader.mysql.variables"/>
+            <argument type="service" id="import.renderer.console.table"/>
+        </service>
+        <service id="import.listener.import.history" class="TechDivision\Import\Listeners\ImportHistoryListener">
+            <argument type="service" id="import.processor.registry"/>
+            <argument type="service" id="import.processor.import"/>
+            <argument type="service" id="loggers"/>
+            <argument type="service" id="configuration"/>
+        </service>
+        <service id="import.listener.archive" class="TechDivision\Import\Listeners\ArchiveListener">
+            <argument type="service" id="import.processor.registry"/>
+            <argument type="service" id="import.processor.import"/>
+            <argument type="service" id="loggers"/>
+            <argument type="service" id="configuration"/>
+        </service>
+        <service id="import.listener.render.validations" class="TechDivision\Import\Listeners\RenderValidationsListener">
+            <argument type="service" id="import.loader.validations"/>
+            <argument type="service" id="import.renderer.validations"/>
+        </service>
+        <service id="import.listener.stop.validation" class="TechDivision\Import\Listeners\StopValidationListener">
+            <argument type="service" id="import.processor.registry"/>
+        </service>
+        <service id="import.listener.validate.header.row" class="TechDivision\Import\Listeners\ValidateHeaderRowListener">
+            <argument type="service" id="import.processor.registry"/>
+        </service>
+        <service id="import.listener.reset.loader.eav.attribute.option.value" class="TechDivision\Import\Listeners\ResetLoaderListener">
+            <argument type="service" id="import.loader.eav.attribute.option.value"/>
+        </service>
+        <service id="import.listener.reset.logger" class="TechDivision\Import\Listeners\ResetLoggerListener">
+            <argument type="service" id="loggers"/>
+        </service>
+
+        <!--
+         ! The DI configuration for the modules
+         !-->
+        <service id="import.modules" class="\ArrayObject">
+            <call method="append">
+                <argument id="import.module.plugin" type="service"/>
+            </call>
+        </service>
+        <service id="import.module.plugin" class="TechDivision\Import\Modules\PluginModule">
+            <argument type="service" id="import_app_simple.simple"/>
+            <argument type="service" id="import.configuration.manager"/>
+            <argument type="service" id="import.plugin.executor"/>
         </service>
 
     </services>

@@ -23,7 +23,6 @@ namespace TechDivision\Import\Callbacks;
 use TechDivision\Import\Utils\MemberNames;
 use TechDivision\Import\Utils\RegistryKeys;
 use TechDivision\Import\Utils\StoreViewCodes;
-use TechDivision\Import\Services\EavAwareProcessorInterface;
 use TechDivision\Import\Observers\AttributeCodeAndValueAwareObserverInterface;
 
 /**
@@ -35,34 +34,17 @@ use TechDivision\Import\Observers\AttributeCodeAndValueAwareObserverInterface;
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
  */
-abstract class AbstractMultiselectCallback extends AbstractCallback
+abstract class AbstractMultiselectCallback extends AbstractEavAwareCallback
 {
-
-    /**
-     * The EAV aware processor.
-     *
-     * @var \TechDivision\Import\Services\EavAwareProcessorInterface
-     */
-    protected $eavAwareProcessor;
-
-    /**
-     * Initialize the callback with the passed processor instance.
-     *
-     * @param \TechDivision\Import\Services\EavAwareProcessorInterface $eavAwareProcessor The processor instance
-     */
-    public function __construct(EavAwareProcessorInterface $eavAwareProcessor)
-    {
-        $this->eavAwareProcessor = $eavAwareProcessor;
-    }
 
     /**
      * Will be invoked by a observer it has been registered for.
      *
-     * @param \TechDivision\Import\Observers\ObserverInterface $observer The observer
+     * @param \TechDivision\Import\Observers\AttributeCodeAndValueAwareObserverInterface|null $observer The observer
      *
      * @return mixed The modified value
      */
-    public function handle(AttributeCodeAndValueAwareObserverInterface $observer)
+    public function handle(AttributeCodeAndValueAwareObserverInterface $observer = null)
     {
 
         // set the observer
@@ -72,19 +54,24 @@ abstract class AbstractMultiselectCallback extends AbstractCallback
         $attributeCode = $observer->getAttributeCode();
         $attributeValue = $observer->getAttributeValue();
 
+        // query whether or not a value for the attibute with the diven code has been set
+        if ($attributeValue == null || $attributeValue === '') {
+            return;
+        }
+
+        // load the ID of the actual store
+        $storeId = $this->getStoreId(StoreViewCodes::ADMIN);
+
         // explode the multiselect values
-        $vals = explode('|', $attributeValue);
+        $vals = $this->explode($attributeValue);
 
         // initialize the array for the mapped values
         $mappedValues = array();
 
         // convert the option values into option value ID's
         foreach ($vals as $val) {
-            // load the ID of the actual store
-            $storeId = $this->getStoreId(StoreViewCodes::ADMIN);
-
             // try to load the attribute option value and add the option ID
-            if ($eavAttributeOptionValue = $this->loadEavAttributeOptionValueByAttributeCodeAndStoreIdAndValue($attributeCode, $storeId, $val)) {
+            if ($eavAttributeOptionValue = $this->loadAttributeOptionValueByEntityTypeIdAndAttributeCodeAndStoreIdAndValue($this->getEntityTypeId(), $attributeCode, $storeId, $val)) {
                 $mappedValues[] = $eavAttributeOptionValue[MemberNames::OPTION_ID];
                 continue;
             }
@@ -95,7 +82,7 @@ abstract class AbstractMultiselectCallback extends AbstractCallback
                 $this->getSystemLogger()->warning(
                     $this->appendExceptionSuffix(
                         sprintf(
-                            'Can\'t find multiselect option value "%s" for attribute %s',
+                            'Can\'t find multiselect option value "%s" for attribute "%s"',
                             $val,
                             $attributeCode
                         )
@@ -124,7 +111,7 @@ abstract class AbstractMultiselectCallback extends AbstractCallback
             throw new \Exception(
                 $this->appendExceptionSuffix(
                     sprintf(
-                        'Can\'t find multiselect option value "%s" for attribute %s',
+                        'Can\'t find multiselect option value "%s" for attribute "%s"',
                         $val,
                         $attributeCode
                     )
@@ -142,40 +129,15 @@ abstract class AbstractMultiselectCallback extends AbstractCallback
     }
 
     /**
-     * Return's the EAV aware processor instance.
+     * Extracts the elements of the passed value by exploding them
+     * with the also passed delimiter.
      *
-     * @return \TechDivision\Import\Services\EavAwareProcessorInterface The processor instance
+     * @param string|null $value The value to extract
+     *
+     * @return array The exploded values
      */
-    protected function getEavAwareProcessor()
+    protected function explode($value) : array
     {
-        return $this->eavAwareProcessor;
-    }
-
-    /**
-     * Return's the store ID of the actual row, or of the default store
-     * if no store view code is set in the CSV file.
-     *
-     * @param string|null $default The default store view code to use, if no store view code is set in the CSV file
-     *
-     * @return integer The ID of the actual store
-     * @throws \Exception Is thrown, if the store with the actual code is not available
-     */
-    protected function getRowStoreId($default = null)
-    {
-        return $this->getSubject()->getRowStoreId($default);
-    }
-
-    /**
-     * Load's and return's the EAV attribute option value with the passed code, store ID and value.
-     *
-     * @param string  $attributeCode The code of the EAV attribute option to load
-     * @param integer $storeId       The store ID of the attribute option to load
-     * @param string  $value         The value of the attribute option to load
-     *
-     * @return array The EAV attribute option value
-     */
-    protected function loadEavAttributeOptionValueByAttributeCodeAndStoreIdAndValue($attributeCode, $storeId, $value)
-    {
-        return $this->getEavAwareProcessor()->loadEavAttributeOptionValueByAttributeCodeAndStoreIdAndValue($attributeCode, $storeId, $value);
+        return $value === null || $value === '' ? array() : $this->getSubject()->explode($value, $this->getSubject()->getMultipleValueDelimiter());
     }
 }

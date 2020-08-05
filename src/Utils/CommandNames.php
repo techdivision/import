@@ -33,6 +33,13 @@ class CommandNames extends \ArrayObject
 {
 
     /**
+     * The command name for import that executes multiple operations.
+     *
+     * @var string
+     */
+    const IMPORT_EXECUTE = 'import:execute';
+
+    /**
      * The command name for the attribute import.
      *
      * @var string
@@ -40,11 +47,32 @@ class CommandNames extends \ArrayObject
     const IMPORT_ATTRIBUTES = 'import:attributes';
 
     /**
+     * The command name for the attribute set import.
+     *
+     * @var string
+     */
+    const IMPORT_ATTRIBUTES_SET = 'import:attributes:set';
+
+    /**
      * The command name for the category import.
      *
      * @var string
      */
     const IMPORT_CATEGORIES = 'import:categories';
+
+    /**
+     * The command name for the customer import.
+     *
+     * @var string
+     */
+    const IMPORT_CUSTOMERS = 'import:customers';
+
+    /**
+     * The command name for the customer address import.
+     *
+     * @var string
+     */
+    const IMPORT_CUSTOMERS_ADDRESS = 'import:customers:address';
 
     /**
      * The command name for the product import.
@@ -61,11 +89,32 @@ class CommandNames extends \ArrayObject
     const IMPORT_PRODUCTS_INVENTORY = 'import:products:inventory';
 
     /**
+     * The command name for the product MSI inventory import.
+     *
+     * @var string
+     */
+    const IMPORT_PRODUCTS_INVENTORY_MSI = 'import:products:inventory:msi';
+
+    /**
      * The command name for the product price import.
      *
      * @var string
      */
     const IMPORT_PRODUCTS_PRICE = 'import:products:price';
+
+    /**
+     * The command name for the product tier price import.
+     *
+     * @var string
+     */
+    const IMPORT_PRODUCTS_TIER_PRICE = 'import:products:price:tier';
+
+    /**
+     * The command name for the product tier price import.
+     *
+     * @var string
+     */
+    const IMPORT_PRODUCTS_URL = 'import:products:url';
 
     /**
      * The command name for the command that creates an OK file.
@@ -89,6 +138,13 @@ class CommandNames extends \ArrayObject
     const IMPORT_CLEAR_PID_FILE = 'import:clear:pid-file';
 
     /**
+     * The command name for the command that converts a value for the target column.
+     *
+     * @var string
+     */
+    const IMPORT_CONVERT_VALUE = 'import:convert:value';
+
+    /**
      * Construct a new command names instance.
      *
      * @param array $commandNames The array with the additional command names
@@ -100,14 +156,19 @@ class CommandNames extends \ArrayObject
         // merge the command names with the passed ones
         $mergedCommandNames = array_merge(
             array(
+                CommandNames::IMPORT_EXECUTE,
                 CommandNames::IMPORT_ATTRIBUTES,
+                CommandNames::IMPORT_ATTRIBUTES_SET,
                 CommandNames::IMPORT_CATEGORIES,
                 CommandNames::IMPORT_PRODUCTS,
                 CommandNames::IMPORT_PRODUCTS_PRICE,
                 CommandNames::IMPORT_PRODUCTS_INVENTORY,
                 CommandNames::IMPORT_CREATE_OK_FILE,
                 CommandNames::IMPORT_CREATE_CONFIGURATION_FILE,
-                CommandNames::IMPORT_CLEAR_PID_FILE
+                CommandNames::IMPORT_CLEAR_PID_FILE,
+                CommandNames::IMPORT_CUSTOMERS,
+                CommandNames::IMPORT_CUSTOMERS_ADDRESS,
+                CommandNames::IMPORT_CONVERT_VALUE
             ),
             $commandNames
         );
@@ -125,6 +186,6 @@ class CommandNames extends \ArrayObject
      */
     public function isCommandName($commandName)
     {
-        return isset($this[$commandName]);
+        return in_array($commandName, (array) $this);
     }
 }

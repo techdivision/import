@@ -48,7 +48,7 @@ class GlobalDataPlugin extends AbstractPlugin
 
         // add the status with the global data
         $this->getRegistryProcessor()->mergeAttributesRecursive(
-            $this->getSerial(),
+            RegistryKeys::STATUS,
             array(RegistryKeys::GLOBAL_DATA => $globalData)
         );
     }

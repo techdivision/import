@@ -58,15 +58,16 @@ abstract class AbstractObserverImpl extends AbstractObserver
 
     /**
      * Merge's and return's the entity with the passed attributes and set's the
-     * status to 'update'.
+     * passed status.
      *
-     * @param array $entity The entity to merge the attributes into
-     * @param array $attr   The attributes to be merged
+     * @param array       $entity        The entity to merge the attributes into
+     * @param array       $attr          The attributes to be merged
+     * @param string|null $changeSetName The change set name to use
      *
      * @return array The merged entity
      */
-    public function mergeEntity(array $entity, array $attr)
+    public function mergeEntity(array $entity, array $attr, $changeSetName = null)
     {
-        return parent::mergeEntity($entity, $attr);
+        return parent::mergeEntity($entity, $attr, $changeSetName);
     }
 }

@@ -76,8 +76,11 @@ class CategoryAssembler implements CategoryAssemblerInterface
         // prepare the categories
         $categories = array();
 
+        // load the categories from the database
+        $availableCategories = $this->categoryRepository->findAll();
+
         // create the array with the resolved category path as keys
-        foreach ($this->categoryRepository->findAll() as $category) {
+        foreach ($availableCategories as $category) {
             // expload the entity IDs from the category path
             $entityIds = explode('/', $category[MemberNames::PATH]);
 
@@ -118,8 +121,11 @@ class CategoryAssembler implements CategoryAssemblerInterface
         // prepare the categories
         $categories = array();
 
+        // load the categories from the database
+        $availableCategories = $this->categoryRepository->findAllByStoreView($storeViewId);
+
         // create the array with the resolved category path as keys
-        foreach ($this->categoryRepository->findAllByStoreView($storeViewId) as $category) {
+        foreach ($availableCategories as $category) {
             // expload the entity IDs from the category path
             $entityIds = explode('/', $category[MemberNames::PATH]);
 

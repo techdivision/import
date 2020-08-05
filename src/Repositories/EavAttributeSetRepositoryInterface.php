@@ -50,4 +50,24 @@ interface EavAttributeSetRepositoryInterface extends RepositoryInterface
      * @return array|boolean The attribute sets for the passed entity type ID
      */
     public function findAllByEntityTypeId($entityTypeId);
+
+    /**
+     * Load's and return's the EAV attribute set with the passed entity type ID and attribute set name.
+     *
+     * @param string $entityTypeId     The entity type ID of the EAV attribute set to load
+     * @param string $attributeSetName The attribute set name of the EAV attribute set to return
+     *
+     * @return array The EAV attribute set
+     */
+    public function findOneByEntityTypeIdAndAttributeSetName($entityTypeId, $attributeSetName);
+
+    /**
+     * Load's and return's the EAV attribute set with the passed entity type code and attribute set name.
+     *
+     * @param string $entityTypeCode   The entity type code of the EAV attribute set to load
+     * @param string $attributeSetName The attribute set name of the EAV attribute set to return
+     *
+     * @return array The EAV attribute set
+     */
+    public function findOneByEntityTypeCodeAndAttributeSetName($entityTypeCode, $attributeSetName);
 }

@@ -23,6 +23,8 @@ namespace TechDivision\Import\Plugins;
 use TechDivision\Import\Utils\LoggerKeys;
 use TechDivision\Import\ApplicationInterface;
 use TechDivision\Import\Configuration\PluginConfigurationInterface;
+use TechDivision\Import\Adapter\ImportAdapterInterface;
+use TechDivision\Import\Utils\RegistryKeys;
 
 /**
  * Abstract plugin implementation.
@@ -51,6 +53,13 @@ abstract class AbstractPlugin implements PluginInterface
     protected $pluginConfiguration;
 
     /**
+     * The import adapter instance.
+     *
+     * @var \TechDivision\Import\Adapter\ImportAdapterInterface
+     */
+    protected $importAdapter;
+
+    /**
      * Initializes the plugin with the application instance.
      *
      * @param \TechDivision\Import\ApplicationInterface $application The application instance
@@ -77,9 +86,71 @@ abstract class AbstractPlugin implements PluginInterface
      *
      * @return \TechDivision\Import\Configuration\PluginConfigurationInterface The plugin configuration instance
      */
-    protected function getPluginConfiguration()
+    public function getPluginConfiguration()
     {
         return $this->pluginConfiguration;
+    }
+
+    /**
+     * Return's the unique serial for this import process.
+     *
+     * @return string The unique serial
+     */
+    public function getSerial()
+    {
+        return $this->getApplication()->getSerial();
+    }
+
+    /**
+     * Set's the import adapter instance.
+     *
+     * @param \TechDivision\Import\Adapter\ImportAdapterInterface $importAdapter The import adapter instance
+     *
+     * @return void
+     */
+    public function setImportAdapter(ImportAdapterInterface $importAdapter)
+    {
+        $this->importAdapter = $importAdapter;
+    }
+
+    /**
+     * Return's the import adapter instance.
+     *
+     * @return \TechDivision\Import\Adapter\ImportAdapterInterface The import adapter instance
+     */
+    public function getImportAdapter()
+    {
+        return $this->importAdapter;
+    }
+
+    /**
+     * Return's the plugin's execution context configuration.
+     *
+     * @return \TechDivision\Import\ExecutionContextInterface The execution context configuration to use
+     */
+    public function getExecutionContext()
+    {
+        return $this->getPluginConfiguration()->getExecutionContext();
+    }
+
+    /**
+     * Return's the target directory for the artefact export.
+     *
+     * @return string The target directory for the artefact export
+     */
+    public function getTargetDir()
+    {
+
+        // load the status from the registry processor
+        $status = $this->getRegistryProcessor()->getAttribute(RegistryKeys::STATUS);
+
+        // query whether or not a target directory (mandatory) has been configured
+        if (isset($status[RegistryKeys::TARGET_DIRECTORY])) {
+            return $status[RegistryKeys::TARGET_DIRECTORY];
+        }
+
+        // throw an exception if the root category is NOT available
+        throw new \Exception(sprintf('Can\'t find a target directory in status data for import %s', $this->getSerial()));
     }
 
     /**
@@ -87,7 +158,7 @@ abstract class AbstractPlugin implements PluginInterface
      *
      * @return \TechDivision\Import\ApplicationInterface The application instance
      */
-    protected function getApplication()
+    public function getApplication()
     {
         return $this->application;
     }
@@ -110,16 +181,6 @@ abstract class AbstractPlugin implements PluginInterface
     protected function getImportProcessor()
     {
         return $this->getApplication()->getImportProcessor();
-    }
-
-    /**
-     * Return's the unique serial for this import process.
-     *
-     * @return string The unique serial
-     */
-    protected function getSerial()
-    {
-        return $this->getApplication()->getSerial();
     }
 
     /**
@@ -158,28 +219,6 @@ abstract class AbstractPlugin implements PluginInterface
     }
 
     /**
-     * Persist the UUID of the actual import process to the PID file.
-     *
-     * @return void
-     * @throws \Exception Is thrown, if the PID can not be added
-     */
-    protected function lock()
-    {
-        $this->getApplication()->lock();
-    }
-
-    /**
-     * Remove's the UUID of the actual import process from the PID file.
-     *
-     * @return void
-     * @throws \Exception Is thrown, if the PID can not be removed
-     */
-    protected function unlock()
-    {
-        $this->getApplication()->unlock();
-    }
-
-    /**
      * Remove's the passed line from the file with the passed name.
      *
      * @param string $line     The line to be removed
@@ -196,7 +235,7 @@ abstract class AbstractPlugin implements PluginInterface
     /**
      * Return's the system configuration.
      *
-     * @return \TechDivision\Import\ConfigurationInterface The system configuration
+     * @return \TechDivision\Import\Configuration\ConfigurationInterface The system configuration
      */
     protected function getConfiguration()
     {

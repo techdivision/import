@@ -20,6 +20,7 @@
 
 namespace TechDivision\Import\Observers;
 
+use PHPUnit\Framework\TestCase;
 use TechDivision\Import\Utils\MemberNames;
 use TechDivision\Import\Utils\EntityStatus;
 use TechDivision\Import\Utils\StoreViewCodes;
@@ -35,7 +36,7 @@ use TechDivision\Import\Utils\ConfigurationKeys;
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
  */
-class AbstractAttributeObserverTest extends \PHPUnit_Framework_TestCase
+class AbstractAttributeObserverTest extends TestCase
 {
 
     /**
@@ -50,7 +51,7 @@ class AbstractAttributeObserverTest extends \PHPUnit_Framework_TestCase
      * This method is called before a test is executed.
      *
      * @return void
-     * @see \PHPUnit_Framework_TestCase::setUp()
+     * @see \PHPUnit\Framework\TestCase::setUp()
      */
     protected function setUp()
     {
@@ -93,7 +94,7 @@ class AbstractAttributeObserverTest extends \PHPUnit_Framework_TestCase
                                  ->getMock();
         $mockSystemLogger->expects($this->once())
                          ->method('debug')
-                         ->with(sprintf('Can\'t find attribute with attribute code %s', $attributeCode))
+                         ->with(sprintf('Can\'t find attribute with attribute code "%s"', $attributeCode))
                          ->willReturn(null);
 
         // mock a subject configuration
@@ -185,11 +186,11 @@ class AbstractAttributeObserverTest extends \PHPUnit_Framework_TestCase
                                  ->getMock();
         $mockSystemLogger->expects($this->once())
                          ->method('debug')
-                         ->with(sprintf('Found attribute with attribute code %s', $attributeCode))
+                         ->with(sprintf('Found attribute with attribute code "%s"', $attributeCode))
                          ->willReturn(null);
         $mockSystemLogger->expects($this->once())
                         ->method('warning')
-                        ->with(sprintf('Found EMTPY backend type for attribute %s', $attributeCode))
+                        ->with(sprintf('Found EMTPY backend type for attribute "%s"', $attributeCode))
                         ->willReturn(null);
 
         // mock a subject configuration
@@ -289,7 +290,7 @@ class AbstractAttributeObserverTest extends \PHPUnit_Framework_TestCase
                                  ->getMock();
         $mockSystemLogger->expects($this->once())
                          ->method('debug')
-                         ->with(sprintf('Found attribute with attribute code %s', $attributeCode))
+                         ->with(sprintf('Found attribute with attribute code "%s"', $attributeCode))
                          ->willReturn(null);
 
         // mock a subject configuration
@@ -556,7 +557,7 @@ class AbstractAttributeObserverTest extends \PHPUnit_Framework_TestCase
                                  ->getMock();
         $mockSystemLogger->expects($this->once())
                          ->method('debug')
-                         ->with(sprintf('Found invalid backend type %s for attribute %s', $backendType, $attributeCode))
+                         ->with(sprintf('Found invalid backend type %s for attribute "%s"', $backendType, $attributeCode))
                          ->willReturn(null);
 
         // mock a subject configuration

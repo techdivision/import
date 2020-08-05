@@ -20,6 +20,7 @@
 
 namespace TechDivision\Import\Observers;
 
+use PHPUnit\Framework\TestCase;
 use TechDivision\Import\Utils\EntityStatus;
 
 /**
@@ -31,7 +32,7 @@ use TechDivision\Import\Utils\EntityStatus;
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
  */
-class AbstractObserverTest extends \PHPUnit_Framework_TestCase
+class AbstractObserverTest extends TestCase
 {
 
     /**
@@ -46,7 +47,7 @@ class AbstractObserverTest extends \PHPUnit_Framework_TestCase
      * This method is called before a test is executed.
      *
      * @return void
-     * @see \PHPUnit_Framework_TestCase::setUp()
+     * @see \PHPUnit\Framework\TestCase::setUp()
      */
     protected function setUp()
     {
@@ -80,7 +81,7 @@ class AbstractObserverTest extends \PHPUnit_Framework_TestCase
         $entity = array('attribute' => 100);
 
         // prepare the expected result
-        $expectedResult = array_merge(array(EntityStatus::MEMBER_NAME => EntityStatus::STATUS_CREATE), $entity);
+        $expectedResult = array_merge($entity, array(EntityStatus::MEMBER_NAME => EntityStatus::STATUS_CREATE));
 
         // assert that the entity has been initialized
         $this->assertSame($expectedResult, $this->abstractObserver->initializeEntity($entity));
