@@ -14,7 +14,7 @@
         "ramsey/uuid": "~3.7.3|3.8.*",
         "swiftmailer/swiftmailer": "5.4.*",
         "zendframework/zend-filter": "~2.0",
-        "techdivision/import-configuration": "dev-master"
+        "techdivision/import-configuration": "dev-master@dev"
     },
     "require-dev": {
         "doctrine/dbal": "2.5.*",
