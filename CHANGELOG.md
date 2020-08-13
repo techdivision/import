@@ -1,3 +1,14 @@
+# Version 16.5.3
+
+## Bugfixes
+
+* Fixed typo in swift transport sendmail declaration
+* Fixed issue in initialization of StreamHandlerFactory
+
+## Features
+
+* None
+
 # Version 16.5.2
 
 ## Bugfixes

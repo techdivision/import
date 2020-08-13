@@ -112,7 +112,13 @@ class StreamHandlerFactory implements HandlerFactoryInterface
         }
 
         // prepare the log filename
-        $stream = implode(DIRECTORY_SEPARATOR, array($this->targetDirectory, $handlerConfiguration->getParam(ConfigurationKeys::STREAM)));
+        $stream = $handlerConfiguration->getParam(ConfigurationKeys::STREAM);
+
+        // query whether or not the given log file is relative to the target
+        // directory (for backwards compatility the default value must be YES)
+        if ($handlerConfiguration->hasParam(ConfigurationKeys::RELATIVE) ? $handlerConfiguration->getParam(ConfigurationKeys::RELATIVE) : true) {
+            $stream = implode(DIRECTORY_SEPARATOR, array($this->targetDirectory, $stream));
+        }
 
         // override the filename in the params
         $params = array_replace($handlerConfiguration->getParams(), array(ConfigurationKeys::STREAM => $stream));

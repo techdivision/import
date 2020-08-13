@@ -132,4 +132,11 @@ class ConfigurationKeys
      * @var string
      */
     const STREAM = 'stream';
+
+    /**
+     * Name for the configuration key 'relative'.
+     *
+     * @var string
+     */
+    const RELATIVE = 'relative';
 }
