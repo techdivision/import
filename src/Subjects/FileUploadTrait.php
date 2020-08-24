@@ -64,9 +64,8 @@ trait FileUploadTrait
      * Whether or not to override images with the same name.
      *
      * @var boolean
-     * @todo https://github.com/techdivision/import/issues/181
      */
-    private $overrideImages = false;
+    protected $overrideImages = false;
 
     /**
      * Sets whether or not to override images with the same name.
@@ -74,9 +73,8 @@ trait FileUploadTrait
      * @param boolean $overrideImages Whether or not to override images
      *
      * @return void
-     * @todo https://github.com/techdivision/import/issues/181
      */
-    private function setOverrideImages($overrideImages)
+    protected function setOverrideImages($overrideImages)
     {
         $this->overrideImages = $overrideImages;
     }
@@ -85,9 +83,8 @@ trait FileUploadTrait
      * Returns whether or not we should override images with the same name.
      *
      * @return bool
-     * @todo https://github.com/techdivision/import/issues/181
      */
-    private function shouldOverride()
+    protected function shouldOverride()
     {
         return $this->overrideImages;
     }
