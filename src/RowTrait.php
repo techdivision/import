@@ -47,6 +47,13 @@ trait RowTrait
     protected $skipRow = false;
 
     /**
+     * The number of rows that has been skipped.
+     *
+     * @var integer
+     */
+    protected $skippedRows = 0;
+
+    /**
      * Stop's observer execution on the actual row.
      *
      * @param boolean $skip The flag to skip row exection or not
@@ -55,6 +62,13 @@ trait RowTrait
      */
     public function skipRow($skip = true)
     {
+
+        // raise the counter for the skipped rows
+        if ($skip === true) {
+            $this->skippedRows++;
+        }
+
+        // set the the flag to signal the row has been skipped
         $this->skipRow = $skip;
     }
 
@@ -165,5 +179,15 @@ trait RowTrait
 
         // return the value
         return $value;
+    }
+
+    /**
+     * Return's the number of skipped rows.
+     *
+     * @return int The number of skipped rows
+     */
+    public function getSkippedRows()
+    {
+        return $this->skippedRows;
     }
 }

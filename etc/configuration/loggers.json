@@ -7,7 +7,25 @@
         {
           "id": "import.logger.factory.handler.stream.wrapper",
           "params": {
-            "stream": "system.log"
+            "stream": "system.log",
+            "level": "info"
+          },
+          "formatter": {
+            "id": "import.logger.factory.formatter.line",
+            "params": {
+              "format": "[%datetime%] %channel%.%level_name%: %message% %context% %extra%\n",
+              "date-format": "Y-m-d H:i:s",
+              "allow-inline-line-breaks": true,
+              "ignore-empty-context-and-extra": true
+            }
+          }
+        },
+        {
+          "id": "import.logger.factory.handler.stream.wrapper",
+          "params": {
+            "relative": false,
+            "stream": "php://stdout",
+            "level": "notice"
           },
           "formatter": {
             "id": "import.logger.factory.formatter.line",

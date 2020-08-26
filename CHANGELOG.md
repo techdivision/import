@@ -1,3 +1,14 @@
+# Version 17.0.0
+
+## Bugfixes
+
+* None
+
+## Features
+
+* Add second log handler to log to console also
+* Adjust log messages to log only message with log level `notice` to console
+
 # Version 16.5.3
 
 ## Bugfixes

@@ -20,6 +20,7 @@
 
 namespace TechDivision\Import\Subjects;
 
+use Psr\Log\LogLevel;
 use Ramsey\Uuid\Uuid;
 use League\Event\EmitterInterface;
 use Doctrine\Common\Collections\Collection;
@@ -856,9 +857,17 @@ abstract class AbstractSubject implements SubjectInterface, FilesystemSubjectInt
             // track the time needed for the import in seconds
             $endTime = microtime(true) - $startTime;
 
-            // log a message that the file has successfully been imported
-            $systemLogger->info(
-                sprintf('Successfully processed file "%s" with "%d" lines in "%f" s', basename($filename), $this->lineNumber, $endTime),
+            // log a message that the file has successfully been imported,
+            // use log level warning ONLY if rows have been skipped
+            $systemLogger->log(
+                $this->skippedRows > 0 ? LogLevel::WARNING : LogLevel::INFO,
+                sprintf(
+                    'Successfully processed file "%s" with "%d" lines (skipping "%d") in "%f" s',
+                    basename($filename),
+                    $this->lineNumber - 1,
+                    $this->skippedRows,
+                    $endTime
+                ),
                 array('operation-name' => $operationName)
             );
 
@@ -877,7 +886,8 @@ abstract class AbstractSubject implements SubjectInterface, FilesystemSubjectInt
                             $filename => array(
                                 $this->getUniqueId() => array(
                                     RegistryKeys::STATUS => 1,
-                                    RegistryKeys::PROCESSED_ROWS => $this->getLineNumber()
+                                    RegistryKeys::SKIPPED_ROWS => $this->getSkippedRows(),
+                                    RegistryKeys::PROCESSED_ROWS => $this->getLineNumber() - 1
                                 )
                             )
                         )
@@ -902,7 +912,8 @@ abstract class AbstractSubject implements SubjectInterface, FilesystemSubjectInt
                                 $this->getUniqueId() => array(
                                     RegistryKeys::STATUS         => 2,
                                     RegistryKeys::ERROR_MESSAGE  => $e->getMessage(),
-                                    RegistryKeys::PROCESSED_ROWS => $this->getLineNumber()
+                                    RegistryKeys::SKIPPED_ROWS => $this->getSkippedRows(),
+                                    RegistryKeys::PROCESSED_ROWS => $this->getLineNumber() - 1
                                 )
                             )
                         )
@@ -985,6 +996,8 @@ abstract class AbstractSubject implements SubjectInterface, FilesystemSubjectInt
                 foreach ($observers as $observer) {
                     // query whether or not we have to skip the row
                     if ($this->skipRow) {
+                        // raise the counter for the skipped lines
+                        $this->linesSkipped++;
                         // log a debug message with the actual line nr/file information
                         $this->getSystemLogger()->debug(
                             $this->appendExceptionSuffix(

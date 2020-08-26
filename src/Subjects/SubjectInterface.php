@@ -451,4 +451,11 @@ interface SubjectInterface
      * @return string The full operation name
      */
     public function getFullOperationName($separator = '/');
+
+    /**
+     * Return's the number of skipped rows.
+     *
+     * @return int The number of skipped rows
+     */
+    public function getSkippedRows();
 }

@@ -294,4 +294,11 @@ class RegistryKeys
      * @var string
      */
     const COLLECTED_COLUMNS = 'collected_columns';
+
+    /**
+     * Key for the registry entry with the number of skipped rows.
+     *
+     * @var string
+     */
+    const SKIPPED_ROWS = 'skipped_rows';
 }

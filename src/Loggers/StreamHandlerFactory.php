@@ -20,6 +20,7 @@
 
 namespace TechDivision\Import\Loggers;
 
+use Ramsey\Uuid\Uuid;
 use Monolog\Handler\StreamHandler;
 use TechDivision\Import\Utils\CacheKeys;
 use TechDivision\Import\Utils\RegistryKeys;
@@ -28,7 +29,6 @@ use TechDivision\Import\Utils\ConfigurationKeys;
 use TechDivision\Import\Services\RegistryProcessorInterface;
 use TechDivision\Import\Configuration\ConfigurationInterface;
 use TechDivision\Import\Configuration\Logger\HandlerConfigurationInterface;
-use Ramsey\Uuid\Uuid;
 
 /**
  * Handler factory implementation for a stream handler that changes the log
@@ -44,11 +44,11 @@ class StreamHandlerFactory implements HandlerFactoryInterface
 {
 
     /**
-     * The log level to use.
+     * The log level from the configuration to use.
      *
      * @var string
      */
-    protected $defaultLogLevel;
+    protected $logLevel;
 
     /**
      * The target directory to place the log file within.
@@ -80,12 +80,14 @@ class StreamHandlerFactory implements HandlerFactoryInterface
     public function __construct(ConfigurationInterface $configuration, RegistryProcessorInterface $registryProcessor)
     {
 
-        // load the default values for the log level and the target directory from the configuration
-        $this->defaultLogLevel = $configuration->getLogLevel();
-        $this->targetDirectory = $configuration->getTargetDir();
-
         // set the registry processor instance
         $this->registryProcessor = $registryProcessor;
+
+        // load the global log level from the configuration/console
+        $this->logLevel = $configuration->getLogLevel();
+
+        // load the default value for the target directory from the configuration
+        $this->targetDirectory = $configuration->getTargetDir();
     }
 
     /**
@@ -123,9 +125,10 @@ class StreamHandlerFactory implements HandlerFactoryInterface
         // override the filename in the params
         $params = array_replace($handlerConfiguration->getParams(), array(ConfigurationKeys::STREAM => $stream));
 
-        // set the default log level, if not already set explicitly
-        if (!isset($params[ConfigurationKeys::LEVEL])) {
-            $params[ConfigurationKeys::LEVEL] = $this->defaultLogLevel;
+        // override the log level, if specified in
+        // the configuration or as CLI option
+        if ($this->logLevel) {
+            $params[ConfigurationKeys::LEVEL] = $this->logLevel;
         }
 
         // query wehther or not the log filename has been changed, if yes rename it

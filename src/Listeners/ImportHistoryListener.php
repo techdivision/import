@@ -159,7 +159,7 @@ class ImportHistoryListener extends AbstractListener
         }
 
         // log a warning that the admin user with the passed username is not available
-        $this->getSystemLogger()->warning(sprintf('Admin user with name "%s" is not available, use first available user to save import history', $username));
+        $this->getSystemLogger()->debug(sprintf('Admin user with name "%s" is not available, use first available user to save import history', $username));
 
         // return the first admin user otherwise
         return current($adminUsers);
