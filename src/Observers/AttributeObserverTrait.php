@@ -12,7 +12,7 @@
  * PHP version 5
  *
  * @author    Tim Wagner <t.wagner@techdivision.com>
- * @copyright 2016 TechDivision GmbH <info@techdivision.com>
+ * @copyright 2020 TechDivision GmbH <info@techdivision.com>
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
@@ -22,8 +22,8 @@ namespace TechDivision\Import\Observers;
 
 use TechDivision\Import\Utils\LoggerKeys;
 use TechDivision\Import\Utils\MemberNames;
-use TechDivision\Import\Utils\EntityStatus;
 use TechDivision\Import\Utils\StoreViewCodes;
+use TechDivision\Import\Utils\OperationNames;
 use TechDivision\Import\Utils\BackendTypeKeys;
 use TechDivision\Import\Utils\ConfigurationKeys;
 
@@ -31,7 +31,7 @@ use TechDivision\Import\Utils\ConfigurationKeys;
  * Observer that creates/updates the EAV attributes.
  *
  * @author    Tim Wagner <t.wagner@techdivision.com>
- * @copyright 2016 TechDivision GmbH <info@techdivision.com>
+ * @copyright 2020 TechDivision GmbH <info@techdivision.com>
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
@@ -61,7 +61,7 @@ trait AttributeObserverTrait
     protected $backendType;
 
     /**
-     * The attribute value to process.
+     * The attribute value in process.
      *
      * @var mixed
      */
@@ -71,9 +71,22 @@ trait AttributeObserverTrait
      * The array with the column keys that has to be cleaned up when their values are empty.
      *
      * @var array
-     * @deprecated Will be removed up from version 17.0.0
      */
     protected $cleanUpEmptyColumnKeys;
+
+    /**
+     * The array with the default column values.
+     *
+     * @var array
+     */
+    protected $defaultColumnValues;
+
+    /**
+     * The attribute we're actually processing.
+     *
+     * @var array
+     */
+    protected $attribute;
 
     /**
      * The entity's existing attribues.
@@ -81,6 +94,13 @@ trait AttributeObserverTrait
      * @var array
      */
     protected $attributes;
+
+    /**
+     * The operation that has to be executed to update the attribute.
+     *
+     * @var string
+     */
+    protected $operation;
 
     /**
      * The attribute code that has to be processed.
@@ -106,7 +126,6 @@ trait AttributeObserverTrait
      * Remove all the empty values from the row and return the cleared row.
      *
      * @return array The cleared row
-     * @todo Move initialization of $this->cleanUpEmptyColumnKeys to createObserver() method and implement ObserverFactoryInterface
      */
     protected function clearRow()
     {
@@ -122,15 +141,34 @@ trait AttributeObserverTrait
             // translate the column names into column keys
             foreach ($cleanUpEmptyColumns as $cleanUpEmptyColumn) {
                 if ($this->hasHeader($cleanUpEmptyColumn)) {
-                    $this->cleanUpEmptyColumnKeys[] = $this->getHeader($cleanUpEmptyColumn);
+                    $this->cleanUpEmptyColumnKeys[$cleanUpEmptyColumn] = $this->getHeader($cleanUpEmptyColumn);
                 }
+            }
+        }
+
+        // initialize the array with the default column values
+        $this->defaultColumnValues = array();
+
+        // iterate over the default column values to figure out whether or not the column exists
+        $defaultColumnValues = $this->getSubject()->getDefaultColumnValues();
+
+        // prepare the array with the default column values, BUT we only take
+        // care of default columns WITHOUT any value, because in only in this
+        // case the default EAV value from the DB should be used when a empty
+        // column value has been found to create a NEW attribute value
+        foreach ($defaultColumnValues as $columnName => $defaultColumnValue) {
+            if ($defaultColumnValue === '') {
+                $this->defaultColumnValues[$columnName] = $this->getHeader($columnName);
             }
         }
 
         // remove all the empty values from the row, expected the columns has to be cleaned-up
         foreach ($this->row as $key => $value) {
             // query whether or not the value is empty AND the column has NOT to be cleaned-up
-            if (($value === null || $value === '') && in_array($key, $this->cleanUpEmptyColumnKeys) === false) {
+            if (($value === null || $value === '') &&
+                in_array($key, $this->cleanUpEmptyColumnKeys) === false &&
+                in_array($key, $this->defaultColumnValues) === false
+            ) {
                 unset($this->row[$key]);
             }
         }
@@ -233,10 +271,10 @@ trait AttributeObserverTrait
             }
 
             // if yes, load the attribute by its code
-            $attribute = $attributes[$attributeCode];
+            $this->attribute = $attributes[$attributeCode];
 
             // load the backend type => to find the apropriate entity
-            $backendType = $attribute[MemberNames::BACKEND_TYPE];
+            $backendType = $this->attribute[MemberNames::BACKEND_TYPE];
             if ($backendType === null) {
                 // log a message in debug mode
                 $this->getSystemLogger()->warning(
@@ -259,15 +297,15 @@ trait AttributeObserverTrait
             // query whether or not we've found a supported backend type
             if (isset($backendTypes[$backendType])) {
                 // initialize attribute ID/code and backend type
-                $this->attributeId = $attribute[MemberNames::ATTRIBUTE_ID];
-                $this->attributeCode = $attributeCode;
                 $this->backendType = $backendType;
+                $this->attributeCode = $attributeCode;
+                $this->attributeId = $this->attribute[MemberNames::ATTRIBUTE_ID];
+
+                // set the attribute value as well as the original attribute value
+                $this->attributeValue = $attributeValue;
 
                 // initialize the persist method for the found backend type
                 list ($persistMethod, , $deleteMethod) = $backendTypes[$backendType];
-
-                // set the attribute value
-                $this->attributeValue = $attributeValue;
 
                 // prepare the attribute vale and query whether or not it has to be persisted
                 if ($this->hasChanges($value = $this->initializeAttribute($this->prepareAttributes()))) {
@@ -275,13 +313,23 @@ trait AttributeObserverTrait
                     // an empty string and the status is UPDATE, then the value exists and has to be deleted
                     // We need to user $attributeValue instead of $value[MemberNames::VALUE] in cases where
                     // value was casted by attribute type. E.g. special_price = 0 if value is empty string in CSV
-                    if ($attributeValue === '' && $value[EntityStatus::MEMBER_NAME] === EntityStatus::STATUS_UPDATE) {
-                        $this->$deleteMethod(array(MemberNames::VALUE_ID => $value[MemberNames::VALUE_ID]));
-                    } elseif ($attributeValue !== '' && $value[MemberNames::VALUE] !== null) {
-                        $this->$persistMethod($value);
-                    } else {
-                        // log a debug message, because this should never happen
-                        $this->getSubject()->getSystemLogger()->debug(sprintf('Found empty value for attribute "%s"', $attributeCode));
+                    switch ($this->operation) {
+                        // create/update the attribute
+                        case OperationNames::CREATE:
+                        case OperationNames::UPDATE:
+                            $this->$persistMethod($value);
+                            break;
+                        // delete the attribute
+                        case OperationNames::DELETE:
+                            $this->$deleteMethod(array(MemberNames::VALUE_ID => $value[MemberNames::VALUE_ID]));
+                            break;
+                        // skip the attribute
+                        case OperationNames::SKIP:
+                            $this->getSubject()->getSystemLogger()->debug(sprintf('Skipped processing attribute "%s"', $attributeCode));
+                            break;
+                        // should never happen
+                        default:
+                            $this->getSubject()->getSystemLogger()->debug(sprintf('Found invalid entity status "%s" for attribute "%s"', $value[MemberNames::VALUE] ?? 'NULL', $attributeCode));
                     }
                 } else {
                     $this->getSubject()->getSystemLogger()->debug(sprintf('Skip to persist value for attribute "%s"', $attributeCode));
@@ -312,30 +360,20 @@ trait AttributeObserverTrait
     protected function prepareAttributes()
     {
 
-        // laod the callbacks for the actual attribute code
-        $callbacks = $this->getCallbacksByType($this->attributeCode);
-
-        // invoke the pre-cast callbacks
-        foreach ($callbacks as $callback) {
-            $this->attributeValue = $callback->handle($this);
-        }
-
         // load the ID of the product that has been created recently
         $lastEntityId = $this->getPrimaryKey();
 
         // load the store ID, use the admin store if NO store view code has been set
         $storeId = $this->getRowStoreId(StoreViewCodes::ADMIN);
 
-        // cast the value based on the backend type
-        $castedValue = $this->castValueByBackendType($this->backendType, $this->attributeValue);
-
         // prepare the attribute values
         return $this->initializeEntity(
-            array(
-               $this->getPrimaryKeyMemberName() => $lastEntityId,
-                MemberNames::ATTRIBUTE_ID       => $this->attributeId,
-                MemberNames::STORE_ID           => $storeId,
-                MemberNames::VALUE              => $castedValue
+            $this->loadRawEntity(
+                array(
+                   $this->getPrimaryKeyMemberName() => $lastEntityId,
+                    MemberNames::ATTRIBUTE_ID       => $this->attributeId,
+                    MemberNames::STORE_ID           => $storeId
+                )
             )
         );
     }
@@ -350,6 +388,101 @@ trait AttributeObserverTrait
     protected function initializeAttribute(array $attr)
     {
         return $attr;
+    }
+
+    /**
+     * Load's and return's a raw customer entity without primary key but the mandatory members only and nulled values.
+     *
+     * @param array $data An array with data that will be used to initialize the raw entity with
+     *
+     * @return array The initialized entity
+     */
+    protected function loadRawEntity(array $data = array())
+    {
+
+        // laod the callbacks for the actual attribute code
+        $callbacks = $this->getCallbacksByType($this->attributeCode);
+
+        // invoke the pre-cast callbacks
+        foreach ($callbacks as $callback) {
+            $this->attributeValue = $callback->handle($this);
+        }
+
+        // load the default value
+        $defaultValue = isset($this->attribute[MemberNames::DEFAULT_VALUE]) ? $this->attribute[MemberNames::DEFAULT_VALUE] : '';
+
+        // load the value that has to be casted
+        $value = $this->attributeValue === '' || $this->attributeValue === null ? $defaultValue : $this->attributeValue;
+
+        // cast the value
+        $castedValue = $this->castValueByBackendType($this->backendType, $value);
+
+        // merge the casted value into the passed data and return it
+        return array_merge(array(MemberNames::VALUE => $castedValue), $data);
+    }
+
+    /**
+     * Initialize's and return's a new entity with the status 'create'.
+     *
+     * @param array $attr The attributes to merge into the new entity
+     *
+     * @return array The initialized entity
+     */
+    protected function initializeEntity(array $attr = array())
+    {
+
+        // initialize the operation name
+        $this->operation = OperationNames::CREATE;
+
+        // query whether or not the colunm IS empty and it is NOT in the
+        // array with the default column values, because in that case we
+        // want to skip processing the attribute
+        if (array_key_exists($this->attributeCode, $this->defaultColumnValues) === false && ($this->attributeValue === '' || $this->attributeValue == null)) {
+            $this->operation = OperationNames::SKIP;
+        }
+
+        // initialize the entity with the passed data
+        return parent::initializeEntity($attr);
+    }
+
+    /**
+     * Merge's and return's the entity with the passed attributes and set's the
+     * passed status.
+     *
+     * @param array       $entity        The entity to merge the attributes into
+     * @param array       $attr          The attributes to be merged
+     * @param string|null $changeSetName The change set name to use
+     *
+     * @return array The merged entity
+     */
+    protected function mergeEntity(array $entity, array $attr, $changeSetName = null)
+    {
+
+        // we want to update the attribute, if we're here
+        $this->operation = OperationNames::UPDATE;
+
+        // query whether or not the column is EMPTY
+        if ($this->attributeValue === '' || $this->attributeValue === null) {
+            // if the value is empty AND it is IN the array with default column values
+            // BUT it is NOT in the array with columns we want to clean-up the default
+            // column value has to be removed, because we do NOT want to override the
+            // value existing in the database
+            if (array_key_exists($this->attributeCode, $this->defaultColumnValues) &&
+                array_key_exists($this->attributeCode, $this->cleanUpEmptyColumnKeys) === false
+            ) {
+                // remove the value from the array with the column values, because
+                // this is the default value from the database and it should NOT
+                // override the value from the entity in that case
+                unset($attr[MemberNames::VALUE]);
+            } else {
+                // otherwise keep the value and DELETE the whole attribute from
+                // the database
+                $this->operation = OperationNames::DELETE;
+            }
+        }
+
+        // merge and return the data
+        return parent::mergeEntity($entity, $attr, $changeSetName);
     }
 
     /**
@@ -539,4 +672,13 @@ trait AttributeObserverTrait
      * @return boolean TRUE if the entity has to be processed, else FALSE
      */
     abstract protected function hasChanges(array $entity);
+
+    /**
+     * Query whether or not a value for the column with the passed name exists.
+     *
+     * @param string $name The column name to query for a valid value
+     *
+     * @return boolean TRUE if the value is set, else FALSE
+     */
+    abstract protected function hasValue($name);
 }

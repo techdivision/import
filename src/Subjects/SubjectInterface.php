@@ -90,6 +90,13 @@ interface SubjectInterface
     public function getDefaultCallbackMappings();
 
     /**
+     * Load the default column values from the configuration.
+     *
+     * @return array The array with the default column values
+     */
+    public function getDefaultColumnValues();
+
+    /**
      * Tries to format the passed value to a valid date with format 'Y-m-d H:i:s'.
      * If the passed value is NOT a valid date, NULL will be returned.
      *

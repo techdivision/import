@@ -137,6 +137,9 @@ class AbstractAttributeObserverTest extends TestCase
         $mockSubject->expects($this->once())
                     ->method('getBackendTypes')
                     ->willReturn($backendTypes);
+        $mockSubject->expects($this->once())
+                    ->method('getDefaultColumnValues')
+                    ->willReturn(array());
 
         // invoke the handle method
         $this->attributeObserver->handle($mockSubject);
@@ -230,6 +233,9 @@ class AbstractAttributeObserverTest extends TestCase
         $mockSubject->expects($this->once())
                     ->method('getBackendTypes')
                     ->willReturn($backendTypes);
+        $mockSubject->expects($this->once())
+                    ->method('getDefaultColumnValues')
+                    ->willReturn(array());
 
         // invoke the handle method
         $this->attributeObserver->handle($mockSubject);
@@ -342,6 +348,9 @@ class AbstractAttributeObserverTest extends TestCase
                     ->method('getRowStoreId')
                     ->with(StoreViewCodes::ADMIN)
                     ->willReturn($storeId);
+        $mockSubject->expects($this->once())
+                    ->method('getDefaultColumnValues')
+                    ->willReturn(array());
 
         // mock the method call to persist the attribute value
         $this->attributeObserver->expects($this->once())
@@ -419,6 +428,9 @@ class AbstractAttributeObserverTest extends TestCase
         $mockSubject->expects($this->once())
                     ->method('getBackendTypes')
                     ->willReturn($backendTypes);
+        $mockSubject->expects($this->once())
+                    ->method('getDefaultColumnValues')
+                    ->willReturn(array());
 
         // make sure the persist method will NEVER be invoked
         $this->attributeObserver->expects($this->never())
@@ -472,7 +484,7 @@ class AbstractAttributeObserverTest extends TestCase
                                  ->getMock();
         $mockSystemLogger->expects($this->once())
                          ->method('debug')
-                         ->with(sprintf('Found empty value for attribute "%s"', $attributeCode))
+                         ->with(sprintf('Skipped processing attribute "%s"', $attributeCode))
                          ->willReturn(null);
 
         // mock a subject configuration
@@ -513,6 +525,9 @@ class AbstractAttributeObserverTest extends TestCase
                     ->method('getCallbacksByType')
                     ->with($attributeCode)
                     ->willReturn($callbacks);
+        $mockSubject->expects($this->once())
+                    ->method('getDefaultColumnValues')
+                    ->willReturn(array());
 
         // make sure the persist method will NEVER be invoked
         $this->attributeObserver->expects($this->never())
@@ -597,6 +612,9 @@ class AbstractAttributeObserverTest extends TestCase
         $mockSubject->expects($this->once())
                     ->method('getBackendTypes')
                     ->willReturn($backendTypes);
+        $mockSubject->expects($this->once())
+                    ->method('getDefaultColumnValues')
+                    ->willReturn(array());
 
         // make sure the persist method will NEVER be invoked
         $this->attributeObserver->expects($this->never())
@@ -668,6 +686,9 @@ class AbstractAttributeObserverTest extends TestCase
         $mockSubject->expects($this->once())
                     ->method('getBackendTypes')
                     ->willReturn($backendTypes);
+        $mockSubject->expects($this->once())
+                    ->method('getDefaultColumnValues')
+                    ->willReturn(array());
 
         // make sure the persist method will NEVER be invoked
         $this->attributeObserver->expects($this->never())

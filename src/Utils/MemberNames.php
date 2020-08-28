@@ -419,4 +419,11 @@ class MemberNames
      * @var string
      */
     const ENTITY_TABLE = 'entity_table';
+
+    /**
+     * Name for the member 'default_value'.
+     *
+     * @var string
+     */
+    const DEFAULT_VALUE = 'default_value';
 }

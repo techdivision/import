@@ -860,12 +860,12 @@ abstract class AbstractSubject implements SubjectInterface, FilesystemSubjectInt
             // log a message that the file has successfully been imported,
             // use log level warning ONLY if rows have been skipped
             $systemLogger->log(
-                $this->skippedRows > 0 ? LogLevel::WARNING : LogLevel::INFO,
+                $skippedRows = $this->getSkippedRows() > 0 ? LogLevel::WARNING : LogLevel::INFO,
                 sprintf(
                     'Successfully processed file "%s" with "%d" lines (skipping "%d") in "%f" s',
                     basename($filename),
-                    $this->lineNumber - 1,
-                    $this->skippedRows,
+                    $this->getLineNumber() - 1,
+                    $skippedRows,
                     $endTime
                 ),
                 array('operation-name' => $operationName)
@@ -996,8 +996,6 @@ abstract class AbstractSubject implements SubjectInterface, FilesystemSubjectInt
                 foreach ($observers as $observer) {
                     // query whether or not we have to skip the row
                     if ($this->skipRow) {
-                        // raise the counter for the skipped lines
-                        $this->linesSkipped++;
                         // log a debug message with the actual line nr/file information
                         $this->getSystemLogger()->debug(
                             $this->appendExceptionSuffix(
