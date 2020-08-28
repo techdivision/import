@@ -3,6 +3,7 @@
 ## Bugfixes
 
 * Fixed techdivision/import-category#66
+* Fixed #PAC-206: Prevent finder mappings of different libraries to be overwritten
 
 ## Features
 
