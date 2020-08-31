@@ -20,6 +20,7 @@
 
 namespace TechDivision\Import\Subjects;
 
+use Psr\Log\LogLevel;
 use Ramsey\Uuid\Uuid;
 use League\Event\EmitterInterface;
 use Doctrine\Common\Collections\Collection;
@@ -856,9 +857,16 @@ abstract class AbstractSubject implements SubjectInterface, FilesystemSubjectInt
             // track the time needed for the import in seconds
             $endTime = microtime(true) - $startTime;
 
-            // log a message that the file has successfully been imported
-            $systemLogger->info(
-                sprintf('Successfully processed file "%s" with "%d" lines in "%f" s', basename($filename), $this->lineNumber, $endTime),
+            // log a notice that the file has successfully been imported,
+            // but also render the number of lines that have been skipped
+            $systemLogger->notice(
+                sprintf(
+                    'Successfully processed file "%s" with "%d" lines (skipping "%d") in "%f" s',
+                    basename($filename),
+                    $this->lineNumber - 1,
+                    $this->skippedRows,
+                    $endTime
+                ),
                 array('operation-name' => $operationName)
             );
 

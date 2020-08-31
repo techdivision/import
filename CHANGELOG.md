@@ -1,3 +1,13 @@
+# Version 16.5.4
+
+## Bugfixes
+
+* None
+
+## Features
+
+* Added #PAC-196: Add additional console logger and log messages with log level `notice` to console
+
 # Version 16.5.3
 
 ## Bugfixes
