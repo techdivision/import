@@ -861,7 +861,7 @@ abstract class AbstractSubject implements SubjectInterface, FilesystemSubjectInt
             // but also render the number of lines that have been skipped
             $systemLogger->notice(
                 sprintf(
-                    'Successfully processed file "%s" with "%d" lines (skipping "%d") in "%f" s',
+                    'Successfully processed file "%s" with "%d" lines (skipped "%d") in "%f" s',
                     basename($filename),
                     $this->lineNumber - 1,
                     $this->skippedRows,
