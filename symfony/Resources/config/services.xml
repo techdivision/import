@@ -583,6 +583,9 @@
             <argument type="service" id="import_app_simple.simple"/>
             <argument type="service" id="import.subject.file.writer.factory"/>
         </service>
+        <service id="import.plugin.debug.send" class="TechDivision\Import\Plugins\DebugSendPlugin">
+            <argument type="service" id="import_app_simple.simple"/>
+        </service>
 
         <!--
          | The DI configuration for the import adapter

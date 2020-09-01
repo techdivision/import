@@ -33,6 +33,13 @@ class CommandNames extends \ArrayObject
 {
 
     /**
+     * The key for the debug:send command.
+     *
+     * @var string
+     */
+    const DEBUG_SEND = 'debug:send';
+
+    /**
      * The command name for import that executes multiple operations.
      *
      * @var string

@@ -4,6 +4,9 @@
       "general": {
         "create-ok-files": [
           "general/general/create-ok-files"
+        ],
+        "debug-send": [
+          "general/general/debug-send"
         ]
       }
     }
