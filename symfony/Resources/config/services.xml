@@ -13,17 +13,6 @@
     <services>
 
         <!--
-         | The DI configuration for the synthetic services
-         |-->
-        <!--
-        <service id="configuration.import.plugin.archive" synthetic="true" />
-        <service id="configuration.import.plugin.subject" synthetic="true" />
-        <service id="configuration.import.plugin.global.data" synthetic="true" />
-        <service id="configuration.import.plugin.missing.option.values" synthetic="true" />
-        <service id="configuration.import.subject.move.files" synthetic="true" />
-        -->
-
-        <!--
          | The DI configuration for the logger services
          |-->
         <service id="import.logger.processor.memory.peak.usage" class="Monolog\Processor\MemoryPeakUsageProcessor"/>
@@ -582,9 +571,6 @@
         <service id="import.plugin.create.ok.files" class="TechDivision\Import\Plugins\CreateOkFilesPlugin">
             <argument type="service" id="import_app_simple.simple"/>
             <argument type="service" id="import.subject.file.writer.factory"/>
-        </service>
-        <service id="import.plugin.debug.send" class="TechDivision\Import\Plugins\DebugSendPlugin">
-            <argument type="service" id="import_app_simple.simple"/>
         </service>
 
         <!--
