@@ -101,6 +101,12 @@
                 <argument id="import.util.sanitizer.column" type="service"/>
             </call>
         </service>
+        <service id="import.utils.debug" class="TechDivision\Import\Utils\DebugUtil">
+            <argument type="service" id="import.processor.registry"/>
+            <argument type="service" id="configuration"/>
+            <argument type="service" id="loggers"/>
+            <argument type="service" id="import.renderer.debug.composite"/>
+        </service>
 
         <!--
          | The DI finder factory configuration
@@ -140,6 +146,36 @@
             <argument type="service" id="output"/>
         </service>
         <service id="import.renderer.validations.system.logger" class="TechDivision\Import\Listeners\Renderer\Validations\SystemLoggerRenderer">
+            <argument type="service" id="configuration"/>
+            <argument type="service" id="loggers"/>
+        </service>
+
+        <!--
+         | The DI debug renderer configuration
+         |-->
+        <service id="import.renderer.debug.composite" class="TechDivision\Import\Listeners\Renderer\Debug\GenericDebugCompositeRenderer">
+            <call method="addRenderer">
+                <argument id="import.renderer.debug.file.info" type="service"/>
+            </call>
+            <call method="addRenderer">
+                <argument id="import.renderer.debug.file.report" type="service"/>
+            </call>
+            <call method="addRenderer">
+                <argument id="import.renderer.debug.file.configuration" type="service"/>
+            </call>
+        </service>
+        <service id="import.renderer.debug.file.info" class="TechDivision\Import\Listeners\Renderer\Debug\InfoFileRenderer">
+            <argument type="service" id="import.processor.registry"/>
+            <argument type="service" id="configuration"/>
+            <argument type="service" id="loggers"/>
+        </service>
+        <service id="import.renderer.debug.file.report" class="TechDivision\Import\Listeners\Renderer\Debug\ReportFileRenderer">
+            <argument type="service" id="import.processor.registry"/>
+            <argument type="service" id="configuration"/>
+            <argument type="service" id="loggers"/>
+        </service>
+        <service id="import.renderer.debug.file.configuration" class="TechDivision\Import\Listeners\Renderer\Debug\ConfigurationFileRenderer">
+            <argument type="service" id="import.processor.registry"/>
             <argument type="service" id="configuration"/>
             <argument type="service" id="loggers"/>
         </service>
@@ -713,6 +749,7 @@
         <!--
          ! The DI configuration for the value/additional attribute serializers
          !-->
+        <service id="import.serializer.configuration" class="TechDivision\Import\Serializers\Configuration"/>
         <service id="import.serializer.csv.value" class="TechDivision\Import\Serializers\ValueCsvSerializer"/>
         <service id="import.serializer.csv.additional.attribute" class="TechDivision\Import\Serializers\AdditionalAttributeCsvSerializer">
             <argument type="service" id="configuration"/>
@@ -795,6 +832,10 @@
         </service>
         <service id="import.listener.reset.logger" class="TechDivision\Import\Listeners\ResetLoggerListener">
             <argument type="service" id="loggers"/>
+        </service>
+        <service id="import.listener.debug.dump.prepare" class="TechDivision\Import\Listeners\PrepareDebugDumpListener">
+            <argument type="service" id="import.utils.debug"/>
+            <argument type="service" id="configuration"/>
         </service>
 
         <!--

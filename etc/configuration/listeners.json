@@ -9,6 +9,7 @@
         "import.listener.initialize.registry"
       ],
       "app.process.transaction.success": [
+        "import.listener.debug.dump.prepare",
         "import.listener.finalize.registry",
         "import.listener.archive",
         "import.listener.clear.artefacts",
@@ -16,6 +17,7 @@
         "import.listener.operation.report"
       ],
       "app.process.transaction.failure": [
+        "import.listener.debug.dump.prepare",
         "import.listener.finalize.registry",
         "import.listener.render.validations"
       ],

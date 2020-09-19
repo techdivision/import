@@ -40,6 +40,13 @@ class EntityTypeCodes extends \ArrayObject
     const NONE = 'none';
 
     /**
+     * Key for debugging purposes.
+     *
+     * @var integer
+     */
+    const DEBUG = 'debug';
+
+    /**
      * Key for the product entity 'catalog_product'.
      *
      * @var integer

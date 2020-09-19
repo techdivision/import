@@ -25,6 +25,7 @@ use TechDivision\Import\ApplicationInterface;
 use TechDivision\Import\Configuration\PluginConfigurationInterface;
 use TechDivision\Import\Adapter\ImportAdapterInterface;
 use TechDivision\Import\Utils\RegistryKeys;
+use TechDivision\Import\Loggers\SwiftMailer\TransportMailerFactoryInterface;
 
 /**
  * Abstract plugin implementation.
@@ -307,10 +308,20 @@ abstract class AbstractPlugin implements PluginInterface
 
         // the swift mailer configuration
         if ($swiftMailerConfiguration = $this->getPluginConfiguration()->getSwiftMailer()) {
-            // load the factory that creates the swift mailer instance
-            $factory = $swiftMailerConfiguration->getFactory();
-            // create the swift mailer instance
-            return $factory::factory($swiftMailerConfiguration);
+
+            // create the swift mailer (factory) instance
+            $possibleSwiftMailer = $this->getApplication()->getContainer()->get($swiftMailerConfiguration->getId());
+
+            // query whether or not we've a factory or the instance
+            /** @var \Swift_Mailer $swiftMailer */
+            if ($possibleSwiftMailer instanceof TransportMailerFactoryInterface) {
+                return $possibleSwiftMailer->factory($swiftMailerConfiguration->getTransport());
+            } elseif ($possibleSwiftMailer instanceof \Swift_Mailer) {
+                return $possibleSwiftMailer;
+            }
+
+            // throw an exeception if the configuration contains an invalid value
+            throw new \Exception('Can\'t create SwiftMailer from configuration');
         }
     }
 }

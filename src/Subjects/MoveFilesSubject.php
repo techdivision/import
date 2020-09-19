@@ -130,7 +130,8 @@ class MoveFilesSubject extends AbstractSubject
                         $filename => array(
                             $this->getUniqueId() => array(
                                 RegistryKeys::STATUS         => 1,
-                                RegistryKeys::PROCESSED_ROWS => $this->getLineNumber()
+                                RegistryKeys::SKIPPED_ROWS   => $this->getSkippedRows(),
+                                RegistryKeys::PROCESSED_ROWS => $this->getLineNumber() - 1
                             )
                         )
                     )

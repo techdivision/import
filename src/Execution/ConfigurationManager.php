@@ -63,7 +63,8 @@ class ConfigurationManager implements ConfigurationManagerInterface
         'customer_address'              => 'general',
         'customer'                      => 'general',
         'general'                       => 'general',
-        'none'                          => 'general'
+        'none'                          => 'general',
+        'debug'                         => 'general'
     );
 
     /**

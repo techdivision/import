@@ -222,6 +222,13 @@ interface InputOptionKeysInterface extends \ArrayAccess
     const RENDER_VALIDATION_ISSUES = 'render-validation-issues';
 
     /**
+     * The input option key for the number of debug serialias rendered on the console.
+     *
+     * @var string
+     */
+    const RENDER_DEBUG_SERIALS = 'render-debug-serials';
+
+    /**
      * Query whether or not the passed input option is valid.
      *
      * @param string $inputOption The input option to query for

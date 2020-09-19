@@ -47,7 +47,6 @@ class CommandNameToEntityTypeCode extends \ArrayObject
         // merge the entity type codes with the passed ones
         $mergedMappings = array_merge(
             array(
-                CommandNames::DEBUG_SEND                       => EntityTypeCodes::NONE,
                 CommandNames::IMPORT_PRODUCTS                  => EntityTypeCodes::CATALOG_PRODUCT,
                 CommandNames::IMPORT_PRODUCTS_URL              => EntityTypeCodes::CATALOG_PRODUCT_URL,
                 CommandNames::IMPORT_PRODUCTS_PRICE            => EntityTypeCodes::CATALOG_PRODUCT_PRICE,
@@ -63,7 +62,8 @@ class CommandNameToEntityTypeCode extends \ArrayObject
                 CommandNames::IMPORT_CREATE_OK_FILE            => EntityTypeCodes::NONE,
                 CommandNames::IMPORT_CREATE_CONFIGURATION_FILE => EntityTypeCodes::NONE,
                 CommandNames::IMPORT_EXECUTE                   => EntityTypeCodes::NONE,
-                CommandNames::IMPORT_CONVERT_VALUE             => EntityTypeCodes::NONE
+                CommandNames::IMPORT_CONVERT_VALUE             => EntityTypeCodes::NONE,
+                CommandNames::IMPORT_DEBUG                     => EntityTypeCodes::DEBUG
             ),
             $mappings
         );
