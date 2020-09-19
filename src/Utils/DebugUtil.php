@@ -85,7 +85,6 @@ class DebugUtil implements DebugUtilInterface
         $this->configuration = $configuration;
         $this->systemLoggers = $systemLoggers;
         $this->renderer = $renderer;
-
     }
 
     /**

@@ -43,6 +43,8 @@ class GenericCompositeRenderer implements RendererInterface
      * Add's a new renderer to the composite.
      *
      * @param \TechDivision\Import\Listeners\Renderer\RendererInterface $renderer the renderer to add
+     *
+     * @return void
      */
     public function addRenderer(RendererInterface $renderer) : void
     {

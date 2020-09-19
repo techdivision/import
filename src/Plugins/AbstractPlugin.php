@@ -308,7 +308,6 @@ abstract class AbstractPlugin implements PluginInterface
 
         // the swift mailer configuration
         if ($swiftMailerConfiguration = $this->getPluginConfiguration()->getSwiftMailer()) {
-
             // create the swift mailer (factory) instance
             $possibleSwiftMailer = $this->getApplication()->getContainer()->get($swiftMailerConfiguration->getId());
 

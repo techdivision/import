@@ -64,7 +64,9 @@ abstract class AbstractDebugRenderer implements RendererInterface
     /**
      * Initializes the renderer with the configuration that has to be rendered.
      *
-     * @param \TechDivision\Import\Configuration\ConfigurationInterface $configuration The configuration instance
+     * @param \TechDivision\Import\Services\RegistryProcessorInterface  $registryProcessor The registry processor instance
+     * @param \TechDivision\Import\Configuration\ConfigurationInterface $configuration     The configuration instance
+     * @param \Doctrine\Common\Collections\Collection                   $systemLoggers     The system logger instances
      */
     public function __construct(
         RegistryProcessorInterface $registryProcessor,

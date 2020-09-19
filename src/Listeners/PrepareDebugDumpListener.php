@@ -55,7 +55,7 @@ class PrepareDebugDumpListener extends AbstractListener
     /**
      * Initializes the listeners with the debug util and configuration instances.
      *
-     * @param \TechDivision\Import\Utils\DebugUtilInterface         $debugUtil     The debug util instance
+     * @param \TechDivision\Import\Utils\DebugUtilInterface             $debugUtil     The debug util instance
      * @param \TechDivision\Import\Configuration\ConfigurationInterface $configuration The configuration instance
      */
     public function __construct(
