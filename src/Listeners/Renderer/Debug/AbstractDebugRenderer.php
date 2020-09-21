@@ -20,8 +20,10 @@
 
 namespace TechDivision\Import\Listeners\Renderer\Debug;
 
+use Psr\Container\ContainerInterface;
 use Ramsey\Uuid\Uuid;
 use Doctrine\Common\Collections\Collection;
+use TechDivision\Import\App\Utils\DependencyInjectionKeys;
 use TechDivision\Import\SystemLoggerTrait;
 use TechDivision\Import\Utils\RegistryKeys;
 use TechDivision\Import\Services\RegistryProcessorInterface;
@@ -62,6 +64,13 @@ abstract class AbstractDebugRenderer implements RendererInterface
     private $configuration;
 
     /**
+     * The DI container instance.
+     *
+     * @var \Psr\Container\ContainerInterface
+     */
+    private $container;
+
+    /**
      * Initializes the renderer with the configuration that has to be rendered.
      *
      * @param \TechDivision\Import\Services\RegistryProcessorInterface  $registryProcessor The registry processor instance
@@ -71,11 +80,13 @@ abstract class AbstractDebugRenderer implements RendererInterface
     public function __construct(
         RegistryProcessorInterface $registryProcessor,
         ConfigurationInterface $configuration,
-        Collection $systemLoggers
+        Collection $systemLoggers,
+        ContainerInterface $container = null
     ) {
         $this->registryProcessor = $registryProcessor;
         $this->configuration = $configuration;
         $this->systemLoggers = $systemLoggers;
+        $this->container = $container;
     }
 
     /**
@@ -99,6 +110,20 @@ abstract class AbstractDebugRenderer implements RendererInterface
     }
 
     /**
+     * Returns the CLI application version.
+     *
+     * @return string
+     */
+    public function getApplicationVersion()
+    {
+        if (!$this->container instanceof ContainerInterface) {
+            return 'Unknown';
+        }
+
+        return $this->container->get(DependencyInjectionKeys::APPLICATION)->getVersion();
+    }
+
+    /**
      * Writes the passed data to the also passed filename.
      *
      * @param string $data     The data to write
@@ -116,7 +141,7 @@ abstract class AbstractDebugRenderer implements RendererInterface
             return;
         }
 
-        // write the data to the file with the apssed name
+        // write the data to the file with the passed name
         if (file_put_contents($filename, $data)) {
             $this->getSystemLogger()->debug(sprintf('Successfully written file %s', $filename));
         } else {

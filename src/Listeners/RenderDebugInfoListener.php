@@ -66,6 +66,11 @@ class RenderDebugInfoListener extends AbstractListener
     public function handle(EventInterface $event, ApplicationInterface $application = null)
     {
 
+        // abort if the application instance is not available
+        if (!$application instanceof ApplicationInterface) {
+            throw new \Exception('Application instance not available in ' . __CLASS__);
+        }
+
         // log the debug information, if debug mode is enabled
         if ($this->getConfiguration()->isDebugMode()) {
             // log the Magento + the system's PHP configuration

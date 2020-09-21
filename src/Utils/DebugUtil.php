@@ -108,16 +108,6 @@ class DebugUtil implements DebugUtilInterface
     }
 
     /**
-     * Return's the application instance.
-     *
-     * @return \TechDivision\Import\ApplicationInterface The application instance
-     */
-    private function getApplication() : ApplicationInterface
-    {
-        return $this->application;
-    }
-
-    /**
      * Return's the debug dump renderer instance.
      *
      * @return \TechDivision\Import\Listeners\Renderer\RendererInterface The debug dump renderer instance
@@ -178,7 +168,7 @@ class DebugUtil implements DebugUtilInterface
                 )
             );
 
-            // stop prcessing the file extraction of the ZIP file
+            // stop processing the file extraction of the ZIP file
             return;
         }
 
@@ -195,11 +185,11 @@ class DebugUtil implements DebugUtilInterface
         }
 
         // log a message that the file has successfully been extracted
-        $this->getSystemLogger()->info(sprintf('Successfully extracted artefacts for serial "%s" to directory', $serial, $sourceDir));
+        $this->getSystemLogger()->info(sprintf('Successfully extracted artefacts for serial "%s" to directory %s', $serial, $sourceDir));
     }
 
     /**
-     * The method to create the debugging artefacts in the apropriate directory.
+     * The method to create the debugging artefacts in the appropriate directory.
      *
      * @param string $serial The serial to prepare the dump for
      *
@@ -270,7 +260,7 @@ class DebugUtil implements DebugUtilInterface
         // save the ZIP archive
         $dumpFile->close();
 
-        // log a message that the dump has succesfully been created
+        // log a message that the dump has successfully been created
         $this->getSystemLogger()->info(sprintf('Successfully created dump "%s" with artefacts for serial "%s"', $dumpFilename, $serial));
 
         // return the filename of the dump
