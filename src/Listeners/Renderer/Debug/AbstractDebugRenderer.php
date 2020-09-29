@@ -20,15 +20,15 @@
 
 namespace TechDivision\Import\Listeners\Renderer\Debug;
 
-use Psr\Container\ContainerInterface;
 use Ramsey\Uuid\Uuid;
 use Doctrine\Common\Collections\Collection;
-use TechDivision\Import\App\Utils\DependencyInjectionKeys;
 use TechDivision\Import\SystemLoggerTrait;
 use TechDivision\Import\Utils\RegistryKeys;
+use TechDivision\Import\Utils\DependencyInjectionKeys;
 use TechDivision\Import\Services\RegistryProcessorInterface;
 use TechDivision\Import\Listeners\Renderer\RendererInterface;
 use TechDivision\Import\Configuration\ConfigurationInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * A abstract debug renderer implementation.
@@ -66,7 +66,7 @@ abstract class AbstractDebugRenderer implements RendererInterface
     /**
      * The DI container instance.
      *
-     * @var \Psr\Container\ContainerInterface
+     * @var \Symfony\Component\DependencyInjection\ContainerInterface
      */
     private $container;
 
@@ -76,6 +76,7 @@ abstract class AbstractDebugRenderer implements RendererInterface
      * @param \TechDivision\Import\Services\RegistryProcessorInterface  $registryProcessor The registry processor instance
      * @param \TechDivision\Import\Configuration\ConfigurationInterface $configuration     The configuration instance
      * @param \Doctrine\Common\Collections\Collection                   $systemLoggers     The system logger instances
+     * @param \Symfony\Component\DependencyInjection\ContainerInterface $container         The container instance
      */
     public function __construct(
         RegistryProcessorInterface $registryProcessor,
@@ -110,17 +111,30 @@ abstract class AbstractDebugRenderer implements RendererInterface
     }
 
     /**
+     * Return's the container instance.
+     *
+     * @return \Symfony\Component\DependencyInjection\ContainerInterface The container instance
+     */
+    protected function getContainer() : ContainerInterface
+    {
+        return $this->container;
+    }
+
+    /**
      * Returns the CLI application version.
      *
-     * @return string
+     * @return string The application version
      */
-    public function getApplicationVersion()
+    public function getApplicationVersion() : string
     {
-        if (!$this->container instanceof ContainerInterface) {
-            return 'Unknown';
+
+        // query whether or not the container is available
+        if ($this->getContainer() instanceof ContainerInterface) {
+            return $this->container->get(DependencyInjectionKeys::APPLICATION)->getVersion();
         }
 
-        return $this->container->get(DependencyInjectionKeys::APPLICATION)->getVersion();
+        // return a unknown version string
+        return 'Unknown';
     }
 
     /**
