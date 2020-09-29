@@ -1,3 +1,13 @@
+# Version 16.5.5
+
+## Bugfixes
+
+* Fixed issue in ArrayValidatorCallback that causes ignored validation errors
+
+## Features
+
+* None
+
 # Version 16.5.4
 
 ## Bugfixes
