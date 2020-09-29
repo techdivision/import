@@ -66,6 +66,11 @@ class RenderDebugInfoListener extends AbstractListener
     public function handle(EventInterface $event, ApplicationInterface $application = null)
     {
 
+        // abort if the application instance is not available
+        if (!$application instanceof ApplicationInterface) {
+            throw new \Exception('Application instance not available in ' . __CLASS__);
+        }
+
         // log the debug information, if debug mode is enabled
         if ($this->getConfiguration()->isDebugMode()) {
             // log the Magento + the system's PHP configuration
@@ -73,6 +78,9 @@ class RenderDebugInfoListener extends AbstractListener
             $application->log(sprintf('Magento Version: %s', $this->getConfiguration()->getMagentoVersion()), LogLevel::DEBUG);
             $application->log(sprintf('PHP Version: %s', phpversion()), LogLevel::DEBUG);
             $application->log(sprintf('App Version: %s', $application->getVersion()), LogLevel::DEBUG);
+            $application->log(sprintf('Memory Limit: %s', ini_get('memory_limit')), LogLevel::DEBUG);
+            $application->log(sprintf('Executed Command: %s', implode(' ', $_SERVER['argv'])), LogLevel::DEBUG);
+            $application->log(sprintf('Working Directory: %s', getcwd()), LogLevel::DEBUG);
             $application->log('-------------------- Loaded Extensions -----------------------', LogLevel::DEBUG);
             $application->log(implode(', ', get_loaded_extensions()), LogLevel::DEBUG);
             $application->log('------------------- Executed Operations ----------------------', LogLevel::DEBUG);

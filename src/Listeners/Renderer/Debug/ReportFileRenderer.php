@@ -61,6 +61,11 @@ class ReportFileRenderer extends AbstractDebugRenderer
         // log the Magento + the system's PHP configuration
         $lines[] = sprintf('Magento Edition: %s', $this->getConfiguration()->getMagentoEdition());
         $lines[] = sprintf('Magento Version: %s', $this->getConfiguration()->getMagentoVersion());
+        $lines[] = sprintf('PHP Version: %s', phpversion());
+        $lines[] = sprintf('App Version: %s', $this->getApplicationVersion());
+        $lines[] = sprintf('Memory Limit: %s', ini_get('memory_limit'));
+        $lines[] = sprintf('Executed Command: %s', implode(' ', $_SERVER['argv']));
+        $lines[] = sprintf('Working Directory: %s', getcwd());
         $lines[] = '-------------------- Loaded Extensions -----------------------';
         $lines[] = implode(', ', get_loaded_extensions());
         $lines[] = '------------------- Executed Operations ----------------------';

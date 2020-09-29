@@ -173,6 +173,7 @@
             <argument type="service" id="import.processor.registry"/>
             <argument type="service" id="configuration"/>
             <argument type="service" id="loggers"/>
+            <argument type="service" id="service_container"/>
         </service>
         <service id="import.renderer.debug.file.configuration" class="TechDivision\Import\Listeners\Renderer\Debug\ConfigurationFileRenderer">
             <argument type="service" id="import.processor.registry"/>

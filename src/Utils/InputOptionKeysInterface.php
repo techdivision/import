@@ -222,7 +222,7 @@ interface InputOptionKeysInterface extends \ArrayAccess
     const RENDER_VALIDATION_ISSUES = 'render-validation-issues';
 
     /**
-     * The input option key for the number of debug serialias rendered on the console.
+     * The input option key for the number of debug serials rendered on the console.
      *
      * @var string
      */

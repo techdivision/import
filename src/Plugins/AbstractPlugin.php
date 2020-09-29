@@ -40,7 +40,7 @@ abstract class AbstractPlugin implements PluginInterface
 {
 
     /**
-     * The appliation instance.
+     * The application instance.
      *
      * @var \TechDivision\Import\ApplicationInterface
      */
@@ -279,7 +279,7 @@ abstract class AbstractPlugin implements PluginInterface
 
         // remove files/folders recursively
         while (false !== ($file = readdir($dir))) {
-            if (($file != '.') && ($file != '..')) {
+            if (($file !== '.') && ($file !== '..')) {
                 $full = $src . '/' . $file;
                 if (is_dir($full)) {
                     $this->removeDir($full);
@@ -315,12 +315,14 @@ abstract class AbstractPlugin implements PluginInterface
             /** @var \Swift_Mailer $swiftMailer */
             if ($possibleSwiftMailer instanceof TransportMailerFactoryInterface) {
                 return $possibleSwiftMailer->factory($swiftMailerConfiguration->getTransport());
-            } elseif ($possibleSwiftMailer instanceof \Swift_Mailer) {
-                return $possibleSwiftMailer;
             }
 
-            // throw an exeception if the configuration contains an invalid value
-            throw new \Exception('Can\'t create SwiftMailer from configuration');
+            if ($possibleSwiftMailer instanceof \Swift_Mailer) {
+                return $possibleSwiftMailer;
+            }
         }
+
+        // throw an exception if the configuration contains an invalid value
+        throw new \Exception('Can\'t create SwiftMailer from configuration');
     }
 }
