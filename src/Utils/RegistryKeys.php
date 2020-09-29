@@ -301,4 +301,11 @@ class RegistryKeys
      * @var string
      */
     const SKIPPED_ROWS = 'skipped_rows';
+
+    /**
+     * Key for the registry entry with the serial that has to be debugged.
+     *
+     * @var string
+     */
+    const DEBUG_SERIAL = 'debug_serial';
 }

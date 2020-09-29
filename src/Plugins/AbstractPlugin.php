@@ -25,6 +25,7 @@ use TechDivision\Import\ApplicationInterface;
 use TechDivision\Import\Configuration\PluginConfigurationInterface;
 use TechDivision\Import\Adapter\ImportAdapterInterface;
 use TechDivision\Import\Utils\RegistryKeys;
+use TechDivision\Import\Loggers\SwiftMailer\TransportMailerFactoryInterface;
 
 /**
  * Abstract plugin implementation.
@@ -39,7 +40,7 @@ abstract class AbstractPlugin implements PluginInterface
 {
 
     /**
-     * The appliation instance.
+     * The application instance.
      *
      * @var \TechDivision\Import\ApplicationInterface
      */
@@ -278,7 +279,7 @@ abstract class AbstractPlugin implements PluginInterface
 
         // remove files/folders recursively
         while (false !== ($file = readdir($dir))) {
-            if (($file != '.') && ($file != '..')) {
+            if (($file !== '.') && ($file !== '..')) {
                 $full = $src . '/' . $file;
                 if (is_dir($full)) {
                     $this->removeDir($full);
@@ -307,10 +308,21 @@ abstract class AbstractPlugin implements PluginInterface
 
         // the swift mailer configuration
         if ($swiftMailerConfiguration = $this->getPluginConfiguration()->getSwiftMailer()) {
-            // load the factory that creates the swift mailer instance
-            $factory = $swiftMailerConfiguration->getFactory();
-            // create the swift mailer instance
-            return $factory::factory($swiftMailerConfiguration);
+            // create the swift mailer (factory) instance
+            $possibleSwiftMailer = $this->getApplication()->getContainer()->get($swiftMailerConfiguration->getId());
+
+            // query whether or not we've a factory or the instance
+            /** @var \Swift_Mailer $swiftMailer */
+            if ($possibleSwiftMailer instanceof TransportMailerFactoryInterface) {
+                return $possibleSwiftMailer->factory($swiftMailerConfiguration->getTransport());
+            }
+
+            if ($possibleSwiftMailer instanceof \Swift_Mailer) {
+                return $possibleSwiftMailer;
+            }
         }
+
+        // throw an exception if the configuration contains an invalid value
+        throw new \Exception('Can\'t create SwiftMailer from configuration');
     }
 }

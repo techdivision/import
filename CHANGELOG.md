@@ -9,6 +9,7 @@
 
 * Add second log handler to log to console also
 * Adjust log messages to log only message with log level `notice` to console
+* Add #PAC-89: Add debug email command + DebugSendPlugin
 
 # Version 16.5.3
 

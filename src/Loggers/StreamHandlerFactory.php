@@ -149,6 +149,7 @@ class StreamHandlerFactory implements HandlerFactoryInterface
                         $this->stream => array(
                             Uuid::uuid4()->toString() => array(
                                 RegistryKeys::STATUS => 1,
+                                RegistryKeys::SKIPPED_ROWS => 0,
                                 RegistryKeys::PROCESSED_ROWS => 0
                             )
                         )

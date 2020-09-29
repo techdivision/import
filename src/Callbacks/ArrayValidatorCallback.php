@@ -81,7 +81,13 @@ class ArrayValidatorCallback extends AbstractValidatorCallback
         $validations = $this->getValidations($attributeCode);
 
         // if the passed value is in the array, return immediately
-        if (in_array($attributeValue, $validations) || $this->isNullable($attributeValue)) {
+        if (in_array($attributeValue, $validations)) {
+            return;
+        }
+
+        // query whether or not the passed value IS empty and empty
+        // values are allowed
+        if ($this->isNullable($attributeValue)) {
             return;
         }
 
@@ -137,6 +143,6 @@ class ArrayValidatorCallback extends AbstractValidatorCallback
         }
 
         // if not, return TRUE immediately
-        return true;
+        return false;
     }
 }
