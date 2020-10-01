@@ -47,11 +47,19 @@ class GenericIdentifierAction extends GenericAction implements IdentifierActionI
     public function persist(array $row, $name = null)
     {
 
-        // load the method name
-        $methodName = $row[EntityStatus::MEMBER_NAME];
+        // try to load method name
+        if (isset($row[EntityStatus::MEMBER_NAME])) {
+            // try to invoke the method, if available
+            if (method_exists($this, $methodName = $row[EntityStatus::MEMBER_NAME])) {
+                return $this->$methodName($row, $name);
+            }
 
-        // invoke the method
-        return $this->$methodName($row, $name);
+            // throw an exeption otherwise
+            throw new \Exception(sprintf('Can\'t find method name "%s"', $methodName));
+        }
+
+        // throw an exeption otherwise
+        throw new \Exception(sprintf('Key "%s" with entity status is not available', EntityStatus::MEMBER_NAME));
     }
 
     /**
