@@ -135,7 +135,7 @@ class ProposedOkFilenameLoaderFactory implements LoaderFactoryInterface
         $filteredLoader = new FilteredLoader($filesystemLoader);
         $pregMatchFilteredLoader = new PregMatchFilteredLoader($filteredLoader);
         $proposedOkFileLoader = new ProposedOkFilenameLoader($pregMatchFilteredLoader);
-        $proposedOkFileLoader->addFilter(new DefaultOkFileFilter());
+        $proposedOkFileLoader->addFilter(new DefaultOkFileFilter($subject));
         $proposedOkFileLoader->addSorter(new DefaultOkFileSorter());
         $proposedOkFileLoader->setSourceDir($this->getSourceDir($filesystemAdapter));
         $proposedOkFileLoader->setFileResolverConfiguration($subject->getFileResolver());

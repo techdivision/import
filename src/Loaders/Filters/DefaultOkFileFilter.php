@@ -20,6 +20,8 @@
 
 namespace TechDivision\Import\Loaders\Filters;
 
+use TechDivision\Import\Configuration\SubjectConfigurationInterface;
+
 /**
  * Factory for file writer instances.
  *
@@ -31,6 +33,44 @@ namespace TechDivision\Import\Loaders\Filters;
  */
 class DefaultOkFileFilter implements FilterInterface
 {
+
+    /**
+     * The subject configuration containing the file suffix to use for filtering purposes.
+     *
+     * @var \TechDivision\Import\Configuration\SubjectConfigurationInterface
+     */
+    private $subjectConfiguration;
+
+    /**
+     * Initializes the filter with the passed subject configuration.
+     *
+     * @param \TechDivision\Import\Configuration\SubjectConfigurationInterface $subjectConfiguration The subject configuration
+     */
+    public function __construct(SubjectConfigurationInterface $subjectConfiguration)
+    {
+        $this->subjectConfiguration = $subjectConfiguration;
+    }
+
+    /**
+     * Return's the subject configuration instance.
+     *
+     * @return \TechDivision\Import\Configuration\SubjectConfigurationInterface The subject configuration instance
+     */
+    private function getSubjectConfiguration() : SubjectConfigurationInterface
+    {
+        return $this->subjectConfiguration;
+    }
+
+    /**
+     * Return's the suffix configured in the file resolver of the
+     * given subject configuration.
+     *
+     * @return string The suffix used for filter purposes
+     */
+    private function getSuffix() : string
+    {
+        return $this->getSubjectConfiguration()->getFileResolver()->getSuffix();
+    }
 
     /**
      * The filter's unique name.
@@ -71,7 +111,7 @@ class DefaultOkFileFilter implements FilterInterface
             // initialize the array for the matches
             $matches = array();
             // prepare the pattern
-            $pattern = '/^(?<prefix>.*)_(?<filename>.*)_.*\.csv$/';
+            $pattern = sprintf('/^(?<prefix>.*)_(?<filename>.*)_.*\.%s$/', $this->getSuffix());
             // try to match the pattern against the import file and the .OK file
             if (preg_match($pattern, $f, $matches)) {
                 if (preg_match(sprintf('/^.*\/%s_%s\.ok$/', $matches['prefix'], $matches['filename']), $k)) {

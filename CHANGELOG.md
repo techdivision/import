@@ -4,6 +4,7 @@
 
 * Fixed techdivision/import-category#69
 * Fixed techdivision/import-category#66
+* Fixed #PAC-212: .OK file filter only supports suffix .csv
 * Fixed #PAC-206: Prevent finder mappings of different libraries to be overwritten
 
 ## Features
