@@ -20,7 +20,6 @@
 
 namespace TechDivision\Import\Loggers;
 
-use Monolog\Handler\ErrorLogHandler;
 use TechDivision\Import\Utils\ConfigurationUtil;
 use TechDivision\Import\Utils\ConfigurationKeys;
 use TechDivision\Import\Configuration\ConfigurationInterface;
@@ -29,15 +28,13 @@ use TechDivision\Import\Configuration\Logger\HandlerConfigurationInterface;
 /**
  * Error Log Handler factory implementation.
  *
- * @author    Martin Eisenführer <m.eisenfuehrer@techdivision.com>
- * @copyright 2020 TechDivision GmbH <info@techdivision.com>
+ * @author    Tim Wagner <t.wagner@techdivision.com>
+ * @copyright 2019 TechDivision GmbH <info@techdivision.com>
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
- *
- * @deprecated use GenericLogHandlerFactory
  */
-class ErrorLogHandlerFactory implements HandlerFactoryInterface
+class GenericLogHandlerFactory implements HandlerFactoryInterface
 {
 
     /**
@@ -48,13 +45,22 @@ class ErrorLogHandlerFactory implements HandlerFactoryInterface
     protected $defaultLogLevel;
 
     /**
+     * The log level to use.
+     *
+     * @var string
+     */
+    protected $handlerClassName;
+
+    /**
      * Initialize the processor with the actual configuration instance
      *
      * @param \TechDivision\Import\Configuration\ConfigurationInterface $configuration The actual configuration instance
+     * @param string $handlerClassName
      */
-    public function __construct(ConfigurationInterface $configuration)
+    public function __construct(ConfigurationInterface $configuration, $handlerClassName)
     {
         $this->defaultLogLevel = $configuration->getLogLevel();
+        $this->handlerClassName = $handlerClassName;
     }
 
     /**
@@ -76,7 +82,7 @@ class ErrorLogHandlerFactory implements HandlerFactoryInterface
         }
 
         // create and return the handler instance
-        $reflectionClass = new \ReflectionClass(ErrorLogHandler::class);
+        $reflectionClass = new \ReflectionClass($this->handlerClassName);
         return $reflectionClass->newInstanceArgs(ConfigurationUtil::prepareConstructorArgs($reflectionClass, $params));
     }
 }
