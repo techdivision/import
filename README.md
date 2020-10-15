@@ -1,4 +1,4 @@
-# M2IF - Magento 2 Import Framework
+# Pacemaker - Import Framework
 
 [![Latest Stable Version](https://img.shields.io/packagist/v/techdivision/import.svg?style=flat-square)](https://packagist.org/packages/techdivision/import) 
  [![Total Downloads](https://img.shields.io/packagist/dt/techdivision/import.svg?style=flat-square)](https://packagist.org/packages/techdivision/import)
