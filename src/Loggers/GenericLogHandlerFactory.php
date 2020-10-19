@@ -54,8 +54,8 @@ class GenericLogHandlerFactory implements HandlerFactoryInterface
     /**
      * Initialize the processor with the actual configuration instance
      *
-     * @param \TechDivision\Import\Configuration\ConfigurationInterface $configuration     The actual configuration instance
-     * @param string                                                  $handlerClassName Classname for monolog Logger handler
+     * @param ConfigurationInterface $configuration    the actual configuration instance
+     * @param string                 $handlerClassName Classname for monolog Logger handler
      */
     public function __construct(ConfigurationInterface $configuration, $handlerClassName)
     {
