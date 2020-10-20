@@ -1,3 +1,13 @@
+# Version 16.6.0
+
+## Bugfixes
+
+* None
+
+## Features
+
+* Add techdivision/import#191
+
 # Version 16.5.5
 
 ## Bugfixes
