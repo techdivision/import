@@ -101,10 +101,17 @@ class AbstractAttributeObserverTest extends TestCase
         $mockSubjectConfiguration = $this->getMockBuilder('TechDivision\Import\Configuration\SubjectConfigurationInterface')
                                          ->setMethods(get_class_methods('TechDivision\Import\Configuration\SubjectConfigurationInterface'))
                                          ->getMock();
+
         $mockSubjectConfiguration->expects($this->once())
                                  ->method('hasParam')
                                  ->with(ConfigurationKeys::CLEAN_UP_EMPTY_COLUMNS)
                                  ->willReturn(false);
+
+        // mock a jms configuration
+        $mockJmsConfiguration = $this->createMock('TechDivision\Import\Configuration\Jms\Configuration');
+        $mockSubjectConfiguration->expects($this->once())
+            ->method('getConfiguration')
+            ->willReturn($mockJmsConfiguration);
 
         // mock a subject
         $mockSubject = $this->getMockBuilder('TechDivision\Import\Observers\EntitySubjectImpl')
@@ -119,7 +126,7 @@ class AbstractAttributeObserverTest extends TestCase
         $mockSubject->expects($this->once())
                     ->method('appendExceptionSuffix')
                     ->willReturnArgument(0);
-        $mockSubject->expects($this->once())
+        $mockSubject->expects($this->atLeastOnce())
                     ->method('getConfiguration')
                     ->willReturn($mockSubjectConfiguration);
         $mockSubject->expects($this->once())
@@ -205,6 +212,12 @@ class AbstractAttributeObserverTest extends TestCase
                                  ->with(ConfigurationKeys::CLEAN_UP_EMPTY_COLUMNS)
                                  ->willReturn(false);
 
+        // mock a jms configuration
+        $mockJmsConfiguration = $this->createMock('TechDivision\Import\Configuration\Jms\Configuration');
+        $mockSubjectConfiguration->expects($this->once())
+            ->method('getConfiguration')
+            ->willReturn($mockJmsConfiguration);
+
         // mock a subject
         $mockSubject = $this->getMockBuilder('TechDivision\Import\Observers\EntitySubjectImpl')
                             ->setMethods(get_class_methods('TechDivision\Import\Observers\EntitySubjectImpl'))
@@ -212,7 +225,7 @@ class AbstractAttributeObserverTest extends TestCase
         $mockSubject->expects($this->exactly(2))
                     ->method('appendExceptionSuffix')
                     ->willReturnArgument(0);
-        $mockSubject->expects($this->once())
+        $mockSubject->expects($this->atLeastOnce())
                     ->method('getConfiguration')
                     ->willReturn($mockSubjectConfiguration);
         $mockSubject->expects($this->exactly(2))
@@ -308,6 +321,12 @@ class AbstractAttributeObserverTest extends TestCase
                                  ->with(ConfigurationKeys::CLEAN_UP_EMPTY_COLUMNS)
                                  ->willReturn(false);
 
+        // mock a jms configuration
+        $mockJmsConfiguration = $this->createMock('TechDivision\Import\Configuration\Jms\Configuration');
+        $mockSubjectConfiguration->expects($this->once())
+            ->method('getConfiguration')
+            ->willReturn($mockJmsConfiguration);
+
         // mock a subject
         $mockSubject = $this->getMockBuilder('TechDivision\Import\Observers\EntitySubjectImpl')
                             ->setMethods(get_class_methods('TechDivision\Import\Observers\EntitySubjectImpl'))
@@ -315,7 +334,7 @@ class AbstractAttributeObserverTest extends TestCase
         $mockSubject->expects($this->once())
                     ->method('appendExceptionSuffix')
                     ->willReturnArgument(0);
-        $mockSubject->expects($this->once())
+        $mockSubject->expects($this->atLeastOnce())
                     ->method('getConfiguration')
                     ->willReturn($mockSubjectConfiguration);
         $mockSubject->expects($this->once())
@@ -404,11 +423,22 @@ class AbstractAttributeObserverTest extends TestCase
                                  ->with(ConfigurationKeys::CLEAN_UP_EMPTY_COLUMNS)
                                  ->willReturn(false);
 
+        // mock a jms configuration
+        $mockJmsConfiguration = $this->createMock('TechDivision\Import\Configuration\Jms\Configuration');
+
+        $mockJmsConfiguration->expects($this->once())
+            ->method('getEmptyAttributeValueConstant')
+            ->willReturn('FooBar');
+
+        $mockSubjectConfiguration->expects($this->once())
+            ->method('getConfiguration')
+            ->willReturn($mockJmsConfiguration);
+
         // mock a subject
         $mockSubject = $this->getMockBuilder('TechDivision\Import\Observers\EntitySubjectImpl')
                             ->setMethods(get_class_methods('TechDivision\Import\Observers\EntitySubjectImpl'))
                             ->getMock();
-        $mockSubject->expects($this->once())
+        $mockSubject->expects($this->atLeastOnce())
                     ->method('getConfiguration')
                     ->willReturn($mockSubjectConfiguration);
         $mockSubject->expects($this->never())
@@ -496,11 +526,17 @@ class AbstractAttributeObserverTest extends TestCase
                                  ->with(ConfigurationKeys::CLEAN_UP_EMPTY_COLUMNS)
                                  ->willReturn(false);
 
+        // mock a jms configuration
+        $mockJmsConfiguration = $this->createMock('TechDivision\Import\Configuration\Jms\Configuration');
+        $mockSubjectConfiguration->expects($this->once())
+            ->method('getConfiguration')
+            ->willReturn($mockJmsConfiguration);
+
         // mock a subject
         $mockSubject = $this->getMockBuilder('TechDivision\Import\Observers\EntitySubjectImpl')
                     ->setMethods(get_class_methods('TechDivision\Import\Observers\EntitySubjectImpl'))
                     ->getMock();
-        $mockSubject->expects($this->once())
+        $mockSubject->expects($this->atLeastOnce())
                     ->method('getConfiguration')
                     ->willReturn($mockSubjectConfiguration);
         $mockSubject->expects($this->once())
@@ -584,6 +620,12 @@ class AbstractAttributeObserverTest extends TestCase
                                  ->with(ConfigurationKeys::CLEAN_UP_EMPTY_COLUMNS)
                                  ->willReturn(false);
 
+        // mock a jms configuration
+        $mockJmsConfiguration = $this->createMock('TechDivision\Import\Configuration\Jms\Configuration');
+        $mockSubjectConfiguration->expects($this->once())
+            ->method('getConfiguration')
+            ->willReturn($mockJmsConfiguration);
+
         // mock a subject
         $mockSubject = $this->getMockBuilder('TechDivision\Import\Observers\EntitySubjectImpl')
                             ->setMethods(get_class_methods('TechDivision\Import\Observers\EntitySubjectImpl'))
@@ -591,7 +633,7 @@ class AbstractAttributeObserverTest extends TestCase
         $mockSubject->expects($this->once())
                     ->method('appendExceptionSuffix')
                     ->willReturnArgument(0);
-        $mockSubject->expects($this->once())
+        $mockSubject->expects($this->atLeastOnce())
                     ->method('getConfiguration')
                     ->willReturn($mockSubjectConfiguration);
         $mockSubject->expects($this->any())
@@ -662,11 +704,17 @@ class AbstractAttributeObserverTest extends TestCase
                                  ->with(ConfigurationKeys::CLEAN_UP_EMPTY_COLUMNS)
                                  ->willReturn(false);
 
+        // mock a jms configuration
+        $mockJmsConfiguration = $this->createMock('TechDivision\Import\Configuration\Jms\Configuration');
+        $mockSubjectConfiguration->expects($this->once())
+            ->method('getConfiguration')
+            ->willReturn($mockJmsConfiguration);
+
         // mock a subject
         $mockSubject = $this->getMockBuilder('TechDivision\Import\Observers\EntitySubjectImpl')
                             ->setMethods(get_class_methods('TechDivision\Import\Observers\EntitySubjectImpl'))
                             ->getMock();
-        $mockSubject->expects($this->once())
+        $mockSubject->expects($this->atLeastOnce())
                     ->method('getConfiguration')
                     ->willReturn($mockSubjectConfiguration);
         $mockSubject->expects($this->never())

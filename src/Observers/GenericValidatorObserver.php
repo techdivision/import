@@ -78,14 +78,14 @@ class GenericValidatorObserver extends AbstractObserver
     /**
      * Process the observer's business logic.
      *
-     * @return array The processed row
+     * @return void
      */
     protected function process()
     {
 
         // load the available header names
         $headerNames = array_keys($this->getHeaders());
-
+        $emptyValueDefinition = $this->getEmptyAttributeValueConstant();
         // iterate over the custom validations
         foreach ($headerNames as $headerName) {
             // map the header name to the attribute code, if an mapping is available
@@ -97,6 +97,10 @@ class GenericValidatorObserver extends AbstractObserver
             // invoke the registered callbacks
             foreach ($callbacks as $callback) {
                 try {
+                    // query whether or not to cleanup complete attribute
+                    if ($attributeValue === $emptyValueDefinition) {
+                        continue;
+                    }
                     $callback->handle($attributeCode, $attributeValue);
                 } catch (\InvalidArgumentException $iea) {
                     // add the the validation result to the status
@@ -114,6 +118,14 @@ class GenericValidatorObserver extends AbstractObserver
                 }
             }
         }
+    }
+
+    /**
+     * @return string
+     */
+    public function getEmptyAttributeValueConstant()
+    {
+        return $this->getSubject()->getConfiguration()->getConfiguration()->getEmptyAttributeValueConstant();
     }
 
     /**
