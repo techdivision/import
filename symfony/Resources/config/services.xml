@@ -31,8 +31,13 @@
             <argument type="service" id="service_container"/>
             <argument type="service" id="import.logger.factory.monolog.handler"/>
         </service>
-        <service id="import.logger.factory.handler.error.log" class="TechDivision\Import\Loggers\ErrorLogHandlerFactory" shared="false">
+        <service id="import.logger.factory.handler.native.mail.log" class="TechDivision\Import\Loggers\GenericLogHandlerFactory" shared="false">
             <argument type="service" id="configuration"/>
+            <argument type="string">Monolog\Handler\NativeMailerHandler</argument>
+        </service>
+        <service id="import.logger.factory.handler.error.log" class="TechDivision\Import\Loggers\GenericLogHandlerFactory" shared="false">
+            <argument type="service" id="configuration"/>
+            <argument type="string">Monolog\Handler\ErrorLogHandler</argument>
         </service>
         <service id="import.logger.factory.handler.swift" class="TechDivision\Import\Loggers\SwiftMailerHandlerFactory" shared="false">
             <argument type="service" id="service_container"/>
