@@ -108,7 +108,7 @@ class AbstractAttributeObserverTest extends TestCase
                                  ->willReturn(false);
 
         // mock a jms configuration
-        $mockJmsConfiguration = $this->createMock(\TechDivision\Import\Configuration\Jms\Configuration::class);
+        $mockJmsConfiguration = $this->createMock('TechDivision\Import\Configuration\ConfigurationInterface');
         $mockSubjectConfiguration->expects($this->once())
             ->method('getConfiguration')
             ->willReturn($mockJmsConfiguration);
@@ -213,7 +213,7 @@ class AbstractAttributeObserverTest extends TestCase
                                  ->willReturn(false);
 
         // mock a jms configuration
-        $mockJmsConfiguration = $this->createMock(\TechDivision\Import\Configuration\Jms\Configuration::class);
+        $mockJmsConfiguration = $this->createMock('TechDivision\Import\Configuration\ConfigurationInterface');
         $mockSubjectConfiguration->expects($this->once())
             ->method('getConfiguration')
             ->willReturn($mockJmsConfiguration);
@@ -322,7 +322,7 @@ class AbstractAttributeObserverTest extends TestCase
                                  ->willReturn(false);
 
         // mock a jms configuration
-        $mockJmsConfiguration = $this->createMock(\TechDivision\Import\Configuration\Jms\Configuration::class);
+        $mockJmsConfiguration = $this->createMock('TechDivision\Import\Configuration\ConfigurationInterface');
         $mockSubjectConfiguration->expects($this->once())
             ->method('getConfiguration')
             ->willReturn($mockJmsConfiguration);
@@ -424,7 +424,7 @@ class AbstractAttributeObserverTest extends TestCase
                                  ->willReturn(false);
 
         // mock a jms configuration
-        $mockJmsConfiguration = $this->createMock(\TechDivision\Import\Configuration\Jms\Configuration::class);
+        $mockJmsConfiguration = $this->createMock('TechDivision\Import\Configuration\ConfigurationInterface');
 
         $mockJmsConfiguration->expects($this->once())
             ->method('getEmptyAttributeValueConstant')
@@ -527,7 +527,7 @@ class AbstractAttributeObserverTest extends TestCase
                                  ->willReturn(false);
 
         // mock a jms configuration
-        $mockJmsConfiguration = $this->createMock(\TechDivision\Import\Configuration\Jms\Configuration::class);
+        $mockJmsConfiguration = $this->createMock('TechDivision\Import\Configuration\ConfigurationInterface');
         $mockSubjectConfiguration->expects($this->once())
             ->method('getConfiguration')
             ->willReturn($mockJmsConfiguration);
@@ -621,7 +621,7 @@ class AbstractAttributeObserverTest extends TestCase
                                  ->willReturn(false);
 
         // mock a jms configuration
-        $mockJmsConfiguration = $this->createMock(\TechDivision\Import\Configuration\Jms\Configuration::class);
+        $mockJmsConfiguration = $this->createMock('TechDivision\Import\Configuration\ConfigurationInterface');
         $mockSubjectConfiguration->expects($this->once())
             ->method('getConfiguration')
             ->willReturn($mockJmsConfiguration);
@@ -705,7 +705,7 @@ class AbstractAttributeObserverTest extends TestCase
                                  ->willReturn(false);
 
         // mock a jms configuration
-        $mockJmsConfiguration = $this->createMock(\TechDivision\Import\Configuration\Jms\Configuration::class);
+        $mockJmsConfiguration = $this->createMock('TechDivision\Import\Configuration\ConfigurationInterface');
         $mockSubjectConfiguration->expects($this->once())
             ->method('getConfiguration')
             ->willReturn($mockJmsConfiguration);
