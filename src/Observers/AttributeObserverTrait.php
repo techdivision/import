@@ -20,6 +20,7 @@
 
 namespace TechDivision\Import\Observers;
 
+use TechDivision\Import\Utils\InputOptionKeysInterface;
 use TechDivision\Import\Utils\LoggerKeys;
 use TechDivision\Import\Utils\MemberNames;
 use TechDivision\Import\Utils\StoreViewCodes;
@@ -123,6 +124,16 @@ trait AttributeObserverTrait
     }
 
     /**
+     * Get empty attribute value constant from global konfiguration
+     *
+     * @return string
+     */
+    private function getEmptyAttributeValueConstant()
+    {
+        return $this->getSubject()->getConfiguration()->getConfiguration()->getEmptyAttributeValueConstant();
+    }
+
+    /**
      * Remove all the empty values from the row and return the cleared row.
      *
      * @return array The cleared row
@@ -162,8 +173,15 @@ trait AttributeObserverTrait
             }
         }
 
+        $emptyValueDefinition = $this->getEmptyAttributeValueConstant();
+        // load the header keys
+        $headers = in_array($emptyValueDefinition, $this->row, true) ? array_flip($this->getHeaders()) : [];
         // remove all the empty values from the row, expected the columns has to be cleaned-up
         foreach ($this->row as $key => $value) {
+            if ($value === $emptyValueDefinition) {
+                $this->cleanUpEmptyColumnKeys[$headers[$key]] = $key;
+                $this->row[$key] = '';
+            }
             // query whether or not the value is empty AND the column has NOT to be cleaned-up
             if (($value === null || $value === '') &&
                 in_array($key, $this->cleanUpEmptyColumnKeys) === false &&

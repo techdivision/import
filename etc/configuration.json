@@ -13,5 +13,6 @@
     "general": [],
     "ce": [],
     "ee": []
-  }
+  },
+  "empty-attribute-value-constant": "__EMPTY__VALUE__"
 }

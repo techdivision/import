@@ -229,6 +229,13 @@ interface InputOptionKeysInterface extends \ArrayAccess
     const RENDER_DEBUG_SERIALS = 'render-debug-serials';
 
     /**
+     * The input option key for the empty value in attribute option import
+     *
+     * @var string
+     */
+    const EMPTY_ATTRIBUTE_VALUE_CONSTANT = 'empty-attribute-value-constant';
+
+    /**
      * Query whether or not the passed input option is valid.
      *
      * @param string $inputOption The input option to query for
