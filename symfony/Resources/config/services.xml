@@ -691,7 +691,7 @@
         <service id="import.observer.generic.validator" class="TechDivision\Import\Observers\GenericValidatorObserver">
             <argument type="service" id="import.processor.registry"/>
         </service>
-        
+
         <service id="import.visitor.callback" class="TechDivision\Import\Callbacks\CallbackVisitor">
             <argument type="service" id="service_container"/>
         </service>
@@ -712,6 +712,7 @@
         </service>
         <service id="import.callback.visibility.validator" class="TechDivision\Import\Callbacks\IndexedArrayValidatorCallback">
             <argument type="service" id="import.loader.custom.validations"/>
+            <argument>%array_validator.nullable.false%</argument>
             <argument>%array_validator.nullable.true%</argument>
         </service>
         <service id="import.callback.store.website.validator" class="TechDivision\Import\Callbacks\MultipleValuesValidatorCallback">
