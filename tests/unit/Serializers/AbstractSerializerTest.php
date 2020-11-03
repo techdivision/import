@@ -92,6 +92,16 @@ abstract class AbstractSerializerTest extends TestCase
     {
         return array_merge(
             array(
+                'size' => array(
+                    MemberNames::ATTRIBUTE_CODE => 'size',
+                    MemberNames::ENTITY_TYPE_ID => 4,
+                    MemberNames::FRONTEND_INPUT => FrontendInputTypes::MULTISELECT
+                ),
+                'features_bags' => array(
+                    MemberNames::ATTRIBUTE_CODE => 'features_bags',
+                    MemberNames::ENTITY_TYPE_ID => 4,
+                    MemberNames::FRONTEND_INPUT => FrontendInputTypes::MULTISELECT
+                ),
                 'ac_01' => array(
                     MemberNames::ATTRIBUTE_CODE => 'ac_01',
                     MemberNames::ENTITY_TYPE_ID => 4,

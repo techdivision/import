@@ -243,6 +243,34 @@ class AdditionalAttributeCsvSerializerTest extends AbstractSerializerTest
     }
 
     /**
+     * Tests if the unserialize() method with a multiselect attribute that has values that contains commas.
+     *
+     * @return void
+     */
+    public function testUnserializeWithComma()
+    {
+
+        // initialize the serialized value
+        $value = '"""size=3,6 mm|3,8 mm"",""features_bags=Audio Pocket|Waterproof"""';
+
+        // initialize the expected result
+        $values = array(
+            'size' => array('3,6 mm', '3,8 mm'),
+            'features_bags' => array('Audio Pocket', 'Waterproof')
+        );
+
+        // create and initialize the CSV value serializer
+        $valueCsvSerializer = new ValueCsvSerializer();
+        $valueCsvSerializer->init($this->getMockCsvConfiguration());
+
+        // unserialize the value first time (simulate M2IF framework)
+        $unserialized = $valueCsvSerializer->unserialize($value);
+
+        // unserialize the value and assert the result
+        $this->assertSame($values, $this->additionalAttributeSerializer->unserialize(array_shift($unserialized)));
+    }
+
+    /**
      * Tests if the serialize() method with simple values for a boolean, select and multiselect attribute.
      *
      * @return void
