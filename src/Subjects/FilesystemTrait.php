@@ -80,18 +80,39 @@ trait FilesystemTrait
             return $path;
         }
 
-        // temporarily save the path
-        $originalPath = $path;
-
         // try to prepend the actual working directory, assuming we've a relative path
-        if ($this->getFilesystemAdapter()->isDir($path = getcwd() . DIRECTORY_SEPARATOR . ltrim($path, '/'))) {
-            return $path;
+        if ($this->getFilesystemAdapter()->isDir($realpath = $this->realpath($path))) {
+            return $realpath;
         }
 
         // throw an exception if the passed directory doesn't exists
         throw new \InvalidArgumentException(
-            sprintf('Directory %s doesn\'t exist', $originalPath)
+            sprintf('Directory %s doesn\'t exist', $path)
         );
+    }
+
+    /**
+     * Return's the resolved directory of the passed path.
+     *
+     * @param string $path The path to resolve
+     *
+     * @return string The resolved path
+     */
+    private function realpath(string $path = null) : string
+    {
+
+        // initialize the installation directory with the actual
+        // working directory for backwards compatibility
+        $installationDir = getcwd();
+
+        // query whether or not the trait is used by a subject instance so we
+        // can load the installation directory from the configuration itself
+        if ($this instanceof SubjectInterface) {
+            $installationDir = $this->getConfiguration()->getConfiguration()->getInstallationDir();
+        }
+
+        // concatenate and return the absolute path by prefixing the installation directory
+        return $installationDir . DIRECTORY_SEPARATOR . ltrim($path, '/');
     }
 
     /**
