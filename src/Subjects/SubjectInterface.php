@@ -295,11 +295,18 @@ interface SubjectInterface
     public function explode($value, $delimiter = null);
 
     /**
-     * Queries whether or not debug mode is enabled or not, default is TRUE.
+     * Queries whether or not debug mode is enabled or not, default is FALSE.
      *
      * @return boolean TRUE if debug mode is enabled, else FALSE
      */
     public function isDebugMode();
+
+    /**
+     * Queries whether or not strict mode is enabled or not, default is FALSE.
+     *
+     * @return boolean TRUE if strict mode is enabled, else FALSE
+     */
+    public function isStrictMode();
 
     /**
      * Set's the unique serial for this import process.
