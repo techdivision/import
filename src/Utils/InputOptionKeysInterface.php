@@ -236,6 +236,13 @@ interface InputOptionKeysInterface extends \ArrayAccess
     const EMPTY_ATTRIBUTE_VALUE_CONSTANT = 'empty-attribute-value-constant';
 
     /**
+     * The input option key for the strict mode.
+     *
+     * @var string
+     */
+    const STRICT_MODE = 'strict-mode';
+
+    /**
      * Query whether or not the passed input option is valid.
      *
      * @param string $inputOption The input option to query for

@@ -22,7 +22,6 @@ namespace TechDivision\Import\Utils;
 
 use Doctrine\Common\Collections\Collection;
 use TechDivision\Import\SystemLoggerTrait;
-use TechDivision\Import\ApplicationInterface;
 use TechDivision\Import\Services\RegistryProcessorInterface;
 use TechDivision\Import\Configuration\ConfigurationInterface;
 use TechDivision\Import\Listeners\Renderer\RendererInterface;
