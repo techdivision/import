@@ -33,6 +33,20 @@ interface UrlRewriteRepositoryInterface extends RepositoryInterface
 {
 
     /**
+     * Return's an array with the available URL rewrites.
+     *
+     * @return array The available URL rewrites
+     */
+    public function findAll();
+
+    /**
+     * Return's an array with the available URL rewrites
+     *
+     * @return array The array with the rewrites, grouped by request path and store ID
+     */
+    public function findAllGroupedByRequestPathAndStoreId();
+
+    /**
      * Return's an array with the URL rewrites for the passed entity type and ID.
      *
      * @param string  $entityType The entity type to load the URL rewrites for
@@ -52,4 +66,19 @@ interface UrlRewriteRepositoryInterface extends RepositoryInterface
      * @return array The URL rewrites
      */
     public function findAllByEntityTypeAndEntityIdAndStoreId($entityType, $entityId, $storeId);
+
+    /**
+     * Load's and return's the URL rewrite for the given request path and store ID.
+     *
+     * ATTENTION: This method access the registry to make sure the parallel processes will access
+     * the same URL rewrites. The initial data the will be added the registry will be loaded with
+     * the method `UrlRewriteRepository::findAllGroupedByRequestPathAndStoreId()`
+     *
+     * @param string $requestPath The request path to load the URL rewrite for
+     * @param int    $storeId     The store ID to load the URL rewrite for
+     *
+     * @return array|null The URL rewrite found for the given request path and store ID
+     * @see \TechDivision\Import\Repositories\UrlRewriteRepository::findAllGroupedByRequestPathAndStoreId()
+     */
+    public function findOneByUrlRewriteByRequestPathAndStoreId(string $requestPath, int $storeId);
 }

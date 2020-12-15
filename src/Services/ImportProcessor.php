@@ -31,6 +31,7 @@ use TechDivision\Import\Repositories\TaxClassRepositoryInterface;
 use TechDivision\Import\Repositories\LinkTypeRepositoryInterface;
 use TechDivision\Import\Repositories\AdminUserRepositoryInterface;
 use TechDivision\Import\Repositories\ImageTypeRepositoryInterface;
+use TechDivision\Import\Repositories\UrlRewriteRepositoryInterface;
 use TechDivision\Import\Repositories\EavAttributeRepositoryInterface;
 use TechDivision\Import\Repositories\StoreWebsiteRepositoryInterface;
 use TechDivision\Import\Repositories\CustomerGroupRepositoryInterface;
@@ -181,6 +182,13 @@ class ImportProcessor implements ImportProcessorInterface
     protected $adminUserRepository;
 
     /**
+     * The repository to access the URL rewrites.
+     *
+     * @var \TechDivision\Import\Repositories\UrlRewriteRepositoryInterface
+     */
+    protected $urlRewriteRepository;
+
+    /**
      * The action for store CRUD methods.
      *
      * @var \TechDivision\Import\Actions\ActionInterface
@@ -229,6 +237,7 @@ class ImportProcessor implements ImportProcessorInterface
      * @param \TechDivision\Import\Repositories\CustomerGroupRepositoryInterface           $customerGroupRepository           The repository to access the customer groups
      * @param \TechDivision\Import\Repositories\ImageTypeRepositoryInterface               $imageTypeRepository               The repository to access images types
      * @param \TechDivision\Import\Repositories\AdminUserRepositoryInterface               $adminUserRepository               The repository to access admin users
+     * @param \TechDivision\Import\Repositories\UrlRewriteRepositoryInterface              $urlRewriteRepository              The repository to access URL rewrites
      * @param \TechDivision\Import\Actions\ActionInterface                                 $storeAction                       The action with the store CRUD methods
      * @param \TechDivision\Import\Actions\ActionInterface                                 $storeGroupAction                  The action with the store group CRUD methods
      * @param \TechDivision\Import\Actions\ActionInterface                                 $storeWebsiteAction                The action with the store website CRUD methods
@@ -253,6 +262,7 @@ class ImportProcessor implements ImportProcessorInterface
         CustomerGroupRepositoryInterface $customerGroupRepository,
         ImageTypeRepositoryInterface $imageTypeRepository,
         AdminUserRepositoryInterface $adminUserRepository,
+        UrlRewriteRepositoryInterface $urlRewriteRepository,
         ActionInterface $storeAction,
         ActionInterface $storeGroupAction,
         ActionInterface $storeWebsiteAction,
@@ -276,6 +286,7 @@ class ImportProcessor implements ImportProcessorInterface
         $this->setImageTypeRepository($imageTypeRepository);
         $this->setCustomerGroupRepository($customerGroupRepository);
         $this->setAdminUserRepository($adminUserRepository);
+        $this->setUrlRewriteRepository($urlRewriteRepository);
         $this->setStoreAction($storeAction);
         $this->setStoreGroupAction($storeGroupAction);
         $this->setStoreWebsiteAction($storeWebsiteAction);
@@ -720,6 +731,28 @@ class ImportProcessor implements ImportProcessorInterface
     public function getAdminUserRepository()
     {
         return $this->adminUserRepository;
+    }
+
+    /**
+     * Set's the repository to access the URL rewrites.
+     *
+     * @param \TechDivision\Import\Repositories\UrlRewriteRepositoryInterface $urlRewriteRepository The repository to access the URL rewrites
+     *
+     * @return void
+     */
+    public function setUrlRewriteRepository(UrlRewriteRepositoryInterface $urlRewriteRepository)
+    {
+        $this->urlRewriteRepository = $urlRewriteRepository;
+    }
+
+    /**
+     * Return's the repository to access the URL rewrites.
+     *
+     * @return \TechDivision\Import\Repositories\UrlRewriteRepositoryInterface The repository instance
+     */
+    public function getUrlRewriteRepository()
+    {
+        return $this->urlRewriteRepository;
     }
 
     /**
@@ -1189,6 +1222,7 @@ class ImportProcessor implements ImportProcessorInterface
         $globalData[RegistryKeys::CUSTOMER_GROUPS] = $this->getCustomerGroups();
         $globalData[RegistryKeys::CORE_CONFIG_DATA] = $this->getCoreConfigData();
         $globalData[RegistryKeys::ENTITY_TYPES] = $eavEntityTypes = $this->getEavEntityTypes();
+        $globalData[RegistryKeys::URL_REWRITES] = $this->getUrlRewriteRepository()->findAllGroupedByRequestPathAndStoreId();
 
         // prepare the attribute sets
         $eavAttributes = array();
@@ -1204,13 +1238,11 @@ class ImportProcessor implements ImportProcessorInterface
             foreach ($attributeSets as $attributeSet) {
                 // load the attribute set name
                 $eavAttributeSetName = $attributeSet[MemberNames::ATTRIBUTE_SET_NAME];
-
                 // load the attributes for the attribute set
                 $eavAttributes[$eavEntityTypeCode][$eavAttributeSetName] = $this->getEavAttributesByEntityTypeIdAndAttributeSetName(
                     $entityTypeId,
                     $eavAttributeSetName
                 );
-
                 // load the attribute group for the attribute set
                 $eavAttributeGroups[$eavEntityTypeCode][$eavAttributeSetName] = $this->getEavAttributeGroupsByAttributeSetId(
                     $attributeSet[MemberNames::ATTRIBUTE_SET_ID]

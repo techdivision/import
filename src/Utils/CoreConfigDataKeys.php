@@ -48,4 +48,18 @@ class CoreConfigDataKeys
     private function __clone()
     {
     }
+
+    /**
+     * Name for the column 'catalog/seo/product_url_suffix'.
+     *
+     * @var string
+     */
+    const CATALOG_SEO_PRODUCT_URL_SUFFIX = 'catalog/seo/product_url_suffix';
+
+    /**
+     * Name for the column 'catalog/seo/category_url_suffix'.
+     *
+     * @var string
+     */
+    const CATALOG_SEO_CATEGORY_URL_SUFFIX = 'catalog/seo/category_url_suffix';
 }

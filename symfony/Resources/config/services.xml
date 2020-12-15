@@ -275,6 +275,10 @@
         <service id="import.loader.header.mapping" class="TechDivision\Import\Loaders\HeaderMappingLoader">
             <argument type="service" id="configuration"/>
         </service>
+        <service id="import.loader.core.config.data" class="TechDivision\Import\Loaders\CoreConfigDataLoader">
+            <argument type="service" id="import.processor.configuration"/>
+            <argument type="service" id="import.generator.core.config.data.uid"/>
+        </service>
 
         <!--
          | The DI handler configuration
@@ -375,6 +379,9 @@
         <service id="import.repository.url.rewrite" class="TechDivision\Import\Repositories\UrlRewriteRepository">
             <argument type="service" id="connection"/>
             <argument type="service" id="import.repository.sql.statement"/>
+            <argument type="service" id="import.repository.finder.factory.configurable"/>
+            <argument type="service" id="import.processor.registry"/>
+            <argument type="service" id="import.loader.core.config.data"/>
         </service>
         <service id="import.repository.core.config.data" class="TechDivision\Import\Repositories\CoreConfigDataRepository">
             <argument type="service" id="import.generator.core.config.data.uid"/>
@@ -505,10 +512,15 @@
             <argument type="service" id="import.repository.customer.group"/>
             <argument type="service" id="import.repository.image.type"/>
             <argument type="service" id="import.repository.admin.user"/>
+            <argument type="service" id="import.repository.url.rewrite"/>
             <argument type="service" id="import.action.store"/>
             <argument type="service" id="import.action.store.group"/>
             <argument type="service" id="import.action.store.website"/>
             <argument type="service" id="import.action.import.history"/>
+        </service>
+        <service id="import.processor.configuration" class="TechDivision\Import\Services\ConfigurationProcessor">
+            <argument type="service" id="import.repository.store.website"/>
+            <argument type="service" id="import.repository.core.config.data"/>
         </service>
 
         <!--

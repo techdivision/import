@@ -20,7 +20,6 @@
 
 namespace TechDivision\Import\Observers;
 
-use TechDivision\Import\Utils\InputOptionKeysInterface;
 use TechDivision\Import\Utils\LoggerKeys;
 use TechDivision\Import\Utils\MemberNames;
 use TechDivision\Import\Utils\StoreViewCodes;

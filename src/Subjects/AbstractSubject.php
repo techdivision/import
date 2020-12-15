@@ -1226,6 +1226,7 @@ abstract class AbstractSubject implements SubjectInterface, FilesystemSubjectInt
      *
      * @return mixed The configuration value
      * @throws \Exception Is thrown, if nor a value can be found or a default value has been passed
+     * @deprecated Since version 17.x, use TechDivision\Import\Loaders\CoreConfigDataLoader::load() method instead
      */
     public function getCoreConfigData($path, $default = null, $scope = ScopeKeys::SCOPE_DEFAULT, $scopeId = 0)
     {

@@ -263,6 +263,13 @@ class SqlStatementKeys
     const CORE_CONFIG_DATA = 'core_config_data';
 
     /**
+     * The SQL statement to load the available URL rewrites.
+     *
+     * @var string
+     */
+    const URL_REWRITES = 'url_rewrites';
+
+    /**
      * The SQL statement to load the URL rewrites for the passed entity type and ID.
      *
      * @var string

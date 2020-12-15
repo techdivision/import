@@ -61,6 +61,13 @@ class CacheKeys extends \ArrayObject implements CacheKeysInterface
     const EAV_ATTRIBUTE_OPTION_VALUE = 'eav_attribute_option_value';
 
     /**
+     * The cache key for URL rewrites.
+     *
+     * @var string
+     */
+    const URL_REWRITE = 'url_rewrite';
+
+    /**
      * The instance cache key.
      *
      * @var string

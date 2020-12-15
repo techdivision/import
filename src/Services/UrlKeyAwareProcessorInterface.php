@@ -41,6 +41,17 @@ interface UrlKeyAwareProcessorInterface
      * @param string  $value         The value of the varchar attribute
      *
      * @return array|null The varchar attribute
+     * @deprecated Up from version 17.0.0
      */
     public function loadVarcharAttributeByAttributeCodeAndEntityTypeIdAndStoreIdAndValue($attributeCode, $entityTypeId, $storeId, $value);
+
+    /**
+     * Load's and return's the URL rewrite for the given request path and store ID
+     *
+     * @param string $requestPath The request path to load the URL rewrite for
+     * @param int    $storeId     The store ID to load the URL rewrite for
+     *
+     * @return array|null The URL rewrite found for the given request path and store ID
+     */
+    public function loadUrlRewriteByRequestPathAndStoreId(string $requestPath, int $storeId);
 }

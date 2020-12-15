@@ -643,6 +643,24 @@ class ValueCsvSerializerTest extends AbstractSerializerTest
     }
 
     /**
+     * Tests if the unserialize() method returns the serialized value from a column with categories that contains a slash within two time qoutes.
+     *
+     * @return void
+     */
+    public function testUnserializeCategoriesFromAColumnWithSlashWithinTwoTimeQuotes()
+    {
+
+        // first extract the the column value (simulating what happens when column will be extracted with $this->getValue(ColumnKeys::PATH) from the CSV file)
+        $column = $this->valueCsvSerializer->unserialize('"Default Category/""""""Etiketten und Prüfplaketten""""""/Prüfplaketten/""Prüfplaketten """"Nächster Prüftermin / Geprüft"""""""');
+
+        // explode the columns
+        $this->assertEquals(
+            array('Default Category', '"Etiketten und Prüfplaketten"', 'Prüfplaketten', 'Prüfplaketten "Nächster Prüftermin / Geprüft"'),
+            $this->valueCsvSerializer->unserialize(array_shift($column), '/')
+        );
+    }
+
+    /**
      * Tests if the unserialize() method returns the serialized value from a column with categories that contains a slash within qoutes.
      *
      * @return void

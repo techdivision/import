@@ -12,7 +12,7 @@
  * PHP version 5
  *
  * @author    Tim Wagner <t.wagner@techdivision.com>
- * @copyright 2019 TechDivision GmbH <info@techdivision.com>
+ * @copyright 2020 TechDivision GmbH <info@techdivision.com>
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
@@ -20,7 +20,6 @@
 
 namespace TechDivision\Import\Utils;
 
-use TechDivision\Import\Configuration\ConfigurationInterface;
 use TechDivision\Import\Subjects\UrlKeyAwareSubjectInterface;
 use TechDivision\Import\Services\UrlKeyAwareProcessorInterface;
 
@@ -28,20 +27,13 @@ use TechDivision\Import\Services\UrlKeyAwareProcessorInterface;
  * Utility class that provides functionality to make URL keys unique.
  *
  * @author    Tim Wagner <t.wagner@techdivision.com>
- * @copyright 2019 TechDivision GmbH <info@techdivision.com>
+ * @copyright 2020 TechDivision GmbH <info@techdivision.com>
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
  */
 class UrlKeyUtil implements UrlKeyUtilInterface
 {
-
-    /**
-     * The configuration instance.
-     *
-     * @var \TechDivision\Import\Configuration\ConfigurationInterface
-     */
-    protected $configuration;
 
     /**
      * The URL key aware processor instance.
@@ -53,14 +45,10 @@ class UrlKeyUtil implements UrlKeyUtilInterface
     /**
      * Construct a new instance.
      *
-     * @param \TechDivision\Import\Configuration\ConfigurationInterface   $configuration        The configuration instance
      * @param \TechDivision\Import\Services\UrlKeyAwareProcessorInterface $urlKeyAwareProcessor The URL key aware processor instance
      */
-    public function __construct(
-        ConfigurationInterface $configuration,
-        UrlKeyAwareProcessorInterface $urlKeyAwareProcessor
-    ) {
-        $this->configuration = $configuration;
+    public function __construct(UrlKeyAwareProcessorInterface $urlKeyAwareProcessor)
+    {
         $this->urlKeyAwareProcessor = $urlKeyAwareProcessor;
     }
 
@@ -75,24 +63,16 @@ class UrlKeyUtil implements UrlKeyUtilInterface
     }
 
     /**
-     * Load's and return's the varchar attribute with the passed params.
+     * Load's and return's the URL rewrite for the given request path and store ID
      *
-     * @param integer $attributeCode The attribute code of the varchar attribute
-     * @param integer $entityTypeId  The entity type ID of the varchar attribute
-     * @param integer $storeId       The store ID of the varchar attribute
-     * @param string  $value         The value of the varchar attribute
+     * @param string $requestPath The request path to load the URL rewrite for
+     * @param int    $storeId     The store ID to load the URL rewrite for
      *
-     * @return array|null The varchar attribute
+     * @return string|null The URL rewrite found for the given request path and store ID
      */
-    protected function loadVarcharAttributeByAttributeCodeAndEntityTypeIdAndStoreIdAndValue($attributeCode, $entityTypeId, $storeId, $value)
+    protected function loadUrlRewriteByRequestPathAndStoreId(string $requestPath, int $storeId)
     {
-        return $this->getUrlKeyAwareProcessor()
-                    ->loadVarcharAttributeByAttributeCodeAndEntityTypeIdAndStoreIdAndValue(
-                        $attributeCode,
-                        $entityTypeId,
-                        $storeId,
-                        $value
-                    );
+        return $this->getUrlKeyAwareProcessor()->loadUrlRewriteByRequestPathAndStoreId($requestPath, $storeId);
     }
 
     /**
@@ -100,19 +80,16 @@ class UrlKeyUtil implements UrlKeyUtilInterface
      *
      * @param \TechDivision\Import\Subjects\UrlKeyAwareSubjectInterface $subject The subject to make the URL key unique for
      * @param string                                                    $urlKey  The URL key to make unique
+     * @param string|null                                               $urlPath The URL path to make unique (only used for categories)
      *
      * @return string The unique URL key
      */
-    public function makeUnique(UrlKeyAwareSubjectInterface $subject, $urlKey)
+    public function makeUnique(UrlKeyAwareSubjectInterface $subject, string $urlKey, string $urlPath = null) : string
     {
 
-        // initialize the entity type ID
-        $entityType = $subject->getEntityType();
-        $entityTypeId = (integer) $entityType[MemberNames::ENTITY_TYPE_ID];
-
-        // initialize the store view ID, use the admin store view if no store view has
-        // been set, because the default url_key value has been set in admin store view
-        $storeId = $subject->getRowStoreId(StoreViewCodes::ADMIN);
+        // initialize the store view ID, use the default store view if no store view has
+        // been set, because the default url_key value has been set in default store view
+        $storeId = $subject->getRowStoreId();
 
         // initialize the counter
         $counter = 0;
@@ -121,32 +98,26 @@ class UrlKeyUtil implements UrlKeyUtilInterface
         $matchingCounters = array();
         $notMatchingCounters = array();
 
-        // pre-initialze the URL key to query for
-        $value = $urlKey;
+        // pre-initialze the URL by concatenating path and/or key to query for
+        $url = $urlPath ? sprintf('%s/%s', $urlPath, $urlKey) : $urlKey;
 
         do {
             // try to load the attribute
-            $attribute =
-                $this->loadVarcharAttributeByAttributeCodeAndEntityTypeIdAndStoreIdAndValue(
-                    MemberNames::URL_KEY,
-                    $entityTypeId,
-                    $storeId,
-                    $value
-                );
+            $urlRewrite = $this->loadUrlRewriteByRequestPathAndStoreId($url, $storeId);
 
             // try to load the entity's URL key
-            if ($attribute) {
+            if ($urlRewrite) {
                 // this IS the URL key of the passed entity
-                if ($subject->isUrlKeyOf($attribute)) {
+                if ($subject->isUrlKeyOf($urlRewrite)) {
                     $matchingCounters[] = $counter;
                 } else {
                     $notMatchingCounters[] = $counter;
                 }
 
                 // prepare the next URL key to query for
-                $value = sprintf('%s-%d', $urlKey, ++$counter);
+                $url = sprintf('%s-%d', $urlKey, ++$counter);
             }
-        } while ($attribute);
+        } while ($urlRewrite);
 
         // sort the array ascending according to the counter
         asort($matchingCounters);

@@ -99,6 +99,6 @@ abstract class AbstractFinderRepository extends AbstractRepository implements Fi
         }
 
         // throw an exception, if not
-        throw new \InvalidArgumentException(sprintf('Finder "%s" has not ebeen registered', $key));
+        throw new \InvalidArgumentException(sprintf('Finder "%s" has not been registered', $key));
     }
 }

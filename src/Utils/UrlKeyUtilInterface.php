@@ -39,8 +39,9 @@ interface UrlKeyUtilInterface
      *
      * @param \TechDivision\Import\Subjects\UrlKeyAwareSubjectInterface $subject The subject to make the URL key unique for
      * @param string                                                    $urlKey  The URL key to make unique
+     * @param string|null                                               $urlPath The URL path to make unique (only used for categories)
      *
      * @return string The unique URL key
      */
-    public function makeUnique(UrlKeyAwareSubjectInterface $subject, $urlKey);
+    public function makeUnique(UrlKeyAwareSubjectInterface $subject, string $urlKey, string $urlPath = null) : string;
 }

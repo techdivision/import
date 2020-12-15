@@ -485,7 +485,9 @@ class SqlStatementRepository extends AbstractSqlStatementRepository
         SqlStatementKeys::ADMIN_USER_BY_USERNAME =>
             'SELECT *
                FROM ${table:admin_user}
-              WHERE username = :username'
+              WHERE username = :username',
+        SqlStatementKeys::URL_REWRITES =>
+            'SELECT * FROM url_rewrite'
     );
 
     /**
