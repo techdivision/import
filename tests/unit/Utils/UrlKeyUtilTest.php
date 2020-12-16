@@ -56,7 +56,7 @@ class UrlKeyUtilTest extends TestCase
                 MemberNames::ENTITY_ID => 1234
             ),
             1 => array(
-                MemberNames::STORE_ID => 0,
+                MemberNames::STORE_ID => 1,
                 MemberNames::REDIRECT_TYPE => 0,
                 MemberNames::ENTITY_ID => 1234
             )
@@ -119,6 +119,13 @@ class UrlKeyUtilTest extends TestCase
                 MemberNames::REDIRECT_TYPE => 0,
                 MemberNames::ENTITY_ID => 1237
             )
+        ),
+        'gear/duffle-bags' => array(
+            0 => array(
+                MemberNames::STORE_ID => 0,
+                MemberNames::REDIRECT_TYPE => 0,
+                MemberNames::ENTITY_ID => 1238
+            )
         )
     );
 
@@ -135,19 +142,19 @@ class UrlKeyUtilTest extends TestCase
         // mock the URL key aware processor instance
         $urlKeyAwareProcessor = $this->getMockBuilder(UrlKeyAwareProcessorInterface::class)->getMock();
 
-        // mock the loadUrlRewriteByRequestPathAndStoreId() method
-        $urlKeyAwareProcessor
-            ->expects($this->any())
-            ->method('loadUrlRewriteByRequestPathAndStoreId')
-            ->will($this->returnCallback(function ($arg1, $arg2) {
-                return isset($this->urlRewrites[$arg1][$arg2]) ? $this->urlRewrites[$arg1][$arg2] : null;
-            }));
-
         // initialize the utility we want to test
         $this->urlKeyUtil = $this->getMockBuilder(UrlKeyUtil::class)
             ->setMethods(array('loadUrlRewriteByRequestPathAndStoreId'))
             ->setConstructorArgs(array($urlKeyAwareProcessor))
             ->getMock();
+
+        // mock the loadUrlRewriteByRequestPathAndStoreId() method
+        $this->urlKeyUtil
+            ->expects($this->any())
+            ->method('loadUrlRewriteByRequestPathAndStoreId')
+            ->will($this->returnCallback(function ($arg1, $arg2) {
+                return isset($this->urlRewrites[$arg1][$arg2]) ? $this->urlRewrites[$arg1][$arg2] : null;
+            }));
     }
 
     /**
@@ -177,8 +184,9 @@ class UrlKeyUtilTest extends TestCase
         $mockSubject->expects($this->any())
             ->method('isUrlKeyOf')
             ->will($this->returnCallback(function ($arg1) use ($entityId, $storeId) {
-                return $arg1[MemberNames::ENTITY_ID] === $entityId
-                    && $arg1[MemberNames::STORE_ID]  === $storeId;
+                return $arg1[MemberNames::ENTITY_ID]     === $entityId
+                    && $arg1[MemberNames::STORE_ID]      === $storeId
+                    && $arg1[MemberNames::REDIRECT_TYPE] === 0;
             }));
 
         // return the mock subject
@@ -186,9 +194,29 @@ class UrlKeyUtilTest extends TestCase
     }
 
     /**
-     * Test if makeUnique() method returns the same key, store and entity.
+     * Test if makeUnique() method returns the same key because it has not been used yet.
      *
      * @return void
+     * @see case-01-01
+     */
+    public function testMakeUniqueWithNewKey() : void
+    {
+
+        // load the mock subject instance
+        $mockSubject = $this->getMockSubject();
+
+        // assert the unique URL key
+        $this->assertSame(
+            'unknown-key',
+            $this->urlKeyUtil->makeUnique($mockSubject, 'unknown-key')
+        );
+    }
+
+    /**
+     * Test if makeUnique() method returns the same key if the product exits and already has the same key.
+     *
+     * @return void
+     * @see case-01-02
      */
     public function testMakeUniqueWithSameKeyAndStoreAndEntity() : void
     {
@@ -204,84 +232,10 @@ class UrlKeyUtilTest extends TestCase
     }
 
     /**
-     * Test if makeUnique() method returns the same key and entity but a different store.
+     * Test if makeUnique() method returns the same key if the category exits and already has the same key.
      *
      * @return void
-     */
-    public function testMakeUniqueWithSameKeyAndEntityAndDifferentStore() : void
-    {
-
-        // load the mock subject instance
-        $mockSubject = $this->getMockSubject(1234, 1);
-
-        // assert the unique URL key
-        $this->assertSame(
-            'joust-duffle-bag',
-            $this->urlKeyUtil->makeUnique($mockSubject, 'joust-duffle-bag')
-        );
-    }
-
-    /**
-     * Test if makeUnique() method returns the same key and store but a different entity.
-     *
-     * @return void
-     */
-    public function testMakeUniqueWithSameKeyAndStoreButDifferentEntity() : void
-    {
-
-        // load the mock subject instance
-        $mockSubject = $this->getMockSubject(4321);
-
-        // assert the unique URL key
-        $this->assertSame(
-            'joust-duffle-bag-3',
-            $this->urlKeyUtil->makeUnique($mockSubject, 'joust-duffle-bag')
-        );
-    }
-
-    /**
-     * Test if makeUnique() method returns the same key, path and store but a different entity.
-     *
-     * @return void
-     */
-    public function testMakeUniqueWithSameKeyAndPathAndStoreButDifferentEntity() : void
-    {
-
-        // load the mock subject instance
-        $mockSubject = $this->getMockSubject(4321);
-
-        // assert the unique URL key
-        $this->assertSame(
-            'joust-duffle-bag-3',
-            $this->urlKeyUtil->makeUnique($mockSubject, 'joust-duffle-bag', 'gear')
-        );
-    }
-
-    /**
-     * Test if makeUnique() method returns the same key, multipath and store but a different entity.
-     *
-     * This can happen, when someone tries to create a category with the same URL path/key as an
-     * already exisiting category/product URL rewrite has.
-     *
-     * @return void
-     */
-    public function testMakeUniqueWithSameKeyAndMultipathAndStoreButDifferentEntity() : void
-    {
-
-        // load the mock subject instance
-        $mockSubject = $this->getMockSubject(5432);
-
-        // assert the unique URL key
-        $this->assertSame(
-            'joust-duffle-bag-3',
-            $this->urlKeyUtil->makeUnique($mockSubject, 'joust-duffle-bag', 'gear/bags')
-        );
-    }
-
-    /**
-     * Test if makeUnique() method returns the same key, multipath and store but a different entity.
-     *
-     * @return void
+     * @see case-04-02
      */
     public function testMakeUniqueWithSameKeyAndMultipathAndStoreAndEntity() : void
     {
@@ -297,12 +251,114 @@ class UrlKeyUtilTest extends TestCase
     }
 
     /**
+     * Test if makeUnique() method returns the same key and entity but another store.
+     *
+     * @return void
+     * @see case-01-02
+     */
+    public function testMakeUniqueWithSameKeyAndEntityAndAnotherStore() : void
+    {
+
+        // load the mock subject instance
+        $mockSubject = $this->getMockSubject(1234, 1);
+
+        // assert the unique URL key
+        $this->assertSame(
+            'joust-duffle-bag',
+            $this->urlKeyUtil->makeUnique($mockSubject, 'joust-duffle-bag')
+        );
+    }
+
+    /**
+     * Test if makeUnique() method raises the counter for an existing key and store but a different entity.
+     *
+     * @return void
+     * @see case-01-03
+     */
+    public function testMakeUniqueWithSameKeyAndStoreButDifferentEntity() : void
+    {
+
+        // load the mock subject instance
+        $mockSubject = $this->getMockSubject(4321);
+
+        // assert the unique URL key
+        $this->assertSame(
+            'joust-duffle-bag-3',
+            $this->urlKeyUtil->makeUnique($mockSubject, 'joust-duffle-bag')
+        );
+    }
+
+    /**
+     * Test if makeUnique() method returns a key with the counter raisen when a related category
+     * with the same path and key exists.
+     *
+     * @return void
+     * @see case-01-04
+     */
+    public function testMakeUniqueWithRaisedCounterWhenARelatedCatgoryWithTheSameKeyAndPathExists() : void
+    {
+
+        // load the mock subject instance
+        $mockSubject = $this->getMockSubject(4321);
+
+        // assert the unique URL key
+        $this->assertSame(
+            'joust-duffle-bag-3',
+            $this->urlKeyUtil->makeUnique($mockSubject, 'joust-duffle-bag', 'gear')
+        );
+    }
+
+    /**
+     * Test if makeUnique() method returns the given key if a not related category with the same key exists.
+     *
+     * @return void
+     * @see case-01-05
+     */
+    public function testMakeUniqueIfANotRelatedCategoryWithTheSameKeyExists() : void
+    {
+
+        // load the mock subject instance
+        $mockSubject = $this->getMockSubject(4321);
+
+        // assert the unique URL key
+        $this->assertSame(
+            'duffle-bags',
+            $this->urlKeyUtil->makeUnique($mockSubject, 'duffle-bags', 'women')
+        );
+    }
+
+    /**
+     * Test if makeUnique() method returns the same key, multipath and store but a different entity.
+     *
+     * This can happen, when someone tries to create a category with the same URL path/key as an
+     * already exisiting category/product URL rewrite has.
+     *
+     * @return void
+     * @see case-01-06
+     */
+    public function testMakeUniqueWithSameKeyAndMultipathAndStoreButDifferentEntity() : void
+    {
+
+        // load the mock subject instance
+        $mockSubject = $this->getMockSubject(5432, 1);
+
+        // assert the unique URL key
+        $this->assertSame(
+            'joust-duffle-bag-1',
+            $this->urlKeyUtil->makeUnique($mockSubject, 'joust-duffle-bag', 'gear/bags')
+        );
+    }
+
+    /**
      * Test if makeUnique() method returns the same key, multipath and store but a different entity.
      *
      * @return void
      */
     public function testMakeUniqueWithMultipleInvocationsSameKeyAndMultipathAndStoreButDifferentEntity() : void
     {
+
+        // skip the test as the ...
+        $this->markTestSkipped('functionality has not yet been implemented');
 
         // load the mock subject instance
         $mockSubject = $this->getMockSubject(1237);
@@ -320,7 +376,7 @@ class UrlKeyUtilTest extends TestCase
         $this->assertSame(
             'duffle-bags-1',
             $this->urlKeyUtil->makeUnique($mockSubject, 'duffle-bags', 'gear/bags')
-            );
+        );
 
         // load the mock subject instance
         $mockSubject = $this->getMockSubject(8322);
