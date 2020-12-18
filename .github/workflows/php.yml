@@ -11,27 +11,12 @@ jobs:
   build:
     name: CI Build
 
-    runs-on: ${{ matrix.os }}
-
-    env:
-      PHP_EXTENSIONS: dom, json, libxml, mbstring, pdo_sqlite, soap, xml, xmlwriter
+    runs-on: ${{ matrix.operating-system }}
 
     strategy:
       matrix:
-        os:
-          - ubuntu-latest
-
-        php-version:
-          - "7.2"
-          - "7.3"
-          - "7.4"
-
-        php-ini-values:
-          - assert.exception=1, zend.assertions=1
-
-        dependencies:
-          - locked
-
+        operating-system: [ "ubuntu-latest" ]
+        php-versions: [ "7.2", "7.3", "7.4" ]
         include:
           - os: ubuntu-latest
             php-version: "7.2"
@@ -46,22 +31,13 @@ jobs:
             dependencies: highest
 
     steps:
-    - uses: actions/checkout@v2
+    - name: Checkout
+      uses: actions/checkout@v2
 
-    - name: Validate Composer files
+    - name: Validate Composer Files
       run: composer validate
 
-    - name: Cache Composer Packages
-      id: composer-cache
-      uses: actions/cache@v2
-      with:
-        path: vendor
-        key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
-        restore-keys: |
-          ${{ runner.os }}-php-
-
     - name: Install Dependencies
-      if: steps.composer-cache.outputs.cache-hit != 'true'
       run: composer install --prefer-dist --no-progress --no-suggest
 
     - name: Run Robo Build
