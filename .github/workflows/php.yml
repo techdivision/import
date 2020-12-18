@@ -8,27 +8,13 @@ on:
 
 jobs:
     
-  build:
+  run:
     name: CI Build
-
     runs-on: ${{ matrix.operating-system }}
-
     strategy:
       matrix:
-        operating-system: [ "ubuntu-latest" ]
-        php-versions: [ "7.2", "7.3", "7.4" ]
-        include:
-          - os: ubuntu-latest
-            php-version: "7.2"
-            dependencies: lowest
-
-          - os: ubuntu-latest
-            php-version: "7.3"
-            dependencies: highest
-
-          - os: ubuntu-latest
-            php-version: "7.4"
-            dependencies: highest
+        operating-system: [ 'ubuntu-latest' ]
+        php-versions: [ '7.2', '7.3', '7.4' ]
 
     steps:
     - name: Checkout
