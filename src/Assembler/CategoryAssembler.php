@@ -96,7 +96,9 @@ class CategoryAssembler implements CategoryAssemblerInterface
             $path = array();
             foreach ($entityIds as $entityId) {
                 $cat = $this->categoryVarcharRepository->findByEntityId($entityId);
-                $path[] = $cat[MemberNames::VALUE];
+                if ($cat && $cat[MemberNames::VALUE]) {
+                    $path[] = $cat[MemberNames::VALUE];
+                }
             }
 
             // append the catogory with the string path as key
@@ -141,7 +143,9 @@ class CategoryAssembler implements CategoryAssemblerInterface
             $path = array();
             foreach ($entityIds as $entityId) {
                 $cat = $this->categoryVarcharRepository->findByEntityId($entityId);
-                $path[] = $cat[MemberNames::VALUE];
+                if ($cat && $cat[MemberNames::VALUE]) {
+                    $path[] = $cat[MemberNames::VALUE];
+                }
             }
 
             // append the catogory with the string path as key
