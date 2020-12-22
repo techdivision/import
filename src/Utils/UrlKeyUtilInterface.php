@@ -44,4 +44,14 @@ interface UrlKeyUtilInterface
      * @return string The unique URL key
      */
     public function makeUnique(UrlKeyAwareSubjectInterface $subject, string $urlKey, string $urlPath = null) : string;
+
+    /**
+     * Load the url_key if exists
+     *
+     * @param \TechDivision\Import\Subjects\UrlKeyAwareSubjectInterface $subject      The subject toload the URL key
+     * @param int                                                       $primaryKeyId The ID from category or product
+     *
+     * @return string|null The URL key
+     */
+    public function loadUrlKey(UrlKeyAwareSubjectInterface $subject, $primaryKeyId);
 }
