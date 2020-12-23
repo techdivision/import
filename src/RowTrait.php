@@ -190,4 +190,45 @@ trait RowTrait
     {
         return $this->skippedRows;
     }
+
+    /**
+     * This method queries whether or not  the column with the passed name is available or
+     * not. This  method uses the `isset()` function to make sure the column is available
+     * and has not been removed somehow before, because it has an empty value for example.
+     *
+     * @param string $name The name of the column to query for
+     *
+     * @return boolean TRUE if the columen is available, FALSE otherwise
+     */
+    public function hasColumn(string $name) : bool
+    {
+
+        // query whether or not the header is available, if yes try
+        // to load the key and query whether the column is available
+        if ($this->hasHeader($name)) {
+            return isset($this->row[$this->getHeader($name)]);
+        }
+
+        // return FALSE if not
+        return false;
+    }
+
+    /**
+     * Queries whether or not the header with the passed name is available.
+     *
+     * @param string $name The header name to query
+     *
+     * @return boolean TRUE if the header is available, else FALSE
+     */
+    abstract public function hasHeader($name);
+
+    /**
+     * Return's the header value for the passed name.
+     *
+     * @param string $name The name of the header to return the value for
+     *
+     * @return mixed The header value
+     * @throws \InvalidArgumentException Is thrown, if the header with the passed name is NOT available
+     */
+    abstract public function getHeader($name);
 }
