@@ -45,12 +45,12 @@ interface UrlKeyUtilInterface
     public function makeUnique(UrlKeyAwareSubjectInterface $subject, $urlKey);
 
     /**
-     * Load the url_key if exists
+     * Load the url_key, if it exists. Return NULL otherwise.
      *
-     * @param \TechDivision\Import\Subjects\UrlKeyAwareSubjectInterface $subject      The subject toload the URL key
-     * @param int                                                       $primaryKeyId The ID from category or product
+     * @param \TechDivision\Import\Subjects\UrlKeyAwareSubjectInterface $subject The subject to make the URL key unique for
+     * @param int                                                       $pk      The ID from category or product
      *
      * @return string|null The URL key
      */
-    public function loadUrlKey(UrlKeyAwareSubjectInterface $subject, $primaryKeyId);
+    public function loadUrlKey(UrlKeyAwareSubjectInterface $subject, $pk);
 }

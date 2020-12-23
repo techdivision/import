@@ -171,15 +171,16 @@ class UrlKeyUtil implements UrlKeyUtilInterface
     }
 
     /**
-     * Load the url_key if exists
+     * Load the url_key, if it exists. Return NULL otherwise.
      *
-     * @param \TechDivision\Import\Subjects\UrlKeyAwareSubjectInterface $subject      The subject to make the URL key unique for
-     * @param int                                                       $primaryKeyId The ID from category or product
+     * @param \TechDivision\Import\Subjects\UrlKeyAwareSubjectInterface $subject The subject to make the URL key unique for
+     * @param int                                                       $pk      The ID from category or product
      *
      * @return string|null The URL key
      */
-    public function loadUrlKey(UrlKeyAwareSubjectInterface $subject, $primaryKeyId)
+    public function loadUrlKey(UrlKeyAwareSubjectInterface $subject, $pk)
     {
+
         // initialize the entity type ID
         $entityType = $subject->getEntityType();
         $entityTypeId = (integer) $entityType[MemberNames::ENTITY_TYPE_ID];
@@ -190,12 +191,14 @@ class UrlKeyUtil implements UrlKeyUtilInterface
 
         // try to load the attribute
         $attribute = $this->getUrlKeyAwareProcessor()
-                ->loadVarcharAttributeByAttributeCodeAndEntityTypeIdAndStoreIdAndPrimaryKey(
-                    MemberNames::URL_KEY,
-                    $entityTypeId,
-                    $storeId,
-                    $primaryKeyId
-                );
+            ->loadVarcharAttributeByAttributeCodeAndEntityTypeIdAndStoreIdAndPrimaryKey(
+                MemberNames::URL_KEY,
+                $entityTypeId,
+                $storeId,
+                $pk
+            );
+
+        // whether return the attribute's value or NULL
         return $attribute ? $attribute['value'] : null;
     }
 }
