@@ -21,8 +21,8 @@
 namespace TechDivision\Import\Utils;
 
 use TechDivision\Import\Configuration\ConfigurationInterface;
-use TechDivision\Import\Subjects\UrlKeyAwareSubjectInterface;
 use TechDivision\Import\Services\UrlKeyAwareProcessorInterface;
+use TechDivision\Import\Subjects\UrlKeyAwareSubjectInterface;
 
 /**
  * Utility class that provides functionality to make URL keys unique.
@@ -168,5 +168,37 @@ class UrlKeyUtil implements UrlKeyUtilInterface
 
         // return the passed URL key, if NOT
         return $urlKey;
+    }
+
+    /**
+     * Load the url_key, if it exists. Return NULL otherwise.
+     *
+     * @param \TechDivision\Import\Subjects\UrlKeyAwareSubjectInterface $subject The subject to make the URL key unique for
+     * @param int                                                       $pk      The ID from category or product
+     *
+     * @return string|null The URL key
+     */
+    public function loadUrlKey(UrlKeyAwareSubjectInterface $subject, $pk)
+    {
+
+        // initialize the entity type ID
+        $entityType = $subject->getEntityType();
+        $entityTypeId = (integer) $entityType[MemberNames::ENTITY_TYPE_ID];
+
+        // initialize the store view ID, use the admin store view if no store view has
+        // been set, because the default url_key value has been set in admin store view
+        $storeId = $subject->getRowStoreId(StoreViewCodes::ADMIN);
+
+        // try to load the attribute
+        $attribute = $this->getUrlKeyAwareProcessor()
+            ->loadVarcharAttributeByAttributeCodeAndEntityTypeIdAndStoreIdAndPrimaryKey(
+                MemberNames::URL_KEY,
+                $entityTypeId,
+                $storeId,
+                $pk
+            );
+
+        // whether return the attribute's value or NULL
+        return $attribute ? $attribute['value'] : null;
     }
 }
