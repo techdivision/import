@@ -1,4 +1,4 @@
-name: Pacemaker Import Core Library
+name: techdivision/import
 
 on:
   push:
