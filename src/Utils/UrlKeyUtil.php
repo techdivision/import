@@ -43,6 +43,14 @@ class UrlKeyUtil implements UrlKeyUtilInterface
     protected $urlKeyAwareProcessor;
 
     /**
+     * The array to temporary handle new URL rewrites until they have
+     * been persisted in the registry for further processing.
+     *
+     * @var array
+     */
+    protected $urlRewrites = array();
+
+    /**
      * Construct a new instance.
      *
      * @param \TechDivision\Import\Services\UrlKeyAwareProcessorInterface $urlKeyAwareProcessor The URL key aware processor instance
@@ -132,8 +140,10 @@ class UrlKeyUtil implements UrlKeyUtilInterface
                 $urlKey = sprintf('%s-%d', $urlKey, $counter);
             }
         } elseif (sizeof($notMatchingCounters) > 0) {
-            // create a new URL key by raising the counter
+            // load the last entry that contains the
+            // the last NOT matching counter
             $newCounter = end($notMatchingCounters);
+            // create a new URL key by raising the counter
             $urlKey = sprintf('%s-%d', $urlKey, ++$newCounter);
         }
 
@@ -153,11 +163,31 @@ class UrlKeyUtil implements UrlKeyUtilInterface
     public function makeUnique(UrlKeyAwareSubjectInterface $subject, string $urlKey, array $urlPaths = array()) : string
     {
 
+        // initialize the store view ID, use the default store view if no store view has
+        // been set, because the default url_key value has been set in default store view
+        $storeId = $subject->getRowStoreId();
+
+        // reset the temporary persisted URL
+        // rewrites because we've a new row
+        $this->urlRewrites = array();
+
         // iterate over the passed URL paths
         // and try to find a unique URL key
         for ($i = -1; $i < sizeof($urlPaths); $i++) {
+            // pre-initialze the URL by concatenating path and/or key to query for
+            $url = isset($urlPaths[$i]) ? sprintf('%s/%s', $urlPaths[$i], $urlKey) : $urlKey;
+
+            // we've temporary persist a dummy URL rewrite to keep track of the new URL key, e. g. for
+            // the case the import contains another product or category that wants to use the same one
+            $this->urlRewrites[$urlKey][$url][$storeId] = array(
+                MemberNames::REDIRECT_TYPE => 0,
+                MemberNames::STORE_ID      => $storeId,
+                MemberNames::ENTITY_ID     => $subject->getLastEntityId()
+            );
+
             // try to make the URL key unique for the given URL path
             $proposedUrlKey = $this->doMakeUnique($subject, $urlKey, isset($urlPaths[$i]) ? $urlPaths[$i] : null);
+
             // if the URL key is NOT the same as the passed one or with the parent URL path
             // it can NOT be used, so we've to persist it temporarily and try it again for
             // all the other URL paths until we found one that works with every URL path
@@ -166,8 +196,14 @@ class UrlKeyUtil implements UrlKeyUtilInterface
                 $urlKey = $proposedUrlKey;
                 // reset the counter and restart the
                 // iteration with the first URL path
-                $i = 0;
+                $i = -2;
             }
+        }
+
+        // do a bulk update with the temporary URL rewrites here,
+        // because we have to be aware of any changes furthermore
+        if (isset($this->urlRewrites[$urlKey])) {
+            $this->getUrlKeyAwareProcessor()->bulkPersistTemporaryUrlRewrites($this->urlRewrites[$urlKey]);
         }
 
         // return the unique URL key
