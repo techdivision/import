@@ -246,7 +246,7 @@ class UrlKeyUtilTest extends TestCase
         // assert the unique URL key
         $this->assertSame(
             'duffle-bags',
-            $this->urlKeyUtil->makeUnique($mockSubject, 'duffle-bags', 'gear/bags')
+            $this->urlKeyUtil->makeUnique($mockSubject, 'duffle-bags', array('gear/bags'))
         );
     }
 
@@ -304,7 +304,7 @@ class UrlKeyUtilTest extends TestCase
         // assert the unique URL key
         $this->assertSame(
             'joust-duffle-bag-3',
-            $this->urlKeyUtil->makeUnique($mockSubject, 'joust-duffle-bag', 'gear')
+            $this->urlKeyUtil->makeUnique($mockSubject, 'joust-duffle-bag', array('gear'))
         );
     }
 
@@ -323,7 +323,7 @@ class UrlKeyUtilTest extends TestCase
         // assert the unique URL key
         $this->assertSame(
             'duffle-bags',
-            $this->urlKeyUtil->makeUnique($mockSubject, 'duffle-bags', 'women')
+            $this->urlKeyUtil->makeUnique($mockSubject, 'duffle-bags', array('women'))
         );
     }
 
@@ -345,7 +345,7 @@ class UrlKeyUtilTest extends TestCase
         // assert the unique URL key
         $this->assertSame(
             'joust-duffle-bag-1',
-            $this->urlKeyUtil->makeUnique($mockSubject, 'joust-duffle-bag', 'gear/bags')
+            $this->urlKeyUtil->makeUnique($mockSubject, 'joust-duffle-bag', array('gear/bags'))
         );
     }
 
@@ -366,7 +366,7 @@ class UrlKeyUtilTest extends TestCase
         // assert the unique URL key
         $this->assertSame(
             'duffle-bags',
-            $this->urlKeyUtil->makeUnique($mockSubject, 'duffle-bags', 'gear/bags')
+            $this->urlKeyUtil->makeUnique($mockSubject, 'duffle-bags', array('gear/bags'))
         );
 
         // load the mock subject instance
@@ -375,7 +375,7 @@ class UrlKeyUtilTest extends TestCase
         // assert the unique URL key
         $this->assertSame(
             'duffle-bags-1',
-            $this->urlKeyUtil->makeUnique($mockSubject, 'duffle-bags', 'gear/bags')
+            $this->urlKeyUtil->makeUnique($mockSubject, 'duffle-bags', array('gear/bags'))
         );
 
         // load the mock subject instance
@@ -384,7 +384,7 @@ class UrlKeyUtilTest extends TestCase
         // assert the unique URL key
         $this->assertSame(
             'duffle-bags-2',
-            $this->urlKeyUtil->makeUnique($mockSubject, 'duffle-bags', 'gear/bags')
+            $this->urlKeyUtil->makeUnique($mockSubject, 'duffle-bags', array('gear/bags'))
         );
     }
 }

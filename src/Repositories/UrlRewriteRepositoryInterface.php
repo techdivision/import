@@ -80,5 +80,5 @@ interface UrlRewriteRepositoryInterface extends RepositoryInterface
      * @return array|null The URL rewrite found for the given request path and store ID
      * @see \TechDivision\Import\Repositories\UrlRewriteRepository::findAllGroupedByRequestPathAndStoreId()
      */
-    public function findOneByUrlRewriteByRequestPathAndStoreId(string $requestPath, int $storeId);
+    public function findOneByRequestPathAndStoreId(string $requestPath, int $storeId);
 }

@@ -37,13 +37,13 @@ interface UrlKeyUtilInterface
     /**
      * Make's the passed URL key unique by adding the next number to the end.
      *
-     * @param \TechDivision\Import\Subjects\UrlKeyAwareSubjectInterface $subject The subject to make the URL key unique for
-     * @param string                                                    $urlKey  The URL key to make unique
-     * @param string|null                                               $urlPath The URL path to make unique (only used for categories)
+     * @param \TechDivision\Import\Subjects\UrlKeyAwareSubjectInterface $subject  The subject to make the URL key unique for
+     * @param string                                                    $urlKey   The URL key to make unique
+     * @param array                                                     $urlPaths The URL paths to make unique
      *
      * @return string The unique URL key
      */
-    public function makeUnique(UrlKeyAwareSubjectInterface $subject, string $urlKey, string $urlPath = null) : string;
+    public function makeUnique(UrlKeyAwareSubjectInterface $subject, string $urlKey, array $urlPaths = array()) : string;
 
     /**
      * Load the url_key if exists

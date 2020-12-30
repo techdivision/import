@@ -76,7 +76,7 @@ class UrlKeyUtil implements UrlKeyUtilInterface
     }
 
     /**
-     * Make's the passed URL key unique by adding the next number to the end.
+     * Make's the passed URL key unique by adding/raising a number to the end.
      *
      * @param \TechDivision\Import\Subjects\UrlKeyAwareSubjectInterface $subject The subject to make the URL key unique for
      * @param string                                                    $urlKey  The URL key to make unique
@@ -84,7 +84,7 @@ class UrlKeyUtil implements UrlKeyUtilInterface
      *
      * @return string The unique URL key
      */
-    public function makeUnique(UrlKeyAwareSubjectInterface $subject, string $urlKey, string $urlPath = null) : string
+    protected function doMakeUnique(UrlKeyAwareSubjectInterface $subject, string $urlKey, string $urlPath = null) : string
     {
 
         // initialize the store view ID, use the default store view if no store view has
@@ -142,6 +142,39 @@ class UrlKeyUtil implements UrlKeyUtilInterface
     }
 
     /**
+     * Make's the passed URL key unique by adding the next number to the end.
+     *
+     * @param \TechDivision\Import\Subjects\UrlKeyAwareSubjectInterface $subject  The subject to make the URL key unique for
+     * @param string                                                    $urlKey   The URL key to make unique
+     * @param array                                                     $urlPaths The URL paths to make unique
+     *
+     * @return string The unique URL key
+     */
+    public function makeUnique(UrlKeyAwareSubjectInterface $subject, string $urlKey, array $urlPaths = array()) : string
+    {
+
+        // iterate over the passed URL paths
+        // and try to find a unique URL key
+        for ($i = -1; $i < sizeof($urlPaths); $i++) {
+            // try to make the URL key unique for the given URL path
+            $proposedUrlKey = $this->doMakeUnique($subject, $urlKey, isset($urlPaths[$i]) ? $urlPaths[$i] : null);
+            // if the URL key is NOT the same as the passed one or with the parent URL path
+            // it can NOT be used, so we've to persist it temporarily and try it again for
+            // all the other URL paths until we found one that works with every URL path
+            if ($urlKey !== $proposedUrlKey) {
+                // temporarily persist the URL key
+                $urlKey = $proposedUrlKey;
+                // reset the counter and restart the
+                // iteration with the first URL path
+                $i = 0;
+            }
+        }
+
+        // return the unique URL key
+        return $urlKey;
+    }
+
+    /**
      * Load the url_key if exists
      *
      * @param \TechDivision\Import\Subjects\UrlKeyAwareSubjectInterface $subject      The subject to make the URL key unique for
@@ -151,6 +184,7 @@ class UrlKeyUtil implements UrlKeyUtilInterface
      */
     public function loadUrlKey(UrlKeyAwareSubjectInterface $subject, $primaryKeyId)
     {
+
         // initialize the entity type ID
         $entityType = $subject->getEntityType();
         $entityTypeId = (integer) $entityType[MemberNames::ENTITY_TYPE_ID];
@@ -167,6 +201,8 @@ class UrlKeyUtil implements UrlKeyUtilInterface
                 $storeId,
                 $primaryKeyId
             );
+
+        // return the attribute value or null, if not available
         return $attribute ? $attribute['value'] : null;
     }
 }
