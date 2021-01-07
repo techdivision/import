@@ -12,7 +12,7 @@
  * PHP version 5
  *
  * @author    Tim Wagner <t.wagner@techdivision.com>
- * @copyright 2020 TechDivision GmbH <info@techdivision.com>
+ * @copyright 2021 TechDivision GmbH <info@techdivision.com>
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
@@ -20,6 +20,7 @@
 
 namespace TechDivision\Import\Utils;
 
+use TechDivision\Import\Loaders\LoaderInterface;
 use TechDivision\Import\Subjects\UrlKeyAwareSubjectInterface;
 use TechDivision\Import\Services\UrlKeyAwareProcessorInterface;
 
@@ -27,7 +28,7 @@ use TechDivision\Import\Services\UrlKeyAwareProcessorInterface;
  * Utility class that provides functionality to make URL keys unique.
  *
  * @author    Tim Wagner <t.wagner@techdivision.com>
- * @copyright 2020 TechDivision GmbH <info@techdivision.com>
+ * @copyright 2021 TechDivision GmbH <info@techdivision.com>
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
@@ -43,21 +44,51 @@ class UrlKeyUtil implements UrlKeyUtilInterface
     protected $urlKeyAwareProcessor;
 
     /**
-     * The array to temporary handle new URL rewrites until they have
-     * been persisted in the registry for further processing.
+     * The array with the entity type and store view specific suffixes.
      *
      * @var array
      */
-    protected $urlRewrites = array();
+    protected $suffixes = array();
+
+    /**
+     * The array with the entity type code > configuration key mapping.
+     *
+     * @var array
+     */
+    protected $entityTypeCodeToConfigKeyMapping = array(
+        EntityTypeCodes::CATALOG_PRODUCT  => CoreConfigDataKeys::CATALOG_SEO_PRODUCT_URL_SUFFIX,
+        EntityTypeCodes::CATALOG_CATEGORY => CoreConfigDataKeys::CATALOG_SEO_CATEGORY_URL_SUFFIX
+    );
 
     /**
      * Construct a new instance.
      *
      * @param \TechDivision\Import\Services\UrlKeyAwareProcessorInterface $urlKeyAwareProcessor The URL key aware processor instance
+     * @param \TechDivision\Import\Loaders\LoaderInterface                $coreConfigDataLoader The core config data loader instance
+     * @param \TechDivision\Import\Loaders\LoaderInterface                $storeIdLoader        The core config data loader instance
      */
-    public function __construct(UrlKeyAwareProcessorInterface $urlKeyAwareProcessor)
-    {
+    public function __construct(
+        UrlKeyAwareProcessorInterface $urlKeyAwareProcessor,
+        LoaderInterface $coreConfigDataLoader,
+        LoaderInterface $storeIdLoader
+    ) {
+
+        // initialize the URL kew aware processor instance
         $this->urlKeyAwareProcessor = $urlKeyAwareProcessor;
+
+        // load the available stores
+        $storeIds = $storeIdLoader->load();
+
+        // initialize the URL suffixs from the Magento core configuration
+        foreach ($storeIds as $storeId) {
+            // prepare the array with the entity type and store ID specific suffixes
+            foreach ($this->entityTypeCodeToConfigKeyMapping as $entityTypeCode => $configKey) {
+                // load the suffix for the given entity type => configuration key and store ID
+                $suffix = $coreConfigDataLoader->load($configKey, '.html', ScopeKeys::SCOPE_DEFAULT, $storeId);
+                // register the suffux in the array
+                $this->suffixes[$entityTypeCode][$storeId] = $suffix;
+            }
+        }
     }
 
     /**
@@ -87,17 +118,22 @@ class UrlKeyUtil implements UrlKeyUtilInterface
      * Make's the passed URL key unique by adding/raising a number to the end.
      *
      * @param \TechDivision\Import\Subjects\UrlKeyAwareSubjectInterface $subject The subject to make the URL key unique for
+     * @param array                                                     $entity  The entity to make the URL key unique for
      * @param string                                                    $urlKey  The URL key to make unique
      * @param string|null                                               $urlPath The URL path to make unique (only used for categories)
      *
      * @return string The unique URL key
      */
-    protected function doMakeUnique(UrlKeyAwareSubjectInterface $subject, string $urlKey, string $urlPath = null) : string
+    protected function doMakeUnique(UrlKeyAwareSubjectInterface $subject, array $entity, string $urlKey, string $urlPath = null) : string
     {
 
         // initialize the store view ID, use the default store view if no store view has
         // been set, because the default url_key value has been set in default store view
-        $storeId = $subject->getRowStoreId();
+        $storeId = (int) $subject->getRowStoreId();
+        $entityTypeCode = $subject->getEntityTypeCode();
+
+        // initialize the entity ID from the passed entity
+        $entityId = (int) $entity[MemberNames::ENTITY_ID];
 
         // initialize the counter
         $counter = 0;
@@ -110,20 +146,42 @@ class UrlKeyUtil implements UrlKeyUtilInterface
         $url = $urlPath ? sprintf('%s/%s', $urlPath, $urlKey) : $urlKey;
 
         do {
-            // try to load the attribute
-            $urlRewrite = $this->loadUrlRewriteByRequestPathAndStoreId($url, $storeId);
+            // prepare the request path to load an existing URL rewrite
+            $requestPath = sprintf('%s%s', $url, $this->suffixes[$entityTypeCode][$storeId]);
+            // try to load an existing URL rewrite
+            $urlRewrite = $this->loadUrlRewriteByRequestPathAndStoreId($requestPath, $storeId);
 
             // try to load the entity's URL key
             if ($urlRewrite) {
                 // this IS the URL key of the passed entity
-                if ($subject->isUrlKeyOf($urlRewrite)) {
+                if (((int) $urlRewrite[MemberNames::ENTITY_ID]     === $entityId) &&
+                    ((int) $urlRewrite[MemberNames::STORE_ID]      === $storeId) &&
+                    ((int) $urlRewrite[MemberNames::REDIRECT_TYPE] === 0)
+                ) {
+                    // add the matching counter
                     $matchingCounters[] = $counter;
+                    // stop further processing here, because we've a matching
+                    // URL key and that's all we want for the moment
+                    break;
                 } else {
                     $notMatchingCounters[] = $counter;
                 }
 
                 // prepare the next URL key to query for
                 $url = sprintf('%s-%d', $urlKey, ++$counter);
+            } else {
+                // we've temporary persist a dummy URL rewrite to keep track of the new URL key, e. g. for
+                // the case the import contains another product or category that wants to use the same one
+                $this->getUrlKeyAwareProcessor()->persistUrlRewrite(
+                    array(
+                        MemberNames::URL_REWRITE_ID => md5(sprintf('%d-%s', $storeId, $requestPath)),
+                        MemberNames::REDIRECT_TYPE  => 0,
+                        MemberNames::STORE_ID       => $storeId,
+                        MemberNames::ENTITY_ID      => $entityId,
+                        MemberNames::REQUEST_PATH   => $requestPath,
+                        EntityStatus::MEMBER_NAME   => EntityStatus::STATUS_CREATE
+                    )
+                );
             }
         } while ($urlRewrite);
 
@@ -155,38 +213,20 @@ class UrlKeyUtil implements UrlKeyUtilInterface
      * Make's the passed URL key unique by adding the next number to the end.
      *
      * @param \TechDivision\Import\Subjects\UrlKeyAwareSubjectInterface $subject  The subject to make the URL key unique for
+     * @param array                                                     $entity   The entity to make the URL key unique for
      * @param string                                                    $urlKey   The URL key to make unique
      * @param array                                                     $urlPaths The URL paths to make unique
      *
      * @return string The unique URL key
      */
-    public function makeUnique(UrlKeyAwareSubjectInterface $subject, string $urlKey, array $urlPaths = array()) : string
+    public function makeUnique(UrlKeyAwareSubjectInterface $subject, array $entity, string $urlKey, array $urlPaths = array()) : string
     {
-
-        // initialize the store view ID, use the default store view if no store view has
-        // been set, because the default url_key value has been set in default store view
-        $storeId = $subject->getRowStoreId();
-
-        // reset the temporary persisted URL
-        // rewrites because we've a new row
-        $this->urlRewrites = array();
 
         // iterate over the passed URL paths
         // and try to find a unique URL key
         for ($i = -1; $i < sizeof($urlPaths); $i++) {
-            // pre-initialze the URL by concatenating path and/or key to query for
-            $url = isset($urlPaths[$i]) ? sprintf('%s/%s', $urlPaths[$i], $urlKey) : $urlKey;
-
-            // we've temporary persist a dummy URL rewrite to keep track of the new URL key, e. g. for
-            // the case the import contains another product or category that wants to use the same one
-            $this->urlRewrites[$urlKey][$url][$storeId] = array(
-                MemberNames::REDIRECT_TYPE => 0,
-                MemberNames::STORE_ID      => $storeId,
-                MemberNames::ENTITY_ID     => $subject->getLastEntityId()
-            );
-
             // try to make the URL key unique for the given URL path
-            $proposedUrlKey = $this->doMakeUnique($subject, $urlKey, isset($urlPaths[$i]) ? $urlPaths[$i] : null);
+            $proposedUrlKey = $this->doMakeUnique($subject, $entity, $urlKey, isset($urlPaths[$i]) ? $urlPaths[$i] : null);
 
             // if the URL key is NOT the same as the passed one or with the parent URL path
             // it can NOT be used, so we've to persist it temporarily and try it again for
@@ -198,12 +238,6 @@ class UrlKeyUtil implements UrlKeyUtilInterface
                 // iteration with the first URL path
                 $i = -2;
             }
-        }
-
-        // do a bulk update with the temporary URL rewrites here,
-        // because we have to be aware of any changes furthermore
-        if (isset($this->urlRewrites[$urlKey])) {
-            $this->getUrlKeyAwareProcessor()->bulkPersistTemporaryUrlRewrites($this->urlRewrites[$urlKey]);
         }
 
         // return the unique URL key

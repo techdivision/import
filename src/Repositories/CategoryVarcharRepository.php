@@ -21,6 +21,7 @@
 namespace TechDivision\Import\Repositories;
 
 use TechDivision\Import\Utils\SqlStatementKeys;
+use TechDivision\Import\Dbal\Repositories\AbstractRepository;
 
 /**
  * Repository implementation to load category varchar data.

@@ -6,8 +6,8 @@
     <parameters>
         <parameter key="array_validator.nullable.true">true</parameter>
         <parameter key="array_validator.nullable.false">false</parameter>
-        <parameter key="cache_type.static" type="constant">TechDivision\Import\Utils\CacheTypes::TYPE_STATIC</parameter>
-        <parameter key="cache_type.configurable" type="constant">TechDivision\Import\Utils\CacheTypes::TYPE_CONFIGURABLE</parameter>
+        <parameter key="cache_type.static" type="constant">TechDivision\Import\Cache\Utils\CacheTypes::TYPE_STATIC</parameter>
+        <parameter key="cache_type.configurable" type="constant">TechDivision\Import\Cache\Utils\CacheTypes::TYPE_CONFIGURABLE</parameter>
     </parameters>
 
     <services>
@@ -58,11 +58,14 @@
          | The DI configuration for the UID generator
          |-->
         <service id="import.generator.core.config.data.uid" class="TechDivision\Import\Utils\Generators\CoreConfigDataUidGenerator"/>
+        <service id="import.generator.reverse.sequence" class="TechDivision\Import\Utils\Generators\ReverseSequenceGenerator">
+            <argument type="service" id="import.processor.registry"/>
+        </service>
 
         <!--
          | The DI utility configuration
          |-->
-        <service id="import.util.cache.key" class="TechDivision\Import\Utils\CacheKeyUtil">
+        <service id="import.util.cache.key" class="TechDivision\Import\Cache\Utils\CacheKeyUtil">
             <argument type="service" id="configuration"/>
         </service>
         <service id="import.util.primary.key" class="TechDivision\Import\Utils\PrimaryKeyUtil">
@@ -100,7 +103,7 @@
             <argument type="service" id="import.loader.exclude.primary.key.column.name"/>
             <argument type="service" id="import.util.table.prefix"/>
         </service>
-        <service id="import.util.sanitizer.column" class="TechDivision\Import\Utils\ColumnSanitizer"/>
+        <service id="import.util.sanitizer.column" class="TechDivision\Import\Dbal\Utils\ColumnSanitizer"/>
         <service id="import.util.sql.sanitizers" class="\ArrayObject">
             <call method="append">
                 <argument id="import.util.sanitizer.column" type="service"/>
@@ -116,12 +119,15 @@
         <!--
          | The DI finder factory configuration
          |-->
-        <service id="import.repository.finder.factory.simple" class="TechDivision\Import\Repositories\Finders\SimpleFinderFactory"/>
-        <service id="import.repository.finder.factory.yielded" class="TechDivision\Import\Repositories\Finders\YieldedFinderFactory"/>
-        <service id="import.repository.finder.factory.unique" class="TechDivision\Import\Repositories\Finders\UniqueFinderFactory"/>
-        <service id="import.repository.finder.factory.configurable" class="TechDivision\Import\Repositories\Finders\ConfigurableFinderFactory">
+        <service id="import.repository.finder.factory.simple" class="TechDivision\Import\Dbal\Repositories\Finders\SimpleFinderFactory"/>
+        <service id="import.repository.finder.factory.yielded" class="TechDivision\Import\Dbal\Repositories\Finders\YieldedFinderFactory"/>
+        <service id="import.repository.finder.factory.unique" class="TechDivision\Import\Dbal\Repositories\Finders\UniqueFinderFactory"/>
+        <service id="import.repository.finder.factory.configurable" class="TechDivision\Import\Dbal\Repositories\Finders\ConfigurableFinderFactory">
             <argument type="service" id="service_container"/>
             <argument type="service" id="configuration"/>
+        </service>
+        <service id="import.repository.finder.factory.unique.cached.static" class="TechDivision\Import\Dbal\Repositories\Finders\CachedUniqueFinderFactory">
+            <argument type="service" id="cache.static"/>
         </service>
 
         <!--
@@ -223,8 +229,16 @@
         <service id="import.loader.store.website" class="TechDivision\Import\Loaders\StoreWebsiteLoader">
             <argument type="service" id="import.processor.import"/>
         </service>
-        <service id="import.loader.store.view.code" class="TechDivision\Import\Loaders\StoreViewCodeLoader">
+        <service id="import.loader.store" class="TechDivision\Import\Loaders\StoreLoader">
             <argument type="service" id="import.processor.import"/>
+        </service>
+        <service id="import.loader.store.view.code" class="TechDivision\Import\Loaders\GenericMemberNameLoader">
+            <argument type="service" id="import.loader.store"/>
+            <argument type="constant">TechDivision\Import\Utils\MemberNames::CODE</argument>
+        </service>
+        <service id="import.loader.store.view.id" class="TechDivision\Import\Loaders\GenericMemberNameLoader">
+            <argument type="service" id="import.loader.store"/>
+            <argument type="constant">TechDivision\Import\Utils\MemberNames::STORE_ID</argument>
         </service>
         <service id="import.loader.source.and.target.dir" class="TechDivision\Import\Loaders\SourceAndTargetDirLoader">
             <argument type="service" id="import.processor.registry"/>
@@ -380,8 +394,6 @@
             <argument type="service" id="connection"/>
             <argument type="service" id="import.repository.sql.statement"/>
             <argument type="service" id="import.repository.finder.factory.configurable"/>
-            <argument type="service" id="import.processor.registry"/>
-            <argument type="service" id="import.loader.core.config.data"/>
         </service>
         <service id="import.repository.core.config.data" class="TechDivision\Import\Repositories\CoreConfigDataRepository">
             <argument type="service" id="import.generator.core.config.data.uid"/>
@@ -404,79 +416,162 @@
         <!--
          | The DI action processor configuration
          |-->
-        <service id="import.action.processor.url.rewrite.product.create" class="TechDivision\Import\Actions\Processors\UrlRewriteCreateProcessor">
+        <service id="import.action.processor.url.rewrite.create" class="TechDivision\Import\Dbal\Actions\Processors\GenericIdentifierProcessor">
             <argument type="service" id="connection"/>
             <argument type="service" id="import.repository.sql.statement"/>
+            <argument type="service" id="import.util.sql.sanitizers"/>
+            <argument type="collection">
+                <argument type="constant">TechDivision\Import\Utils\SqlStatementKeys::CREATE_URL_REWRITE</argument>
+            </argument>
         </service>
-        <service id="import.action.processor.url.rewrite.product.update" class="TechDivision\Import\Actions\Processors\UrlRewriteUpdateProcessor">
+        <service id="import.action.processor.url.rewrite.update" class="TechDivision\Import\Dbal\Actions\Processors\GenericIdentifierProcessor">
             <argument type="service" id="connection"/>
             <argument type="service" id="import.repository.sql.statement"/>
+            <argument type="service" id="import.util.sql.sanitizers"/>
+            <argument type="collection">
+                <argument type="constant">TechDivision\Import\Utils\SqlStatementKeys::UPDATE_URL_REWRITE</argument>
+            </argument>
         </service>
-        <service id="import.action.processor.url.rewrite.product.delete" class="TechDivision\Import\Actions\Processors\UrlRewriteDeleteProcessor">
+        <service id="import.action.processor.url.rewrite.delete" class="TechDivision\Import\Dbal\Actions\Processors\GenericIdentifierProcessor">
             <argument type="service" id="connection"/>
             <argument type="service" id="import.repository.sql.statement"/>
+            <argument type="service" id="import.util.sql.sanitizers"/>
+            <argument type="collection">
+                <argument type="constant">TechDivision\Import\Utils\SqlStatementKeys::DELETE_URL_REWRITE</argument>
+                <argument type="constant">TechDivision\Import\Utils\SqlStatementKeys::DELETE_URL_REWRITE_BY_SKU</argument>
+                <argument type="constant">TechDivision\Import\Utils\SqlStatementKeys::DELETE_URL_REWRITE_BY_PATH</argument>
+                <argument type="constant">TechDivision\Import\Utils\SqlStatementKeys::DELETE_URL_REWRITE_BY_CATEGORY_ID</argument>
+            </argument>
         </service>
-        <service id="import.action.processor.store.create" class="TechDivision\Import\Actions\Processors\StoreCreateProcessor">
+        <service id="import.action.processor.store.create" class="TechDivision\Import\Dbal\Actions\Processors\GenericIdentifierProcessor">
             <argument type="service" id="connection"/>
             <argument type="service" id="import.repository.sql.statement"/>
+            <argument type="service" id="import.util.sql.sanitizers"/>
+            <argument type="collection">
+                <argument type="constant">TechDivision\Import\Utils\SqlStatementKeys::CREATE_STORE</argument>
+            </argument>
         </service>
-        <service id="import.action.processor.store.update" class="TechDivision\Import\Actions\Processors\StoreUpdateProcessor">
+        <service id="import.action.processor.store.update" class="TechDivision\Import\Dbal\Actions\Processors\GenericIdentifierProcessor">
             <argument type="service" id="connection"/>
             <argument type="service" id="import.repository.sql.statement"/>
+            <argument type="service" id="import.util.sql.sanitizers"/>
+            <argument type="collection">
+                <argument type="constant">TechDivision\Import\Utils\SqlStatementKeys::UPDATE_STORE</argument>
+            </argument>
         </service>
-        <service id="import.action.processor.store.group.create" class="TechDivision\Import\Actions\Processors\StoreGroupCreateProcessor">
+        <service id="import.action.processor.store.delete" class="TechDivision\Import\Dbal\Actions\Processors\GenericIdentifierProcessor">
             <argument type="service" id="connection"/>
             <argument type="service" id="import.repository.sql.statement"/>
+            <argument type="service" id="import.util.sql.sanitizers"/>
+            <argument type="collection">
+                <argument type="constant">TechDivision\Import\Utils\SqlStatementKeys::DELETE_STORE</argument>
+            </argument>
         </service>
-        <service id="import.action.processor.store.group.update" class="TechDivision\Import\Actions\Processors\StoreGroupUpdateProcessor">
+        <service id="import.action.processor.store.group.create" class="TechDivision\Import\Dbal\Actions\Processors\GenericIdentifierProcessor">
             <argument type="service" id="connection"/>
             <argument type="service" id="import.repository.sql.statement"/>
+            <argument type="service" id="import.util.sql.sanitizers"/>
+            <argument type="collection">
+                <argument type="constant">TechDivision\Import\Utils\SqlStatementKeys::CREATE_STORE_GROUP</argument>
+            </argument>
         </service>
-        <service id="import.action.processor.store.website.create" class="TechDivision\Import\Actions\Processors\StoreWebsiteCreateProcessor">
+        <service id="import.action.processor.store.group.update" class="TechDivision\Import\Dbal\Actions\Processors\GenericIdentifierProcessor">
             <argument type="service" id="connection"/>
             <argument type="service" id="import.repository.sql.statement"/>
+            <argument type="service" id="import.util.sql.sanitizers"/>
+            <argument type="collection">
+                <argument type="constant">TechDivision\Import\Utils\SqlStatementKeys::UPDATE_STORE_GROUP</argument>
+            </argument>
         </service>
-        <service id="import.action.processor.store.website.update" class="TechDivision\Import\Actions\Processors\StoreWebsiteUpdateProcessor">
+        <service id="import.action.processor.store.group.delete" class="TechDivision\Import\Dbal\Actions\Processors\GenericIdentifierProcessor">
             <argument type="service" id="connection"/>
             <argument type="service" id="import.repository.sql.statement"/>
+            <argument type="service" id="import.util.sql.sanitizers"/>
+            <argument type="collection">
+                <argument type="constant">TechDivision\Import\Utils\SqlStatementKeys::DELETE_STORE_GROUP</argument>
+            </argument>
         </service>
-        <service id="import.action.processor.import.history.create" class="TechDivision\Import\Actions\Processors\ImportHistoryCreateProcessor">
+        <service id="import.action.processor.store.website.create" class="TechDivision\Import\Dbal\Actions\Processors\GenericIdentifierProcessor">
             <argument type="service" id="connection"/>
             <argument type="service" id="import.repository.sql.statement"/>
+            <argument type="service" id="import.util.sql.sanitizers"/>
+            <argument type="collection">
+                <argument type="constant">TechDivision\Import\Utils\SqlStatementKeys::CREATE_STORE_WEBSITE</argument>
+            </argument>
         </service>
-        <service id="import.action.processor.import.history.update" class="TechDivision\Import\Actions\Processors\ImportHistoryUpdateProcessor">
+        <service id="import.action.processor.store.website.update" class="TechDivision\Import\Dbal\Actions\Processors\GenericIdentifierProcessor">
             <argument type="service" id="connection"/>
             <argument type="service" id="import.repository.sql.statement"/>
+            <argument type="service" id="import.util.sql.sanitizers"/>
+            <argument type="collection">
+                <argument type="constant">TechDivision\Import\Utils\SqlStatementKeys::UPDATE_STORE_WEBSITE</argument>
+            </argument>
         </service>
-        <service id="import.action.processor.import.history.delete" class="TechDivision\Import\Actions\Processors\ImportHistoryDeleteProcessor">
+        <service id="import.action.processor.store.website.delete" class="TechDivision\Import\Dbal\Actions\Processors\GenericIdentifierProcessor">
             <argument type="service" id="connection"/>
             <argument type="service" id="import.repository.sql.statement"/>
+            <argument type="service" id="import.util.sql.sanitizers"/>
+            <argument type="collection">
+                <argument type="constant">TechDivision\Import\Utils\SqlStatementKeys::DELETE_STORE_WEBSITE</argument>
+            </argument>
+        </service>
+        <service id="import.action.processor.import.history.create" class="TechDivision\Import\Dbal\Actions\Processors\GenericIdentifierProcessor">
+            <argument type="service" id="connection"/>
+            <argument type="service" id="import.repository.sql.statement"/>
+            <argument type="service" id="import.util.sql.sanitizers"/>
+            <argument type="collection">
+                <argument type="constant">TechDivision\Import\Utils\SqlStatementKeys::CREATE_IMPORT_HISTORY</argument>
+            </argument>
+        </service>
+        <service id="import.action.processor.import.history.update" class="TechDivision\Import\Dbal\Actions\Processors\GenericIdentifierProcessor">
+            <argument type="service" id="connection"/>
+            <argument type="service" id="import.repository.sql.statement"/>
+            <argument type="service" id="import.util.sql.sanitizers"/>
+            <argument type="collection">
+                <argument type="constant">TechDivision\Import\Utils\SqlStatementKeys::UPDATE_IMPORT_HISTORY</argument>
+            </argument>
+        </service>
+        <service id="import.action.processor.import.history.delete" class="TechDivision\Import\Dbal\Actions\Processors\GenericIdentifierProcessor">
+            <argument type="service" id="connection"/>
+            <argument type="service" id="import.repository.sql.statement"/>
+            <argument type="service" id="import.util.sql.sanitizers"/>
+            <argument type="collection">
+                <argument type="constant">TechDivision\Import\Utils\SqlStatementKeys::DELETE_IMPORT_HISTORY</argument>
+            </argument>
         </service>
 
         <!--
          | The DI action configuration
          |-->
-        <service id="import.action.url.rewrite" class="TechDivision\Import\Actions\GenericIdentifierAction">
-            <argument type="service" id="import.action.processor.url.rewrite.product.create"/>
-            <argument type="service" id="import.action.processor.url.rewrite.product.update"/>
-            <argument type="service" id="import.action.processor.url.rewrite.product.delete"/>
+        <service id="import.action.url.rewrite" class="TechDivision\Import\Dbal\Actions\GenericIdentifierAction">
+            <argument type="service" id="import.action.processor.url.rewrite.create"/>
+            <argument type="service" id="import.action.processor.url.rewrite.update"/>
+            <argument type="service" id="import.action.processor.url.rewrite.delete"/>
+            <argument type="constant">TechDivision\Import\Utils\MemberNames::URL_REWRITE_ID</argument>
         </service>
-        <service id="import.action.store" class="TechDivision\Import\Actions\GenericIdentifierAction">
+        <service id="import.action.store" class="TechDivision\Import\Dbal\Actions\GenericIdentifierAction">
             <argument type="service" id="import.action.processor.store.create"/>
             <argument type="service" id="import.action.processor.store.update"/>
+            <argument type="service" id="import.action.processor.store.delete"/>
+            <argument type="constant">TechDivision\Import\Utils\MemberNames::STORE_ID</argument>
         </service>
-        <service id="import.action.store.group" class="TechDivision\Import\Actions\GenericIdentifierAction">
+        <service id="import.action.store.group" class="TechDivision\Import\Dbal\Actions\GenericIdentifierAction">
             <argument type="service" id="import.action.processor.store.group.create"/>
             <argument type="service" id="import.action.processor.store.group.update"/>
+            <argument type="service" id="import.action.processor.store.group.delete"/>
+            <argument type="constant">TechDivision\Import\Utils\MemberNames::GROUP_ID</argument>
         </service>
-        <service id="import.action.store.website" class="TechDivision\Import\Actions\GenericIdentifierAction">
+        <service id="import.action.store.website" class="TechDivision\Import\Dbal\Actions\GenericIdentifierAction">
             <argument type="service" id="import.action.processor.store.website.create"/>
             <argument type="service" id="import.action.processor.store.website.update"/>
+            <argument type="service" id="import.action.processor.store.website.delete"/>
+            <argument type="constant">TechDivision\Import\Utils\MemberNames::WEBSITE_ID</argument>
         </service>
-        <service id="import.action.import.history" class="TechDivision\Import\Actions\GenericIdentifierAction">
+        <service id="import.action.import.history" class="TechDivision\Import\Dbal\Actions\GenericIdentifierAction">
             <argument type="service" id="import.action.processor.import.history.create"/>
             <argument type="service" id="import.action.processor.import.history.update"/>
             <argument type="service" id="import.action.processor.import.history.delete"/>
+            <argument type="constant">TechDivision\Import\Utils\MemberNames::HISTORY_ID</argument>
         </service>
 
         <!--
@@ -855,6 +950,9 @@
         <service id="import.listener.debug.dump.prepare" class="TechDivision\Import\Listeners\PrepareDebugDumpListener">
             <argument type="service" id="import.utils.debug"/>
             <argument type="service" id="configuration"/>
+        </service>
+        <service id="import.listener.cache.update" class="TechDivision\Import\Listeners\CacheUpdateListener">
+            <argument type="service" id="cache.configurable"/>
         </service>
 
         <!--

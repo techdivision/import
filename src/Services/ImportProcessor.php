@@ -22,8 +22,8 @@ namespace TechDivision\Import\Services;
 
 use TechDivision\Import\Utils\MemberNames;
 use TechDivision\Import\Utils\RegistryKeys;
-use TechDivision\Import\Actions\ActionInterface;
-use TechDivision\Import\Connection\ConnectionInterface;
+use TechDivision\Import\Dbal\Actions\ActionInterface;
+use TechDivision\Import\Dbal\Connection\ConnectionInterface;
 use TechDivision\Import\Assembler\CategoryAssemblerInterface;
 use TechDivision\Import\Repositories\StoreRepositoryInterface;
 use TechDivision\Import\Repositories\CategoryRepositoryInterface;
@@ -58,7 +58,7 @@ class ImportProcessor implements ImportProcessorInterface
     /**
      * A connection to use.
      *
-     * @var \TechDivision\Import\Connection\ConnectionInterface
+     * @var \TechDivision\Import\Dbal\Connection\ConnectionInterface
      */
     protected $connection;
 
@@ -191,35 +191,35 @@ class ImportProcessor implements ImportProcessorInterface
     /**
      * The action for store CRUD methods.
      *
-     * @var \TechDivision\Import\Actions\ActionInterface
+     * @var \TechDivision\Import\Dbal\Actions\ActionInterface
      */
     protected $storeAction;
 
     /**
      * The action for store group CRUD methods.
      *
-     * @var \TechDivision\Import\Actions\ActionInterface
+     * @var \TechDivision\Import\Dbal\Actions\ActionInterface
      */
     protected $storeGroupAction;
 
     /**
      * The action for store website CRUD methods.
      *
-     * @var \TechDivision\Import\Actions\ActionInterface
+     * @var \TechDivision\Import\Dbal\Actions\ActionInterface
      */
     protected $storeWebsiteAction;
 
     /**
      * The action for import history CRUD methods.
      *
-     * @var \TechDivision\Import\Actions\ActionInterface
+     * @var \TechDivision\Import\Dbal\Actions\ActionInterface
      */
     protected $importHistoryAction;
 
     /**
      * Initialize the processor with the necessary assembler and repository instances.
      *
-     * @param \TechDivision\Import\Connection\ConnectionInterface                          $connection                        The connection to use
+     * @param \TechDivision\Import\Dbal\Connection\ConnectionInterface                     $connection                        The connection to use
      * @param \TechDivision\Import\Assembler\CategoryAssemblerInterface                    $categoryAssembler                 The category assembler instance
      * @param \TechDivision\Import\Repositories\CategoryRepositoryInterface                $categoryRepository                The repository to access categories
      * @param \TechDivision\Import\Repositories\CategoryVarcharRepositoryInterface         $categoryVarcharRepository         The repository to access category varchar values
@@ -238,10 +238,10 @@ class ImportProcessor implements ImportProcessorInterface
      * @param \TechDivision\Import\Repositories\ImageTypeRepositoryInterface               $imageTypeRepository               The repository to access images types
      * @param \TechDivision\Import\Repositories\AdminUserRepositoryInterface               $adminUserRepository               The repository to access admin users
      * @param \TechDivision\Import\Repositories\UrlRewriteRepositoryInterface              $urlRewriteRepository              The repository to access URL rewrites
-     * @param \TechDivision\Import\Actions\ActionInterface                                 $storeAction                       The action with the store CRUD methods
-     * @param \TechDivision\Import\Actions\ActionInterface                                 $storeGroupAction                  The action with the store group CRUD methods
-     * @param \TechDivision\Import\Actions\ActionInterface                                 $storeWebsiteAction                The action with the store website CRUD methods
-     * @param \TechDivision\Import\Actions\ActionInterface                                 $importHistoryAction               The action with the import history CRUD methods
+     * @param \TechDivision\Import\Dbal\Actions\ActionInterface                            $storeAction                       The action with the store CRUD methods
+     * @param \TechDivision\Import\Dbal\Actions\ActionInterface                            $storeGroupAction                  The action with the store group CRUD methods
+     * @param \TechDivision\Import\Dbal\Actions\ActionInterface                            $storeWebsiteAction                The action with the store website CRUD methods
+     * @param \TechDivision\Import\Dbal\Actions\ActionInterface                            $importHistoryAction               The action with the import history CRUD methods
      */
     public function __construct(
         ConnectionInterface $connection,
@@ -296,7 +296,7 @@ class ImportProcessor implements ImportProcessorInterface
     /**
      * Set's the passed connection.
      *
-     * @param \TechDivision\Import\Connection\ConnectionInterface $connection The connection to set
+     * @param \TechDivision\Import\Dbal\Connection\ConnectionInterface $connection The connection to set
      *
      * @return void
      */
@@ -308,7 +308,7 @@ class ImportProcessor implements ImportProcessorInterface
     /**
      * Return's the connection.
      *
-     * @return \TechDivision\Import\Connection\ConnectionInterface The connection instance
+     * @return \TechDivision\Import\Dbal\Connection\ConnectionInterface The connection instance
      */
     public function getConnection()
     {
@@ -758,7 +758,7 @@ class ImportProcessor implements ImportProcessorInterface
     /**
      * Set's the action with the store CRUD methods.
      *
-     * @param \TechDivision\Import\Actions\ActionInterface $storeAction The action with the store CRUD methods
+     * @param \TechDivision\Import\Dbal\Actions\ActionInterface $storeAction The action with the store CRUD methods
      *
      * @return void
      */
@@ -770,7 +770,7 @@ class ImportProcessor implements ImportProcessorInterface
     /**
      * Return's the action with the store CRUD methods.
      *
-     * @return \TechDivision\Import\Actions\ActionInterface The action instance
+     * @return \TechDivision\Import\Dbal\Actions\ActionInterface The action instance
      */
     public function getStoreAction()
     {
@@ -780,7 +780,7 @@ class ImportProcessor implements ImportProcessorInterface
     /**
      * Set's the action with the store group CRUD methods.
      *
-     * @param \TechDivision\Import\Actions\ActionInterface $storeGroupAction The action with the store group CRUD methods
+     * @param \TechDivision\Import\Dbal\Actions\ActionInterface $storeGroupAction The action with the store group CRUD methods
      *
      * @return void
      */
@@ -792,7 +792,7 @@ class ImportProcessor implements ImportProcessorInterface
     /**
      * Return's the action with the store group CRUD methods.
      *
-     * @return \TechDivision\Import\Actions\ActionInterface The action instance
+     * @return \TechDivision\Import\Dbal\Actions\ActionInterface The action instance
      */
     public function getStoreGroupAction()
     {
@@ -802,7 +802,7 @@ class ImportProcessor implements ImportProcessorInterface
     /**
      * Set's the action with the store website CRUD methods.
      *
-     * @param \TechDivision\Import\Actions\ActionInterface $storeWebsiteAction The action with the store website CRUD methods
+     * @param \TechDivision\Import\Dbal\Actions\ActionInterface $storeWebsiteAction The action with the store website CRUD methods
      *
      * @return void
      */
@@ -814,7 +814,7 @@ class ImportProcessor implements ImportProcessorInterface
     /**
      * Return's the action with the store website CRUD methods.
      *
-     * @return \TechDivision\Import\Actions\ActionInterface The action instance
+     * @return \TechDivision\Import\Dbal\Actions\ActionInterface The action instance
      */
     public function getStoreWebsiteAction()
     {
@@ -824,7 +824,7 @@ class ImportProcessor implements ImportProcessorInterface
     /**
      * Set's the action with the import history CRUD methods.
      *
-     * @param \TechDivision\Import\Actions\ActionInterface $importHistoryAction The action with the import history CRUD methods
+     * @param \TechDivision\Import\Dbal\Actions\ActionInterface $importHistoryAction The action with the import history CRUD methods
      *
      * @return void
      */
@@ -836,7 +836,7 @@ class ImportProcessor implements ImportProcessorInterface
     /**
      * Return's the action with the import history CRUD methods.
      *
-     * @return \TechDivision\Import\Actions\ActionInterface The action instance
+     * @return \TechDivision\Import\Dbal\Actions\ActionInterface The action instance
      */
     public function getImportHistoryAction()
     {

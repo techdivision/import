@@ -68,12 +68,12 @@ interface UrlKeyAwareProcessorInterface
     public function loadUrlRewriteByRequestPathAndStoreId(string $requestPath, int $storeId);
 
     /**
-     * Persist's the passed URL rewrites in a bulk operation.
+     * Persist's the URL rewrite with the passed data.
      *
-     * @param array       $rows The URL rewrites that has to be persisted in a bulk operation
+     * @param array       $row  The URL rewrite to persist
      * @param string|null $name The name of the prepared statement that has to be executed
      *
-     * @return void
+     * @return string The ID of the persisted entity
      */
-    public function bulkPersistTemporaryUrlRewrites(array $rows, $name = null);
+    public function persistUrlRewrite($row, $name = null);
 }

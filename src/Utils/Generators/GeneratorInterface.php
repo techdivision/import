@@ -35,9 +35,7 @@ interface GeneratorInterface
     /**
      * Create a unique identifier.
      *
-     * @param array $entity The entity to generate the UID for
-     *
      * @return string The unique identifier
      */
-    public function generate(array $entity);
+    public function generate();
 }

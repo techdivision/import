@@ -12,7 +12,7 @@
  * PHP version 5
  *
  * @author    Tim Wagner <t.wagner@techdivision.com>
- * @copyright 2020 TechDivision GmbH <info@techdivision.com>
+ * @copyright 2021 TechDivision GmbH <info@techdivision.com>
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
@@ -20,13 +20,13 @@
 
 namespace TechDivision\Import\Loaders;
 
-use TechDivision\Import\Connection\ConnectionInterface;
+use TechDivision\Import\Dbal\Connection\ConnectionInterface;
 
 /**
  * Loader for table column metadata.
  *
  * @author    Tim Wagner <t.wagner@techdivision.com>
- * @copyright 2020 TechDivision GmbH <info@techdivision.com>
+ * @copyright 2021 TechDivision GmbH <info@techdivision.com>
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
@@ -44,7 +44,7 @@ class ColumnMetadataLoader implements LoaderInterface
     /**
      * Construct a new instance.
      *
-     * @param \TechDivision\Import\Connection\ConnectionInterface $connection The DB connection instance used to load the table metadata
+     * @param \TechDivision\Import\Dbal\Connection\ConnectionInterface $connection The DB connection instance used to load the table metadata
      */
     public function __construct(ConnectionInterface $connection)
     {

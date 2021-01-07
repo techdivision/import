@@ -270,6 +270,13 @@ class SqlStatementKeys
     const URL_REWRITES = 'url_rewrites';
 
     /**
+     * The SQL statement to load the URL rewrite for the passed request path and store ID.
+     *
+     * @var string
+     */
+    const URL_REWRITE_BY_REQUEST_PATH_AND_STORE_ID = 'url_rewrite.by.request_path.and.store_id';
+
+    /**
      * The SQL statement to load the URL rewrites for the passed entity type and ID.
      *
      * @var string
@@ -408,4 +415,25 @@ class SqlStatementKeys
      * @var string
      */
     const ADMIN_USER_BY_USERNAME = 'admin_user.by.username';
+
+    /**
+     * The SQL statement to delete an existing store entry.
+     *
+     * @var string
+     */
+    const DELETE_STORE = 'delete.store';
+
+    /**
+     * The SQL statement to delete an existing store group entry.
+     *
+     * @var string
+     */
+    const DELETE_STORE_GROUP = 'delete.store_group';
+
+    /**
+     * The SQL statement to delete an existing store website entry.
+     *
+     * @var string
+     */
+    const DELETE_STORE_WEBSITE = 'delete.store_website';
 }

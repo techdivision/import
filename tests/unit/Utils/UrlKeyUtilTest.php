@@ -23,6 +23,7 @@ namespace TechDivision\Import\Utils;
 use PHPUnit\Framework\TestCase;
 use TechDivision\Import\Subjects\UrlKeyAwareSubjectInterface;
 use TechDivision\Import\Services\UrlKeyAwareProcessorInterface;
+use TechDivision\Import\Loaders\LoaderInterface;
 
 /**
  * Test class for the URL key utility.
@@ -142,10 +143,18 @@ class UrlKeyUtilTest extends TestCase
         // mock the URL key aware processor instance
         $urlKeyAwareProcessor = $this->getMockBuilder(UrlKeyAwareProcessorInterface::class)->getMock();
 
+        // mock the core config data loader instance
+        $coreConfigDataLoader = $this->getMockBuilder(LoaderInterface::class)->getMock();
+        $coreConfigDataLoader->expects($this->any())->method('load')->willReturn(null);
+
+        // mock the store ID loader instance
+        $storeIdLoader = $this->getMockBuilder(LoaderInterface::class)->getMock();
+        $storeIdLoader->expects($this->any())->method('load')->willReturn(array(0 => 0, 1 => 1));
+
         // initialize the utility we want to test
         $this->urlKeyUtil = $this->getMockBuilder(UrlKeyUtil::class)
             ->setMethods(array('loadUrlRewriteByRequestPathAndStoreId'))
-            ->setConstructorArgs(array($urlKeyAwareProcessor))
+            ->setConstructorArgs(array($urlKeyAwareProcessor, $coreConfigDataLoader, $storeIdLoader))
             ->getMock();
 
         // mock the loadUrlRewriteByRequestPathAndStoreId() method
@@ -179,15 +188,10 @@ class UrlKeyUtilTest extends TestCase
             ->method('getRowStoreId')
             ->willReturn($storeId);
 
-        // mock the method to query whether or not he URL rewrite
-        // is related with the entity with the passed entity ID
+        // mock the method that returns the ID of the actual store
         $mockSubject->expects($this->any())
-            ->method('isUrlKeyOf')
-            ->will($this->returnCallback(function ($arg1) use ($entityId, $storeId) {
-                return $arg1[MemberNames::ENTITY_ID]     === $entityId
-                    && $arg1[MemberNames::STORE_ID]      === $storeId
-                    && $arg1[MemberNames::REDIRECT_TYPE] === 0;
-            }));
+            ->method('getEntityTypeCode')
+            ->willReturn(EntityTypeCodes::CATALOG_PRODUCT);
 
         // return the mock subject
         return $mockSubject;
@@ -208,7 +212,7 @@ class UrlKeyUtilTest extends TestCase
         // assert the unique URL key
         $this->assertSame(
             'unknown-key',
-            $this->urlKeyUtil->makeUnique($mockSubject, 'unknown-key')
+            $this->urlKeyUtil->makeUnique($mockSubject, array(MemberNames::ENTITY_ID => 1234), 'unknown-key')
         );
     }
 
@@ -227,7 +231,7 @@ class UrlKeyUtilTest extends TestCase
         // assert the unique URL key
         $this->assertSame(
             'joust-duffle-bag',
-            $this->urlKeyUtil->makeUnique($mockSubject, 'joust-duffle-bag')
+            $this->urlKeyUtil->makeUnique($mockSubject, array(MemberNames::ENTITY_ID => 1234), 'joust-duffle-bag')
         );
     }
 
@@ -246,7 +250,7 @@ class UrlKeyUtilTest extends TestCase
         // assert the unique URL key
         $this->assertSame(
             'duffle-bags',
-            $this->urlKeyUtil->makeUnique($mockSubject, 'duffle-bags', array('gear/bags'))
+            $this->urlKeyUtil->makeUnique($mockSubject, array(MemberNames::ENTITY_ID => 1237), 'duffle-bags', array('gear/bags'))
         );
     }
 
@@ -265,7 +269,7 @@ class UrlKeyUtilTest extends TestCase
         // assert the unique URL key
         $this->assertSame(
             'joust-duffle-bag',
-            $this->urlKeyUtil->makeUnique($mockSubject, 'joust-duffle-bag')
+            $this->urlKeyUtil->makeUnique($mockSubject, array(MemberNames::ENTITY_ID => 1234), 'joust-duffle-bag')
         );
     }
 
@@ -284,7 +288,7 @@ class UrlKeyUtilTest extends TestCase
         // assert the unique URL key
         $this->assertSame(
             'joust-duffle-bag-3',
-            $this->urlKeyUtil->makeUnique($mockSubject, 'joust-duffle-bag')
+            $this->urlKeyUtil->makeUnique($mockSubject, array(MemberNames::ENTITY_ID => 4321), 'joust-duffle-bag')
         );
     }
 
@@ -304,7 +308,7 @@ class UrlKeyUtilTest extends TestCase
         // assert the unique URL key
         $this->assertSame(
             'joust-duffle-bag-3',
-            $this->urlKeyUtil->makeUnique($mockSubject, 'joust-duffle-bag', array('gear'))
+            $this->urlKeyUtil->makeUnique($mockSubject, array(MemberNames::ENTITY_ID => 4321), 'joust-duffle-bag', array('gear'))
         );
     }
 
@@ -323,7 +327,7 @@ class UrlKeyUtilTest extends TestCase
         // assert the unique URL key
         $this->assertSame(
             'duffle-bags',
-            $this->urlKeyUtil->makeUnique($mockSubject, 'duffle-bags', array('women'))
+            $this->urlKeyUtil->makeUnique($mockSubject, array(MemberNames::ENTITY_ID => 4321), 'duffle-bags', array('women'))
         );
     }
 
@@ -345,7 +349,7 @@ class UrlKeyUtilTest extends TestCase
         // assert the unique URL key
         $this->assertSame(
             'joust-duffle-bag-1',
-            $this->urlKeyUtil->makeUnique($mockSubject, 'joust-duffle-bag', array('gear/bags'))
+            $this->urlKeyUtil->makeUnique($mockSubject, array(MemberNames::ENTITY_ID => 5432), 'joust-duffle-bag', array('gear/bags'))
         );
     }
 
@@ -366,7 +370,7 @@ class UrlKeyUtilTest extends TestCase
         // assert the unique URL key
         $this->assertSame(
             'duffle-bags',
-            $this->urlKeyUtil->makeUnique($mockSubject, 'duffle-bags', array('gear/bags'))
+            $this->urlKeyUtil->makeUnique($mockSubject, array(MemberNames::ENTITY_ID => 1237), 'duffle-bags', array('gear/bags'))
         );
 
         // load the mock subject instance
@@ -375,7 +379,7 @@ class UrlKeyUtilTest extends TestCase
         // assert the unique URL key
         $this->assertSame(
             'duffle-bags-1',
-            $this->urlKeyUtil->makeUnique($mockSubject, 'duffle-bags', array('gear/bags'))
+            $this->urlKeyUtil->makeUnique($mockSubject, array(MemberNames::ENTITY_ID => 8321), 'duffle-bags', array('gear/bags'))
         );
 
         // load the mock subject instance
@@ -384,7 +388,7 @@ class UrlKeyUtilTest extends TestCase
         // assert the unique URL key
         $this->assertSame(
             'duffle-bags-2',
-            $this->urlKeyUtil->makeUnique($mockSubject, 'duffle-bags', array('gear/bags'))
+            $this->urlKeyUtil->makeUnique($mockSubject, array(MemberNames::ENTITY_ID => 8322), 'duffle-bags', array('gear/bags'))
         );
     }
 }

@@ -1,7 +1,7 @@
 <?php
 
 /**
- * TechDivision\Import\Repositories\Finders\YieldedFinder
+ * TechDivision\Import\Loaders\StoreLoader
  *
  * NOTICE OF LICENSE
  *
@@ -18,10 +18,12 @@
  * @link      http://www.techdivision.com
  */
 
-namespace TechDivision\Import\Repositories\Finders;
+namespace TechDivision\Import\Loaders;
+
+use TechDivision\Import\Services\ImportProcessorInterface;
 
 /**
- * Yielded finder implementation.
+ * Loader for the available stores.
  *
  * @author    Tim Wagner <t.wagner@techdivision.com>
  * @copyright 2019 TechDivision GmbH <info@techdivision.com>
@@ -29,26 +31,33 @@ namespace TechDivision\Import\Repositories\Finders;
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
  */
-class YieldedFinder extends SimpleFinder
+class StoreLoader implements LoaderInterface
 {
 
     /**
-     * Executes the finder with the passed parameters.
+     * The stores.
      *
-     * @param array $params The finder params
-     *
-     * @return array The finder result
+     * @var array
      */
-    public function find(array $params = array())
+    protected $stores = array();
+
+    /**
+     * Construct that initializes the iterator with the import processor instance.
+     *
+     * @param \TechDivision\Import\Services\ImportProcessorInterface $importProcessor The import processor instance
+     */
+    public function __construct(ImportProcessorInterface $importProcessor)
     {
+        $this->stores = $importProcessor->getStores();
+    }
 
-        // execute the prepared statement
-        $this->preparedStatement->execute($params);
-
-        // fetch the values and return them
-        while ($record = $this->preparedStatement->fetch(\PDO::FETCH_ASSOC)) {
-            // return the record
-            yield $record;
-        }
+    /**
+     * Loads and returns data.
+     *
+     * @return \ArrayAccess The array with the data
+     */
+    public function load()
+    {
+        return $this->stores;
     }
 }

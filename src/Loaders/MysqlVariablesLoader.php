@@ -20,7 +20,7 @@
 
 namespace TechDivision\Import\Loaders;
 
-use TechDivision\Import\Connection\ConnectionInterface;
+use TechDivision\Import\Dbal\Connection\ConnectionInterface;
 use TechDivision\Import\Configuration\SubjectConfigurationInterface;
 
 /**
@@ -52,7 +52,7 @@ class MysqlVariablesLoader implements LoaderInterface
     /**
      * The connection instance.
      *
-     * @var \TechDivision\Import\Connection\ConnectionInterface
+     * @var \TechDivision\Import\Dbal\Connection\ConnectionInterface
      */
     protected $connection;
 
@@ -103,9 +103,9 @@ class MysqlVariablesLoader implements LoaderInterface
     /**
      * Initializes the event.
      *
-     * @param \TechDivision\Import\Connection\ConnectionInterface $connection    The connection instance
-     * @param string                                              $variableScope The MySQL variable scope
-     * @param string                                              $variableName  The MySQL variable name
+     * @param \TechDivision\Import\Dbal\Connection\ConnectionInterface $connection    The connection instance
+     * @param string                                                   $variableScope The MySQL variable scope
+     * @param string                                                   $variableName  The MySQL variable name
      */
     public function __construct(ConnectionInterface $connection, $variableScope = 'GLOBAL', $variableName = 'innodb%')
     {
@@ -233,7 +233,7 @@ class MysqlVariablesLoader implements LoaderInterface
     /**
      * Returns the coonection instance.
      *
-     * @return \TechDivision\Import\Connection\ConnectionInterface The connection instance
+     * @return \TechDivision\Import\Dbal\Connection\ConnectionInterface The connection instance
      */
     protected function getConnection()
     {

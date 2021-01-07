@@ -24,6 +24,7 @@ namespace TechDivision\Import\Repositories;
 
 use TechDivision\Import\Utils\MemberNames;
 use TechDivision\Import\Utils\SqlStatementKeys;
+use TechDivision\Import\Dbal\Repositories\AbstractRepository;
 
 /**
  * The default repository implementation for loading customer groups.

@@ -29,27 +29,6 @@ namespace TechDivision\Import\Utils;
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
  */
-class EntityStatus
+class EntityStatus extends \TechDivision\Import\Dbal\Utils\EntityStatus
 {
-
-    /**
-     * The key with the key to decide to update/create a row.
-     *
-     * @var string
-     */
-    const MEMBER_NAME = 'techdivision_import_utils_entityStatus_memberName';
-
-    /**
-     * The key for the row to be created.
-     *
-     * @var string
-     */
-    const STATUS_CREATE = 'create';
-
-    /**
-     * The key for the row to be updated.
-     *
-     * @var string
-     */
-    const STATUS_UPDATE = 'update';
 }

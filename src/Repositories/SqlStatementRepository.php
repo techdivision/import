@@ -21,6 +21,7 @@
 namespace TechDivision\Import\Repositories;
 
 use TechDivision\Import\Utils\SqlStatementKeys;
+use TechDivision\Import\Dbal\Repositories\AbstractSqlStatementRepository;
 
 /**
  * Repository class with the SQL statements to use.
@@ -301,6 +302,11 @@ class SqlStatementRepository extends AbstractSqlStatementRepository
                 AND t3.store_id = :store_id',
         SqlStatementKeys::CORE_CONFIG_DATA =>
             'SELECT * FROM ${table:core_config_data}',
+        SqlStatementKeys::URL_REWRITE_BY_REQUEST_PATH_AND_STORE_ID =>
+            'SELECT *
+               FROM ${table:url_rewrite}
+              WHERE request_path = :request_path
+                AND store_id = :store_id',
         SqlStatementKeys::URL_REWRITES_BY_ENTITY_TYPE_AND_ENTITY_ID =>
             'SELECT *
                FROM ${table:url_rewrite}
@@ -487,13 +493,25 @@ class SqlStatementRepository extends AbstractSqlStatementRepository
                FROM ${table:admin_user}
               WHERE username = :username',
         SqlStatementKeys::URL_REWRITES =>
-            'SELECT * FROM url_rewrite'
+            'SELECT * FROM url_rewrite',
+        SqlStatementKeys::DELETE_STORE =>
+            'DELETE
+               FROM ${table:store}
+              WHERE strore_id = :store_id',
+        SqlStatementKeys::DELETE_STORE_GROUP =>
+            'DELETE
+               FROM ${table:store_group}
+              WHERE group_id = :group_id',
+        SqlStatementKeys::DELETE_STORE_WEBSITE =>
+            'DELETE
+               FROM ${table:store_website}
+              WHERE website_id = :website_id'
     );
 
     /**
      * Initializes the SQL statement repository with the primary key and table prefix utility.
      *
-     * @param \TechDivision\Import\Utils\SqlCompilerInterface[] $compilers The array with the compiler instances
+     * @param \TechDivision\Import\Dbal\Utils\SqlCompilerInterface[] $compilers The array with the compiler instances
      */
     public function __construct(\IteratorAggregate $compilers)
     {

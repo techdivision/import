@@ -1,0 +1,67 @@
+<?php
+
+/**
+ * TechDivision\Import\Utils\Generators\ReverseSequenceGenerator
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Open Software License (OSL 3.0)
+ * that is available through the world-wide-web at this URL:
+ * http://opensource.org/licenses/osl-3.0.php
+ *
+ * PHP version 5
+ *
+ * @author    Tim Wagner <t.wagner@techdivision.com>
+ * @copyright 2021 TechDivision GmbH <info@techdivision.com>
+ * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
+ * @link      https://github.com/techdivision/import
+ * @link      http://www.techdivision.com
+ */
+
+namespace TechDivision\Import\Utils\Generators;
+
+use TechDivision\Import\Utils\CacheKeys;
+use TechDivision\Import\Services\RegistryProcessorInterface;
+
+/**
+ * Generator implementation that generates reeverse sequences starting from -1.
+ *
+ * @author    Tim Wagner <t.wagner@techdivision.com>
+ * @copyright 2021 TechDivision GmbH <info@techdivision.com>
+ * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
+ * @link      https://github.com/techdivision/import
+ * @link      http://www.techdivision.com
+ */
+class ReverseSequenceGenerator implements GeneratorInterface
+{
+
+    /**
+     * The registry processor instance used to generate the inversed entity IDs.
+     *
+     * @var \TechDivision\Import\Services\RegistryProcessorInterface
+     */
+    private $registryProcessor;
+
+    /**
+     * Initializes the generator with the registry processor.
+     *
+     * @param \TechDivision\Import\Services\RegistryProcessorInterface $registryProcessor The registry processor instance
+     */
+    public function __construct(RegistryProcessorInterface $registryProcessor)
+    {
+        $this->registryProcessor = $registryProcessor;
+    }
+
+    /**
+     * Creates a new negative sequence for caching purposes.
+     *
+     * @param string $counterName The counter name that has to be lowered
+     *
+     * @return int The unique sequence
+     * @see \TechDivision\Import\Utils\Generators\GeneratorInterface::generate()
+     */
+    public function generate(string $counterName = 'generic')
+    {
+        return $this->registryProcessor->lowerCounter(CacheKeys::SEQUENCES, $counterName);
+    }
+}

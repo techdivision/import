@@ -12,7 +12,7 @@
  * PHP version 5
  *
  * @author    Tim Wagner <t.wagner@techdivision.com>
- * @copyright 2016 TechDivision GmbH <info@techdivision.com>
+ * @copyright 2021 TechDivision GmbH <info@techdivision.com>
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
@@ -20,11 +20,13 @@
 
 namespace TechDivision\Import\Utils;
 
+use TechDivision\Import\Cache\Utils\CacheKeysInterface;
+
 /**
  * A utility class that contains the cache keys.
  *
  * @author    Tim Wagner <t.wagner@techdivision.com>
- * @copyright 2016 TechDivision GmbH <info@techdivision.com>
+ * @copyright 2021 TechDivision GmbH <info@techdivision.com>
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
@@ -68,6 +70,13 @@ class CacheKeys extends \ArrayObject implements CacheKeysInterface
     const URL_REWRITE = 'url_rewrite';
 
     /**
+     * The cache key for the sequences.
+     *
+     * @var string
+     */
+    const SEQUENCES = 'sequences';
+
+    /**
      * The instance cache key.
      *
      * @var string
@@ -89,6 +98,8 @@ class CacheKeys extends \ArrayObject implements CacheKeysInterface
                 CacheKeys::STATUS,
                 CacheKeys::REFERENCES,
                 CacheKeys::ARTEFACTS,
+                CacheKeys::URL_REWRITE,
+                CacheKeys::SEQUENCES,
                 CacheKeys::EAV_ATTRIBUTE_OPTION_VALUE
             ),
             $cacheKeys

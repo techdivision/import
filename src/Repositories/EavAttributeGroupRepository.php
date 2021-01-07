@@ -22,6 +22,7 @@ namespace TechDivision\Import\Repositories;
 
 use TechDivision\Import\Utils\MemberNames;
 use TechDivision\Import\Utils\SqlStatementKeys;
+use TechDivision\Import\Dbal\Repositories\AbstractRepository;
 
 /**
  * Repository implementation to load EAV attribute group data.
