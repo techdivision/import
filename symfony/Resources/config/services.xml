@@ -65,7 +65,7 @@
         <!--
          | The DI utility configuration
          |-->
-        <service id="import.util.cache.key" class="TechDivision\Import\Cache\Utils\CacheKeyUtil">
+        <service id="import.util.cache.key" class="TechDivision\Import\Cache\Collection\Utils\CacheKeyUtil">
             <argument type="service" id="configuration"/>
         </service>
         <service id="import.util.primary.key" class="TechDivision\Import\Utils\PrimaryKeyUtil">
@@ -310,15 +310,15 @@
         <!--
          | The DI cache configuration
          |-->
-        <service id="import.cache.adapter.local" class="TechDivision\Import\Cache\LocalCacheAdapter">
+        <service id="import.cache.adapter.local" class="TechDivision\Import\Cache\Collection\LocalCacheAdapter">
             <argument type="service" id="import.util.cache.key"/>
         </service>
-        <service id="import.cache.adapter.static" class="TechDivision\Import\Cache\ConfigurableCacheAdapter">
+        <service id="import.cache.adapter.static" class="TechDivision\Import\Cache\Collection\ConfigurableCacheAdapter">
             <argument type="service" id="cache.adapter"/>
             <argument type="service" id="configuration"/>
             <argument>%cache_type.static%</argument>
         </service>
-        <service id="import.cache.adapter.configurable" class="TechDivision\Import\Cache\ConfigurableCacheAdapter">
+        <service id="import.cache.adapter.configurable" class="TechDivision\Import\Cache\Collection\ConfigurableCacheAdapter">
             <argument type="service" id="cache.adapter"/>
             <argument type="service" id="configuration"/>
             <argument>%cache_type.configurable%</argument>
