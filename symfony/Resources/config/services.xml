@@ -432,7 +432,7 @@
                 <argument type="constant">TechDivision\Import\Utils\SqlStatementKeys::UPDATE_URL_REWRITE</argument>
             </argument>
         </service>
-        <service id="import.action.processor.url.rewrite.delete" class="TechDivision\Import\Dbal\Collection\Actions\Processors\GenericIdentifierProcessor">
+        <service id="import.action.processor.url.rewrite.delete" class="TechDivision\Import\Dbal\Collection\Actions\Processors\GenericProcessor">
             <argument type="service" id="connection"/>
             <argument type="service" id="import.repository.sql.statement"/>
             <argument type="service" id="import.util.sql.sanitizers"/>
@@ -459,7 +459,7 @@
                 <argument type="constant">TechDivision\Import\Utils\SqlStatementKeys::UPDATE_STORE</argument>
             </argument>
         </service>
-        <service id="import.action.processor.store.delete" class="TechDivision\Import\Dbal\Collection\Actions\Processors\GenericIdentifierProcessor">
+        <service id="import.action.processor.store.delete" class="TechDivision\Import\Dbal\Collection\Actions\Processors\GenericProcessor">
             <argument type="service" id="connection"/>
             <argument type="service" id="import.repository.sql.statement"/>
             <argument type="service" id="import.util.sql.sanitizers"/>
@@ -483,7 +483,7 @@
                 <argument type="constant">TechDivision\Import\Utils\SqlStatementKeys::UPDATE_STORE_GROUP</argument>
             </argument>
         </service>
-        <service id="import.action.processor.store.group.delete" class="TechDivision\Import\Dbal\Collection\Actions\Processors\GenericIdentifierProcessor">
+        <service id="import.action.processor.store.group.delete" class="TechDivision\Import\Dbal\Collection\Actions\Processors\GenericProcessor">
             <argument type="service" id="connection"/>
             <argument type="service" id="import.repository.sql.statement"/>
             <argument type="service" id="import.util.sql.sanitizers"/>
@@ -507,7 +507,7 @@
                 <argument type="constant">TechDivision\Import\Utils\SqlStatementKeys::UPDATE_STORE_WEBSITE</argument>
             </argument>
         </service>
-        <service id="import.action.processor.store.website.delete" class="TechDivision\Import\Dbal\Collection\Actions\Processors\GenericIdentifierProcessor">
+        <service id="import.action.processor.store.website.delete" class="TechDivision\Import\Dbal\Collection\Actions\Processors\GenericProcessor">
             <argument type="service" id="connection"/>
             <argument type="service" id="import.repository.sql.statement"/>
             <argument type="service" id="import.util.sql.sanitizers"/>
@@ -531,7 +531,7 @@
                 <argument type="constant">TechDivision\Import\Utils\SqlStatementKeys::UPDATE_IMPORT_HISTORY</argument>
             </argument>
         </service>
-        <service id="import.action.processor.import.history.delete" class="TechDivision\Import\Dbal\Collection\Actions\Processors\GenericIdentifierProcessor">
+        <service id="import.action.processor.import.history.delete" class="TechDivision\Import\Dbal\Collection\Actions\Processors\GenericProcessor">
             <argument type="service" id="connection"/>
             <argument type="service" id="import.repository.sql.statement"/>
             <argument type="service" id="import.util.sql.sanitizers"/>
