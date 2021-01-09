@@ -15,7 +15,9 @@
         "swiftmailer/swiftmailer": "5.4.*",
         "zendframework/zend-filter": "~2.0",
         "techdivision/import-dbal": "dev-master@dev",
+        "techdivision/import-dbal-collection": "dev-master@dev",
         "techdivision/import-cache": "dev-master@dev",
+        "techdivision/import-cache-collection": "dev-master@dev",
         "techdivision/import-configuration": "dev-pac-264--pdo-exception as dev-master",
         "ext-json": "*",
         "ext-zip": "*"

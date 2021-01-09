@@ -20,7 +20,7 @@
 
 namespace TechDivision\Import\Actions\Processors;
 
-use TechDivision\Import\Dbal\Actions\Processors\AbstractBaseProcessor;
+use TechDivision\Import\Dbal\Collection\Actions\Processors\AbstractBaseProcessor;
 
 /**
  * A processor implementation providing CREATE functionality.

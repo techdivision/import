@@ -21,7 +21,7 @@
 namespace TechDivision\Import\Repositories;
 
 use TechDivision\Import\Utils\SqlStatementKeys;
-use TechDivision\Import\Dbal\Repositories\AbstractSqlStatementRepository;
+use TechDivision\Import\Dbal\Collection\Repositories\AbstractSqlStatementRepository;
 
 /**
  * Repository class with the SQL statements to use.

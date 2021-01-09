@@ -29,7 +29,7 @@ namespace TechDivision\Import\Utils;
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
  */
-class EventNames extends \TechDivision\Import\Dbal\Utils\EventNames
+class EventNames extends \TechDivision\Import\Dbal\Collection\Utils\EventNames
 {
 
     /**

@@ -23,7 +23,7 @@ namespace TechDivision\Import\Repositories;
 use TechDivision\Import\Utils\CacheKeys;
 use TechDivision\Import\Utils\MemberNames;
 use TechDivision\Import\Utils\SqlStatementKeys;
-use TechDivision\Import\Dbal\Repositories\AbstractFinderRepository;
+use TechDivision\Import\Dbal\Collection\Repositories\AbstractFinderRepository;
 
 /**
  * Repository implementation to load URL rewrite data.

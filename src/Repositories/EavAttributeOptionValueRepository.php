@@ -26,7 +26,7 @@ use TechDivision\Import\Utils\SqlStatementKeys;
 use TechDivision\Import\Cache\CacheAdapterInterface;
 use TechDivision\Import\Dbal\Connection\ConnectionInterface;
 use TechDivision\Import\Dbal\Repositories\SqlStatementRepositoryInterface;
-use TechDivision\Import\Dbal\Repositories\AbstractRepository;
+use TechDivision\Import\Dbal\Collection\Repositories\AbstractRepository;
 
 /**
  * Cached repository implementation to load cached EAV attribute option value data.

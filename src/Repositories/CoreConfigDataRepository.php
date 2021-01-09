@@ -24,7 +24,7 @@ use TechDivision\Import\Utils\SqlStatementKeys;
 use TechDivision\Import\Utils\Generators\GeneratorInterface;
 use TechDivision\Import\Dbal\Connection\ConnectionInterface;
 use TechDivision\Import\Dbal\Repositories\SqlStatementRepositoryInterface;
-use TechDivision\Import\Dbal\Repositories\AbstractRepository;
+use TechDivision\Import\Dbal\Collection\Repositories\AbstractRepository;
 
 /**
  * Repository implementation to load the Magento 2 configuration data.
