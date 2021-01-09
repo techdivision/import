@@ -18,11 +18,10 @@
  * @link      http://www.techdivision.com
  */
 
-namespace TechDivision\Import\Subjects\FileWriter;
+namespace TechDivision\Import\Loaders\Filters;
 
 use PHPUnit\Framework\TestCase;
 use TechDivision\Import\Utils\BunchKeys;
-use TechDivision\Import\Loaders\Filters\OkFileFilter;
 use TechDivision\Import\Handlers\OkFileHandlerInterface;
 use TechDivision\Import\Configuration\SubjectConfigurationInterface;
 use TechDivision\Import\Configuration\Subject\FileResolverConfigurationInterface;
