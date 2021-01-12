@@ -18,6 +18,8 @@
         "techdivision/import-dbal-collection": "dev-master@dev",
         "techdivision/import-cache": "dev-master@dev",
         "techdivision/import-cache-collection": "dev-master@dev",
+        "techdivision/import-serializer": "dev-master@dev",
+        "techdivision/import-serializer-csv": "dev-master@dev",
         "techdivision/import-configuration": "dev-pac-264--pdo-exception as dev-master",
         "ext-json": "*",
         "ext-zip": "*"

@@ -863,9 +863,8 @@
         <!--
          ! The DI configuration for the value/additional attribute serializers
          !-->
-        <service id="import.serializer.configuration" class="TechDivision\Import\Serializers\Configuration"/>
-        <service id="import.serializer.csv.value" class="TechDivision\Import\Serializers\ValueCsvSerializer"/>
-        <service id="import.serializer.csv.additional.attribute" class="TechDivision\Import\Serializers\AdditionalAttributeCsvSerializer">
+        <service id="import.serializer.csv.value" class="TechDivision\Import\Serializer\Csv\ValueCsvSerializer"/>
+        <service id="import.serializer.csv.additional.attribute" class="TechDivision\Import\Serializer\Csv\AdditionalAttributeCsvSerializer">
             <argument type="service" id="configuration"/>
             <argument type="service" id="import.processor.import"/>
             <argument type="service" id="import.serializer.factory.csv.value"/>

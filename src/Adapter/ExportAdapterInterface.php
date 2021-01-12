@@ -20,7 +20,7 @@
 
 namespace TechDivision\Import\Adapter;
 
-use TechDivision\Import\Serializers\ConfigurationAwareSerializerFactoryInterface;
+use TechDivision\Import\Serializer\SerializerFactoryInterface;
 use TechDivision\Import\Configuration\Subject\ExportAdapterConfigurationInterface;
 
 /**
@@ -39,13 +39,13 @@ interface ExportAdapterInterface
      * Overwrites the default CSV configuration values with the one from the passed configuration.
      *
      * @param \TechDivision\Import\Configuration\Subject\ExportAdapterConfigurationInterface $exportAdapterConfiguration The configuration to use the values from
-     * @param \TechDivision\Import\Serializers\ConfigurationAwareSerializerFactoryInterface  $serializerFactory          The serializer factory instance
+     * @param \TechDivision\Import\Serializer\SerializerFactoryInterface                     $serializerFactory          The serializer factory instance
      *
      * @return void
      */
     public function init(
         ExportAdapterConfigurationInterface $exportAdapterConfiguration,
-        ConfigurationAwareSerializerFactoryInterface $serializerFactory
+        SerializerFactoryInterface $serializerFactory
     );
 
     /**

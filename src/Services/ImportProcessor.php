@@ -42,6 +42,7 @@ use TechDivision\Import\Repositories\CategoryVarcharRepositoryInterface;
 use TechDivision\Import\Repositories\EavAttributeSetRepositoryInterface;
 use TechDivision\Import\Repositories\EavAttributeGroupRepositoryInterface;
 use TechDivision\Import\Repositories\EavAttributeOptionValueRepositoryInterface;
+use TechDivision\Import\Serializer\Csv\Services\EavAttributeAwareProcessorInterface;
 
 /**
  * Processor implementation to load global data.
@@ -52,7 +53,7 @@ use TechDivision\Import\Repositories\EavAttributeOptionValueRepositoryInterface;
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
  */
-class ImportProcessor implements ImportProcessorInterface
+class ImportProcessor implements ImportProcessorInterface, EavAttributeAwareProcessorInterface
 {
 
     /**
@@ -973,12 +974,12 @@ class ImportProcessor implements ImportProcessorInterface
     /**
      * Return's the EAV attribute with the passed entity type ID and code.
      *
-     * @param integer $entityTypeId  The entity type ID of the EAV attribute to return
-     * @param string  $attributeCode The code of the EAV attribute to return
+     * @param int    $entityTypeId  The entity type ID of the EAV attribute to return
+     * @param string $attributeCode The code of the EAV attribute to return
      *
      * @return array The EAV attribute
      */
-    public function getEavAttributeByEntityTypeIdAndAttributeCode($entityTypeId, $attributeCode)
+    public function getEavAttributeByEntityTypeIdAndAttributeCode(int $entityTypeId, string $attributeCode)
     {
         return $this->getEavAttributeRepository()->findOneByEntityTypeIdAndAttributeCode($entityTypeId, $attributeCode);
     }
@@ -990,7 +991,7 @@ class ImportProcessor implements ImportProcessorInterface
      *
      * @return array The entity type with the passed entity type code
      */
-    public function getEavEntityTypeByEntityTypeCode($entityTypeCode)
+    public function getEavEntityTypeByEntityTypeCode(string $entityTypeCode)
     {
         return $this->getEavEntityTypeRepository()->findOneByEntityTypeCode($entityTypeCode);
     }

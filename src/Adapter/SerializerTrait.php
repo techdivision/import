@@ -20,7 +20,7 @@
 
 namespace TechDivision\Import\Adapter;
 
-use TechDivision\Import\Serializers\SerializerInterface;
+use TechDivision\Import\Serializer\SerializerInterface;
 
 /**
  * The trait implementation that provides serializer functionality.
@@ -37,14 +37,14 @@ trait SerializerTrait
     /**
      * The serializer instance to use.
      *
-     * @var \TechDivision\Import\Serializers\SerializerInterface
+     * @var \TechDivision\Import\Serializer\SerializerInterface
      */
     protected $serializer;
 
     /**
      * Sets the serializer instance.
      *
-     * @param \TechDivision\Import\Serializers\SerializerInterface $serializer The serializer instance
+     * @param \TechDivision\Import\Serializer\SerializerInterface $serializer The serializer instance
      *
      * @return void
      */
@@ -56,7 +56,7 @@ trait SerializerTrait
     /**
      * Returns the serializer instance.
      *
-     * @return \TechDivision\Import\Serializers\SerializerInterface The serializer instance
+     * @return \TechDivision\Import\Serializer\SerializerInterface The serializer instance
      */
     public function getSerializer()
     {
