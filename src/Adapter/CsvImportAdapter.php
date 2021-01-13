@@ -34,7 +34,7 @@ use TechDivision\Import\Configuration\Subject\ImportAdapterConfigurationInterfac
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
  */
-class CsvImportAdapter implements ImportAdapterInterface, SerializerAwareAdapterInterface
+class CsvImportAdapter implements ImportAdapterInterface
 {
 
     /**

@@ -32,7 +32,7 @@ use TechDivision\Import\Configuration\Subject\ExportAdapterConfigurationInterfac
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
  */
-interface ExportAdapterInterface
+interface ExportAdapterInterface extends SerializerAwareAdapterInterface
 {
 
     /**
