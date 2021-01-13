@@ -1223,7 +1223,6 @@ class ImportProcessor implements ImportProcessorInterface, EavAttributeAwareProc
         $globalData[RegistryKeys::CUSTOMER_GROUPS] = $this->getCustomerGroups();
         $globalData[RegistryKeys::CORE_CONFIG_DATA] = $this->getCoreConfigData();
         $globalData[RegistryKeys::ENTITY_TYPES] = $eavEntityTypes = $this->getEavEntityTypes();
-        $globalData[RegistryKeys::URL_REWRITES] = $this->getUrlRewriteRepository()->findAllGroupedByRequestPathAndStoreId();
 
         // prepare the attribute sets
         $eavAttributes = array();
