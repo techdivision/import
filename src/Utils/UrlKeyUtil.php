@@ -224,7 +224,7 @@ class UrlKeyUtil implements UrlKeyUtilInterface
 
         // iterate over the passed URL paths
         // and try to find a unique URL key
-        for ($i = -1; $i < sizeof($urlPaths); $i++) {
+        for ($i = sizeof($urlPaths) > 0 ? 0 : -1; $i < sizeof($urlPaths); $i++) {
             // try to make the URL key unique for the given URL path
             $proposedUrlKey = $this->doMakeUnique($subject, $entity, $urlKey, isset($urlPaths[$i]) ? $urlPaths[$i] : null);
 
