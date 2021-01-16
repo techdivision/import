@@ -36,6 +36,7 @@ use TechDivision\Import\Utils\EntityTypeCodes;
 use TechDivision\Import\Utils\Generators\GeneratorInterface;
 use TechDivision\Import\Callbacks\CallbackInterface;
 use TechDivision\Import\Observers\ObserverInterface;
+use TechDivision\Import\Interfaces\HookAwareInterface;
 use TechDivision\Import\Adapter\ImportAdapterInterface;
 use TechDivision\Import\Exceptions\WrappedColumnException;
 use TechDivision\Import\Services\RegistryProcessorInterface;
@@ -666,6 +667,20 @@ abstract class AbstractSubject implements SubjectInterface, FilesystemSubjectInt
                 $this->callbackMappings[$attributeCode] = $mappings;
             }
         }
+
+        // load the available observers
+        $availableObservers = $this->getObservers();
+
+        // process the observers
+        foreach ($availableObservers as $observers) {
+            // invoke the pre-import/import and post-import observers
+            /** @var \TechDivision\Import\Observers\ObserverInterface $observer */
+            foreach ($observers as $observer) {
+                if ($observer instanceof HookAwareInterface) {
+                    $observer->setUp($serial);
+                }
+            }
+        }
     }
 
     /**
@@ -690,6 +705,20 @@ abstract class AbstractSubject implements SubjectInterface, FilesystemSubjectInt
         $this->getSystemLogger()->debug(
             sprintf('Subject %s successfully updated status data for import %s', get_class($this), $serial)
         );
+
+        // load the available observers
+        $availableObservers = $this->getObservers();
+
+        // process the observers
+        foreach ($availableObservers as $observers) {
+            // invoke the pre-import/import and post-import observers
+            /** @var \TechDivision\Import\Observers\ObserverInterface $observer */
+            foreach ($observers as $observer) {
+                if ($observer instanceof HookAwareInterface) {
+                    $observer->tearDown($serial);
+                }
+            }
+        }
     }
 
     /**
