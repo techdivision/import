@@ -20,7 +20,7 @@
 
 namespace TechDivision\Import\Adapter;
 
-use TechDivision\Import\Serializers\SerializerAwareInterface;
+use TechDivision\Import\Serializer\SerializerAwareInterface;
 
 /**
  * The interface for all adapters that provides serializer functionality.

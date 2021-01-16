@@ -33,12 +33,12 @@ interface UrlKeyAwareSubjectInterface
 {
 
     /**
-     * Return's the entity type for the configured entity type code.
+     * Return's the configured entity type code.
      *
-     * @return array The requested entity type
-     * @throws \Exception Is thrown, if the requested entity type is not available
+     * @return array The requested entity type code
+     * @throws \Exception Is thrown, if the requested entity type code is not available
      */
-    public function getEntityType();
+    public function getEntityTypeCode();
 
     /**
      * Return's the store ID of the actual row, or of the default store
@@ -50,13 +50,4 @@ interface UrlKeyAwareSubjectInterface
      * @throws \Exception Is thrown, if the store with the actual code is not available
      */
     public function getRowStoreId($default = null);
-
-    /**
-     * Return's TRUE, if the passed URL key varchar value IS related with the actual PK.
-     *
-     * @param array $varcharAttribute The varchar value to check
-     *
-     * @return boolean TRUE if the URL key is related, else FALSE
-     */
-    public function isUrlKeyOf(array $varcharAttribute);
 }

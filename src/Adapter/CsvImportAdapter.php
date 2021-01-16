@@ -22,8 +22,8 @@ namespace TechDivision\Import\Adapter;
 
 use Goodby\CSV\Import\Protocol\LexerInterface;
 use Goodby\CSV\Import\Protocol\InterpreterInterface;
+use TechDivision\Import\Serializer\SerializerFactoryInterface;
 use TechDivision\Import\Configuration\Subject\ImportAdapterConfigurationInterface;
-use TechDivision\Import\Serializers\ConfigurationAwareSerializerFactoryInterface;
 
 /**
  * CSV import adapter implementation.
@@ -34,7 +34,7 @@ use TechDivision\Import\Serializers\ConfigurationAwareSerializerFactoryInterface
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
  */
-class CsvImportAdapter implements ImportAdapterInterface, SerializerAwareAdapterInterface
+class CsvImportAdapter implements ImportAdapterInterface
 {
 
     /**
@@ -61,7 +61,7 @@ class CsvImportAdapter implements ImportAdapterInterface, SerializerAwareAdapter
     /**
      * The adapter's serializer instance.
      *
-     * @var \TechDivision\Import\Serializers\SerializerInterface
+     * @var \TechDivision\Import\Serializer\SerializerInterface
      */
     protected $serializer;
 
@@ -81,13 +81,13 @@ class CsvImportAdapter implements ImportAdapterInterface, SerializerAwareAdapter
      * Overwrites the default CSV configuration values with the one from the passed configuration.
      *
      * @param \TechDivision\Import\Configuration\Subject\ImportAdapterConfigurationInterface $importAdapterConfiguration The configuration to use the values from
-     * @param \TechDivision\Import\Serializers\ConfigurationAwareSerializerFactoryInterface  $serializerFactory          The serializer factory instance
+     * @param \TechDivision\Import\Serializer\SerializerFactoryInterface                     $serializerFactory          The serializer factory instance
      *
      * @return void
      */
     public function init(
         ImportAdapterConfigurationInterface $importAdapterConfiguration,
-        ConfigurationAwareSerializerFactoryInterface $serializerFactory
+        SerializerFactoryInterface $serializerFactory
     ) {
 
         // load the lexer configuration and overwrite the values

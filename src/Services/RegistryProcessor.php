@@ -128,6 +128,19 @@ class RegistryProcessor implements RegistryProcessorInterface
     }
 
     /**
+     * Lowers the value for the attribute with the passed key by one.
+     *
+     * @param mixed $key         The key of the attribute to lower the value for
+     * @param mixed $counterName The name of the counter to lower
+     *
+     * @return integer The counter's new value
+     */
+    public function lowerCounter($key, $counterName)
+    {
+        return $this->cacheAdapter->lowerCounter($key, $counterName);
+    }
+
+    /**
      * This method merges the passed attributes with an array that
      * has already been added under the passed key.
      *

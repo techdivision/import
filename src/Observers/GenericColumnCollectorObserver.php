@@ -24,6 +24,7 @@ use Ramsey\Uuid\Uuid;
 use TechDivision\Import\Utils\RegistryKeys;
 use TechDivision\Import\Loaders\LoaderInterface;
 use TechDivision\Import\Subjects\SubjectInterface;
+use TechDivision\Import\Interfaces\HookAwareInterface;
 use TechDivision\Import\Services\RegistryProcessorInterface;
 
 /**
@@ -35,7 +36,7 @@ use TechDivision\Import\Services\RegistryProcessorInterface;
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
  */
-class GenericColumnCollectorObserver extends AbstractObserver
+class GenericColumnCollectorObserver extends AbstractObserver implements HookAwareInterface, ObserverFactoryInterface
 {
 
     /**
@@ -53,6 +54,20 @@ class GenericColumnCollectorObserver extends AbstractObserver
     protected $registryProcessor;
 
     /**
+     * The array with the column names to assemble the data for.
+     *
+     * @var array
+     */
+    protected $columnNames = array();
+
+    /**
+     * The array with the collected column values.
+     *
+     * @var array
+     */
+    protected $values = array();
+
+    /**
      * Initializes the callback with the loader instance.
      *
      * @param \TechDivision\Import\Loaders\LoaderInterface             $loader            The loader for the validations
@@ -62,6 +77,23 @@ class GenericColumnCollectorObserver extends AbstractObserver
     {
         $this->loader = $loader;
         $this->registryProcessor = $registryProcessor;
+    }
+
+    /**
+     * Will be invoked by the observer visitor when a factory has been defined to create the observer instance.
+     *
+     * @param \TechDivision\Import\Subjects\SubjectInterface $subject The subject instance
+     *
+     * @return \TechDivision\Import\Observers\ObserverInterface The observer instance
+     */
+    public function createObserver(SubjectInterface $subject)
+    {
+
+        // load the names of the columns we want to collect the values for
+        $this->columnNames = $this->getLoader()->load($subject->getConfiguration());
+
+        // return the initialized observer instance
+        return $this;
     }
 
     /**
@@ -115,18 +147,44 @@ class GenericColumnCollectorObserver extends AbstractObserver
     protected function process()
     {
 
-        // initialize the array for the column values
-        $values = array();
-
         // load the names of the columns we want to collect the values for
         $columnNames = $this->getLoader()->load($this->getSubject()->getConfiguration());
 
-        // collect the values
+        // collect the values, keeping in mind, thath the index must be a string
+        // as later on it will be merged with the function `array_merge_recursive()`
+        // an values with the same key will be overwritten
         foreach ($columnNames as $columnName) {
-            $values[$columnName] = array(Uuid::uuid4()->toString() => $this->getValue($columnName));
+            $this->values[$columnName][Uuid::uuid4()->toString()] = $this->getValue($columnName);
         }
+    }
 
-        // merge the collected values into the registry
-        $this->mergeStatus(array(RegistryKeys::COLLECTED_COLUMNS => $values));
+    /**
+     * Intializes the previously loaded global data for exactly one bunch.
+     *
+     * @param string $serial The serial of the actual import
+     *
+     * @return void
+     */
+    public function setUp($serial)
+    {
+    }
+
+    /**
+     * Clean up the global data after importing the variants.
+     *
+     * @param string $serial The serial of the actual import
+     *
+     * @return void
+     */
+    public function tearDown($serial)
+    {
+
+        // load the registry processor
+        $this->getRegistryProcessor()->mergeAttributesRecursive(RegistryKeys::COLLECTED_COLUMNS, $this->values);
+
+        // log a debug message with the new source directory
+        $this->getSystemLogger()->debug(
+            sprintf('Subject %s successfully updated status data for import %s', get_class($this), $serial)
+        );
     }
 }

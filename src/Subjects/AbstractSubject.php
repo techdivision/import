@@ -36,6 +36,7 @@ use TechDivision\Import\Utils\EntityTypeCodes;
 use TechDivision\Import\Utils\Generators\GeneratorInterface;
 use TechDivision\Import\Callbacks\CallbackInterface;
 use TechDivision\Import\Observers\ObserverInterface;
+use TechDivision\Import\Interfaces\HookAwareInterface;
 use TechDivision\Import\Adapter\ImportAdapterInterface;
 use TechDivision\Import\Exceptions\WrappedColumnException;
 use TechDivision\Import\Services\RegistryProcessorInterface;
@@ -469,7 +470,7 @@ abstract class AbstractSubject implements SubjectInterface, FilesystemSubjectInt
     /**
      * Return's the subject's execution context configuration.
      *
-     * @return \TechDivision\Import\ExecutionContextInterface The execution context configuration to use
+     * @return \TechDivision\Import\Configuration\ExecutionContextInterface The execution context configuration to use
      */
     public function getExecutionContext()
     {
@@ -666,6 +667,20 @@ abstract class AbstractSubject implements SubjectInterface, FilesystemSubjectInt
                 $this->callbackMappings[$attributeCode] = $mappings;
             }
         }
+
+        // load the available observers
+        $availableObservers = $this->getObservers();
+
+        // process the observers
+        foreach ($availableObservers as $observers) {
+            // invoke the pre-import/import and post-import observers
+            /** @var \TechDivision\Import\Observers\ObserverInterface $observer */
+            foreach ($observers as $observer) {
+                if ($observer instanceof HookAwareInterface) {
+                    $observer->setUp($serial);
+                }
+            }
+        }
     }
 
     /**
@@ -690,6 +705,20 @@ abstract class AbstractSubject implements SubjectInterface, FilesystemSubjectInt
         $this->getSystemLogger()->debug(
             sprintf('Subject %s successfully updated status data for import %s', get_class($this), $serial)
         );
+
+        // load the available observers
+        $availableObservers = $this->getObservers();
+
+        // process the observers
+        foreach ($availableObservers as $observers) {
+            // invoke the pre-import/import and post-import observers
+            /** @var \TechDivision\Import\Observers\ObserverInterface $observer */
+            foreach ($observers as $observer) {
+                if ($observer instanceof HookAwareInterface) {
+                    $observer->tearDown($serial);
+                }
+            }
+        }
     }
 
     /**
@@ -870,7 +899,7 @@ abstract class AbstractSubject implements SubjectInterface, FilesystemSubjectInt
             // log a message that the file has successfully been imported,
             // use log level warning ONLY if rows have been skipped
             $systemLogger->log(
-                $skippedRows = $this->getSkippedRows() > 0 ? LogLevel::WARNING : LogLevel::INFO,
+                $skippedRows = $this->getSkippedRows() > 0 ? LogLevel::WARNING : LogLevel::NOTICE,
                 sprintf(
                     'Successfully processed file "%s" with "%d" lines (skipping "%d") in "%f" s',
                     basename($filename),
@@ -1226,6 +1255,7 @@ abstract class AbstractSubject implements SubjectInterface, FilesystemSubjectInt
      *
      * @return mixed The configuration value
      * @throws \Exception Is thrown, if nor a value can be found or a default value has been passed
+     * @deprecated Since version 17.x, use TechDivision\Import\Loaders\CoreConfigDataLoader::load() method instead
      */
     public function getCoreConfigData($path, $default = null, $scope = ScopeKeys::SCOPE_DEFAULT, $scopeId = 0)
     {

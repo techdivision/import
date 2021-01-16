@@ -1,0 +1,13 @@
+{
+  "finder-mappings": {
+    "store": {
+      "TechDivision\\Import\\Utils\\SqlStatementKeys::STORES": "import.repository.finder.factory.yielded"
+    },
+    "url_rewrite": {
+      "TechDivision\\Import\\Utils\\SqlStatementKeys::URL_REWRITES": "import.repository.finder.factory.yielded",
+      "TechDivision\\Import\\Utils\\SqlStatementKeys::URL_REWRITE_BY_REQUEST_PATH_AND_STORE_ID": "import.repository.finder.factory.unique.cached.static",
+      "TechDivision\\Import\\Utils\\SqlStatementKeys::URL_REWRITES_BY_ENTITY_TYPE_AND_ENTITY_ID": "import.repository.finder.factory.yielded",
+      "TechDivision\\Import\\Utils\\SqlStatementKeys::URL_REWRITES_BY_ENTITY_TYPE_AND_ENTITY_ID_AND_STORE_ID": "import.repository.finder.factory.yielded"
+    }
+  }
+}

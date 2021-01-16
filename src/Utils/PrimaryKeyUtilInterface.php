@@ -29,21 +29,6 @@ namespace TechDivision\Import\Utils;
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
  */
-interface PrimaryKeyUtilInterface extends SqlCompilerInterface
+interface PrimaryKeyUtilInterface extends \TechDivision\Import\Dbal\Utils\PrimaryKeyUtilInterface
 {
-
-    /**
-     * The token used to identifiy a primary key column.
-     *
-     * @var string
-     */
-    const TOKEN = 'pk';
-
-    /**
-     * Returns the primary key member name for the actual Magento edition.
-     *
-     * @return string The primary key member name
-     * @throws \Exception Is thrown if the edition is not supported/available
-     */
-    public function getPrimaryKeyMemberName();
 }

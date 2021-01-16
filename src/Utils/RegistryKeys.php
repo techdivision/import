@@ -308,4 +308,11 @@ class RegistryKeys
      * @var string
      */
     const DEBUG_SERIAL = 'debug_serial';
+
+    /**
+     * Key for the registry entry with the available URL rewrites.
+     *
+     * @var string
+     */
+    const URL_REWRITES = 'url_rewrites';
 }

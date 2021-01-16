@@ -21,8 +21,8 @@
 namespace TechDivision\Import\Adapter;
 
 use Goodby\CSV\Export\Protocol\ExporterInterface;
+use TechDivision\Import\Serializer\SerializerFactoryInterface;
 use TechDivision\Import\Configuration\Subject\ExportAdapterConfigurationInterface;
-use TechDivision\Import\Serializers\ConfigurationAwareSerializerFactoryInterface;
 
 /**
  * CSV export adapter implementation.
@@ -33,7 +33,7 @@ use TechDivision\Import\Serializers\ConfigurationAwareSerializerFactoryInterface
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
  */
-class CsvExportAdapter implements ExportAdapterInterface, SerializerAwareAdapterInterface
+class CsvExportAdapter implements ExportAdapterInterface
 {
 
     /**
@@ -71,13 +71,13 @@ class CsvExportAdapter implements ExportAdapterInterface, SerializerAwareAdapter
      * Overwrites the default CSV configuration values with the one from the passed configuration.
      *
      * @param \TechDivision\Import\Configuration\Subject\ExportAdapterConfigurationInterface $exportAdapterConfiguration The configuration to use the values from
-     * @param \TechDivision\Import\Serializers\ConfigurationAwareSerializerFactoryInterface  $serializerFactory          The serializer factory instance
+     * @param \TechDivision\Import\Serializer\SerializerFactoryInterface                     $serializerFactory          The serializer factory instance
      *
      * @return void
      */
     public function init(
         ExportAdapterConfigurationInterface $exportAdapterConfiguration,
-        ConfigurationAwareSerializerFactoryInterface $serializerFactory
+        SerializerFactoryInterface $serializerFactory
     ) {
 
         // load the exporter configuration and overwrite the values

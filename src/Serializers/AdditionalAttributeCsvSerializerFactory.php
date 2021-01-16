@@ -21,8 +21,9 @@
 namespace TechDivision\Import\Serializers;
 
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use TechDivision\Import\Configuration\CsvConfigurationInterface;
 use TechDivision\Import\Utils\DependencyInjectionKeys;
+use TechDivision\Import\Serializer\SerializerFactoryInterface;
+use TechDivision\Import\Serializer\Configuration\SerializerConfigurationInterface;
 
 /**
  * The factory implementation for CSV value serializer instances.
@@ -33,7 +34,7 @@ use TechDivision\Import\Utils\DependencyInjectionKeys;
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
  */
-class AdditionalAttributeCsvSerializerFactory implements ConfigurationAwareSerializerFactoryInterface
+class AdditionalAttributeCsvSerializerFactory implements SerializerFactoryInterface
 {
 
     /**
@@ -56,17 +57,17 @@ class AdditionalAttributeCsvSerializerFactory implements ConfigurationAwareSeria
     /**
      * Creates and returns the serializer instance.
      *
-     * @param \TechDivision\Import\Configuration\CsvConfigurationInterface $configuration The CSV configuration
+     * @param \TechDivision\Import\Serializer\Configuration\SerializerConfigurationInterface $serializerConfiguration The serializer configuration
      *
-     * @return \TechDivision\Import\Serializers\ConfigurationAwareSerializerInterface The serializer instance
+     * @return \TechDivision\Import\Serializer\ConfigurationAwareSerializerInterface The serializer instance
      */
-    public function createSerializer(CsvConfigurationInterface $configuration)
+    public function createSerializer(SerializerConfigurationInterface $serializerConfiguration)
     {
 
         // load the serializer instance from the container and pass the configuration
-        /** @var \TechDivision\Import\Serializers\ConfigurationAwareSerializerInterface $serializer */
+        /** @var \TechDivision\Import\Serializer\ConfigurationAwareSerializerInterface $serializer */
         $serializer = $this->container->get(DependencyInjectionKeys::IMPORT_SERIALIZER_CSV_ADDITIONAL_ATTRIBUTE);
-        $serializer->init($configuration);
+        $serializer->init($serializerConfiguration);
 
         // return the serializer instance
         return $serializer;

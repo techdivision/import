@@ -29,6 +29,13 @@ use TechDivision\Import\Utils\RegistryKeys;
 use TechDivision\Import\Utils\EntityTypeCodes;
 use TechDivision\Import\Utils\Generators\CoreConfigDataUidGenerator;
 use TechDivision\Import\Configuration\Subject\DateConverterConfigurationInterface;
+use TechDivision\Import\Configuration\ExecutionContextInterface;
+use League\Event\EmitterInterface;
+use TechDivision\Import\Configuration\SubjectConfigurationInterface;
+use TechDivision\Import\Configuration\PluginConfigurationInterface;
+use TechDivision\Import\Configuration\ConfigurationInterface;
+use TechDivision\Import\Services\RegistryProcessorInterface;
+use Psr\Log\LoggerInterface;
 
 /**
  * Abstract subject test class.
@@ -180,8 +187,8 @@ abstract class AbstractTest extends TestCase
     {
         return new ArrayCollection(
             array(
-                LoggerKeys::SYSTEM => $this->getMockBuilder('Psr\Log\LoggerInterface')
-                                           ->setMethods(get_class_methods('Psr\Log\LoggerInterface'))
+                LoggerKeys::SYSTEM => $this->getMockBuilder(LoggerInterface::class)
+                                           ->setMethods(get_class_methods(LoggerInterface::class))
                                            ->getMock()
             )
         );
@@ -194,8 +201,8 @@ abstract class AbstractTest extends TestCase
      */
     protected function getMockRegistryProcessor()
     {
-        return $this->getMockBuilder('TechDivision\Import\Services\RegistryProcessorInterface')
-                    ->setMethods(get_class_methods('TechDivision\Import\Services\RegistryProcessorInterface'))
+        return $this->getMockBuilder(RegistryProcessorInterface::class)
+                    ->setMethods(get_class_methods(RegistryProcessorInterface::class))
                     ->getMock();
     }
 
@@ -208,8 +215,8 @@ abstract class AbstractTest extends TestCase
     {
 
         // create the mock configuration instance
-        $mockConfiguration = $this->getMockBuilder('TechDivision\Import\Configuration\ConfigurationInterface')
-                                  ->setMethods(get_class_methods('TechDivision\Import\Configuration\ConfigurationInterface'))
+        $mockConfiguration = $this->getMockBuilder(ConfigurationInterface::class)
+                                  ->setMethods(get_class_methods(ConfigurationInterface::class))
                                   ->getMock();
 
         // mock the necessary methods
@@ -233,8 +240,8 @@ abstract class AbstractTest extends TestCase
     {
 
         // create the mock execution context
-        $mockExecutionContext = $this->getMockBuilder('TechDivision\Import\ExecutionContextInterface')
-                                     ->setMethods(get_class_methods('TechDivision\Import\ExecutionContextInterface'))
+        $mockExecutionContext = $this->getMockBuilder(ExecutionContextInterface::class)
+                                     ->setMethods(get_class_methods(ExecutionContextInterface::class))
                                      ->getMock();
 
         // mock the methods
@@ -258,8 +265,8 @@ abstract class AbstractTest extends TestCase
     {
 
         // create the mock plugin configuration
-        $mockPluginConfiguration = $this->getMockBuilder('TechDivision\Import\Configuration\PluginConfigurationInterface')
-                                        ->setMethods(get_class_methods('TechDivision\Import\Configuration\PluginConfigurationInterface'))
+        $mockPluginConfiguration = $this->getMockBuilder(PluginConfigurationInterface::class)
+                                        ->setMethods(get_class_methods(PluginConfigurationInterface::class))
                                         ->getMock();
 
         // mock the necessary methods
@@ -282,8 +289,8 @@ abstract class AbstractTest extends TestCase
     protected function getMockSubjectConfiguration()
     {
 
-        return $this->getMockBuilder('TechDivision\Import\Configuration\SubjectConfigurationInterface')
-                    ->setMethods(get_class_methods('TechDivision\Import\Configuration\SubjectConfigurationInterface'))
+        return $this->getMockBuilder(SubjectConfigurationInterface::class)
+                    ->setMethods(get_class_methods(SubjectConfigurationInterface::class))
                     ->getMock();
     }
 
@@ -305,8 +312,8 @@ abstract class AbstractTest extends TestCase
         $mockLoggers = $this->getMockLoggers();
 
         // mock the event emitter
-        $mockEmitter = $this->getMockBuilder('League\Event\EmitterInterface')
-                            ->setMethods(\get_class_methods('League\Event\EmitterInterface'))
+        $mockEmitter = $this->getMockBuilder(EmitterInterface::class)
+                            ->setMethods(\get_class_methods(EmitterInterface::class))
                             ->getMock();
 
         // prepare the constructor arguments

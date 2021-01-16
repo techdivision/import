@@ -29,45 +29,6 @@ namespace TechDivision\Import\Repositories;
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
  */
-interface RepositoryInterface
+interface RepositoryInterface extends \TechDivision\Import\Dbal\Repositories\RepositoryInterface
 {
-
-    /**
-     * Initializes the repository's prepared statements.
-     *
-     * @return void
-     */
-    public function init();
-
-    /**
-     * Return's the connection to use.
-     *
-     * @return \TechDivision\Import\Connection\ConnectionInterface The connection instance
-     */
-    public function getConnection();
-
-    /**
-     * Set's the repository instance with the SQL statements to use.
-     *
-     * @param \TechDivision\Import\Repositories\SqlStatementRepositoryInterface $sqlStatementRepository The repository instance
-     *
-     * @return void
-     */
-    public function setSqlStatementRepository(SqlStatementRepositoryInterface $sqlStatementRepository);
-
-    /**
-     * Return's the repository instance with the SQL statements to use.
-     *
-     * @return \TechDivision\Import\Repositories\SqlStatementRepositoryInterface The repository instance
-     */
-    public function getSqlStatementRepository();
-
-    /**
-     * Load's the SQL statement with the passed ID from the SQL repository.
-     *
-     * @param string $id The ID of the SQL statement to load
-     *
-     * @return string The SQL statement with the passed ID
-     */
-    public function loadStatement($id);
 }

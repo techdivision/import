@@ -40,17 +40,27 @@ class CoreConfigDataUidGenerator implements GeneratorInterface
      * @param array $entity The entity to generate the UID for
      *
      * @return string The unique identifier
+     * @throws \InvalidArgumentException Is thrown if the passed entity doesn't contain the necessary members
      * @see \TechDivision\Import\Utils\Generators\GeneratorInterface::generate()
      */
-    public function generate(array $entity)
+    public function generate(array $entity = array())
     {
 
-        // load the data to generate the entity with
-        $path = $entity[MemberNames::PATH];
-        $scope = $entity[MemberNames::SCOPE];
-        $scopeId = $entity[MemberNames::SCOPE_ID];
+        // query whether or not the entity has the necessary members
+        // to generate the UID for the core configuation
+        if (isset($entity[MemberNames::PATH]) &&
+            isset($entity[MemberNames::SCOPE]) &&
+            isset($entity[MemberNames::SCOPE_ID])
+        ) {
+            // load the data to generate the entity with
+            $path = $entity[MemberNames::PATH] ?? 'unknown';
+            $scope = $entity[MemberNames::SCOPE] ?? 'unknown';
+            $scopeId = $entity[MemberNames::SCOPE_ID] ?? 'unknown';
+            // generate and return the entity
+            return sprintf('%s/%s/%s', $scope, $scopeId, $path);
+        }
 
-        // generate and return the entity
-        return sprintf('%s/%s/%s', $scope, $scopeId, $path);
+        // throw an exception, if the UID can not be generated
+        throw new \InvalidArgumentException('Can\'t generate UID from members of the passed entity');
     }
 }

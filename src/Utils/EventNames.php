@@ -1,7 +1,7 @@
 <?php
 
 /**
- * TechDivision\Import\Utils\EventKeys
+ * TechDivision\Import\Utils\EventNames
  *
  * NOTICE OF LICENSE
  *
@@ -12,7 +12,7 @@
  * PHP version 5
  *
  * @author    Tim Wagner <t.wagner@techdivision.com>
- * @copyright 2016 TechDivision GmbH <info@techdivision.com>
+ * @copyright 2021 TechDivision GmbH <info@techdivision.com>
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
@@ -24,12 +24,12 @@ namespace TechDivision\Import\Utils;
  * A utility class with the available event names.
  *
  * @author    Tim Wagner <t.wagner@techdivision.com>
- * @copyright 2016 TechDivision GmbH <info@techdivision.com>
+ * @copyright 2021 TechDivision GmbH <info@techdivision.com>
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
  */
-class EventNames
+class EventNames extends \TechDivision\Import\Dbal\Collection\Utils\EventNames
 {
 
     /**

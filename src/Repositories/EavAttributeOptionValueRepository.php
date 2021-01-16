@@ -24,7 +24,9 @@ use TechDivision\Import\Utils\CacheKeys;
 use TechDivision\Import\Utils\MemberNames;
 use TechDivision\Import\Utils\SqlStatementKeys;
 use TechDivision\Import\Cache\CacheAdapterInterface;
-use TechDivision\Import\Connection\ConnectionInterface;
+use TechDivision\Import\Dbal\Connection\ConnectionInterface;
+use TechDivision\Import\Dbal\Repositories\SqlStatementRepositoryInterface;
+use TechDivision\Import\Dbal\Collection\Repositories\AbstractRepository;
 
 /**
  * Cached repository implementation to load cached EAV attribute option value data.
@@ -83,9 +85,9 @@ class EavAttributeOptionValueRepository extends AbstractRepository implements Ea
     /**
      * Initialize the repository with the passed connection and utility class name.
      * .
-     * @param \TechDivision\Import\Connection\ConnectionInterface               $connection             The connection instance
-     * @param \TechDivision\Import\Repositories\SqlStatementRepositoryInterface $sqlStatementRepository The SQL repository instance
-     * @param \TechDivision\Import\Cache\CacheAdapterInterface                  $cacheAdapter           The cache adapter instance
+     * @param \TechDivision\Import\Dbal\Connection\ConnectionInterface               $connection             The connection instance
+     * @param \TechDivision\Import\Dbal\Repositories\SqlStatementRepositoryInterface $sqlStatementRepository The SQL repository instance
+     * @param \TechDivision\Import\Cache\CacheAdapterInterface                       $cacheAdapter           The cache adapter instance
      */
     public function __construct(
         ConnectionInterface $connection,

@@ -22,8 +22,8 @@ namespace TechDivision\Import\Services;
 
 use TechDivision\Import\Utils\MemberNames;
 use TechDivision\Import\Utils\RegistryKeys;
-use TechDivision\Import\Actions\ActionInterface;
-use TechDivision\Import\Connection\ConnectionInterface;
+use TechDivision\Import\Dbal\Actions\ActionInterface;
+use TechDivision\Import\Dbal\Connection\ConnectionInterface;
 use TechDivision\Import\Assembler\CategoryAssemblerInterface;
 use TechDivision\Import\Repositories\StoreRepositoryInterface;
 use TechDivision\Import\Repositories\CategoryRepositoryInterface;
@@ -31,6 +31,7 @@ use TechDivision\Import\Repositories\TaxClassRepositoryInterface;
 use TechDivision\Import\Repositories\LinkTypeRepositoryInterface;
 use TechDivision\Import\Repositories\AdminUserRepositoryInterface;
 use TechDivision\Import\Repositories\ImageTypeRepositoryInterface;
+use TechDivision\Import\Repositories\UrlRewriteRepositoryInterface;
 use TechDivision\Import\Repositories\EavAttributeRepositoryInterface;
 use TechDivision\Import\Repositories\StoreWebsiteRepositoryInterface;
 use TechDivision\Import\Repositories\CustomerGroupRepositoryInterface;
@@ -41,6 +42,7 @@ use TechDivision\Import\Repositories\CategoryVarcharRepositoryInterface;
 use TechDivision\Import\Repositories\EavAttributeSetRepositoryInterface;
 use TechDivision\Import\Repositories\EavAttributeGroupRepositoryInterface;
 use TechDivision\Import\Repositories\EavAttributeOptionValueRepositoryInterface;
+use TechDivision\Import\Serializer\Csv\Services\EavAttributeAwareProcessorInterface;
 
 /**
  * Processor implementation to load global data.
@@ -51,13 +53,13 @@ use TechDivision\Import\Repositories\EavAttributeOptionValueRepositoryInterface;
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
  */
-class ImportProcessor implements ImportProcessorInterface
+class ImportProcessor implements ImportProcessorInterface, EavAttributeAwareProcessorInterface
 {
 
     /**
      * A connection to use.
      *
-     * @var \TechDivision\Import\Connection\ConnectionInterface
+     * @var \TechDivision\Import\Dbal\Connection\ConnectionInterface
      */
     protected $connection;
 
@@ -181,37 +183,44 @@ class ImportProcessor implements ImportProcessorInterface
     protected $adminUserRepository;
 
     /**
+     * The repository to access the URL rewrites.
+     *
+     * @var \TechDivision\Import\Repositories\UrlRewriteRepositoryInterface
+     */
+    protected $urlRewriteRepository;
+
+    /**
      * The action for store CRUD methods.
      *
-     * @var \TechDivision\Import\Actions\ActionInterface
+     * @var \TechDivision\Import\Dbal\Actions\ActionInterface
      */
     protected $storeAction;
 
     /**
      * The action for store group CRUD methods.
      *
-     * @var \TechDivision\Import\Actions\ActionInterface
+     * @var \TechDivision\Import\Dbal\Actions\ActionInterface
      */
     protected $storeGroupAction;
 
     /**
      * The action for store website CRUD methods.
      *
-     * @var \TechDivision\Import\Actions\ActionInterface
+     * @var \TechDivision\Import\Dbal\Actions\ActionInterface
      */
     protected $storeWebsiteAction;
 
     /**
      * The action for import history CRUD methods.
      *
-     * @var \TechDivision\Import\Actions\ActionInterface
+     * @var \TechDivision\Import\Dbal\Actions\ActionInterface
      */
     protected $importHistoryAction;
 
     /**
      * Initialize the processor with the necessary assembler and repository instances.
      *
-     * @param \TechDivision\Import\Connection\ConnectionInterface                          $connection                        The connection to use
+     * @param \TechDivision\Import\Dbal\Connection\ConnectionInterface                     $connection                        The connection to use
      * @param \TechDivision\Import\Assembler\CategoryAssemblerInterface                    $categoryAssembler                 The category assembler instance
      * @param \TechDivision\Import\Repositories\CategoryRepositoryInterface                $categoryRepository                The repository to access categories
      * @param \TechDivision\Import\Repositories\CategoryVarcharRepositoryInterface         $categoryVarcharRepository         The repository to access category varchar values
@@ -229,10 +238,11 @@ class ImportProcessor implements ImportProcessorInterface
      * @param \TechDivision\Import\Repositories\CustomerGroupRepositoryInterface           $customerGroupRepository           The repository to access the customer groups
      * @param \TechDivision\Import\Repositories\ImageTypeRepositoryInterface               $imageTypeRepository               The repository to access images types
      * @param \TechDivision\Import\Repositories\AdminUserRepositoryInterface               $adminUserRepository               The repository to access admin users
-     * @param \TechDivision\Import\Actions\ActionInterface                                 $storeAction                       The action with the store CRUD methods
-     * @param \TechDivision\Import\Actions\ActionInterface                                 $storeGroupAction                  The action with the store group CRUD methods
-     * @param \TechDivision\Import\Actions\ActionInterface                                 $storeWebsiteAction                The action with the store website CRUD methods
-     * @param \TechDivision\Import\Actions\ActionInterface                                 $importHistoryAction               The action with the import history CRUD methods
+     * @param \TechDivision\Import\Repositories\UrlRewriteRepositoryInterface              $urlRewriteRepository              The repository to access URL rewrites
+     * @param \TechDivision\Import\Dbal\Actions\ActionInterface                            $storeAction                       The action with the store CRUD methods
+     * @param \TechDivision\Import\Dbal\Actions\ActionInterface                            $storeGroupAction                  The action with the store group CRUD methods
+     * @param \TechDivision\Import\Dbal\Actions\ActionInterface                            $storeWebsiteAction                The action with the store website CRUD methods
+     * @param \TechDivision\Import\Dbal\Actions\ActionInterface                            $importHistoryAction               The action with the import history CRUD methods
      */
     public function __construct(
         ConnectionInterface $connection,
@@ -253,6 +263,7 @@ class ImportProcessor implements ImportProcessorInterface
         CustomerGroupRepositoryInterface $customerGroupRepository,
         ImageTypeRepositoryInterface $imageTypeRepository,
         AdminUserRepositoryInterface $adminUserRepository,
+        UrlRewriteRepositoryInterface $urlRewriteRepository,
         ActionInterface $storeAction,
         ActionInterface $storeGroupAction,
         ActionInterface $storeWebsiteAction,
@@ -276,6 +287,7 @@ class ImportProcessor implements ImportProcessorInterface
         $this->setImageTypeRepository($imageTypeRepository);
         $this->setCustomerGroupRepository($customerGroupRepository);
         $this->setAdminUserRepository($adminUserRepository);
+        $this->setUrlRewriteRepository($urlRewriteRepository);
         $this->setStoreAction($storeAction);
         $this->setStoreGroupAction($storeGroupAction);
         $this->setStoreWebsiteAction($storeWebsiteAction);
@@ -285,7 +297,7 @@ class ImportProcessor implements ImportProcessorInterface
     /**
      * Set's the passed connection.
      *
-     * @param \TechDivision\Import\Connection\ConnectionInterface $connection The connection to set
+     * @param \TechDivision\Import\Dbal\Connection\ConnectionInterface $connection The connection to set
      *
      * @return void
      */
@@ -297,7 +309,7 @@ class ImportProcessor implements ImportProcessorInterface
     /**
      * Return's the connection.
      *
-     * @return \TechDivision\Import\Connection\ConnectionInterface The connection instance
+     * @return \TechDivision\Import\Dbal\Connection\ConnectionInterface The connection instance
      */
     public function getConnection()
     {
@@ -723,9 +735,31 @@ class ImportProcessor implements ImportProcessorInterface
     }
 
     /**
+     * Set's the repository to access the URL rewrites.
+     *
+     * @param \TechDivision\Import\Repositories\UrlRewriteRepositoryInterface $urlRewriteRepository The repository to access the URL rewrites
+     *
+     * @return void
+     */
+    public function setUrlRewriteRepository(UrlRewriteRepositoryInterface $urlRewriteRepository)
+    {
+        $this->urlRewriteRepository = $urlRewriteRepository;
+    }
+
+    /**
+     * Return's the repository to access the URL rewrites.
+     *
+     * @return \TechDivision\Import\Repositories\UrlRewriteRepositoryInterface The repository instance
+     */
+    public function getUrlRewriteRepository()
+    {
+        return $this->urlRewriteRepository;
+    }
+
+    /**
      * Set's the action with the store CRUD methods.
      *
-     * @param \TechDivision\Import\Actions\ActionInterface $storeAction The action with the store CRUD methods
+     * @param \TechDivision\Import\Dbal\Actions\ActionInterface $storeAction The action with the store CRUD methods
      *
      * @return void
      */
@@ -737,7 +771,7 @@ class ImportProcessor implements ImportProcessorInterface
     /**
      * Return's the action with the store CRUD methods.
      *
-     * @return \TechDivision\Import\Actions\ActionInterface The action instance
+     * @return \TechDivision\Import\Dbal\Actions\ActionInterface The action instance
      */
     public function getStoreAction()
     {
@@ -747,7 +781,7 @@ class ImportProcessor implements ImportProcessorInterface
     /**
      * Set's the action with the store group CRUD methods.
      *
-     * @param \TechDivision\Import\Actions\ActionInterface $storeGroupAction The action with the store group CRUD methods
+     * @param \TechDivision\Import\Dbal\Actions\ActionInterface $storeGroupAction The action with the store group CRUD methods
      *
      * @return void
      */
@@ -759,7 +793,7 @@ class ImportProcessor implements ImportProcessorInterface
     /**
      * Return's the action with the store group CRUD methods.
      *
-     * @return \TechDivision\Import\Actions\ActionInterface The action instance
+     * @return \TechDivision\Import\Dbal\Actions\ActionInterface The action instance
      */
     public function getStoreGroupAction()
     {
@@ -769,7 +803,7 @@ class ImportProcessor implements ImportProcessorInterface
     /**
      * Set's the action with the store website CRUD methods.
      *
-     * @param \TechDivision\Import\Actions\ActionInterface $storeWebsiteAction The action with the store website CRUD methods
+     * @param \TechDivision\Import\Dbal\Actions\ActionInterface $storeWebsiteAction The action with the store website CRUD methods
      *
      * @return void
      */
@@ -781,7 +815,7 @@ class ImportProcessor implements ImportProcessorInterface
     /**
      * Return's the action with the store website CRUD methods.
      *
-     * @return \TechDivision\Import\Actions\ActionInterface The action instance
+     * @return \TechDivision\Import\Dbal\Actions\ActionInterface The action instance
      */
     public function getStoreWebsiteAction()
     {
@@ -791,7 +825,7 @@ class ImportProcessor implements ImportProcessorInterface
     /**
      * Set's the action with the import history CRUD methods.
      *
-     * @param \TechDivision\Import\Actions\ActionInterface $importHistoryAction The action with the import history CRUD methods
+     * @param \TechDivision\Import\Dbal\Actions\ActionInterface $importHistoryAction The action with the import history CRUD methods
      *
      * @return void
      */
@@ -803,7 +837,7 @@ class ImportProcessor implements ImportProcessorInterface
     /**
      * Return's the action with the import history CRUD methods.
      *
-     * @return \TechDivision\Import\Actions\ActionInterface The action instance
+     * @return \TechDivision\Import\Dbal\Actions\ActionInterface The action instance
      */
     public function getImportHistoryAction()
     {
@@ -940,12 +974,12 @@ class ImportProcessor implements ImportProcessorInterface
     /**
      * Return's the EAV attribute with the passed entity type ID and code.
      *
-     * @param integer $entityTypeId  The entity type ID of the EAV attribute to return
-     * @param string  $attributeCode The code of the EAV attribute to return
+     * @param int    $entityTypeId  The entity type ID of the EAV attribute to return
+     * @param string $attributeCode The code of the EAV attribute to return
      *
      * @return array The EAV attribute
      */
-    public function getEavAttributeByEntityTypeIdAndAttributeCode($entityTypeId, $attributeCode)
+    public function getEavAttributeByEntityTypeIdAndAttributeCode(int $entityTypeId, string $attributeCode)
     {
         return $this->getEavAttributeRepository()->findOneByEntityTypeIdAndAttributeCode($entityTypeId, $attributeCode);
     }
@@ -957,7 +991,7 @@ class ImportProcessor implements ImportProcessorInterface
      *
      * @return array The entity type with the passed entity type code
      */
-    public function getEavEntityTypeByEntityTypeCode($entityTypeCode)
+    public function getEavEntityTypeByEntityTypeCode(string $entityTypeCode)
     {
         return $this->getEavEntityTypeRepository()->findOneByEntityTypeCode($entityTypeCode);
     }
@@ -1204,13 +1238,11 @@ class ImportProcessor implements ImportProcessorInterface
             foreach ($attributeSets as $attributeSet) {
                 // load the attribute set name
                 $eavAttributeSetName = $attributeSet[MemberNames::ATTRIBUTE_SET_NAME];
-
                 // load the attributes for the attribute set
                 $eavAttributes[$eavEntityTypeCode][$eavAttributeSetName] = $this->getEavAttributesByEntityTypeIdAndAttributeSetName(
                     $entityTypeId,
                     $eavAttributeSetName
                 );
-
                 // load the attribute group for the attribute set
                 $eavAttributeGroups[$eavEntityTypeCode][$eavAttributeSetName] = $this->getEavAttributeGroupsByAttributeSetId(
                     $attributeSet[MemberNames::ATTRIBUTE_SET_ID]

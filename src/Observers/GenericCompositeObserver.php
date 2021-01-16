@@ -21,6 +21,7 @@
 namespace TechDivision\Import\Observers;
 
 use TechDivision\Import\Subjects\SubjectInterface;
+use TechDivision\Import\Interfaces\HookAwareInterface;
 
 /**
  * A generic observer implementation that implements the composit pattern to bundle
@@ -163,5 +164,47 @@ class GenericCompositeObserver implements ObserverInterface, ObserverFactoryInte
     protected function getObservers()
     {
         return $this->observers;
+    }
+
+    /**
+     * Intializes the previously loaded global data for exactly one bunch.
+     *
+     * @param string $serial The serial of the actual import
+     *
+     * @return void
+     */
+    public function setUp($serial)
+    {
+
+        // load the composite's observers
+        $observers = $this->getObservers();
+
+        // set-up all hook aware observers
+        foreach ($observers as $observer) {
+            if ($observer instanceof HookAwareInterface) {
+                $observer->setUp($serial);
+            }
+        }
+    }
+
+    /**
+     * Clean up the global data after importing the variants.
+     *
+     * @param string $serial The serial of the actual import
+     *
+     * @return void
+     */
+    public function tearDown($serial)
+    {
+
+        // load the composite's observers
+        $observers = $this->getObservers();
+
+        // tear down all hook aware observers
+        foreach ($observers as $observer) {
+            if ($observer instanceof HookAwareInterface) {
+                $observer->tearDown($serial);
+            }
+        }
     }
 }

@@ -36,7 +36,7 @@ interface ImportProcessorInterface
     /**
      * Return's the connection.
      *
-     * @return \TechDivision\Import\Connection\ConnectionInterface The connection instance
+     * @return \TechDivision\Import\Dbal\Connection\ConnectionInterface The connection instance
      */
     public function getConnection();
 
@@ -190,28 +190,28 @@ interface ImportProcessorInterface
     /**
      * Return's the action with the store CRUD methods.
      *
-     * @return \TechDivision\Import\Actions\ActionInterface The action instance
+     * @return \TechDivision\Import\Dbal\Actions\ActionInterface The action instance
      */
     public function getStoreAction();
 
     /**
      * Return's the action with the store group CRUD methods.
      *
-     * @return \TechDivision\Import\Actions\ActionInterface The action instance
+     * @return \TechDivision\Import\Dbal\Actions\ActionInterface The action instance
      */
     public function getStoreGroupAction();
 
     /**
      * Return's the action with the store website CRUD methods.
      *
-     * @return \TechDivision\Import\Actions\ActionInterface The action instance
+     * @return \TechDivision\Import\Dbal\Actions\ActionInterface The action instance
      */
     public function getStoreWebsiteAction();
 
     /**
      * Return's the action with the import history CRUD methods.
      *
-     * @return \TechDivision\Import\Actions\ActionInterface The action instance
+     * @return \TechDivision\Import\Dbal\Actions\ActionInterface The action instance
      */
     public function getImportHistoryAction();
 
@@ -315,12 +315,12 @@ interface ImportProcessorInterface
     /**
      * Return's the EAV attribute with the passed entity type ID and code.
      *
-     * @param integer $entityTypeId  The entity type ID of the EAV attribute to return
-     * @param string  $attributeCode The code of the EAV attribute to return
+     * @param int    $entityTypeId  The entity type ID of the EAV attribute to return
+     * @param string $attributeCode The code of the EAV attribute to return
      *
      * @return array The EAV attribute
      */
-    public function getEavAttributeByEntityTypeIdAndAttributeCode($entityTypeId, $attributeCode);
+    public function getEavAttributeByEntityTypeIdAndAttributeCode(int $entityTypeId, string $attributeCode);
 
     /**
      * Return's an EAV entity type with the passed entity type code.
@@ -329,7 +329,7 @@ interface ImportProcessorInterface
      *
      * @return array The entity type with the passed entity type code
      */
-    public function getEavEntityTypeByEntityTypeCode($entityTypeCode);
+    public function getEavEntityTypeByEntityTypeCode(string $entityTypeCode);
 
     /**
      * Return's an array with all available EAV entity types with the entity type code as key.

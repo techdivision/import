@@ -19,7 +19,7 @@
  */
 namespace TechDivision\Import\Execution;
 
-use TechDivision\Import\ExecutionContextInterface;
+use TechDivision\Import\Configuration\ExecutionContextInterface;
 
 /**
  * Class that contains data about the actual execution context.

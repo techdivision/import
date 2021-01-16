@@ -29,25 +29,8 @@ namespace TechDivision\Import\Utils;
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
  */
-class MemberNames
+class MemberNames extends \TechDivision\Import\Serializer\Csv\Utils\MemberNames
 {
-
-    /**
-     * This is a utility class, so protect it against direct
-     * instantiation.
-     */
-    private function __construct()
-    {
-    }
-
-    /**
-     * This is a utility class, so protect it against cloning.
-     *
-     * @return void
-     */
-    private function __clone()
-    {
-    }
 
     /**
      * Name for the member 'code'.
@@ -141,13 +124,6 @@ class MemberNames
     const VALUE_ID = 'value_id';
 
     /**
-     * Name for the member 'frontend_input'.
-     *
-     * @var string
-     */
-    const FRONTEND_INPUT = 'frontend_input';
-
-    /**
      * Name for the member 'option_id'.
      *
      * @var string
@@ -195,13 +171,6 @@ class MemberNames
      * @var string
      */
     const ID_USER_DEFINED = 'is_user_defined';
-
-    /**
-     * Name for the member 'entity_type_id'.
-     *
-     * @var string
-     */
-    const ENTITY_TYPE_ID = 'entity_type_id';
 
     /**
      * Name for the member 'entity_type_code'.

@@ -1,0 +1,42 @@
+name: techdivision/import
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+    
+  run:
+    name: Build ${{ matrix.operating-system }} > ${{ matrix.php-versions }}
+    runs-on: ${{ matrix.operating-system }}
+    strategy:
+      matrix:
+        operating-system: [ ubuntu-latest, macos-latest ]
+        php-versions: [ '7.1', '7.2', '7.3' ]
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+      
+    - name: Setup PHP
+      uses: shivammathur/setup-php@v2
+      with:
+          php-version: ${{ matrix.php-versions }}
+          extensions: xdebug-2.9.8 
+
+    - name: Validate Composer Files
+      run: composer validate
+
+    - name: Install Dependencies
+      run: composer install --prefer-dist --no-progress --no-suggest
+
+    - name: Run Robo Build
+      run: vendor/bin/robo build
+      
+    - name: Download Scrutinizer-CI Binary
+      run: wget https://scrutinizer-ci.com/ocular.phar
+    
+    - name: Post Coverage Data to Scrutinizer-CI
+      run: php ocular.phar code-coverage:upload --format=php-clover target/reports/unit/clover.xml
