@@ -43,9 +43,6 @@ class SelectValidatorCallback extends IndexedArrayValidatorCallback
     public function handle($attributeCode = null, $attributeValue = null)
     {
 
-        // load the subject instance
-        $subject = $this->getSubject();
-
         // explode the additional attributes
         if ($this->isNullable($attributeValue)) {
             return;
