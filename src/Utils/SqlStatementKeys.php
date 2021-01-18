@@ -319,6 +319,13 @@ class SqlStatementKeys
     const DELETE_URL_REWRITE_BY_CATEGORY_ID = 'delete.url_rewrite.by.category_id';
 
     /**
+     * The SQL statement to remove existing product URL rewrites by their entit ID and entity type.
+     *
+     * @var string
+     */
+    const DELETE_URL_REWRITE_BY_ENTITY_ID_AND_ENTITY_TYPE = 'delete.url_rewrite.by.entity_id.and.entity_type';
+
+    /**
      * The SQL statement to create new URL rewrites.
      *
      * @var string

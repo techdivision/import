@@ -335,6 +335,11 @@ class SqlStatementRepository extends AbstractSqlStatementRepository
               WHERE t2.path = :path
                 AND t1.entity_id = t2.entity_id
                 AND t1.entity_type = \'category\'',
+        SqlStatementKeys::DELETE_URL_REWRITE_BY_ENTITY_ID_AND_ENTITY_TYPE =>
+            'DELETE t1.*
+               FROM ${table:url_rewrite} t1
+              WHERE t1.entity_id = :entity_id
+                AND t1.entity_type = :entity_type',
         SqlStatementKeys::DELETE_URL_REWRITE_BY_CATEGORY_ID =>
             'DELETE t1.*
                FROM ${table:url_rewrite} t1
