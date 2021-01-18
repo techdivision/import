@@ -4,6 +4,9 @@
 
 * Fixed techdivision/import-category#69
 * Fixed techdivision/import-category#66
+* Fixed techdivision/import-category#62
+* Fixed #PAC-264: PDOException: SQLSTATE[23000] : Integrity constraint violation: 1062 Duplicate entry xxx.html-0 for key 'URL_REWRITE_REQUEST_PATH_STORE_ID
+* Fixed #PAC-265: Also use url_path when generate unique url_key for categories
 * Fixed #PAC-212: .OK file filter only supports suffix .csv
 * Fixed #PAC-206: Prevent finder mappings of different libraries to be overwritten
 
@@ -11,7 +14,9 @@
 
 * Add techdivision/import#191
 * Add second log handler to log to console also
+* Extend URL rewrite handling with functionality to delete URL rewrites by entity ID and type
 * Adjust log messages to log only message with log level `notice` to console
+* Add #PAC-326: Cross-entity import of URLs (rewrites + redirects)  
 * Add #PAC-89: Add debug email command + DebugSendPlugin
 * Add #PAC-57: Deleting dedicated attribute values via import by setting a configurable value
 
