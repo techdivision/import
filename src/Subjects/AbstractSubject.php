@@ -12,7 +12,7 @@
  * PHP version 5
  *
  * @author    Tim Wagner <t.wagner@techdivision.com>
- * @copyright 2016 TechDivision GmbH <info@techdivision.com>
+ * @copyright 2021 TechDivision GmbH <info@techdivision.com>
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
@@ -20,7 +20,6 @@
 
 namespace TechDivision\Import\Subjects;
 
-use Psr\Log\LogLevel;
 use Ramsey\Uuid\Uuid;
 use League\Event\EmitterInterface;
 use Doctrine\Common\Collections\Collection;
@@ -36,6 +35,7 @@ use TechDivision\Import\Utils\EntityTypeCodes;
 use TechDivision\Import\Utils\Generators\GeneratorInterface;
 use TechDivision\Import\Callbacks\CallbackInterface;
 use TechDivision\Import\Observers\ObserverInterface;
+use TechDivision\Import\Interfaces\HookAwareInterface;
 use TechDivision\Import\Adapter\ImportAdapterInterface;
 use TechDivision\Import\Exceptions\WrappedColumnException;
 use TechDivision\Import\Services\RegistryProcessorInterface;
@@ -45,7 +45,7 @@ use TechDivision\Import\Configuration\SubjectConfigurationInterface;
  * An abstract subject implementation.
  *
  * @author    Tim Wagner <t.wagner@techdivision.com>
- * @copyright 2016 TechDivision GmbH <info@techdivision.com>
+ * @copyright 2021 TechDivision GmbH <info@techdivision.com>
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
@@ -656,6 +656,20 @@ abstract class AbstractSubject implements SubjectInterface, FilesystemSubjectInt
                 $this->callbackMappings[$attributeCode] = $mappings;
             }
         }
+
+        // load the available observers
+        $availableObservers = $this->getObservers();
+
+        // process the observers
+        foreach ($availableObservers as $observers) {
+            // invoke the pre-import/import and post-import observers
+            /** @var \TechDivision\Import\Observers\ObserverInterface $observer */
+            foreach ($observers as $observer) {
+                if ($observer instanceof HookAwareInterface) {
+                    $observer->setUp($serial);
+                }
+            }
+        }
     }
 
     /**
@@ -674,6 +688,20 @@ abstract class AbstractSubject implements SubjectInterface, FilesystemSubjectInt
         // update the source directory for the next subject
         foreach ($this->getStatus() as $key => $status) {
             $registryProcessor->mergeAttributesRecursive($key, $status);
+        }
+
+        // load the available observers
+        $availableObservers = $this->getObservers();
+
+        // process the observers
+        foreach ($availableObservers as $observers) {
+            // invoke the pre-import/import and post-import observers
+            /** @var \TechDivision\Import\Observers\ObserverInterface $observer */
+            foreach ($observers as $observer) {
+                if ($observer instanceof HookAwareInterface) {
+                    $observer->tearDown($serial);
+                }
+            }
         }
 
         // log a debug message with the new source directory

@@ -1,7 +1,7 @@
 <?php
 
 /**
- * TechDivision\Import\Observers\GenericValidatorObserver
+ * TechDivision\Import\Observers\GenericValidationObserver
  *
  * NOTICE OF LICENSE
  *
@@ -20,22 +20,20 @@
 
 namespace TechDivision\Import\Observers;
 
+use TechDivision\Import\Utils\RegistryKeys;
 use TechDivision\Import\Subjects\SubjectInterface;
 use TechDivision\Import\Services\RegistryProcessorInterface;
-use TechDivision\Import\Utils\RegistryKeys;
 
 /**
  * Observer that invokes the callbacks to validate the actual row.
  *
- * @author     Tim Wagner <t.wagner@techdivision.com>
- * @copyright  2021 TechDivision GmbH <info@techdivision.com>
- * @license    http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
- * @link       https://github.com/techdivision/import
- * @link       http://www.techdivision.com
- * @deprecated Since 16.7.0
- * @see        \TechDivision\Import\Observers\GenericValidationObserver
+ * @author    Tim Wagner <t.wagner@techdivision.com>
+ * @copyright 2021 TechDivision GmbH <info@techdivision.com>
+ * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
+ * @link      https://github.com/techdivision/import
+ * @link      http://www.techdivision.com
  */
-class GenericValidatorObserver extends AbstractObserver
+class GenericValidationObserver extends AbstractObserver implements ObserverFactoryInterface
 {
 
     /**
@@ -46,13 +44,38 @@ class GenericValidatorObserver extends AbstractObserver
     protected $registryProcessor;
 
     /**
-     * Initializes the callback with the loader instance.
+     * Array with virtual column name mappings (this is a temporary
+     * solution till techdivision/import#179 as been implemented).
+     *
+     * @var array
+     */
+    protected $reverseHeaderMappings = array();
+
+    /**
+     * Initializes the observer with the registry processor instance.
      *
      * @param \TechDivision\Import\Services\RegistryProcessorInterface $registryProcessor The registry processor instance
      */
     public function __construct(RegistryProcessorInterface $registryProcessor)
     {
         $this->registryProcessor = $registryProcessor;
+    }
+
+    /**
+     * Will be invoked by the observer visitor when a factory has been defined to create the observer instance.
+     *
+     * @param \TechDivision\Import\Subjects\SubjectInterface $subject The subject instance
+     *
+     * @return \TechDivision\Import\Observers\ObserverInterface The observer instance
+     */
+    public function createObserver(SubjectInterface $subject)
+    {
+
+        // initialize the array for the reverse header mappings
+        $this->reverseHeaderMappings = array_flip($subject->getHeaderMappings());
+
+        // return the intialized instance
+        return $this;
     }
 
     /**
@@ -90,16 +113,16 @@ class GenericValidatorObserver extends AbstractObserver
 
         // iterate over the custom validations
         foreach ($headerNames as $headerName) {
-            // map the header name to the attribute code, if an mapping is available
-            $attributeCode = $this->mapAttributeCodeByHeaderMapping($headerName);
             // load the attribute value from the row
-            $attributeValue = $this->getValue($attributeCode);
+            $attributeValue = $this->getValue($headerName);
+            // reverse map the header name to the original column name
+            $columnName = $this->reverseMapHeaderNameToColumnName($headerName);
             // load the callbacks for the actual attribute code
-            $callbacks = $this->getCallbacksByType($attributeCode);
+            $callbacks = $this->getCallbacksByType($columnName);
             // invoke the registered callbacks
             foreach ($callbacks as $callback) {
                 try {
-                    $callback->handle($attributeCode, $attributeValue);
+                    $callback->handle($columnName, $attributeValue);
                 } catch (\InvalidArgumentException $iea) {
                     // add the the validation result to the status
                     $this->mergeStatus(
@@ -107,7 +130,7 @@ class GenericValidatorObserver extends AbstractObserver
                             RegistryKeys::VALIDATIONS => array(
                                 basename($this->getFilename()) => array(
                                     $this->getSubject()->getLineNumber() => array(
-                                        $attributeCode => $iea->getMessage()
+                                        $columnName => $iea->getMessage()
                                     )
                                 )
                             )
@@ -119,16 +142,15 @@ class GenericValidatorObserver extends AbstractObserver
     }
 
     /**
-     * Map the passed attribute code, if a header mapping exists and return the
-     * mapped mapping.
+     * Reverse map the passed header name, to the original column name.
      *
-     * @param string $attributeCode The attribute code to map
+     * @param string $headerName The header name to reverse map
      *
-     * @return string The mapped attribute code, or the original one
+     * @return string The original column name
      */
-    protected function mapAttributeCodeByHeaderMapping($attributeCode)
+    protected function reverseMapHeaderNameToColumnName(string $headerName) : string
     {
-        return $this->getSubject()->mapAttributeCodeByHeaderMapping($attributeCode);
+        return $this->reverseHeaderMappings[$headerName] ?? $headerName;
     }
 
     /**

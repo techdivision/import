@@ -1,7 +1,7 @@
 <?php
 
 /**
- * TechDivision\Import\Cache\GenericCacheAdapter
+ * TechDivision\Import\Cache\ConfigurableCacheAdapter
  *
  * NOTICE OF LICENSE
  *

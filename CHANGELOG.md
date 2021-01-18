@@ -1,3 +1,13 @@
+# Version 16.8.0
+
+## Bugfixes
+
+* Fixed invalid validation for columns with header mappings
+
+## Features
+
+* Refactoring collection of data to improve performance
+
 # Version 16.7.0
 
 ## Bugfixes
