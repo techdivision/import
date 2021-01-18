@@ -701,11 +701,6 @@ abstract class AbstractSubject implements SubjectInterface, FilesystemSubjectInt
             $registryProcessor->mergeAttributesRecursive($key, $status);
         }
 
-        // log a debug message with the new source directory
-        $this->getSystemLogger()->debug(
-            sprintf('Subject %s successfully updated status data for import %s', get_class($this), $serial)
-        );
-
         // load the available observers
         $availableObservers = $this->getObservers();
 
@@ -719,6 +714,11 @@ abstract class AbstractSubject implements SubjectInterface, FilesystemSubjectInt
                 }
             }
         }
+        
+        // log a debug message with the new source directory
+        $this->getSystemLogger()->debug(
+            sprintf('Subject %s successfully updated status data for import %s', get_class($this), $serial)
+        );
     }
 
     /**

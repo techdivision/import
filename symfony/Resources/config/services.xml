@@ -330,6 +330,8 @@
         <service id="cache.adapter" alias="import.cache.adapter.local"/>
         <service id="cache.static" alias="import.cache.adapter.static"/>
         <service id="cache.configurable" alias="import.cache.adapter.configurable"/>
+        <service id="import.observer.generic.validator" alias="import.observer.generic.validation"/>
+        <service id="import.observer.generic.column.collector" alias="import.observer.generic.hook.aware.column.collector"/>
 
         <!--
          | The DI repository configuration
@@ -791,11 +793,11 @@
         <service id="import.observer.attribute.set" class="TechDivision\Import\Observers\AttributeSetObserver"/>
         <service id="import.observer.dynamic.attribute.loader" class="TechDivision\Import\Observers\DynamicAttributeLoader"/>
         <service id="import.observer.additional.attribute" class="TechDivision\Import\Observers\AdditionalAttributeObserver"/>
-        <service id="import.observer.generic.column.collector" class="TechDivision\Import\Observers\GenericColumnCollectorObserver">
+        <service id="import.observer.generic.hook.aware.column.collector" class="TechDivision\Import\Observers\GenericHookAwareColumnCollectorObserver">
             <argument type="service" id="import.loader.collect.columns"/>
             <argument type="service" id="import.processor.registry"/>
         </service>
-        <service id="import.observer.generic.validator" class="TechDivision\Import\Observers\GenericValidatorObserver">
+        <service id="import.observer.generic.validation" class="TechDivision\Import\Observers\GenericValidationObserver">
             <argument type="service" id="import.processor.registry"/>
         </service>
 

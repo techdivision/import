@@ -1,7 +1,7 @@
 <?php
 
 /**
- * TechDivision\Import\Observers\GenericColumnCollectorObserver
+ * TechDivision\Import\Observers\GenericHookAwareColumnCollectorObserver
  *
  * NOTICE OF LICENSE
  *
@@ -12,7 +12,7 @@
  * PHP version 5
  *
  * @author    Tim Wagner <t.wagner@techdivision.com>
- * @copyright 2019 TechDivision GmbH <info@techdivision.com>
+ * @copyright 2021 TechDivision GmbH <info@techdivision.com>
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
@@ -31,12 +31,12 @@ use TechDivision\Import\Services\RegistryProcessorInterface;
  * Observer that loads configurable data into the registry.
  *
  * @author    Tim Wagner <t.wagner@techdivision.com>
- * @copyright 2019 TechDivision GmbH <info@techdivision.com>
+ * @copyright 2021 TechDivision GmbH <info@techdivision.com>
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
  */
-class GenericColumnCollectorObserver extends AbstractObserver implements HookAwareInterface, ObserverFactoryInterface
+class GenericHookAwareColumnCollectorObserver extends AbstractObserver implements HookAwareInterface, ObserverFactoryInterface
 {
 
     /**
@@ -182,9 +182,14 @@ class GenericColumnCollectorObserver extends AbstractObserver implements HookAwa
         // load the registry processor
         $this->getRegistryProcessor()->mergeAttributesRecursive(RegistryKeys::COLLECTED_COLUMNS, $this->values);
 
-        // log a debug message with the new source directory
-        $this->getSystemLogger()->debug(
-            sprintf('Subject %s successfully updated status data for import %s', get_class($this), $serial)
+        // log a debug message that the observer
+        // successfully updated the status data
+        $this->getSystemLogger()->notice(
+            sprintf(
+                'Observer "%s" successfully updated status data for "%s"',
+                get_class($this),
+                RegistryKeys::COLLECTED_COLUMNS
+            )
         );
     }
 }
