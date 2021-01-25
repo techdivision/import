@@ -6,6 +6,9 @@
   "strict-mode": true,
   "username": "admin",
   "entity-type-code": "catalog_product",
+  "source-dir": "var/pacemaker/import",
+  "target-dir": "var/pacemaker/import",
+  "empty-attribute-value-constant": "__EMPTY__VALUE__",
   "shortcuts": [],
   "listeners": [],
   "databases": [],
@@ -14,6 +17,5 @@
     "general": [],
     "ce": [],
     "ee": []
-  },
-  "empty-attribute-value-constant": "__EMPTY__VALUE__"
+  }
 }
