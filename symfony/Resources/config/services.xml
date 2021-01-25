@@ -591,6 +591,7 @@
         <service id="import.assembler.category" class="TechDivision\Import\Assembler\CategoryAssembler">
             <argument type="service" id="import.repository.category"/>
             <argument type="service" id="import.repository.category.varchar"/>
+            <argument type="service" id="import.utils.category.path"/>
         </service>
 
         <!--
