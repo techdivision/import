@@ -115,6 +115,14 @@
             <argument type="service" id="loggers"/>
             <argument type="service" id="import.renderer.debug.composite"/>
         </service>
+        <service id="import.serializer.category.path" class="TechDivision\Import\Serializer\Csv\ValueCsvSerializer">
+            <call method="init">
+                <argument id="configuration" type="service"/>
+            </call>
+        </service>
+        <service id="import.utils.category.path" class="TechDivision\Import\Utils\CategoryPathUtil">
+            <argument type="service" id="import.serializer.category.path"/>
+        </service>
 
         <!--
          | The DI finder factory configuration
