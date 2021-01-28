@@ -794,7 +794,9 @@
         </service>
         <service id="import.observer.attribute.set" class="TechDivision\Import\Observers\AttributeSetObserver"/>
         <service id="import.observer.dynamic.attribute.loader" class="TechDivision\Import\Observers\DynamicAttributeLoader"/>
-        <service id="import.observer.additional.attribute" class="TechDivision\Import\Observers\AdditionalAttributeObserver"/>
+        <service id="import.observer.additional.attribute" class="TechDivision\Import\Observers\AdditionalAttributeObserver">
+            <argument type="service" id="import.serializer.factory.csv.additional.attribute"/>
+        </service>
         <service id="import.observer.generic.hook.aware.column.collector" class="TechDivision\Import\Observers\GenericHookAwareColumnCollectorObserver">
             <argument type="service" id="import.loader.collect.columns"/>
             <argument type="service" id="import.processor.registry"/>

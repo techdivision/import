@@ -194,5 +194,12 @@ class DependencyInjectionKeys
      *
      * @var string
      */
+    const IMPORT_SERIALIZER_FACTORY_CSV_VALUE = 'import.serializer.factory.csv.value';
+
+    /**
+     * The key for the additional attribute CSV serializer factory.
+     *
+     * @var string
+     */
     const IMPORT_SERIALIZER_FACTORY_CSV_ADDITIONAL_ATTRIBUTE = 'import.serializer.factory.csv.additional.attribute';
 }

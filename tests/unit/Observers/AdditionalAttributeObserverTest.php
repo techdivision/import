@@ -20,8 +20,13 @@
 
 namespace TechDivision\Import\Observers;
 
-use PHPUnit\Framework\TestCase;
+use PHPUnit\Util\Test;
 use TechDivision\Import\Utils\ColumnKeys;
+use TechDivision\Import\Subjects\SubjectInterface;
+use TechDivision\Import\Serializer\Csv\ValueCsvSerializer;
+use TechDivision\Import\Serializer\SerializerFactoryInterface;
+use TechDivision\Import\Configuration\SubjectConfigurationInterface;
+use TechDivision\Import\Serializer\Csv\Configuration\CsvConfigurationInterface;
 
 /**
  * Test class for the additional attribute observer implementation.
@@ -32,7 +37,7 @@ use TechDivision\Import\Utils\ColumnKeys;
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
  */
-class AdditionalAttributeObserverTest extends TestCase
+class AdditionalAttributeObserverTest extends Test
 {
 
     /**
@@ -51,7 +56,30 @@ class AdditionalAttributeObserverTest extends TestCase
      */
     protected function setUp()
     {
-        $this->additionalAttributeObserver = new AdditionalAttributeObserver();
+
+        // mock the CSV configuration instance
+        $mockCsvConfiguration = $this->getMockBuilder(CsvConfigurationInterface::class)->getMock();
+        $mockCsvConfiguration->expects($this->any())->method('getDelimiter')->willReturn(',');
+
+        // moch the subject configuration
+        $mockSubjectConfiguration = $this->getMockBuilder(SubjectConfigurationInterface::class)->getMock();
+        $mockSubjectConfiguration->expects($this->any())->method('getImportAdapter')->willReturn($mockCsvConfiguration);
+
+        // mock the subject instance itself
+        $mockSubject = $this->getMockBuilder(SubjectInterface::class)->getMock();
+        $mockSubject->expects($this->any())->method('getConfiguration')->willReturn($mockSubjectConfiguration);
+
+        // mock the value CSV serializer
+        $mockSerializer = new ValueCsvSerializer();
+        $mockSerializer->init($mockCsvConfiguration);
+
+        // mock the serializer factory
+        $mockSerializerFactory = $this->getMockBuilder(SerializerFactoryInterface::class)->setMethods(get_class_methods(SerializerFactoryInterface::class))->getMock();
+        $mockSerializerFactory->expects($this->any())->method('createSerializer')->willReturn($mockSerializer);
+
+        // initialize the observer instance we want to test
+        $this->additionalAttributeObserver = new AdditionalAttributeObserver($mockSerializerFactory);
+        $this->additionalAttributeObserver = $this->additionalAttributeObserver->createObserver($mockSubject);
     }
 
     /**
