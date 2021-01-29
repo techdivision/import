@@ -83,16 +83,18 @@ class SimpleDateConverter implements DateConverterInterface
      */
     public function convert($date, $format = 'Y-m-d H:i:s')
     {
+
         // create a DateTime instance from the passed value
         if ($dateTime = \DateTime::createFromFormat($this->getDateConverterConfiguration()->getSourceDateFormat(), $date)) {
             return $dateTime->format($format);
         }
 
-        // Date is not in configured format? Try if is a default format
         try {
+            // if the date is not in configured format,
+            // try to convert it using the default format
             return (new \DateTime($date))->format($format);
-        } catch( \Exception $e) {
-            // Catch if $date is no default date format
+        } catch (\Exception $e) {
+            // catch, if the date doesn't has the default date format
         }
 
         // return NULL, if the passed value is NOT a valid date
