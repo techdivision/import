@@ -2,6 +2,16 @@
 
 ## Bugfixes
 
+* Fixes bug with crash in date conversion with standard date format
+
+## Features
+
+* none
+
+# Version 16.8.0
+
+## Bugfixes
+
 * Fixed invalid validation for columns with header mappings
 
 ## Features
