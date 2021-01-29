@@ -83,7 +83,10 @@ class SimpleDateConverter implements DateConverterInterface
      */
     public function convert($date, $format = 'Y-m-d H:i:s')
     {
-
+        // create a DateTime instance from the passed value
+        if ($dateTime = new \DateTime($date)) {
+            return $dateTime->format($format);
+        }
         // create a DateTime instance from the passed value
         if ($dateTime = \DateTime::createFromFormat($this->getDateConverterConfiguration()->getSourceDateFormat(), $date)) {
             return $dateTime->format($format);
