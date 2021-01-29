@@ -85,6 +85,11 @@ class SimpleDateConverter implements DateConverterInterface
     {
 
         // create a DateTime instance from the passed value
+        if ($dateTime = new \DateTime($date)) {
+            return $dateTime->format($format);
+        }
+
+        // no default Format? Try format from converter config
         if ($dateTime = \DateTime::createFromFormat($this->getDateConverterConfiguration()->getSourceDateFormat(), $date)) {
             return $dateTime->format($format);
         }
