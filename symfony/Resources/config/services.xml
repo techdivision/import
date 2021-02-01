@@ -583,6 +583,7 @@
         <service id="import.assembler.category" class="TechDivision\Import\Assembler\CategoryAssembler">
             <argument type="service" id="import.repository.category"/>
             <argument type="service" id="import.repository.category.varchar"/>
+            <argument type="service" id="import.serializer.csv.category"/>
         </service>
 
         <!--
@@ -793,7 +794,9 @@
         </service>
         <service id="import.observer.attribute.set" class="TechDivision\Import\Observers\AttributeSetObserver"/>
         <service id="import.observer.dynamic.attribute.loader" class="TechDivision\Import\Observers\DynamicAttributeLoader"/>
-        <service id="import.observer.additional.attribute" class="TechDivision\Import\Observers\AdditionalAttributeObserver"/>
+        <service id="import.observer.additional.attribute" class="TechDivision\Import\Observers\AdditionalAttributeObserver">
+            <argument type="service" id="import.serializer.factory.csv.additional.attribute"/>
+        </service>
         <service id="import.observer.generic.hook.aware.column.collector" class="TechDivision\Import\Observers\GenericHookAwareColumnCollectorObserver">
             <argument type="service" id="import.loader.collect.columns"/>
             <argument type="service" id="import.processor.registry"/>
@@ -876,6 +879,20 @@
             <argument type="service" id="service_container"/>
         </service>
         <service id="import.serializer.factory.csv.additional.attribute" class="TechDivision\Import\Serializers\AdditionalAttributeCsvSerializerFactory">
+            <argument type="service" id="service_container"/>
+        </service>
+        <service id="import.serializer.csv.category" class="TechDivision\Import\Serializer\Csv\CategoryCsvSerializer">
+            <argument type="service" id="configuration"/>
+            <argument type="service" id="import.serializer.factory.csv.value"/>
+        </service>
+        <service id="import.serializer.factory.csv.category" class="TechDivision\Import\Serializers\CategoryCsvSerializerFactory">
+            <argument type="service" id="service_container"/>
+        </service>
+        <service id="import.serializer.csv.product.category" class="TechDivision\Import\Serializer\Csv\ProductCategoryCsvSerializer">
+            <argument type="service" id="configuration"/>
+            <argument type="service" id="import.serializer.factory.csv.value"/>
+        </service>
+        <service id="import.serializer.factory.csv.product.category" class="TechDivision\Import\Serializers\ProductCategoryCsvSerializerFactory">
             <argument type="service" id="service_container"/>
         </service>
 

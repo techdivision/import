@@ -21,6 +21,7 @@
 namespace TechDivision\Import\Assembler;
 
 use TechDivision\Import\Utils\MemberNames;
+use TechDivision\Import\Serializer\SerializerInterface;
 use TechDivision\Import\Repositories\CategoryRepository;
 use TechDivision\Import\Repositories\CategoryVarcharRepository;
 
@@ -35,6 +36,13 @@ use TechDivision\Import\Repositories\CategoryVarcharRepository;
  */
 class CategoryAssembler implements CategoryAssemblerInterface
 {
+
+    /**
+     * The serialize instance.
+     *
+     * @var \TechDivision\Import\Serializer\SerializerInterface
+     */
+    protected $serializer;
 
     /**
      * The repository to access categories.
@@ -55,13 +63,16 @@ class CategoryAssembler implements CategoryAssemblerInterface
      *
      * @param \TechDivision\Import\Repositories\CategoryRepository        $categoryRepository        The repository to access categories
      * @param \TechDivision\Import\Repositories\CategoryVarcharRepository $categoryVarcharRepository The repository instance
+     * @param \TechDivision\Import\Serializer\SerializerInterface         $serializer                The serializer instance
      */
     public function __construct(
         CategoryRepository $categoryRepository,
-        CategoryVarcharRepository $categoryVarcharRepository
+        CategoryVarcharRepository $categoryVarcharRepository,
+        SerializerInterface $serializer
     ) {
         $this->categoryRepository = $categoryRepository;
         $this->categoryVarcharRepository = $categoryVarcharRepository;
+        $this->serializer = $serializer;
     }
 
     /**
@@ -82,7 +93,7 @@ class CategoryAssembler implements CategoryAssemblerInterface
         // create the array with the resolved category path as keys
         foreach ($availableCategories as $category) {
             // expload the entity IDs from the category path
-            $entityIds = explode('/', $category[MemberNames::PATH]);
+            $entityIds =  $this->serializer->explode($category[MemberNames::PATH]);
 
             // cut-off the root category
             array_shift($entityIds);
@@ -102,7 +113,7 @@ class CategoryAssembler implements CategoryAssemblerInterface
             }
 
             // append the catogory with the string path as key
-            $categories[implode('/', $path)] = $category;
+            $categories[$this->serializer->implode($path)] = $category;
         }
 
         // return array with the categories
@@ -129,7 +140,7 @@ class CategoryAssembler implements CategoryAssemblerInterface
         // create the array with the resolved category path as keys
         foreach ($availableCategories as $category) {
             // expload the entity IDs from the category path
-            $entityIds = explode('/', $category[MemberNames::PATH]);
+            $entityIds = $this->serializer->explode($category[MemberNames::PATH]);
 
             // cut-off the root category
             array_shift($entityIds);
@@ -149,7 +160,7 @@ class CategoryAssembler implements CategoryAssemblerInterface
             }
 
             // append the catogory with the string path as key
-            $categories[implode('/', $path)] = $category;
+            $categories[$this->serializer->implode($path)] = $category;
         }
 
         // return array with the categories

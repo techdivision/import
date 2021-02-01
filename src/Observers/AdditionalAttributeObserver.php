@@ -22,6 +22,7 @@ namespace TechDivision\Import\Observers;
 
 use TechDivision\Import\Utils\ColumnKeys;
 use TechDivision\Import\Subjects\SubjectInterface;
+use TechDivision\Import\Serializer\SerializerFactoryInterface;
 
 /**
  * Observer that prepares the additional product attribues found in the CSV file
@@ -33,8 +34,57 @@ use TechDivision\Import\Subjects\SubjectInterface;
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
  */
-class AdditionalAttributeObserver extends AbstractObserver
+class AdditionalAttributeObserver extends AbstractObserver implements ObserverFactoryInterface
 {
+
+    /**
+     * The serializer used to serializer/unserialize the categories from the path column.
+     *
+     * @var \TechDivision\Import\Serializer\SerializerInterface
+     */
+    protected $serializer;
+
+    /**
+     * The serializer factory instance.
+     *
+     * @var \TechDivision\Import\Serializer\SerializerFactoryInterface
+     */
+    protected $serializerFactory;
+
+    /**
+     * Initialize the subject instance.
+     *
+     * @param \TechDivision\Import\Serializer\SerializerFactoryInterface $serializerFactory The serializer factory instance
+     * @param \TechDivision\Import\Observers\StateDetectorInterface|null $stateDetector     The state detector instance to use
+     */
+    public function __construct(
+        SerializerFactoryInterface $serializerFactory,
+        StateDetectorInterface $stateDetector = null
+    ) {
+
+        // initialize the bunch processor and the attribute loader instance
+        $this->serializerFactory = $serializerFactory;
+
+        // pass the state detector to the parent method
+        parent::__construct($stateDetector);
+    }
+
+    /**
+     * Will be invoked by the observer visitor when a factory has been defined to create the observer instance.
+     *
+     * @param \TechDivision\Import\Subjects\SubjectInterface $subject The subject instance
+     *
+     * @return \TechDivision\Import\Observers\ObserverInterface The observer instance
+     */
+    public function createObserver(SubjectInterface $subject)
+    {
+
+        // initialize the serializer instance
+        $this->serializer = $this->serializerFactory->createSerializer($subject->getConfiguration()->getImportAdapter());
+
+        // return the initialized instance
+        return $this;
+    }
 
     /**
      * Will be invoked by the action on the events the listener has been registered for.
@@ -71,22 +121,9 @@ class AdditionalAttributeObserver extends AbstractObserver
             // load the subject instance
             $subject = $this->getSubject();
             // explode the additional attributes
-            $additionalAttributes = $subject->explode($additionalAttributes, $this->getMultipleFieldDelimiter());
+            $additionalAttributes = $this->serializer->denormalize($additionalAttributes, false);
             // iterate over the attributes and append them to the row
-            foreach ($additionalAttributes as $additionalAttribute) {
-                // initialize the option value
-                $optionValue = '';
-                // explode the attribute code/option value from the attribute
-                $exploded = $subject->explode($additionalAttribute, '=');
-                // initialize attribute code and option value, depending on what we've exploded
-                if (sizeof($exploded) < 1) {
-                    continue;
-                } elseif (sizeof($exploded) === 1) {
-                    list ($attributeCode) = $exploded;
-                } else {
-                    list ($attributeCode, $optionValue) = $exploded;
-                }
-
+            foreach ($additionalAttributes as $attributeCode => $optionValue) {
                 // try to load the appropriate key for the value
                 if ($subject->hasHeader($attributeCode) === false) {
                     $subject->addHeader($attributeCode);

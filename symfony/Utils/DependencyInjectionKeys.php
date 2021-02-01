@@ -162,21 +162,42 @@ class DependencyInjectionKeys
     const IMPORT_SUBJECT_DATE_CONVERTER_SIMPLE = 'import.subject.date.converter.simple';
 
     /**
-     * The key for the CSV value serializer.
+     * The key for the value CSV serializer.
      *
      * @var string
      */
     const IMPORT_SERIALIZER_CSV_VALUE = 'import.serializer.csv.value';
 
     /**
-     * The key for the CSV additional attribute serializer.
+     * The key for the category CSV serializer.
+     *
+     * @var string
+     */
+    const IMPORT_SERIALIZER_CSV_CATEGORY = 'import.serializer.csv.category';
+
+    /**
+     * The key for the product category CSV serializer.
+     *
+     * @var string
+     */
+    const IMPORT_SERIALIZER_CSV_PRODUCT_CATEGORY = 'import.serializer.csv.product.category';
+
+    /**
+     * The key for the additional attribute CSV serializer.
      *
      * @var string
      */
     const IMPORT_SERIALIZER_CSV_ADDITIONAL_ATTRIBUTE = 'import.serializer.csv.additional.attribute';
 
     /**
-     * The key for the CSV additional attribute serializer factory.
+     * The key for the additional attribute CSV serializer factory.
+     *
+     * @var string
+     */
+    const IMPORT_SERIALIZER_FACTORY_CSV_VALUE = 'import.serializer.factory.csv.value';
+
+    /**
+     * The key for the additional attribute CSV serializer factory.
      *
      * @var string
      */

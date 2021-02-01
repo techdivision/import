@@ -714,7 +714,7 @@ abstract class AbstractSubject implements SubjectInterface, FilesystemSubjectInt
                 }
             }
         }
-        
+
         // log a debug message with the new source directory
         $this->getSystemLogger()->debug(
             sprintf('Subject %s successfully updated status data for import %s', get_class($this), $serial)
@@ -1243,6 +1243,16 @@ abstract class AbstractSubject implements SubjectInterface, FilesystemSubjectInt
 
         // throw an exception if the root category is NOT available
         throw new \Exception(sprintf('Root category for %s is not available', $storeViewCode));
+    }
+
+    /**
+     * Return's the array with the root categories.
+     *
+     * @return array The array with the root categories
+     */
+    public function getRootCategories()
+    {
+        return $this->rootCategories;
     }
 
     /**
