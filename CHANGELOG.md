@@ -1,3 +1,9 @@
+# Version 16.8.2
+
+## Bugfixes
+
+* Add #PAC-317: Remove UTF-8 BOM from windows generated csv file
+
 # Version 16.8.1
 
 ## Bugfixes

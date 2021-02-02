@@ -112,8 +112,15 @@ class Lexer implements LexerInterface
         $originalLocale = setlocale(LC_ALL, '0');
         setlocale(LC_ALL, 'en_US.UTF-8');
 
+        // http://en.wikipedia.org/wiki/Byte_order_mark#UTF-8
+        $bom = pack('CCC', 0xEF, 0xBB, 0xBF);
+
         // process each line of the CSV file
         foreach ($csv as $lineNumber => $line) {
+            // remove windwos BOM if exists
+            if ($lineNumber == 0 && isset($line[0]) && substr($line[0], 0, 3) === $bom) {
+                $line[0] = substr($line[0], 3);
+            }
             if ($ignoreHeader && $lineNumber == 0 || (count($line) === 1 && trim($line[0]) === '')) {
                 continue;
             }
