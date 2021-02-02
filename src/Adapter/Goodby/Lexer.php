@@ -121,6 +121,9 @@ class Lexer implements LexerInterface
             if ($lineNumber == 0 && isset($line[0]) && substr($line[0], 0, 3) === $bom) {
                 $line[0] = substr($line[0], 3);
             }
+            if ($ignoreHeader && $lineNumber == 0 || (count($line) === 1 && trim($line[0]) === '')) {
+                continue;
+            }
             $interpreter->interpret($line);
         }
 
