@@ -91,7 +91,7 @@ class SimpleDateConverter implements DateConverterInterface
         // Date is not in configured format? Try if is a default format
         try {
             return (new \DateTime($date))->format($format);
-        } catch( \Exception $e) {
+        } catch (\Exception $e) {
             // Catch if $date is no default date format
         }
 
