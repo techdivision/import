@@ -155,14 +155,15 @@ interface ApplicationInterface extends ContainerInterface
     public function stop($reason);
 
     /**
-     * Stop processing the operation.
+     * Finish processing the operation. The application will be stopped without an error output.
      *
-     * @param string $reason The reason why the operation has been stopped
+     * @param string $reason   The reason why the operation has been finish
+     * @param int    $exitCode The exit code to use
      *
      * @return void
-     * @throws \TechDivision\Import\Exceptions\ApplicationFinishedException Is thrown if the application has been finished
+     * @throws \TechDivision\Import\Exceptions\ApplicationFinishedException Is thrown if the application has been finish
      */
-    public function finish($reason = '');
+    public function finish($reason, $exitCode = 0);
 
     /**
      * Return's TRUE if the operation has been stopped, else FALSE.
