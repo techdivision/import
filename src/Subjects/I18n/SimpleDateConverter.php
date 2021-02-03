@@ -89,12 +89,15 @@ class SimpleDateConverter implements DateConverterInterface
             return $dateTime->format($format);
         }
 
-        try {
-            // if the date is not in configured format,
-            // try to convert it using the default format
-            return (new \DateTime($date))->format($format);
-        } catch (\Exception $e) {
-            // catch, if the date doesn't has the default date format
+        // only empty date will check otherwise we get "today" as date
+        if (!empty($date)) {
+            try {
+                // if the date is not in configured format,
+                // try to convert it using the default format
+                return (new \DateTime($date))->format($format);
+            } catch (\Exception $e) {
+                // catch, if the date doesn't has the default date format
+            }
         }
 
         // return NULL, if the passed value is NOT a valid date

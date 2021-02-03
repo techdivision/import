@@ -9,6 +9,8 @@
 * Fixed #PAC-265: Also use url_path when generate unique url_key for categories
 * Fixed #PAC-212: .OK file filter only supports suffix .csv
 * Fixed #PAC-206: Prevent finder mappings of different libraries to be overwritten
+* Fixed #PAC-317: Remove UTF-8 BOM from windows generated csv file
+* Fixes #PAC-244: bug with crash in date conversion with standard date format
 
 ## Features
 
