@@ -128,8 +128,8 @@ class SubjectPlugin extends AbstractPlugin implements SubjectAwarePluginInterfac
                 )
             );
         } catch (MissingOkFileException $mofe) {
-            // stop the application if we can't find the mandatory OK file
-            $this->getApplication()->stop($mofe->getMessage());
+            // finish the application if we can't find the mandatory OK file
+            $this->getApplication()->finish($mofe->getMessage());
         } catch (\Exception $e) {
             // re-throw the exception
             throw $e;

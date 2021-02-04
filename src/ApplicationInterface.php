@@ -145,17 +145,32 @@ interface ApplicationInterface extends ContainerInterface
     public function process($serial);
 
     /**
-     * Stop processing the operation.
+     * Stop processing the operation immediately and should return an exit code > 0.
      *
-     * @param string $reason The reason why the operation has been stopped
+     * This will stop the operation with an error output and rolling back the single transaction,
+     * if it has been started by the CLI parameter `--single-transaction=true`.
+     *
+     * This method should be used when the import process should be interrupted in case of an
+     * error and to signal the user that something went wrong.
+     *
+     * @param string $reason   The reason why the operation has been stopped
+     * @param int    $exitCode The exit code to use, defaults to 1
      *
      * @return void
      * @throws \TechDivision\Import\Exceptions\ApplicationStoppedException Is thrown if the application has been stopped
      */
-    public function stop($reason);
+    public function stop($reason, $exitCode = 1);
 
     /**
-     * Finish processing the operation. The application will be stopped without an error output.
+     * Finish processing the operation immediately and should return an exit code 0.
+     *
+     * This will stop the operation without an error output and commits the single transaction,
+     * if it has been started by the CLI parameter `--single-transaction=true`.
+     *
+     * This method should be used when the import process should be interrupted in case
+     * further processing makes no sense or is not necessary and to signal the user that
+     * everything is as expected.
+     *
      *
      * @param string $reason   The reason why the operation has been finish
      * @param int    $exitCode The exit code to use
