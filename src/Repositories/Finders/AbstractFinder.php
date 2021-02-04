@@ -23,11 +23,13 @@ namespace TechDivision\Import\Repositories\Finders;
 /**
  * An abstract finder implementation.
  *
- * @author    Tim Wagner <t.wagner@techdivision.com>
- * @copyright 2019 TechDivision GmbH <info@techdivision.com>
- * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
- * @link      https://github.com/techdivision/import
- * @link      http://www.techdivision.com
+ * @author     Tim Wagner <t.wagner@techdivision.com>
+ * @copyright  2021 TechDivision GmbH <info@techdivision.com>
+ * @license    http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
+ * @link       https://github.com/techdivision/import
+ * @link       http://www.techdivision.com
+ * @deprecated Since 16.8.3
+ * @see        \TechDivision\Import\Dbal\Collection\Repositories\Finders\AbstractFinder
  */
 abstract class AbstractFinder implements FinderInterface
 {

@@ -57,6 +57,7 @@ interface UrlKeyAwareSubjectInterface
      * @param array $varcharAttribute The varchar value to check
      *
      * @return boolean TRUE if the URL key is related, else FALSE
+     * @deprecated Since 16.8.3
      */
     public function isUrlKeyOf(array $varcharAttribute);
 }
