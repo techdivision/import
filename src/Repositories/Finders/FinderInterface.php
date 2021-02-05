@@ -29,7 +29,7 @@ namespace TechDivision\Import\Repositories\Finders;
  * @link       https://github.com/techdivision/import
  * @link       http://www.techdivision.com
  * @deprecated Since 16.8.3
- * @see        \TechDivision\Import\Dbal\Repositories\Finder\FinderFactoryInterface
+ * @see        \TechDivision\Import\Dbal\Repositories\Finder\FinderInterface
  */
 interface FinderInterface
 {
