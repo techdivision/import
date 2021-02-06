@@ -51,6 +51,13 @@ class UrlKeyUtil implements UrlKeyUtilInterface
     protected $suffixes = array();
 
     /**
+     * The URL rewrite entity type to use.
+     *
+     * @var \TechDivision\Import\Utils\EnumInterface
+     */
+    protected $urlRewriteEntityType;
+
+    /**
      * The array with the entity type code > configuration key mapping.
      *
      * @var array
@@ -66,15 +73,18 @@ class UrlKeyUtil implements UrlKeyUtilInterface
      * @param \TechDivision\Import\Services\UrlKeyAwareProcessorInterface $urlKeyAwareProcessor The URL key aware processor instance
      * @param \TechDivision\Import\Loaders\LoaderInterface                $coreConfigDataLoader The core config data loader instance
      * @param \TechDivision\Import\Loaders\LoaderInterface                $storeIdLoader        The core config data loader instance
+     * @param \TechDivision\Import\Utils\EnumInterface                    $urlRewriteEntityType The URL rewrite entity type to use
      */
     public function __construct(
         UrlKeyAwareProcessorInterface $urlKeyAwareProcessor,
         LoaderInterface $coreConfigDataLoader,
-        LoaderInterface $storeIdLoader
+        LoaderInterface $storeIdLoader,
+        EnumInterface $urlRewriteEntityType
     ) {
 
         // initialize the URL kew aware processor instance
         $this->urlKeyAwareProcessor = $urlKeyAwareProcessor;
+        $this->urlRewriteEntityType = $urlRewriteEntityType;
 
         // load the available stores
         $storeIds = $storeIdLoader->load();
@@ -132,8 +142,9 @@ class UrlKeyUtil implements UrlKeyUtilInterface
         $storeId = (int) $subject->getRowStoreId();
         $entityTypeCode = $subject->getEntityTypeCode();
 
-        // initialize the entity ID from the passed entity
+        // initialize entity ID + type from the passed entity
         $entityId = (int) $entity[MemberNames::ENTITY_ID];
+        $entityType = (string) $this->urlRewriteEntityType;
 
         // initialize the counter
         $counter = 0;
@@ -151,12 +162,13 @@ class UrlKeyUtil implements UrlKeyUtilInterface
             // try to load an existing URL rewrite
             $urlRewrite = $this->loadUrlRewriteByRequestPathAndStoreId($requestPath, $storeId);
 
-            // try to load the entity's URL key
+            // query whether or not an entity with the given
+            // request path and store ID is available
             if ($urlRewrite) {
-                // this IS the URL key of the passed entity
-                if (((int) $urlRewrite[MemberNames::ENTITY_ID]     === $entityId) &&
-                    ((int) $urlRewrite[MemberNames::STORE_ID]      === $storeId) &&
-                    ((int) $urlRewrite[MemberNames::REDIRECT_TYPE] === 0)
+                // if yes, query if this IS the URL key of the passed entity
+                if (((int) $urlRewrite[MemberNames::ENTITY_ID]   === $entityId) &&
+                    ((int) $urlRewrite[MemberNames::STORE_ID]    === $storeId) &&
+                           $urlRewrite[MemberNames::ENTITY_TYPE] === $entityType
                 ) {
                     // add the matching counter
                     $matchingCounters[] = $counter;
@@ -179,6 +191,7 @@ class UrlKeyUtil implements UrlKeyUtilInterface
                         MemberNames::STORE_ID       => $storeId,
                         MemberNames::ENTITY_ID      => $entityId,
                         MemberNames::REQUEST_PATH   => $requestPath,
+                        MemberNames::ENTITY_TYPE    => $entityType,
                         EntityStatus::MEMBER_NAME   => EntityStatus::STATUS_CREATE
                     )
                 );
@@ -222,9 +235,21 @@ class UrlKeyUtil implements UrlKeyUtilInterface
     public function makeUnique(UrlKeyAwareSubjectInterface $subject, array $entity, string $urlKey, array $urlPaths = array()) : string
     {
 
+        // in general, we want to start at -1, because if NO URL paths has been given
+        // e. g. we've a product or a root category, we want to make sure that we've
+        // no URL collisions.
+        $i = -1;
+
+        // only in case we've a category AND URL paths have been given, we start at 0,
+        // because the we always want to make sure that also the URL path will be taken
+        // into account when we make the URL key unique.
+        if ($this->urlRewriteEntityType->equals(UrlRewriteEntityType::CATEGORY) && sizeof($urlPaths) > 0) {
+            $i = 0;
+        }
+
         // iterate over the passed URL paths
         // and try to find a unique URL key
-        for ($i = sizeof($urlPaths) > 0 ? 0 : -1; $i < sizeof($urlPaths); $i++) {
+        for ($i; $i < sizeof($urlPaths); $i++) {
             // try to make the URL key unique for the given URL path
             $proposedUrlKey = $this->doMakeUnique($subject, $entity, $urlKey, isset($urlPaths[$i]) ? $urlPaths[$i] : null);
 
