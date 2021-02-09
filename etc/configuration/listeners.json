@@ -24,6 +24,15 @@
       "app.tear.down": [
         "import.listener.import.history",
         "import.listener.clear.registry"
+      ],
+      "action.create.success.create.url_rewrite": [
+        "import.listener.cache.url.rewrite"
+      ],
+      "action.create.success.update.url_rewrite": [
+        "import.listener.cache.url.rewrite"
+      ],
+      "action.create.success.delete.url_rewrite": [
+        "import.listener.cache.url.rewrite"
       ]
     }
   ]

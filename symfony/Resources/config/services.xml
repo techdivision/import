@@ -973,6 +973,9 @@
         <service id="import.listener.cache.update" class="TechDivision\Import\Listeners\CacheUpdateListener">
             <argument type="service" id="cache.configurable"/>
         </service>
+        <service id="import.listener.cache.url.rewrite" class="TechDivision\Import\Listeners\CacheUrlRewriteListener">
+            <argument type="service" id="cache.static"/>
+        </service>
 
         <!--
          ! The DI configuration for the modules
