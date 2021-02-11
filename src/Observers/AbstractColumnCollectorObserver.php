@@ -1,7 +1,7 @@
 <?php
 
 /**
- * TechDivision\Import\Observers\GenericHookAwareColumnCollectorObserver
+ * TechDivision\Import\Observers\GenericColumnCollectorObserver
  *
  * NOTICE OF LICENSE
  *
@@ -20,12 +20,13 @@
 
 namespace TechDivision\Import\Observers;
 
-use Ramsey\Uuid\Uuid;
 use TechDivision\Import\Utils\RegistryKeys;
 use TechDivision\Import\Loaders\LoaderInterface;
 use TechDivision\Import\Subjects\SubjectInterface;
 use TechDivision\Import\Interfaces\HookAwareInterface;
 use TechDivision\Import\Services\RegistryProcessorInterface;
+use TechDivision\Import\Utils\ColumnKeys;
+use TechDivision\Import\Utils\StoreViewCodes;
 
 /**
  * Observer that loads configurable data into the registry.
@@ -36,7 +37,7 @@ use TechDivision\Import\Services\RegistryProcessorInterface;
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
  */
-class GenericHookAwareColumnCollectorObserver extends AbstractObserver implements HookAwareInterface, ObserverFactoryInterface
+abstract class AbstractColumnCollectorObserver extends AbstractObserver implements HookAwareInterface, ObserverFactoryInterface
 {
 
     /**
@@ -44,38 +45,50 @@ class GenericHookAwareColumnCollectorObserver extends AbstractObserver implement
      *
      * @var \TechDivision\Import\Loaders\LoaderInterface
      */
-    protected $loader;
+    private $loader;
 
     /**
      * The registry processor instance.
      *
      * @var \TechDivision\Import\Services\RegistryProcessorInterface
      */
-    protected $registryProcessor;
+    private $registryProcessor;
+
+    /**
+     * The flag to query whether or not the value has to be validated on the main row only.
+     *
+     * @var boolean
+     */
+    private $mainRowOnly = false;
 
     /**
      * The array with the column names to assemble the data for.
      *
      * @var array
      */
-    protected $columnNames = array();
+    private $columnNames = array();
 
     /**
      * The array with the collected column values.
      *
      * @var array
      */
-    protected $values = array();
+    private $values = array();
 
     /**
      * Initializes the callback with the loader instance.
      *
      * @param \TechDivision\Import\Loaders\LoaderInterface             $loader            The loader for the validations
      * @param \TechDivision\Import\Services\RegistryProcessorInterface $registryProcessor The registry processor instance
+     * @param boolean                                                  $mainRowOnly       The flag to decide whether or not only values of the main row has to be
      */
-    public function __construct(LoaderInterface $loader, RegistryProcessorInterface $registryProcessor)
-    {
+    public function __construct(
+        LoaderInterface $loader,
+        RegistryProcessorInterface $registryProcessor,
+        bool $mainRowOnly = false
+    ) {
         $this->loader = $loader;
+        $this->mainRowOnly = $mainRowOnly;
         $this->registryProcessor = $registryProcessor;
     }
 
@@ -86,7 +99,7 @@ class GenericHookAwareColumnCollectorObserver extends AbstractObserver implement
      *
      * @return \TechDivision\Import\Observers\ObserverInterface The observer instance
      */
-    public function createObserver(SubjectInterface $subject)
+    public function createObserver(SubjectInterface $subject) : ObserverInterface
     {
 
         // load the names of the columns we want to collect the values for
@@ -104,7 +117,7 @@ class GenericHookAwareColumnCollectorObserver extends AbstractObserver implement
      * @return array The modified row
      * @see \TechDivision\Import\Observers\ObserverInterface::handle()
      */
-    public function handle(SubjectInterface $subject)
+    public function handle(SubjectInterface $subject) : array
     {
 
         // initialize the row
@@ -123,7 +136,7 @@ class GenericHookAwareColumnCollectorObserver extends AbstractObserver implement
      *
      * @return \TechDivision\Import\Loaders\LoaderInterface The loader instance
      */
-    protected function getLoader()
+    protected function getLoader() : LoaderInterface
     {
         return $this->loader;
     }
@@ -133,28 +146,55 @@ class GenericHookAwareColumnCollectorObserver extends AbstractObserver implement
      *
      * @return \TechDivision\Import\Services\RegistryProcessorInterface The processor instance
      */
-    protected function getRegistryProcessor()
+    protected function getRegistryProcessor() : RegistryProcessorInterface
     {
         return $this->registryProcessor;
     }
 
     /**
+     * Query whether or not we've to parse the main row only.
+     *
+     * @return bool TRUE if only the main row has to be parsed, else FALSE
+     */
+    protected function useMainRowOnly() : bool
+    {
+        return $this->mainRowOnly;
+    }
+
+    /**
+     * Return's the primary key value that will be used as second incdex.
+     *
+     * @return string The primary key to be used
+     */
+    abstract protected function getPrimaryKey() : string;
+
+    /**
      * Process the observer's business logic.
      *
-     * @return array The processed row
-     * @throws \Exception Is thrown, if the product with the SKU can not be loaded
+     * @return void
      */
-    protected function process()
+    protected function process() : void
     {
+
+        // query whether or not we've
+        // to parse the main row only
+        if ($this->useMainRowOnly()) {
+            // load the store view code to figure out if we're on a main row or not
+            $storeViewCode = $this->getValue(ColumnKeys::STORE_VIEW_CODE, StoreViewCodes::DEF);
+            // query whether or not we're in the
+            // main row, if not stop processing
+            if ($storeViewCode !== StoreViewCodes::DEF) {
+                return;
+            }
+        }
 
         // load the names of the columns we want to collect the values for
         $columnNames = $this->getLoader()->load($this->getSubject()->getConfiguration());
 
-        // collect the values, keeping in mind, thath the index must be a string
-        // as later on it will be merged with the function `array_merge_recursive()`
-        // an values with the same key will be overwritten
+        // collect the values using the column name and the primary
+        // key name as indexes to allow fast access to the values
         foreach ($columnNames as $columnName) {
-            $this->values[$columnName][Uuid::uuid4()->toString()] = $this->getValue($columnName);
+            $this->values[$columnName][$this->getPrimaryKey()] = $this->getValue($columnName);
         }
     }
 
@@ -167,6 +207,7 @@ class GenericHookAwareColumnCollectorObserver extends AbstractObserver implement
      */
     public function setUp($serial)
     {
+        // do nothing here
     }
 
     /**
@@ -186,9 +227,10 @@ class GenericHookAwareColumnCollectorObserver extends AbstractObserver implement
         // successfully updated the status data
         $this->getSystemLogger()->notice(
             sprintf(
-                'Observer "%s" successfully updated status data for "%s"',
+                'Observer "%s" successfully updated status data for "%s" with "%d" rows',
                 get_class($this),
-                RegistryKeys::COLLECTED_COLUMNS
+                RegistryKeys::COLLECTED_COLUMNS,
+                sizeof($this->values)
             )
         );
     }
