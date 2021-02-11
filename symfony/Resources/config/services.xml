@@ -331,7 +331,6 @@
         <service id="cache.static" alias="import.cache.adapter.static"/>
         <service id="cache.configurable" alias="import.cache.adapter.configurable"/>
         <service id="import.observer.generic.validator" alias="import.observer.generic.validation"/>
-        <service id="import.observer.generic.column.collector" alias="import.observer.generic.hook.aware.column.collector"/>
 
         <!--
          | The DI repository configuration
@@ -797,7 +796,7 @@
         <service id="import.observer.additional.attribute" class="TechDivision\Import\Observers\AdditionalAttributeObserver">
             <argument type="service" id="import.serializer.factory.csv.additional.attribute"/>
         </service>
-        <service id="import.observer.generic.hook.aware.column.collector" class="TechDivision\Import\Observers\GenericHookAwareColumnCollectorObserver">
+        <service id="import.observer.generic.column.collector" class="TechDivision\Import\Observers\GenericColumnCollectorObserver">
             <argument type="service" id="import.loader.collect.columns"/>
             <argument type="service" id="import.processor.registry"/>
         </service>
