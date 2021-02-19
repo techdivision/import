@@ -64,6 +64,13 @@ class DependencyInjectionKeys
     const CONFIGURATION = 'configuration';
 
     /**
+     * The key for the vendor directory.
+     *
+     * @var string
+     */
+    const CONFIGURATION_VENDOR_DIR = 'import_cli.configuration.vendor.dir';
+
+    /**
      * The key for the goodby export adapter service.
      *
      * @var string
