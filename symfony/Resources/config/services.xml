@@ -119,7 +119,7 @@
         <!--
          | The DI finder factory configuration
          |-->
-        <service id="import.repository.finder.factory.simple" class="TechDivision\Import\Dbal\Repositories\Finders\SimpleFinderFactory"/>
+        <service id="import.repository.finder.factory.simple" class="TechDivision\Import\Dbal\Collection\Repositories\Finders\SimpleFinderFactory"/>
         <service id="import.repository.finder.factory.yielded" class="TechDivision\Import\Dbal\Collection\Repositories\Finders\YieldedFinderFactory"/>
         <service id="import.repository.finder.factory.unique" class="TechDivision\Import\Dbal\Collection\Repositories\Finders\UniqueFinderFactory"/>
         <service id="import.repository.finder.factory.configurable" class="TechDivision\Import\Dbal\Collection\Repositories\Finders\ConfigurableFinderFactory">
