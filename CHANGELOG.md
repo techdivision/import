@@ -1,3 +1,14 @@
+# Version 16.8.4
+
+## Improvement
+
+* PAC-96: Define new constands for FileUploadConfiguration
+  * https://github.com/techdivision/import/issues/181
+
+## Bugfixes
+
+* Fixes bug to add more listener when event name has already some listener
+
 # Version 16.8.3
 
 ## Bugfixes
