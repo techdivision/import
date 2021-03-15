@@ -73,13 +73,13 @@ class EmitterFactory implements EmitterFactoryInterface
      *
      * @param \TechDivision\Import\ConfigurationManagerInterface              $configurationManager The configuration instance
      * @param \Symfony\Component\DependencyInjection\TaggedContainerInterface $container            The container instance
+     * @param \Doctrine\Common\Collections\Collection                         $systemLoggers        The array with the system logger instances
      */
     public function __construct(
-        ConfigurationManagerInterface $configurationManager, 
+        ConfigurationManagerInterface $configurationManager,
         TaggedContainerInterface $container,
         Collection $systemLoggers
-    )
-    {
+    ) {
         $this->container = $container;
         $this->configurationManager = $configurationManager;
         $this->systemLoggers = $systemLoggers;
@@ -146,7 +146,7 @@ class EmitterFactory implements EmitterFactoryInterface
                     continue;
                 }
                 // Already registert listeners? Add each new single one
-                foreach($listenerArray as $diValue) {
+                foreach ($listenerArray as $diValue) {
                     $this->listeners[$uniqueKeyForListener][] = $diValue;
                 }
                 $this->getSystemLogger()->debug(
