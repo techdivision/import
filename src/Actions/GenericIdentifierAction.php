@@ -53,7 +53,7 @@ class GenericIdentifierAction extends GenericAction implements IdentifierActionI
         $methodName = isset($row[EntityStatus::MEMBER_NAME]) ? $row[EntityStatus::MEMBER_NAME] : null;
 
         // Something went wrong in $row an no function to persist is defined
-        if (!$methodName || !method_exists($this,$methodName)) {
+        if (!$methodName || !method_exists($this, $methodName)) {
             throw new \Exception('Method name to persist data not defined');
         }
         // invoke the method
