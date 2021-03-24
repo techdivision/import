@@ -722,6 +722,7 @@
         <service id="import.events.emitter.factory" class="TechDivision\Import\Events\EmitterFactory">
             <argument type="service" id="import.configuration.manager"/>
             <argument type="service" id="service_container"/>
+            <argument type="service" id="loggers"/>
         </service>
         <service id="import.events.emitter" class="League\Event\Emitter">
             <factory service="import.events.emitter.factory" method="createEmitter"/>
