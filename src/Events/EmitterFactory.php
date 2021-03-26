@@ -20,11 +20,13 @@
 
 namespace TechDivision\Import\Events;
 
+use Doctrine\Common\Collections\Collection;
 use League\Event\Emitter;
 use League\Event\EmitterInterface;
 use Symfony\Component\DependencyInjection\TaggedContainerInterface;
 use TechDivision\Import\ConfigurationManagerInterface;
 use TechDivision\Import\Configuration\ListenerAwareConfigurationInterface;
+use TechDivision\Import\SystemLoggerTrait;
 
 /**
  * A factory implementation to create a new event emitter instance.
@@ -37,6 +39,13 @@ use TechDivision\Import\Configuration\ListenerAwareConfigurationInterface;
  */
 class EmitterFactory implements EmitterFactoryInterface
 {
+
+    /**
+     * The trait that provides basic filesystem handling functionality.
+     *
+     * @var \TechDivision\Import\SystemLoggerTrait
+     */
+    use SystemLoggerTrait;
 
     /**
      * The configuration instance.
@@ -64,11 +73,16 @@ class EmitterFactory implements EmitterFactoryInterface
      *
      * @param \TechDivision\Import\ConfigurationManagerInterface              $configurationManager The configuration instance
      * @param \Symfony\Component\DependencyInjection\TaggedContainerInterface $container            The container instance
+     * @param \Doctrine\Common\Collections\Collection                         $systemLoggers        The array with the system logger instances
      */
-    public function __construct(ConfigurationManagerInterface $configurationManager, TaggedContainerInterface $container)
-    {
+    public function __construct(
+        ConfigurationManagerInterface $configurationManager,
+        TaggedContainerInterface $container,
+        Collection $systemLoggers
+    ) {
         $this->container = $container;
         $this->configurationManager = $configurationManager;
+        $this->systemLoggers = $systemLoggers;
     }
 
     /**
@@ -124,8 +138,21 @@ class EmitterFactory implements EmitterFactoryInterface
 
         // prepare the listeners with the even names as key and the DI ID as value
         foreach ($listenerConfigurations as $listeners) {
-            foreach ($listeners as $key => $name) {
-                $this->listeners[$parentName == null ? $key : sprintf('%s.%s', $parentName, $key)] = $name;
+            foreach ($listeners as $key => $listenerArray) {
+                $uniqueKeyForListener = $parentName == null ? $key : sprintf('%s.%s', $parentName, $key);
+                // no registert listener for the unique key? Simply add to optimise speed
+                if (!isset($this->listeners[$uniqueKeyForListener])) {
+                    $this->listeners[$uniqueKeyForListener] = $listenerArray;
+                    continue;
+                }
+                // Already registert listeners? Add each new single one
+                foreach ($listenerArray as $diValue) {
+                    $this->listeners[$uniqueKeyForListener][] = $diValue;
+                }
+                $this->getSystemLogger()->debug(
+                    sprintf("More than one registert listeners for %s", $uniqueKeyForListener),
+                    $this->listeners[$uniqueKeyForListener]
+                );
             }
         }
     }

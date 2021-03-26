@@ -11,6 +11,7 @@
 * Fixed #PAC-206: Prevent finder mappings of different libraries to be overwritten
 * Fixed #PAC-317: Remove UTF-8 BOM from windows generated csv file
 * Fixes #PAC-244: bug with crash in date conversion with standard date format
+* Fixes bug to add more listener when event name has already some listener
 
 ## Features
 
@@ -21,6 +22,8 @@
 * Add #PAC-326: Cross-entity import of URLs (rewrites + redirects)  
 * Add #PAC-89: Add debug email command + DebugSendPlugin
 * Add #PAC-57: Deleting dedicated attribute values via import by setting a configurable value
+* Add #PAC-96: Define new constands for FileUploadConfiguration
+    * https://github.com/techdivision/import/issues/181
 
 # Version 16.5.3
 
