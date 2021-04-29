@@ -12,6 +12,7 @@
 * Fixed #PAC-317: Remove UTF-8 BOM from windows generated csv file
 * Fixes #PAC-244: bug with crash in date conversion with standard date format
 * Fixes bug to add more listener when event name has already some listener
+* Fix php 7.4 notice
 
 ## Features
 
