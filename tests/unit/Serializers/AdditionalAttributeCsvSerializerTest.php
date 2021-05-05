@@ -284,4 +284,73 @@ class AdditionalAttributeCsvSerializerTest extends AbstractSerializerTest
         // serialize the values and assert the result
         $this->assertSame($value, $this->additionalAttributeSerializer->serialize($values));
     }
+
+    /**
+     * Tests if the serialize() method with simple values for a boolean, select and multiselect attribute.
+     *
+     * @return void
+     */
+    public function testSerializeAdditionalAttributesJSONAndRow()
+    {
+
+        // initialize the expected result row
+        $expected = 'my_boolean_attribute=true,my_select_attribute=selected_value_01,my_multiselect_attribute=multiselected_value_01|multiselected_value_02';
+        $expected = '075/450,"""ClothingSize=Eine Größe XXL"",""Description=[{""""document-type"""":""""Aufbauanleitung"""",""""url"""":""""a/d/d/f/addfb8aeb84e077f9774b1288dcf4bcfa46fa5c9_075450_00_A1_20_FAN.pdf""""}]"",""Category3Header=Mit Kapuze"",""BulletText2=[""""8/2/5/0/8250ae5dc6d3d72c4155513ce4315c7f2f450a5a_summerline_754282_20.tif""""]"",""Category1Header=Erste Hilfe & Arbeitsschutzausrüstung""","Normal Tax Class"';
+
+        // create and initialize the CSV value serializer
+        $valueCsvSerializer = new ValueCsvSerializer();
+        $valueCsvSerializer->init($this->getMockCsvConfiguration());
+
+        // initialize the array with the values to serializer
+        $values = array(
+            'ClothingSize'        => 'Eine Größe XXL',
+            'Description'         => '[{"document-type":"Aufbauanleitung","url":"a/d/d/f/addfb8aeb84e077f9774b1288dcf4bcfa46fa5c9_075450_00_A1_20_FAN.pdf"}]',
+            'Category3Header'     => 'Mit Kapuze',
+            'BulletText2'         => '["8/2/5/0/8250ae5dc6d3d72c4155513ce4315c7f2f450a5a_summerline_754282_20.tif"]',
+            'Category1Header'     => 'Erste Hilfe & Arbeitsschutzausrüstung',
+        );
+        $newAttributesValue = $this->additionalAttributeSerializer->serialize($values);
+
+        $valueLine = array(
+            '075/450',
+            $newAttributesValue,
+            'Normal Tax Class'
+        );
+
+        $result = $valueCsvSerializer->serialize($valueLine);
+        // serialize the values and assert the result
+        $this->assertSame($expected, $result);
+    }
+
+    /**
+     * Tests if the unserialize() method with enclosed simple values for a boolean, select and multiselect attribute.
+     *
+     * @return void
+     */
+    public function testUnserializeRowWithAdditionalAttributesAndJSON()
+    {
+
+        // initialize the serialized value row
+        $value = '075/450,"""ClothingSize=Eine Größe XXL"",""Description=[{""""document-type"""":""""Aufbauanleitung"""",""""url"""":""""a/d/d/f/addfb8aeb84e077f9774b1288dcf4bcfa46fa5c9_075450_00_A1_20_FAN.pdf""""}]"",""Category3Header=Mit Kapuze"",""BulletText2=[""""8/2/5/0/8250ae5dc6d3d72c4155513ce4315c7f2f450a5a_summerline_754282_20.tif""""]"",""Category1Header=Erste Hilfe & Arbeitsschutzausrüstung""",Normal Tax Class';
+
+        // create and initialize the CSV value serializer
+        $valueCsvSerializer = new ValueCsvSerializer();
+        $valueCsvSerializer->init($this->getMockCsvConfiguration());
+
+        // initialize the expected result
+        $expected = array(
+            'ClothingSize'        => 'Eine Größe XXL',
+            'Description'         => '[{"document-type":"Aufbauanleitung","url":"a/d/d/f/addfb8aeb84e077f9774b1288dcf4bcfa46fa5c9_075450_00_A1_20_FAN.pdf"}]',
+            'Category3Header'     => 'Mit Kapuze',
+            'BulletText2'         => '["8/2/5/0/8250ae5dc6d3d72c4155513ce4315c7f2f450a5a_summerline_754282_20.tif"]',
+            'Category1Header'     => 'Erste Hilfe & Arbeitsschutzausrüstung',
+        );
+
+        // unserialize the value first time (simulate M2IF framework)
+        $unserialized = $valueCsvSerializer->unserialize($value);
+
+        $result = $this->additionalAttributeSerializer->unserialize($unserialized[1]);
+        // unserialize the value and assert the result
+        $this->assertSame($expected, $result);
+    }
 }
