@@ -419,4 +419,11 @@ class MemberNames
      * @var string
      */
     const ENTITY_TABLE = 'entity_table';
+
+    /**
+     * Name for the member 'is_global'.
+     *
+     * @var string
+     */
+    const IS_GLOBAL = 'is_global';
 }

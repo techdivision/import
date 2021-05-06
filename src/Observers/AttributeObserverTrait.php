@@ -256,6 +256,11 @@ trait AttributeObserverTrait
                 continue;
             }
 
+            // do nothing in non-default stores with global attributes
+            if ($storeId !== 0 && $attribute[MemberNames::IS_GLOBAL] == 1) {
+                continue;
+            }
+
             // query whether or not we've found a supported backend type
             if (isset($backendTypes[$backendType])) {
                 // initialize attribute ID/code and backend type
