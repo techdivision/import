@@ -13,6 +13,7 @@
 * Fixes #PAC-244: bug with crash in date conversion with standard date format
 * Fixes bug to add more listener when event name has already some listener
 * Fix php 7.4 notice
+* import: Note attributes entity type for customer attribute
 
 ## Features
 
