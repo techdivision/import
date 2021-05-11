@@ -2,7 +2,7 @@
 
 ## Improvement
 
-* none
+* Note attributes entity type for customer attribute
 
 ## Bugfixes
 
