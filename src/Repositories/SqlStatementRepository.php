@@ -241,7 +241,7 @@ class SqlStatementRepository extends AbstractSqlStatementRepository
          INNER JOIN ${table:eav_entity_attribute} AS t2
                  ON t2.attribute_set_id = t1.attribute_set_id
                 AND t3.attribute_id = t2.attribute_id
-         LEFT JOIN ${table:catalog_eav_attribute} AS t4 ON t3.attribute_id = t4.attribute_id',
+          LEFT JOIN ${table:catalog_eav_attribute} AS t4 ON t3.attribute_id = t4.attribute_id',
         SqlStatementKeys::EAV_ATTRIBUTES_BY_OPTION_VALUE_AND_STORE_ID =>
             'SELECT t1.*
                FROM ${table:eav_attribute} AS t1

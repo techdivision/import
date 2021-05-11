@@ -7,6 +7,7 @@
 ## Bugfixes
 
 * Fix php 7.4 notice
+* Prevent processing global attributes in all stores
 
 # Version 16.8.4
 
