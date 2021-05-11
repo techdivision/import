@@ -232,7 +232,7 @@ class SqlStatementRepository extends AbstractSqlStatementRepository
               WHERE entity_type_id = :entity_type_id
                 AND attribute_code = :attribute_code',
         SqlStatementKeys::EAV_ATTRIBUTES_BY_ENTITY_TYPE_ID_AND_ATTRIBUTE_SET_NAME =>
-            'SELECT t3.*
+            'SELECT t3.*,t4.is_global
                FROM ${table:eav_attribute} AS t3
          INNER JOIN ${table:eav_entity_type} AS t0
                  ON t0.entity_type_id = :entity_type_id
@@ -241,7 +241,8 @@ class SqlStatementRepository extends AbstractSqlStatementRepository
                 AND t1.entity_type_id = t0.entity_type_id
          INNER JOIN ${table:eav_entity_attribute} AS t2
                  ON t2.attribute_set_id = t1.attribute_set_id
-                AND t3.attribute_id = t2.attribute_id',
+                AND t3.attribute_id = t2.attribute_id
+          LEFT JOIN ${table:catalog_eav_attribute} AS t4 ON t3.attribute_id = t4.attribute_id',
         SqlStatementKeys::EAV_ATTRIBUTES_BY_OPTION_VALUE_AND_STORE_ID =>
             'SELECT t1.*
                FROM ${table:eav_attribute} AS t1

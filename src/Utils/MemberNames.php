@@ -395,4 +395,11 @@ class MemberNames extends \TechDivision\Import\Serializer\Csv\Utils\MemberNames
      * @var string
      */
     const DEFAULT_VALUE = 'default_value';
+
+    /**
+     * Name for the member 'is_global'.
+     *
+     * @var string
+     */
+    const IS_GLOBAL = 'is_global';
 }

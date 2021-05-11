@@ -13,7 +13,7 @@
 * Fixes #PAC-244: bug with crash in date conversion with standard date format
 * Fixes bug to add more listener when event name has already some listener
 * Fix php 7.4 notice
-* import: Note attributes entity type for customer attribute
+* Fixes #PAC-348: Prevent processing global attributes in all stores
 
 ## Features
 
@@ -26,6 +26,7 @@
 * Add #PAC-57: Deleting dedicated attribute values via import by setting a configurable value
 * Add #PAC-96: Define new constands for FileUploadConfiguration
     * https://github.com/techdivision/import/issues/181
+* Note attributes entity type for customer attribute
 
 # Version 16.5.3
 
