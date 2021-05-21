@@ -21,6 +21,7 @@
 namespace TechDivision\Import\Utils;
 
 use TechDivision\Import\Configuration\ConfigurationInterface;
+use TechDivision\Import\Dbal\Utils\PrimaryKeyUtilInterface;
 
 /**
  * Utility class for edition based primary key handling.

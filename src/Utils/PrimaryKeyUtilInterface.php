@@ -28,6 +28,8 @@ namespace TechDivision\Import\Utils;
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
+ * @deprecated Since 16.8.3
+ * @see        \TechDivision\Import\Dbal\Utils\PrimaryKeyUtilInterface
  */
 interface PrimaryKeyUtilInterface extends \TechDivision\Import\Dbal\Utils\PrimaryKeyUtilInterface
 {

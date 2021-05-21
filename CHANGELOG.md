@@ -14,7 +14,9 @@
 * Fixes bug to add more listener when event name has already some listener
 * Fix php 7.4 notice
 * Fixes #PAC-348: Prevent processing global attributes in all stores
-
+  Make Actions and ActionInterfaces deprecated, replace DI configuration with GenericAction + GenericIdentifierAction
+* Prepare generic workflow and defined deprecated interface PrimaryKeyUtilInterface
+  
 ## Features
 
 * Add techdivision/import#191
