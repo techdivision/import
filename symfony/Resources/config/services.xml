@@ -301,6 +301,7 @@
         <service id="import.handler.file.pid" class="TechDivision\Import\Handlers\PidFileHandler">
             <argument type="service" id="configuration"/>
             <argument type="service" id="import.handler.file.generic"/>
+            <argument type="service" id="loggers"/>
         </service>
         <service id="import.handler.factory.ok.file" class="TechDivision\Import\Handlers\OkFileHandlerFactory">
             <argument type="service" id="service_container"/>
