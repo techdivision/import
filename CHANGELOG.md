@@ -1,3 +1,13 @@
+# Version 16.8.6
+
+## Improvement
+
+* None
+
+## Bugfixes
+
+* PAC-362: Call to a member function getSystemLogger() on null
+
 # Version 16.8.5
 
 ## Improvement

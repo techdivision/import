@@ -20,10 +20,12 @@
 
 namespace TechDivision\Import\Handlers;
 
+use Doctrine\Common\Collections\Collection;
 use TechDivision\Import\Configuration\ConfigurationInterface;
 use TechDivision\Import\Exceptions\LineNotFoundException;
 use TechDivision\Import\Exceptions\FileNotFoundException;
 use TechDivision\Import\Exceptions\ImportAlreadyRunningException;
+use TechDivision\Import\SystemLoggerTrait;
 
 /**
  * A PID file handler implementation.
@@ -36,6 +38,8 @@ use TechDivision\Import\Exceptions\ImportAlreadyRunningException;
  */
 class PidFileHandler implements PidFileHandlerInterface
 {
+
+    use SystemLoggerTrait;
 
     /**
      * The filehandle for the PID file.
@@ -70,13 +74,30 @@ class PidFileHandler implements PidFileHandlerInterface
      *
      * @param \TechDivision\Import\Configuration\ConfigurationInterface $configuration      The actual configuration instance
      * @param \TechDivision\Import\Handlers\GenericFileHandlerInterface $genericFileHandler The actual file handler instance
+     * @param \Doctrine\Common\Collections\Collection                   $systemLoggers      The array with the system logger instances
      */
     public function __construct(
         ConfigurationInterface $configuration,
-        GenericFileHandlerInterface $genericFileHandler
+        GenericFileHandlerInterface $genericFileHandler,
+        Collection $systemLoggers = null
     ) {
         $this->configuration = $configuration;
         $this->genericFileHandler = $genericFileHandler;
+        if ($systemLoggers) {
+            $this->setSystemLoggers($systemLoggers);
+        }
+    }
+
+    /**
+     * The array with the system loggers.
+     *
+     * @param \Doctrine\Common\Collections\Collection $systemLoggers The system logger instances
+     *
+     * @return void
+     */
+    public function setSystemLoggers(Collection $systemLoggers)
+    {
+        $this->systemLoggers = $systemLoggers;
     }
 
     /**
