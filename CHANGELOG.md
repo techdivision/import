@@ -17,7 +17,8 @@
   Make Actions and ActionInterfaces deprecated, replace DI configuration with GenericAction + GenericIdentifierAction
 * Prepare generic workflow and defined deprecated interface PrimaryKeyUtilInterface
 * PAC-362: Call to a member function getSystemLogger() on null
-  
+* Clear properties after success unlock
+
 ## Features
 
 * Add techdivision/import#191
