@@ -1,3 +1,13 @@
+# Version 16.8.7
+
+## Improvement
+
+* None
+
+## Bugfixes
+
+* Clear properties after success unlock
+
 # Version 16.8.6
 
 ## Improvement
