@@ -208,6 +208,10 @@ class PidFileHandler implements PidFileHandlerInterface
                 if (filesize($filename = $this->getPidFilename()) === 0) {
                     unlink($filename);
                 }
+
+                // reset resource
+                $this->pid = null;
+                $this->fh = null;
             }
         } catch (FileNotFoundException $fnfe) {
             $this->getSystemLogger()->notice(sprintf('PID file %s doesn\'t exist', $this->getPidFilename()));
