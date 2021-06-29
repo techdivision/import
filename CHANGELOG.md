@@ -1,3 +1,13 @@
+# Version 16.8.8
+
+## Improvement
+
+* None
+
+## Bugfixes
+
+* Fix php warning
+
 # Version 16.8.7
 
 ## Improvement
