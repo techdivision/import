@@ -102,20 +102,17 @@ abstract class AbstractBooleanCallback extends AbstractCallback
                     )
                 )
             );
-
-            // return NULL, if NO value can be mapped to a boolean representation
-            return;
-        }
-
-        // throw an exception if the attribute is not available
-        throw new \Exception(
-            $this->appendExceptionSuffix(
-                sprintf(
-                    'Can\'t map option value "%s" for attribute "%s" to a boolean representation',
-                    $attributeValue,
-                    $attributeCode
+        } elseif ($this->isStrictMode()){
+            // throw an exception if the attribute is not available
+            throw new \Exception(
+                $this->appendExceptionSuffix(
+                    sprintf(
+                        'Can\'t map option value "%s" for attribute "%s" to a boolean representation',
+                        $attributeValue,
+                        $attributeCode
+                    )
                 )
-            )
-        );
+            );
+        }
     }
 }

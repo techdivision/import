@@ -115,7 +115,6 @@ class AdditionalAttributeObserver extends AbstractObserver implements ObserverFa
      */
     protected function process()
     {
-
         // query whether or not the row has additional attributes
         if ($additionalAttributes = $this->getValue(ColumnKeys::ADDITIONAL_ATTRIBUTES)) {
             // load the subject instance
