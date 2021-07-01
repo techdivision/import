@@ -471,9 +471,6 @@ abstract class AbstractSubject implements SubjectInterface, FilesystemSubjectInt
      */
     public function isStrictMode()
     {
-        if ($this->isDebugMode()) {
-            return false;
-        }
         return $this->getConfiguration()->isStrictMode();
     }
 

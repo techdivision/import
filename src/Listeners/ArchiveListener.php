@@ -186,7 +186,7 @@ class ArchiveListener extends AbstractListener
                 // log a message if we're in debug mode, else throw an exception
                 if ($this->getConfiguration()->isDebugMode()) {
                     $this->getSystemLogger()->error($message);
-                } elseif ($this->configuration->isStrictMode()) {
+                } elseif ($this->getConfiguration()->isStrictMode()) {
                     throw new \Exception($message);
                 }
             }

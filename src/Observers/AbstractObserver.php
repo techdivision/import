@@ -251,7 +251,7 @@ abstract class AbstractObserver implements ObserverInterface
      *
      * @codeCoverageIgnore
      */
-    protected function isDexbugMode()
+    protected function isDebugMode()
     {
         return $this->getSubject()->isDebugMode();
     }
@@ -268,9 +268,6 @@ abstract class AbstractObserver implements ObserverInterface
      */
     public function isStrictMode()
     {
-        if ($this->isDebugMode()) {
-            return false;
-        }
         return $this->getSubject()->isStrictMode();
     }
 

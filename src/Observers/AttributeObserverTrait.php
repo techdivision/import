@@ -270,16 +270,6 @@ trait AttributeObserverTrait
                     );
                     // stop processing
                     continue;
-                } elseif ($this->isStrictMode()) {
-                    // throw an exception if the attribute is not available
-                    throw new \Exception(
-                        $this->appendExceptionSuffix(
-                            sprintf(
-                                'Can\'t find attribute with attribute code "%s"',
-                                $attributeCode
-                            )
-                        )
-                    );
                 }
             } else {
                 // log a message in debug mode

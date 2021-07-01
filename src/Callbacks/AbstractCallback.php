@@ -149,9 +149,6 @@ abstract class AbstractCallback implements CallbackInterface
      */
     public function isStrictMode()
     {
-        if ($this->isDebugMode()) {
-            return false;
-        }
         return $this->getSubject()->isStrictMode();
     }
 
