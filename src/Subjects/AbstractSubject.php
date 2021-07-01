@@ -460,7 +460,7 @@ abstract class AbstractSubject implements SubjectInterface, FilesystemSubjectInt
 
     /**
      * Queries whether or not strict mode is enabled or not, default is True.
-     * 
+     *
      * Backward compatibility
      * debug = true strict = true -> isStrict == FALSE
      * debug = true strict = false -> isStrict == FALSE

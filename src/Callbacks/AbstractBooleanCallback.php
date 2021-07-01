@@ -102,7 +102,7 @@ abstract class AbstractBooleanCallback extends AbstractCallback
                     )
                 )
             );
-        } elseif ($this->isStrictMode()){
+        } elseif ($this->isStrictMode()) {
             // throw an exception if the attribute is not available
             throw new \Exception(
                 $this->appendExceptionSuffix(
