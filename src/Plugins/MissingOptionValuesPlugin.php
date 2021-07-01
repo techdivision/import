@@ -93,7 +93,6 @@ class MissingOptionValuesPlugin extends AbstractPlugin
      */
     public function process()
     {
-
         // query whether or not, the debug mode has been enabled
         if (!$this->getConfiguration()->isDebugMode()) {
             $this->getSystemLogger()->info('Debug mode is not enabled, missing option values will not be exported');

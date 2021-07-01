@@ -268,10 +268,9 @@ trait AttributeObserverTrait
                             )
                         )
                     );
+                    // stop processing
+                    continue;
                 }
-
-                // stop processing
-                continue;
             } else {
                 // log a message in debug mode
                 if ($this->isDebugMode()) {
