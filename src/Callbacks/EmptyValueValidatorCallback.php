@@ -59,7 +59,7 @@ class EmptyValueValidatorCallback extends IndexedArrayValidatorCallback
         // iterate over the attribute value options
         foreach ($optionValues as $optionValue) {
             // query whether or not the value is valid
-            if (empty($optionValue)) {
+            if (trim($optionValue) === '') {
                 throw new \InvalidArgumentException(
                     sprintf('Found invalid array value "%s" for attribute or property with code "%s"', $optionValue, $attributeCode)
                 );
