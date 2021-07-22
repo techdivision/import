@@ -1,3 +1,13 @@
+# Version 16.8.9
+
+## Improvement
+
+* Prepare optimize performance cache
+
+## Bugfixes
+
+* None
+
 # Version 16.8.8
 
 ## Improvement

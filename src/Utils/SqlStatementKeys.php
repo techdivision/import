@@ -277,6 +277,13 @@ class SqlStatementKeys
     const URL_REWRITES_BY_ENTITY_TYPE_AND_ENTITY_ID_AND_STORE_ID = 'url_rewrites.by.entity_type.and.entity_id.and.store_id';
 
     /**
+     * The SQL statement to load all of the URL rewrites
+     *
+     * @var string
+     */
+    const URL_REWRITES = 'url_rewrites';
+
+    /**
      * The SQL statement to remove a existing URL rewrite.
      *
      * @var string

@@ -1001,4 +1001,70 @@ class ValueCsvSerializerTest extends AbstractSerializerTest
             $this->valueCsvSerializer->unserialize(array_shift($column))
         );
     }
+
+    /**
+     * Tests if the unserialize() method returns the serialized value from a string with categories
+     * that contains multiple paths and quotes with commas inside and within the quotes.
+     *
+     * @return void
+     */
+    public function testUnserializeProductCategoryFromCompleteLineaAndQuotes()
+    {
+
+        // First explode ech column with comma delimiter
+        $column = $this->valueCsvSerializer->unserialize('"dmeu_cps_0111156","Default Category/Safety Signs/Prohibition Signs/""""""No"""" Signs","https://cdn-01-artemis.com/"', ',');
+
+        $this->assertEquals(
+            array(
+                'dmeu_cps_0111156',
+                'Default Category/Safety Signs/Prohibition Signs/"""No"" Signs',
+                'https://cdn-01-artemis.com/',
+            ),
+            $column
+        );
+
+        // Second explode second column (CATEGORIE) with slash delimiter
+        $this->assertEquals(
+            array(
+                'Default Category',
+                'Safety Signs',
+                'Prohibition Signs',
+                '"No" Signs',
+            ),
+            $this->valueCsvSerializer->unserialize($column[1], '/')
+        );
+    }
+
+    /**
+     * Tests if the unserialize() method returns the serialized value from a string with categories
+     * that contains multiple paths and quotes with commas inside and within the quotes.
+     *
+     * @return void
+     */
+    public function testUnserializeProductCategoryFromCompleteLineaAndQuotesClearInput()
+    {
+
+        // First explode ech column with comma delimiter
+        $column = $this->valueCsvSerializer->unserialize('"dmeu_cps_0111156","""Default Category""/""Safety Signs""/""Prohibition Signs""/"""""""No"" Signs","https://cdn-01-artemis.com/"', ',');
+
+        $this->assertEquals(
+            array(
+                'dmeu_cps_0111156',
+                '"Default Category"/"Safety Signs"/"Prohibition Signs"/"""No"" Signs"',
+                'https://cdn-01-artemis.com/',
+            ),
+            $column
+        );
+
+        // Second explode second column (CATEGORIE) with slash delimiter
+        $this->assertEquals(
+            array(
+                'Default Category',
+                'Safety Signs',
+                'Prohibition Signs',
+                '"No" Signs',
+            ),
+            $this->valueCsvSerializer->unserialize($column[1], '/')
+        );
+    }
 }

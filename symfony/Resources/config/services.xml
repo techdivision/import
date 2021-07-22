@@ -351,6 +351,7 @@
         <service id="import.repository.url.rewrite" class="TechDivision\Import\Repositories\UrlRewriteRepository">
             <argument type="service" id="connection"/>
             <argument type="service" id="import.repository.sql.statement"/>
+            <argument type="service" id="import.repository.finder.factory.configurable"/>
         </service>
         <service id="import.repository.core.config.data" class="TechDivision\Import\Repositories\CoreConfigDataRepository">
             <argument type="service" id="import.generator.core.config.data.uid"/>
@@ -429,6 +430,7 @@
             <argument type="service" id="import.action.processor.url.rewrite.product.create"/>
             <argument type="service" id="import.action.processor.url.rewrite.product.update"/>
             <argument type="service" id="import.action.processor.url.rewrite.product.delete"/>
+            <argument type="constant">TechDivision\Import\Product\Utils\MemberNames::URL_REWRITE_ID</argument>
         </service>
         <service id="import.action.store" class="TechDivision\Import\Actions\GenericIdentifierAction">
             <argument type="service" id="import.action.processor.store.create"/>

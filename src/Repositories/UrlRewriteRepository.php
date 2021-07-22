@@ -21,6 +21,7 @@
 namespace TechDivision\Import\Repositories;
 
 use TechDivision\Import\Utils\MemberNames;
+use TechDivision\Import\Utils\CacheKeys;
 use TechDivision\Import\Utils\SqlStatementKeys;
 
 /**
@@ -32,22 +33,8 @@ use TechDivision\Import\Utils\SqlStatementKeys;
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
  */
-class UrlRewriteRepository extends AbstractRepository implements UrlRewriteRepositoryInterface
+class UrlRewriteRepository extends AbstractFinderRepository implements UrlRewriteRepositoryInterface, FinderAwareEntityRepositoryInterface
 {
-
-    /**
-     * The prepared statement to load the existing URL rewrites by their entity type and ID.
-     *
-     * @var \PDOStatement
-     */
-    protected $urlRewritesByEntityTypeAndEntityIdStmt;
-
-    /**
-     * The prepared statement to load the existing URL rewrites by their entity type, entity and store ID.
-     *
-     * @var \PDOStatement
-     */
-    protected $urlRewritesByEntityTypeAndEntityIdAndStoreIdStmt;
 
     /**
      * Initializes the repository's prepared statements.
@@ -56,12 +43,9 @@ class UrlRewriteRepository extends AbstractRepository implements UrlRewriteRepos
      */
     public function init()
     {
-
-        // initialize the prepared statements
-        $this->urlRewritesByEntityTypeAndEntityIdStmt =
-            $this->getConnection()->prepare($this->loadStatement(SqlStatementKeys::URL_REWRITES_BY_ENTITY_TYPE_AND_ENTITY_ID));
-        $this->urlRewritesByEntityTypeAndEntityIdAndStoreIdStmt =
-            $this->getConnection()->prepare($this->loadStatement(SqlStatementKeys::URL_REWRITES_BY_ENTITY_TYPE_AND_ENTITY_ID_AND_STORE_ID));
+        $this->addFinder($this->finderFactory->createFinder($this, SqlStatementKeys::URL_REWRITES));
+        $this->addFinder($this->finderFactory->createFinder($this, SqlStatementKeys::URL_REWRITES_BY_ENTITY_TYPE_AND_ENTITY_ID));
+        $this->addFinder($this->finderFactory->createFinder($this, SqlStatementKeys::URL_REWRITES_BY_ENTITY_TYPE_AND_ENTITY_ID_AND_STORE_ID));
     }
 
     /**
@@ -82,8 +66,9 @@ class UrlRewriteRepository extends AbstractRepository implements UrlRewriteRepos
         );
 
         // load and return the URL rewrites
-        $this->urlRewritesByEntityTypeAndEntityIdStmt->execute($params);
-        return $this->urlRewritesByEntityTypeAndEntityIdStmt->fetchAll(\PDO::FETCH_ASSOC);
+        foreach ($this->getFinder(SqlStatementKeys::URL_REWRITES_BY_ENTITY_TYPE_AND_ENTITY_ID)->find($params) as $result) {
+            yield $result;
+        }
     }
 
     /**
@@ -106,7 +91,51 @@ class UrlRewriteRepository extends AbstractRepository implements UrlRewriteRepos
         );
 
         // load and return the URL rewrites
-        $this->urlRewritesByEntityTypeAndEntityIdAndStoreIdStmt->execute($params);
-        return $this->urlRewritesByEntityTypeAndEntityIdAndStoreIdStmt->fetchAll(\PDO::FETCH_ASSOC);
+        foreach ($this->getFinder(SqlStatementKeys::URL_REWRITES_BY_ENTITY_TYPE_AND_ENTITY_ID_AND_STORE_ID)->find($params) as $result) {
+            yield $result;
+        }
+    }
+
+
+    /**
+     * Return's an array with all URL rewrites
+     *
+     * @return array|null The country region data
+     */
+    public function findAll()
+    {
+        foreach ($this->getFinder(SqlStatementKeys::URL_REWRITES)->find() as $result) {
+            yield $result;
+        }
+    }
+
+    /**
+     * Return's the primary key name of the entity.
+     *
+     * @return string The name of the entity's primary key
+     */
+    public function getPrimaryKeyName()
+    {
+        return MemberNames::URL_REWRITE_ID;
+    }
+
+    /**
+     * Return's the finder's entity name.
+     *
+     * @return string The finder's entity name
+     */
+    public function getEntityName()
+    {
+        return CacheKeys::URL_REWRITE;
+    }
+
+    /**
+     * Return's the entity unique key name.
+     *
+     * @return string The name of the entity's unique key
+     */
+    public function getUniqueKeyName()
+    {
+        return $this->getPrimaryKeyName();
     }
 }

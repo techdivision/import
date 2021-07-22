@@ -61,6 +61,14 @@ class CacheKeys extends \ArrayObject implements CacheKeysInterface
     const EAV_ATTRIBUTE_OPTION_VALUE = 'eav_attribute_option_value';
 
     /**
+     * Name for the table 'url_rewrite'.
+     *
+     * @var string
+     */
+    const URL_REWRITE = 'url_rewrite';
+
+
+    /**
      * The instance cache key.
      *
      * @var string
@@ -82,7 +90,8 @@ class CacheKeys extends \ArrayObject implements CacheKeysInterface
                 CacheKeys::STATUS,
                 CacheKeys::REFERENCES,
                 CacheKeys::ARTEFACTS,
-                CacheKeys::EAV_ATTRIBUTE_OPTION_VALUE
+                CacheKeys::EAV_ATTRIBUTE_OPTION_VALUE,
+                CacheKeys::URL_REWRITE,
             ),
             $cacheKeys
         );
