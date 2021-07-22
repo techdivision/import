@@ -313,6 +313,9 @@ class SqlStatementRepository extends AbstractSqlStatementRepository
               WHERE entity_type = :entity_type
                 AND entity_id = :entity_id
                 AND store_id = :store_id',
+        SqlStatementKeys::URL_REWRITES =>
+            'SELECT *
+               FROM ${table:url_rewrite}',
         SqlStatementKeys::DELETE_URL_REWRITE =>
             'DELETE
                FROM ${table:url_rewrite}
