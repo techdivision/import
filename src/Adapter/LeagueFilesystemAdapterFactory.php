@@ -20,7 +20,6 @@
 
 namespace TechDivision\Import\Adapter;
 
-use League\Flysystem\Filesystem;
 use TechDivision\Import\Utils\ConfigurationKeys;
 use TechDivision\Import\Utils\ConfigurationUtil;
 use TechDivision\Import\Configuration\SubjectConfigurationInterface;
@@ -28,11 +27,12 @@ use TechDivision\Import\Configuration\SubjectConfigurationInterface;
 /**
  * A generic filesystem adapter factory implementation.
  *
- * @author    Tim Wagner <t.wagner@techdivision.com>
- * @copyright 2016 TechDivision GmbH <info@techdivision.com>
- * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
- * @link      https://github.com/techdivision/import
- * @link      http://www.techdivision.com
+ * @author     Tim Wagner <t.wagner@techdivision.com>
+ * @copyright  2016 TechDivision GmbH <info@techdivision.com>
+ * @license    http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
+ * @link       https://github.com/techdivision/import
+ * @link       http://www.techdivision.com
+ * @deprecated Since version 16.8.9 use \TechDivision\Import\Adapter\PhpFilesystemAdapterFactory instead
  */
 class LeagueFilesystemAdapterFactory implements FilesystemAdapterFactoryInterface
 {
@@ -46,26 +46,6 @@ class LeagueFilesystemAdapterFactory implements FilesystemAdapterFactoryInterfac
      */
     public function createFilesystemAdapter(SubjectConfigurationInterface $subjectConfiguration)
     {
-
-        // the filesystem adapter configuration
-        $filesystemAdapterConfiguration = $subjectConfiguration->getFilesystemAdapter();
-
-        // load the filesystem adapter's adapter configuration (FS specific)
-        $adapterConfiguration = $filesystemAdapterConfiguration->getAdapter();
-
-        // load the adapter parameters
-        $adapterParams = $adapterConfiguration->getParams();
-
-        // initialize the root directory, if not specified in the adapter parameters
-        if (!isset($adapterParams[ConfigurationKeys::ROOT])) {
-            $adapterParams[ConfigurationKeys::ROOT] = getcwd();
-        }
-
-        // load the adapter to use
-        $reflectionClass = new \ReflectionClass($adapterConfiguration->getType());
-        $adapter =  $reflectionClass->newInstanceArgs(ConfigurationUtil::prepareConstructorArgs($reflectionClass, $adapterParams));
-
-        // create a new filesystem instance
-        return new LeagueFilesystemAdapter(new Filesystem($adapter));
+        throw new Exception('LeagueFilesystemAdapterFactory is depracated cause vulnerable version. Please use PhpFilesystemAdapterFactory.');
     }
 }

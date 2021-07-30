@@ -1,3 +1,15 @@
+# Version 16.8.10
+
+## Improvement
+
+* None
+
+## Bugfixes
+
+* Remove League\Flysystem and set deprecated exception for 
+  * LeagueFilesystemAdapter
+  * LeagueFilesystemAdapterFactory
+
 # Version 16.8.9
 
 ## Improvement
