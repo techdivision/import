@@ -20,38 +20,18 @@
 
 namespace TechDivision\Import\Adapter;
 
-use League\Flysystem\FilesystemInterface;
-
 /**
  * Adapter for the league filesystem implementation.
  *
- * @author    Tim Wagner <t.wagner@techdivision.com>
- * @copyright 2016 TechDivision GmbH <info@techdivision.com>
- * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
- * @link      https://github.com/techdivision/import
- * @link      http://www.techdivision.com
+ * @author     Tim Wagner <t.wagner@techdivision.com>
+ * @copyright  2016 TechDivision GmbH <info@techdivision.com>
+ * @license    http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
+ * @link       https://github.com/techdivision/import
+ * @link       http://www.techdivision.com
+ * @deprecated Since version 16.8.9 use \TechDivision\Import\Adapter\PhpFilesystemAdapter instead
  */
 class LeagueFilesystemAdapter implements FilesystemAdapterInterface
 {
-
-    /**
-     * The league filesystem implementation.
-     *
-     * @var \League\Flysystem\FilesystemInterface
-     */
-    protected $filesystem;
-
-    /**
-     * This is a utility class, so protect it against direct
-     * instantiation.
-     *
-     * @param \League\Flysystem\FilesystemInterface $filesystem The league filesystem instance
-     */
-    public function __construct(FilesystemInterface $filesystem)
-    {
-        $this->filesystem = $filesystem;
-    }
-
     /**
      * Creates a new directroy.
      *
@@ -62,7 +42,7 @@ class LeagueFilesystemAdapter implements FilesystemAdapterInterface
      */
     public function mkdir($pathname, $mode = 0755)
     {
-        return $this->filesystem->createDir($pathname, array('visibility' => $mode === 0755 ? 'public' : 'private'));
+        throw new Exception('LeagueFilesystemAdapter is depracated cause vulnerable version. Please use PhpFilesystemAdapter.');
     }
 
     /**
@@ -74,7 +54,7 @@ class LeagueFilesystemAdapter implements FilesystemAdapterInterface
      */
     public function isFile($filename)
     {
-        return $this->filesystem->has($filename);
+        throw new Exception('LeagueFilesystemAdapter is depracated cause vulnerable version. Please use PhpFilesystemAdapter.');
     }
 
     /**
@@ -86,7 +66,7 @@ class LeagueFilesystemAdapter implements FilesystemAdapterInterface
      */
     public function isDir($filename)
     {
-        return $this->filesystem->has($filename);
+        throw new Exception('LeagueFilesystemAdapter is depracated cause vulnerable version. Please use PhpFilesystemAdapter.');
     }
 
     /**
@@ -98,7 +78,7 @@ class LeagueFilesystemAdapter implements FilesystemAdapterInterface
      */
     public function touch($filename)
     {
-        return $this->filesystem->put($filename, '');
+        throw new Exception('LeagueFilesystemAdapter is depracated cause vulnerable version. Please use PhpFilesystemAdapter.');
     }
 
     /**
@@ -111,7 +91,7 @@ class LeagueFilesystemAdapter implements FilesystemAdapterInterface
      */
     public function rename($oldname, $newname)
     {
-        return $this->filesystem->rename($oldname, $newname);
+        throw new Exception('LeagueFilesystemAdapter is depracated cause vulnerable version. Please use PhpFilesystemAdapter.');
     }
 
     /**
@@ -124,7 +104,7 @@ class LeagueFilesystemAdapter implements FilesystemAdapterInterface
      */
     public function write($filename, $data)
     {
-        return $this->filesystem->put($filename, $data);
+        throw new Exception('LeagueFilesystemAdapter is depracated cause vulnerable version. Please use PhpFilesystemAdapter.');
     }
 
     /**
@@ -136,7 +116,7 @@ class LeagueFilesystemAdapter implements FilesystemAdapterInterface
      */
     public function delete($filename)
     {
-        return $this->filesystem->delete($filename);
+        throw new Exception('LeagueFilesystemAdapter is depracated cause vulnerable version. Please use PhpFilesystemAdapter.');
     }
 
     /**
@@ -149,7 +129,7 @@ class LeagueFilesystemAdapter implements FilesystemAdapterInterface
      */
     public function copy($src, $dest)
     {
-        return $this->filesystem->copy($src, $dest);
+        throw new Exception('LeagueFilesystemAdapter is depracated cause vulnerable version. Please use PhpFilesystemAdapter.');
     }
 
     /**
@@ -162,20 +142,7 @@ class LeagueFilesystemAdapter implements FilesystemAdapterInterface
      */
     public function listContents($directory = '', $recursive = false)
     {
-
-        // initialize the array for the filenames
-        $files = array();
-
-        // load the filenames of the passed directory
-        $contents = $this->filesystem->listContents($directory, $recursive);
-
-        // prepare the array with the file names
-        foreach ($contents as $key => $file) {
-            $files[$key] = $file['path'];
-        }
-
-        // return the filenames
-        return $files;
+        throw new Exception('LeagueFilesystemAdapter is depracated cause vulnerable version. Please use PhpFilesystemAdapter.');
     }
 
     /**
@@ -189,7 +156,7 @@ class LeagueFilesystemAdapter implements FilesystemAdapterInterface
      */
     public function removeDir($src, $recursive = false)
     {
-        $this->filesystem->deleteDir($src);
+        throw new Exception('LeagueFilesystemAdapter is depracated cause vulnerable version. Please use PhpFilesystemAdapter.');
     }
 
     /**
@@ -202,7 +169,7 @@ class LeagueFilesystemAdapter implements FilesystemAdapterInterface
      */
     public function glob(string $pattern, int $flags = 0)
     {
-        throw new \Exception(sprintf('Method "%s" has not yet been implemented', __METHOD__));
+        throw new Exception('LeagueFilesystemAdapter is depracated cause vulnerable version. Please use PhpFilesystemAdapter.');
     }
 
     /**
@@ -215,7 +182,7 @@ class LeagueFilesystemAdapter implements FilesystemAdapterInterface
      */
     public function size($filename)
     {
-        return $this->filesystem->getSize($filename);
+        throw new Exception('LeagueFilesystemAdapter is depracated cause vulnerable version. Please use PhpFilesystemAdapter.');
     }
 
     /**
@@ -228,6 +195,6 @@ class LeagueFilesystemAdapter implements FilesystemAdapterInterface
      */
     public function read($filename)
     {
-        return $this->filesystem->read($filename);
+        throw new Exception('LeagueFilesystemAdapter is depracated cause vulnerable version. Please use PhpFilesystemAdapter.');
     }
 }
