@@ -1,3 +1,14 @@
+# Version 16.8.11
+
+## Improvement
+
+* None
+
+## Bugfixes
+
+* Compatibility for Magento 2.4.3
+  * Third party modul ramsey/uuid use version ~4.1.0
+
 # Version 16.8.10
 
 ## Improvement
