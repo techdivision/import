@@ -18,7 +18,10 @@
 * Prepare generic workflow and defined deprecated interface PrimaryKeyUtilInterface
 * PAC-362: Call to a member function getSystemLogger() on null
 * Clear properties after success unlock
-
+* Remove League\Flysystem and 
+  * LeagueFilesystemAdapter
+  * LeagueFilesystemAdapterFactory
+  
 ## Features
 
 * Add techdivision/import#191
@@ -31,6 +34,7 @@
 * Add #PAC-96: Define new constands for FileUploadConfiguration
     * https://github.com/techdivision/import/issues/181
 * Note attributes entity type for customer attribute
+* Change fix table name for prefix replace
 
 # Version 16.5.3
 

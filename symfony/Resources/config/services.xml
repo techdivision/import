@@ -771,7 +771,6 @@
          |-->
         <service id="import.adapter.filesystem.php" class="TechDivision\Import\Adapter\PhpFilesystemAdapter"/>
         <service id="import.adapter.filesystem.factory.php" class="TechDivision\Import\Adapter\PhpFilesystemAdapterFactory"/>
-        <service id="import.adapter.filesystem.factory.league" class="TechDivision\Import\Adapter\LeagueFilesystemAdapterFactory"/>
 
         <!--
          | The DI configuration for the subjects provided by this library

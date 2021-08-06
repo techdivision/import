@@ -499,7 +499,7 @@ class SqlStatementRepository extends AbstractSqlStatementRepository
                FROM ${table:admin_user}
               WHERE username = :username',
         SqlStatementKeys::URL_REWRITES =>
-            'SELECT * FROM url_rewrite',
+            'SELECT * FROM ${table:url_rewrite}',
         SqlStatementKeys::DELETE_STORE =>
             'DELETE
                FROM ${table:store}
