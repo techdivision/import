@@ -35,6 +35,7 @@
     * https://github.com/techdivision/import/issues/181
 * Note attributes entity type for customer attribute
 * Change fix table name for prefix replace
+* Add #PAC-324: Add validator callback to check empty array index values
 
 # Version 16.5.3
 
