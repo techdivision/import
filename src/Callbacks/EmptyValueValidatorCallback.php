@@ -50,11 +50,11 @@ class EmptyValueValidatorCallback extends IndexedArrayValidatorCallback
             return;
         }
 
-        // load the validations for the attribute with the passed code
-        $validations = $this->getValidations($attributeCode);
-
         // extract the option values
         $optionValues = $subject->explode($attributeValue, ',');
+        if (!is_array($optionValues)) {
+            return;
+        }
 
         // iterate over the attribute value options
         foreach ($optionValues as $optionValue) {
