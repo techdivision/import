@@ -40,7 +40,7 @@ class RelatedValuesValidatorCallback extends ArrayValidatorCallback
     /**
      * Will be invoked by the observer it has been registered for.
      *
-     * @param string|null $attributeCode The code of the attribute that has to be validated
+     * @param string|null $attributeCode  The code of the attribute that has to be validated
      * @param string|null $attributeValue The attribute value to be validated
      *
      * @return mixed The modified value
