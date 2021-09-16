@@ -3,17 +3,11 @@
 /**
  * TechDivision\Import\Observers\AttributeObserverTrait
  *
- * NOTICE OF LICENSE
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is available through the world-wide-web at this URL:
- * http://opensource.org/licenses/osl-3.0.php
- *
- * PHP version 5
+ * PHP version 7
  *
  * @author    Tim Wagner <t.wagner@techdivision.com>
  * @copyright 2020 TechDivision GmbH <info@techdivision.com>
- * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
+ * @license   https://opensource.org/licenses/MIT
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
  */
@@ -32,12 +26,19 @@ use TechDivision\Import\Utils\ConfigurationKeys;
  *
  * @author    Tim Wagner <t.wagner@techdivision.com>
  * @copyright 2020 TechDivision GmbH <info@techdivision.com>
- * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
+ * @license   https://opensource.org/licenses/MIT
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
  */
 trait AttributeObserverTrait
 {
+
+    /**
+     * The trait that provides empty columns functionality.
+     *
+     * @var \TechDivision\Import\Observers\CleanUpEmptyColumnsTrait
+     */
+    use CleanUpEmptyColumnsTrait;
 
     /**
      * The ID of the attribute to create the values for.
@@ -66,20 +67,6 @@ trait AttributeObserverTrait
      * @var mixed
      */
     protected $attributeValue;
-
-    /**
-     * The array with the column keys that has to be cleaned up when their values are empty.
-     *
-     * @var array
-     */
-    protected $cleanUpEmptyColumnKeys;
-
-    /**
-     * The array with the default column values.
-     *
-     * @var array
-     */
-    protected $defaultColumnValues;
 
     /**
      * The attribute we're actually processing.
@@ -120,78 +107,6 @@ trait AttributeObserverTrait
     public function getAttributeValue()
     {
         return $this->attributeValue;
-    }
-
-    /**
-     * Get empty attribute value constant from global konfiguration
-     *
-     * @return string
-     */
-    private function getEmptyAttributeValueConstant()
-    {
-        return $this->getSubject()->getConfiguration()->getConfiguration()->getEmptyAttributeValueConstant();
-    }
-
-    /**
-     * Remove all the empty values from the row and return the cleared row.
-     *
-     * @return array The cleared row
-     */
-    protected function clearRow()
-    {
-
-        // initialize the array with the column keys that has to be cleaned-up
-        $this->cleanUpEmptyColumnKeys = array();
-
-        // query whether or not column names that has to be cleaned up have been configured
-        if ($this->getSubject()->getConfiguration()->hasParam(ConfigurationKeys::CLEAN_UP_EMPTY_COLUMNS)) {
-            // if yes, load the column names
-            $cleanUpEmptyColumns = $this->getSubject()->getCleanUpColumns();
-
-            // translate the column names into column keys
-            foreach ($cleanUpEmptyColumns as $cleanUpEmptyColumn) {
-                if ($this->hasHeader($cleanUpEmptyColumn)) {
-                    $this->cleanUpEmptyColumnKeys[$cleanUpEmptyColumn] = $this->getHeader($cleanUpEmptyColumn);
-                }
-            }
-        }
-
-        // initialize the array with the default column values
-        $this->defaultColumnValues = array();
-
-        // iterate over the default column values to figure out whether or not the column exists
-        $defaultColumnValues = $this->getSubject()->getDefaultColumnValues();
-
-        // prepare the array with the default column values, BUT we only take
-        // care of default columns WITHOUT any value, because in only in this
-        // case the default EAV value from the DB should be used when a empty
-        // column value has been found to create a NEW attribute value
-        foreach ($defaultColumnValues as $columnName => $defaultColumnValue) {
-            if ($defaultColumnValue === '') {
-                $this->defaultColumnValues[$columnName] = $this->getHeader($columnName);
-            }
-        }
-
-        $emptyValueDefinition = $this->getEmptyAttributeValueConstant();
-        // load the header keys
-        $headers = in_array($emptyValueDefinition, $this->row, true) ? array_flip($this->getHeaders()) : [];
-        // remove all the empty values from the row, expected the columns has to be cleaned-up
-        foreach ($this->row as $key => $value) {
-            if ($value === $emptyValueDefinition) {
-                $this->cleanUpEmptyColumnKeys[$headers[$key]] = $key;
-                $this->row[$key] = '';
-            }
-            // query whether or not the value is empty AND the column has NOT to be cleaned-up
-            if (($value === null || $value === '') &&
-                in_array($key, $this->cleanUpEmptyColumnKeys) === false &&
-                in_array($key, $this->defaultColumnValues) === false
-            ) {
-                unset($this->row[$key]);
-            }
-        }
-
-        // finally return the clean row
-        return $this->row;
     }
 
     /**
@@ -461,7 +376,7 @@ trait AttributeObserverTrait
         // query whether or not the colunm IS empty and it is NOT in the
         // array with the default column values, because in that case we
         // want to skip processing the attribute
-        if (array_key_exists($this->attributeCode, $this->defaultColumnValues) === false && ($this->attributeValue === '' || $this->attributeValue == null)) {
+        if (array_key_exists($this->attributeCode, $this->getDefaultColumnValues()) === false && ($this->attributeValue === '' || $this->attributeValue == null)) {
             $this->operation = OperationNames::SKIP;
         }
 
@@ -491,8 +406,8 @@ trait AttributeObserverTrait
             // BUT it is NOT in the array with columns we want to clean-up the default
             // column value has to be removed, because we do NOT want to override the
             // value existing in the database
-            if (array_key_exists($this->attributeCode, $this->defaultColumnValues) &&
-                array_key_exists($this->attributeCode, $this->cleanUpEmptyColumnKeys) === false
+            if (array_key_exists($this->attributeCode, $this->getDefaultColumnValues()) &&
+                array_key_exists($this->attributeCode, $this->getCleanUpEmptyColumnKeys()) === false
             ) {
                 // remove the value from the array with the column values, because
                 // this is the default value from the database and it should NOT

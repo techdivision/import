@@ -3,17 +3,11 @@
 /**
  * TechDivision\Import\Utils\SqlStatements
  *
- * NOTICE OF LICENSE
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is available through the world-wide-web at this URL:
- * http://opensource.org/licenses/osl-3.0.php
- *
- * PHP version 5
+ * PHP version 7
  *
  * @author    Tim Wagner <t.wagner@techdivision.com>
  * @copyright 2016 TechDivision GmbH <info@techdivision.com>
- * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
+ * @license   https://opensource.org/licenses/MIT
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
  */
@@ -28,7 +22,7 @@ use TechDivision\Import\Dbal\Collection\Repositories\AbstractSqlStatementReposit
  *
  * @author    Tim Wagner <t.wagner@techdivision.com>
  * @copyright 2016 TechDivision GmbH <info@techdivision.com>
- * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
+ * @license   https://opensource.org/licenses/MIT
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
  */
@@ -142,13 +136,6 @@ class SqlStatementRepository extends AbstractSqlStatementRepository
                     )
                     AND is_anchor_default.store_id = 0
                     AND is_anchor_default.entity_id = t0.entity_id',
-        SqlStatementKeys::ROOT_CATEGORIES =>
-            'SELECT t2.code, t0.*
-               FROM ${table:catalog_category_entity} t0
-         INNER JOIN ${table:store_group} t1
-                 ON t1.root_category_id = t0.entity_id
-         INNER JOIN ${table:store} t2
-                 ON t2.group_id = t1.group_id',
         SqlStatementKeys::CATEGORY_VARCHARS_BY_ENTITY_IDS =>
             'SELECT t1.*
                FROM ${table:catalog_category_entity_varchar} AS t1
