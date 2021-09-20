@@ -80,11 +80,12 @@ class SqlStatementRepositoryTest extends TestCase
      * Test's if the find() method throws an exception if no SQL for the passed key is not available.
      *
      * @return void
-     * @expectedException \Exception
-     * @expectedExceptionMessage Can't find SQL statement with ID a.id.that.is.not.available
      */
     public function testFindWithException()
     {
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessage("Can't find SQL statement with ID a.id.that.is.not.available");
+
         $this->sqlStatementRepository->load('a.id.that.is.not.available');
     }
 }

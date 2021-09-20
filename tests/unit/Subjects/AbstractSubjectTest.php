@@ -210,12 +210,12 @@ class AbstractSubjectTest extends AbstractTest
      * Test's if the getHeader() method throwns the expected exception when requesting an invalid header name.
      *
      * @return void
-     *
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage Header unknown is not available
      */
     public function testGetInvalidHeader()
     {
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessage("Header unknown is not available");
+
         $this->abstractSubject->getHeader('unknown');
     }
 
@@ -500,12 +500,12 @@ class AbstractSubjectTest extends AbstractTest
      * Test the getCoreConfigData() method throwing an exception.
      *
      * @return void
-     *
-     * @expectedException \Exception
-     * @expectedExceptionMessage Can't find a value for configuration "unknown/config/value-default-0" in "core_config_data"
      */
     public function testGetCoreConfigDataWithException()
     {
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessage('Can\'t find a value for configuration "unknown/config/value-default-0" in "core_config_data"');
+
         $this->abstractSubject->getCoreConfigData('unknown/config/value');
     }
 
@@ -513,12 +513,12 @@ class AbstractSubjectTest extends AbstractTest
      * Test if an exception is thrown when a invalid logger is requested.
      *
      * @return
-     *
-     * @expectedException \Exception
-     * @expectedExceptionMessage The requested logger 'invalid-logger-name' is not available
      */
     public function testGetSystemLoggerWithException()
     {
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessage("The requested logger 'invalid-logger-name' is not available");
+
         $this->abstractSubject->getSystemLogger('invalid-logger-name');
     }
 
@@ -717,12 +717,11 @@ class AbstractSubjectTest extends AbstractTest
      * Test getStoreId() with an invalid store view code.
      *
      * @return void
-     *
-     * @expectedException \Exception
-     * @expectedExceptionMessage Found invalid store view code unknown in file product-import_20170706-160000_01.csv on line 1
      */
     public function testGetStoreIdWithException()
     {
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessage("Found invalid store view code unknown in file product-import_20170706-160000_01.csv on line 1");
 
         // set the filename
         $filename = 'product-import_20170706-160000_01.csv';
@@ -825,12 +824,12 @@ class AbstractSubjectTest extends AbstractTest
      * Test the getRootCategory() method throwing an exception.
      *
      * @return void
-     *
-     * @expectedException \Exception
-     * @expectedExceptionMessage Root category for unknown is not available
      */
     public function testGetRootCategoryWithException()
     {
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessage("Root category for unknown is not available");
+
         $this->abstractSubject->setStoreViewCode('unknown');
         $this->abstractSubject->getRootCategory();
     }

@@ -302,12 +302,12 @@ class ExportableTraitTest extends TestCase
      * Test the getArtefactsByTypeAndEntityId() method with invalid type or entity ID.
      *
      * @return void
-     *
-     * @expectedException \Exception
-     * @expectedExceptionMessage Cant't load artefacts for type unknown_type and entity ID 10
      */
     public function testGetArtefactsByTypeAndEntityIdWithException()
     {
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessage("Cant't load artefacts for type unknown_type and entity ID 10");
+
         $this->exportableTrait->getArtefactsByTypeAndEntityId('unknown_type', 10);
     }
 }

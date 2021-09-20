@@ -302,12 +302,11 @@ class FilesystemTraitTest extends TestCase
      * Test the resolvePath() method with an invalid path.
      *
      * @return void
-     *
-     * @expectedException \Exception
-     * @expectedExceptionMessage Directory test.txt doesn't exist
      */
     public function testResolvePathWithInvalidPath()
     {
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessage("Directory test.txt doesn't exist");
 
         // mock the filesystem
         $mockFilesystem = $this->getMockBuilder('TechDivision\Import\Adapter\FilesystemAdapterInterface')

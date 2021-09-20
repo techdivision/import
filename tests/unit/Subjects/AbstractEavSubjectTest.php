@@ -195,12 +195,11 @@ class AbstractEavSubjectTest extends AbstractTest
      * Test the getAttributes() method with invalid entity type.
      *
      * @return void
-     *
-     * @expectedException \Exception
-     * @expectedExceptionMessage Found invalid entity type code "unknown_entity_type"
      */
     public function testGetAttributesWithInvalidEntityTypeCode()
     {
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessage('Found invalid entity type code "unknown_entity_type"');
 
         // mock the method to return the entity type code
         $this->abstractEavSubject->expects($this->any())->method('getEntityTypeCode')->willReturn('unknown_entity_type');
@@ -213,12 +212,11 @@ class AbstractEavSubjectTest extends AbstractTest
      * Test the getAttributes() method with invalid attribute set name.
      *
      * @return void
-     *
-     * @expectedException \Exception
-     * @expectedExceptionMessage Found invalid attribute set name "Unknown"
      */
     public function testGetAttributesWithInvalidAttributeSetName()
     {
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessage('Found invalid attribute set name "Unknown"');
 
         // mock the method to return the entity type code
         $this->abstractEavSubject->expects($this->any())
@@ -263,12 +261,11 @@ class AbstractEavSubjectTest extends AbstractTest
      * Test the getAttributeSetByAttributeSetName() method with an invalid attribute set name.
      *
      * @return void
-     *
-     * @expectedException \Exception
-     * @expectedExceptionMessage Found invalid entity type code "unknown_entity_type"
      */
     public function testGetAttributSetByAttributSetNameWithInvalidEntityTypeCode()
     {
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessage('Found invalid entity type code "unknown_entity_type"');
 
         // mock the method to return the entity type code
         $this->abstractEavSubject->expects($this->any())->method('getEntityTypeCode')->willReturn('unknown_entity_type');
@@ -281,12 +278,11 @@ class AbstractEavSubjectTest extends AbstractTest
      * Test the getAttributeSetByAttributeSetName() method with an invalid attribute set name.
      *
      * @return void
-     *
-     * @expectedException \Exception
-     * @expectedExceptionMessage Found invalid attribute set name "Unknown"
      */
     public function testGetAttributSetByAttributSetNameWithInvalidAttributeSetName()
     {
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessage('Found invalid attribute set name "Unknown"');
 
         // mock the method to return the entity type code
         $this->abstractEavSubject->expects($this->any())
@@ -479,12 +475,11 @@ class AbstractEavSubjectTest extends AbstractTest
      * Test the getEavAttributeByAttributeCode() method.
      *
      * @return void
-     *
-     * @expectedException \Exception
-     * @expectedExceptionMessage Can't load attribute with code "unknown_attribute_code"
      */
     public function testGetEavAttributeByAttributeCodeWithInvalidAttributeCode()
     {
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessage('Can\'t load attribute with code "unknown_attribute_code"');
 
         // set the attribute set name
         $this->abstractEavSubject->setAttributeSet(array(MemberNames::ATTRIBUTE_SET_NAME => 'Default'));

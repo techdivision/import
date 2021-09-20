@@ -184,12 +184,11 @@ class FileUploadTraitTest extends TestCase
      * Test the uploadFile() method with a not existing file.
      *
      * @return void
-     *
-     * @expectedException \Exception
-     * @expectedExceptionMessage Media file "pub/images/a/b/test.jpg" is not available
      */
     public function testUploadFileWithNotExistingFile()
     {
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessage('Media file "pub/images/a/b/test.jpg" is not available');
 
         // set media + images file directory
         $this->fileUploadTrait->setMediaDir('var/importexport/media');

@@ -246,12 +246,11 @@ class SubjectPluginTest extends TestCase
      * Tests's the plugin's process method with a subject.
      *
      * @return void
-     *
-     * @expectedException \Exception
-     * @expectedExceptionMessage Can't export file
      */
     public function testProcessWithOneSubjectAndException()
     {
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessage("Can't export file");
 
         // mock the subject
         $mockSubjectConfiguration = $this->getMockBuilder(SubjectConfigurationInterface::class)->getMock();
