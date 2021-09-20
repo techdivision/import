@@ -47,7 +47,7 @@ class AbstractAttributeObserverTest extends TestCase
      * @return void
      * @see \PHPUnit\Framework\TestCase::setUp()
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->attributeObserver = $this->getMockBuilder('TechDivision\Import\Observers\AbstractAttributeObserver')
                                         ->setMethods(array('isDebugMode', 'getPrimaryKeyMemberName', 'getPrimaryKey'))

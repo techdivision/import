@@ -77,7 +77,7 @@ class SubjectPluginTest extends TestCase
      * @return void
      * @see \PHPUnit\Framework\TestCase::setUp()
      */
-    protected function setUp()
+    protected function setUp(): void
     {
 
         // create a mock application
@@ -110,7 +110,7 @@ class SubjectPluginTest extends TestCase
      *
      * @return void
      */
-    protected function tearDown()
+    protected function tearDown(): void
     {
         unlink($this->okFilename);
     }
@@ -196,8 +196,7 @@ class SubjectPluginTest extends TestCase
             ->method('getMatches')
             ->willReturn(array(array()));
         $mockFileResolver->expects($this->once())
-            ->method('reset')
-            ->willReturn(null);
+            ->method('reset');
 
         // let the mock file resolver factory create a mock file resolver instance
         $this->mockFileResolverFactory->expects($this->once())

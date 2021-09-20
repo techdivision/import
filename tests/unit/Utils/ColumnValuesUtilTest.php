@@ -43,7 +43,7 @@ class ColumnValuesUtilTest extends TestCase
      * @return void
      * @see \PHPUnit\Framework\TestCase::setUp()
      */
-    protected function setUp()
+    protected function setUp(): void
     {
 
         // mock the array with the column names

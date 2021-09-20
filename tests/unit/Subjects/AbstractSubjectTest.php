@@ -101,7 +101,7 @@ class AbstractSubjectTest extends AbstractTest
      * @return void
      * @see \PHPUnit\Framework\TestCase::setUp()
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         // create the subject instance we want to test and invoke the setup method
         $this->abstractSubject = $this->getSubjectInstance();

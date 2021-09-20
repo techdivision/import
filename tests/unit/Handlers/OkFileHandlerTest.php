@@ -43,7 +43,7 @@ class OkFileHandlerTest extends TestCase
      * @return void
      * @see \PHPUnit\Framework\TestCase::setUp()
      */
-    protected function setUp()
+    protected function setUp(): void
     {
 
         // creqte the mock for the generic file handler
