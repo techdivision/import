@@ -287,7 +287,7 @@ class RegistryKeys
      *
      * @var string
      */
-    const STRICT_VALIDATIONS = 'strict-validations';
+    const NO_STRICT_VALIDATIONS = 'no-strict-validations';
 
     /**
      * Key for the registry entry with collected column values.

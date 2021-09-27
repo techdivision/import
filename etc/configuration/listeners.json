@@ -20,7 +20,7 @@
         "import.listener.debug.dump.prepare",
         "import.listener.finalize.registry",
         "import.listener.render.validations",
-        "import.listener.render.strict.validations"
+        "import.listener.render.nostrict.validations"
       ],
       "app.tear.down": [
         "import.listener.import.history",

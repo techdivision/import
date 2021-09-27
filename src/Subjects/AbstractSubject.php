@@ -929,6 +929,18 @@ abstract class AbstractSubject implements SubjectInterface, FilesystemSubjectInt
                 )
             );
 
+            $this->mergeStatus(
+                array(
+                    RegistryKeys::NO_STRICT_VALIDATIONS => array(
+                        basename($this->getFilename()) => array(
+                            $this->getLineNumber() => array(
+                                RegistryKeys::PROCESSED_ROWS => $this->getLineNumber() - 1
+                            )
+                        )
+                    )
+                )
+            );
+
             // invoke the events that has to be fired when the artfact has been successfully processed
             $this->getEmitter()->emit(EventNames::SUBJECT_ARTEFACT_PROCESS_SUCCESS, $this);
             $this->getEmitter()->emit($this->getEventName(EventNames::SUBJECT_ARTEFACT_PROCESS_SUCCESS), $this);
@@ -954,7 +966,17 @@ abstract class AbstractSubject implements SubjectInterface, FilesystemSubjectInt
                     )
                 )
             );
-
+            $this->mergeStatus(
+                array(
+                    RegistryKeys::NO_STRICT_VALIDATIONS => array(
+                        basename($this->getFilename()) => array(
+                            $this->getLineNumber() => array(
+                                RegistryKeys::ERROR_MESSAGE  => $e->getMessage()
+                            )
+                        )
+                    )
+                )
+            );
             // invoke the events that has to be fired when the artfact can't be processed
             $this->getEmitter()->emit(EventNames::SUBJECT_ARTEFACT_PROCESS_FAILURE, $this, $e);
             $this->getEmitter()->emit($this->getEventName(EventNames::SUBJECT_ARTEFACT_PROCESS_FAILURE), $this, $e);
