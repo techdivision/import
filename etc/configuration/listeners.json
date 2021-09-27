@@ -19,7 +19,8 @@
       "app.process.transaction.failure": [
         "import.listener.debug.dump.prepare",
         "import.listener.finalize.registry",
-        "import.listener.render.validations"
+        "import.listener.render.validations",
+        "import.listener.render.strict.validations"
       ],
       "app.tear.down": [
         "import.listener.import.history",
