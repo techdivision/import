@@ -2,18 +2,12 @@
 
 /**
  * TechDivision\Import\Subjects\AbstractSubjectTest
-*
-* NOTICE OF LICENSE
-*
-* This source file is subject to the Open Software License (OSL 3.0)
-* that is available through the world-wide-web at this URL:
-* http://opensource.org/licenses/osl-3.0.php
-*
-* PHP version 5
+ *
+* PHP version 7
 *
 * @author    Tim Wagner <t.wagner@techdivision.com>
 * @copyright 2016 TechDivision GmbH <info@techdivision.com>
-* @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
+* @license   https://opensource.org/licenses/MIT
 * @link      https://github.com/techdivision/import
 * @link      http://www.techdivision.com
 */
@@ -32,7 +26,7 @@ use TechDivision\Import\Utils\StoreViewCodes;
  *
  * @author    Tim Wagner <t.wagner@techdivision.com>
  * @copyright 2016 TechDivision GmbH <info@techdivision.com>
- * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
+ * @license   https://opensource.org/licenses/MIT
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
  */
@@ -107,7 +101,7 @@ class AbstractSubjectTest extends AbstractTest
      * @return void
      * @see \PHPUnit\Framework\TestCase::setUp()
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         // create the subject instance we want to test and invoke the setup method
         $this->abstractSubject = $this->getSubjectInstance();
@@ -216,12 +210,12 @@ class AbstractSubjectTest extends AbstractTest
      * Test's if the getHeader() method throwns the expected exception when requesting an invalid header name.
      *
      * @return void
-     *
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage Header unknown is not available
      */
     public function testGetInvalidHeader()
     {
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessage("Header unknown is not available");
+
         $this->abstractSubject->getHeader('unknown');
     }
 
@@ -506,12 +500,12 @@ class AbstractSubjectTest extends AbstractTest
      * Test the getCoreConfigData() method throwing an exception.
      *
      * @return void
-     *
-     * @expectedException \Exception
-     * @expectedExceptionMessage Can't find a value for configuration "unknown/config/value-default-0" in "core_config_data"
      */
     public function testGetCoreConfigDataWithException()
     {
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessage('Can\'t find a value for configuration "unknown/config/value-default-0" in "core_config_data"');
+
         $this->abstractSubject->getCoreConfigData('unknown/config/value');
     }
 
@@ -519,12 +513,12 @@ class AbstractSubjectTest extends AbstractTest
      * Test if an exception is thrown when a invalid logger is requested.
      *
      * @return
-     *
-     * @expectedException \Exception
-     * @expectedExceptionMessage The requested logger 'invalid-logger-name' is not available
      */
     public function testGetSystemLoggerWithException()
     {
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessage("The requested logger 'invalid-logger-name' is not available");
+
         $this->abstractSubject->getSystemLogger('invalid-logger-name');
     }
 
@@ -723,12 +717,11 @@ class AbstractSubjectTest extends AbstractTest
      * Test getStoreId() with an invalid store view code.
      *
      * @return void
-     *
-     * @expectedException \Exception
-     * @expectedExceptionMessage Found invalid store view code unknown in file product-import_20170706-160000_01.csv on line 1
      */
     public function testGetStoreIdWithException()
     {
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessage("Found invalid store view code unknown in file product-import_20170706-160000_01.csv on line 1");
 
         // set the filename
         $filename = 'product-import_20170706-160000_01.csv';
@@ -831,12 +824,12 @@ class AbstractSubjectTest extends AbstractTest
      * Test the getRootCategory() method throwing an exception.
      *
      * @return void
-     *
-     * @expectedException \Exception
-     * @expectedExceptionMessage Root category for unknown is not available
      */
     public function testGetRootCategoryWithException()
     {
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessage("Root category for unknown is not available");
+
         $this->abstractSubject->setStoreViewCode('unknown');
         $this->abstractSubject->getRootCategory();
     }

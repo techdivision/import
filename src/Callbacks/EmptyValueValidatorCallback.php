@@ -5,8 +5,8 @@
  *
  * PHP version 7
  *
- * @author    Tim Wagner <t.wagner@techdivision.com>
- * @copyright 2019 TechDivision GmbH <info@techdivision.com>
+ * @author    Patrick Mehringer <p.mehringer@techdivision.com>
+ * @copyright 2021 TechDivision GmbH <info@techdivision.com>
  * @license   https://opensource.org/licenses/MIT
  * @link      https://github.com/techdivision/import-product
  * @link      http://www.techdivision.com
@@ -15,15 +15,15 @@
 namespace TechDivision\Import\Callbacks;
 
 /**
- * A callback implementation that validates the option values of EAV multiselect attributes.
+ * A callback implementation that validates the values of array attributes.
  *
- * @author    Tim Wagner <t.wagner@techdivision.com>
- * @copyright 2019 TechDivision GmbH <info@techdivision.com>
+ * @author    Patrick Mehringer <p.mehringer@techdivision.com>
+ * @copyright 2021 TechDivision GmbH <info@techdivision.com>
  * @license   https://opensource.org/licenses/MIT
  * @link      https://github.com/techdivision/import-product
  * @link      http://www.techdivision.com
  */
-class MultiselectValidatorCallback extends IndexedArrayValidatorCallback
+class EmptyValueValidatorCallback extends IndexedArrayValidatorCallback
 {
 
     /**
@@ -36,7 +36,6 @@ class MultiselectValidatorCallback extends IndexedArrayValidatorCallback
      */
     public function handle($attributeCode = null, $attributeValue = null)
     {
-
         // load the subject instance
         $subject = $this->getSubject();
 
@@ -45,23 +44,20 @@ class MultiselectValidatorCallback extends IndexedArrayValidatorCallback
             return;
         }
 
-        // load the validations for the attribute with the passed code
-        $validations = $this->getValidations($attributeCode);
-
         // extract the option values
-        $optionValues = $subject->explode($attributeValue, $subject->getMultipleValueDelimiter());
+        $optionValues = $subject->explode($attributeValue, ',');
+        if (!is_array($optionValues)) {
+            return;
+        }
 
-        // iterate over the attributes and append them to the row
+        // iterate over the attribute value options
         foreach ($optionValues as $optionValue) {
             // query whether or not the value is valid
-            if (in_array($optionValue, $validations)) {
-                continue;
+            if (trim($optionValue) === '') {
+                throw new \InvalidArgumentException(
+                    sprintf('Found empty array value for attribute or property with code "%s"', $attributeCode)
+                );
             }
-
-            // throw an exception if the value is NOT in the array
-            throw new \InvalidArgumentException(
-                sprintf('Found invalid option value "%s" for attribute with code "%s"', $optionValue, $attributeCode)
-            );
         }
     }
 }
