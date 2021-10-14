@@ -120,7 +120,7 @@ class MoveFilesSubject extends AbstractSubject
         }
 
         // move the file to the new source directory
-        $this->rename($filename, sprintf('%s/%s', $newSourceDir, basename($filename)));
+        $this->rename($filename, sprintf('%s/%s', $newSourceDir, sprintf('product-import_%s_01.csv', date('Ymd-His')) /* basename($filename) */));
 
         // update the status
         $this->mergeStatus(
