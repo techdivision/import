@@ -6,7 +6,8 @@
         "import.listener.render.operation.info",
         "import.listener.render.mysql.info",
         "import.listener.render.debug.info",
-        "import.listener.initialize.registry"
+        "import.listener.initialize.registry",
+        "import.listener.render.nostrict.validations"
       ],
       "app.process.transaction.success": [
         "import.listener.debug.dump.prepare",
@@ -14,7 +15,8 @@
         "import.listener.archive",
         "import.listener.clear.artefacts",
         "import.listener.clear.directories",
-        "import.listener.operation.report"
+        "import.listener.operation.report",
+        "import.listener.render.nostrict.validations"
       ],
       "app.process.transaction.failure": [
         "import.listener.debug.dump.prepare",

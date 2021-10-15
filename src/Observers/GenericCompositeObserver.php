@@ -16,6 +16,7 @@ namespace TechDivision\Import\Observers;
 
 use TechDivision\Import\Subjects\SubjectInterface;
 use TechDivision\Import\Interfaces\HookAwareInterface;
+use TechDivision\Import\Utils\RegistryKeys;
 
 /**
  * A generic observer implementation that implements the composit pattern to bundle
@@ -111,6 +112,18 @@ class GenericCompositeObserver implements ObserverInterface, ObserverFactoryInte
             // if not, set the subject and process the observer
             $subject->setRow($observer->handle($subject));
         }
+
+        $subject->mergeStatus(
+            array(
+                RegistryKeys::NO_STRICT_VALIDATIONS => array(
+                    basename($subject->getFilename()) => array(
+                        $subject->getLineNumber() => array(
+                            $subject->getEntityTypeCode() => ""
+                        )
+                    )
+                )
+            )
+        );
 
         // returns the subject's row
         return $subject->getRow();
