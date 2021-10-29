@@ -300,7 +300,7 @@ class ProposedFilenameLoader implements LoaderInterface
      * If no pattern will be passed to the `load()` method, the files of
      * the actual directory using `getcwd()` will be returned.
      *
-     * @param string|null $pattern The pattern to load the files from the filesystem
+     * @param string|null $filename The pattern to load the files from the filesystem
      *
      * @return array The array with the data
      */

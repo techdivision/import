@@ -212,7 +212,7 @@ class MoveFilesSubject extends AbstractSubject
      * Prepares and returns the new filename in case a file has been specified
      * as second commanline line argument.
      *
-     * @param string $filename
+     * @param string $filename filename
      *
      * @return string
      */
