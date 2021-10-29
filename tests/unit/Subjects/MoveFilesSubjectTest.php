@@ -101,7 +101,7 @@ class MoveFilesSubjectTest extends AbstractTest
         $this->moveFilesSubject
              ->getConfiguration()
              ->expects($this->once())
-             ->method('getSourceDir')
+             ->method('getTargetDir')
              ->willReturn($targetDir = 'var/importexport');
 
         // mock the isDir() method
@@ -140,7 +140,7 @@ class MoveFilesSubjectTest extends AbstractTest
         $this->moveFilesSubject
              ->getConfiguration()
              ->expects($this->once())
-             ->method('getSourceDir')
+             ->method('getTargetDir')
              ->willReturn($targetDir= 'var/importexport');
 
         // mock the isDir() method
