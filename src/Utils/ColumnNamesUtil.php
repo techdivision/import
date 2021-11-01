@@ -46,7 +46,7 @@ class ColumnNamesUtil implements ColumnNamesUtiInterface
     /**
      * Construct a new instance.
      *
-     * @param \TechDivision\Import\Loaders\LoaderInterface        $columnNameLoader The column name loader instance
+     * @param \TechDivision\Import\Loaders\LoaderInterface             $columnNameLoader The column name loader instance
      * @param \TechDivision\Import\Dbal\Utils\TablePrefixUtilInterface $tablePrefixUtil  The table prefix utility instance
      */
     public function __construct(LoaderInterface $columnNameLoader, TablePrefixUtilInterface $tablePrefixUtil)

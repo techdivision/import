@@ -65,10 +65,10 @@ class ClearArtefactsListener extends AbstractListener
     /**
      * Initializes the event.
      *
-     * @param \TechDivision\Import\Configuration\ConfigurationInterface  $configuration     The actual configuration instance
-     * @param \TechDivision\Import\Adapter\FilesystemAdapterInterface $filesystemAdapter The filesystem adapter used to clear the directories
-     * @param \Doctrine\Common\Collections\Collection                    $systemLoggers     The array with the system loggers instances
-     * @param \TechDivision\Import\Loaders\LoaderInterface               $loader            The directory loader instance
+     * @param \TechDivision\Import\Configuration\ConfigurationInterface $configuration     The actual configuration instance
+     * @param \TechDivision\Import\Adapter\FilesystemAdapterInterface   $filesystemAdapter The filesystem adapter used to clear the directories
+     * @param \Doctrine\Common\Collections\Collection                   $systemLoggers     The array with the system loggers instances
+     * @param \TechDivision\Import\Loaders\LoaderInterface              $loader            The directory loader instance
      */
     public function __construct(
         ConfigurationInterface $configuration,

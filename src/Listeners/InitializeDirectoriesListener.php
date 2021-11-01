@@ -49,7 +49,7 @@ class InitializeDirectoriesListener extends AbstractListener
      * Initializes the event.
      *
      * @param \TechDivision\Import\Adapter\FilesystemAdapterInterface $filesystemAdapter The filesystem adapter used to clear the directories
-     * @param \TechDivision\Import\Loaders\LoaderInterface               $loader            The directory loader instance
+     * @param \TechDivision\Import\Loaders\LoaderInterface            $loader            The directory loader instance
      */
     public function __construct(FilesystemAdapterInterface $filesystemAdapter, LoaderInterface $loader)
     {
