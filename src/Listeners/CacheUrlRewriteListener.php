@@ -18,7 +18,7 @@ use League\Event\EventInterface;
 use League\Event\AbstractListener;
 use TechDivision\Import\Utils\CacheKeys;
 use TechDivision\Import\Utils\MemberNames;
-use TechDivision\Import\Utils\EntityStatus;
+use TechDivision\Import\Dbal\Utils\EntityStatus;
 use TechDivision\Import\Utils\SqlStatementKeys;
 use TechDivision\Import\Cache\CacheAdapterInterface;
 use TechDivision\Import\Dbal\Actions\CachedActionInterface;

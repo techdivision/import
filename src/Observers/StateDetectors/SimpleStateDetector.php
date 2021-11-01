@@ -14,7 +14,7 @@
 
 namespace TechDivision\Import\Observers\StateDetectors;
 
-use TechDivision\Import\Utils\EntityStatus;
+use TechDivision\Import\Dbal\Utils\EntityStatus;
 use TechDivision\Import\Observers\ObserverInterface;
 use TechDivision\Import\Observers\StateDetectorInterface;
 

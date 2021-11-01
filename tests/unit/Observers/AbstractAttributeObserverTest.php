@@ -16,7 +16,7 @@ namespace TechDivision\Import\Observers;
 
 use PHPUnit\Framework\TestCase;
 use TechDivision\Import\Utils\MemberNames;
-use TechDivision\Import\Utils\EntityStatus;
+use TechDivision\Import\Dbal\Utils\EntityStatus;
 use TechDivision\Import\Utils\StoreViewCodes;
 use TechDivision\Import\Utils\BackendTypeKeys;
 use TechDivision\Import\Utils\ConfigurationKeys;

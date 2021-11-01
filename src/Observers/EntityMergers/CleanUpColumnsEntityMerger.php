@@ -17,7 +17,7 @@ namespace TechDivision\Import\Observers\EntityMergers;
 use TechDivision\Import\Loaders\LoaderInterface;
 use TechDivision\Import\Observers\ObserverInterface;
 use TechDivision\Import\Subjects\CleanUpColumnsSubjectInterface;
-use TechDivision\Import\Utils\EntityStatus;
+use TechDivision\Import\Dbal\Utils\EntityStatus;
 
 /**
  * An entity merge implementation that is aware of cleaning-up attributes, if NOT in the

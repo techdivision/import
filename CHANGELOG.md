@@ -24,6 +24,7 @@
   
 ## Features
 
+* Refactoring deprecated classes. see https://github.com/techdivision/import-cli-simple/blob/master/UPGRADE-4.0.0.md
 * Add techdivision/import#191
 * Add second log handler to log to console also
 * Extend URL rewrite handling with functionality to delete URL rewrites by entity ID and type

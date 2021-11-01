@@ -26,7 +26,7 @@ use TechDivision\Import\Configuration\LoggerConfigurationInterface;
  * @link       https://github.com/techdivision/import
  * @link       http://www.techdivision.com
  * @deprecated Since 15.0.0
- * @see        TechDivision\Import\Loggers\MonologLoggerFactory
+ * @see        \TechDivision\Import\Loggers\MonologLoggerFactory
  */
 class LoggerFactory
 {

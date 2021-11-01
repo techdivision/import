@@ -22,6 +22,8 @@ namespace TechDivision\Import\Utils;
  * @license   https://opensource.org/licenses/MIT
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
+ * @deprecated Since 16.8.3
+ * @see        \TechDivision\Import\Dbal\Utils\EntityStatus
  */
 class EntityStatus extends \TechDivision\Import\Dbal\Utils\EntityStatus
 {

@@ -23,7 +23,7 @@ namespace TechDivision\Import\Adapter;
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
  */
-class PhpFilesystemAdapter implements PhpFilesystemAdapterInterface
+class PhpFilesystemAdapter implements FilesystemAdapterInterface
 {
 
     /**
