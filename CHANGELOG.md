@@ -39,6 +39,7 @@
 * Add #PAC-324: Add validator callback to check empty array index values 
 * Add #PAC-486: Add `--log-file` commandline parameter
 * functionality for renaming files
+* `ObserverInterface` need `setSubject` function
 
 # Version 16.5.3
 
