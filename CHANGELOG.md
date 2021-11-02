@@ -24,6 +24,7 @@
   
 ## Features
 
+* Refactoring deprecated classes. see https://github.com/techdivision/import-cli-simple/blob/master/UPGRADE-4.0.0.md
 * Add techdivision/import#191
 * Add second log handler to log to console also
 * Extend URL rewrite handling with functionality to delete URL rewrites by entity ID and type
@@ -35,7 +36,8 @@
     * https://github.com/techdivision/import/issues/181
 * Note attributes entity type for customer attribute
 * Change fix table name for prefix replace
-* Add #PAC-324: Add validator callback to check empty array index values
+* Add #PAC-324: Add validator callback to check empty array index values 
+* Add #PAC-486: Add `--log-file` commandline parameter
 
 # Version 16.5.3
 

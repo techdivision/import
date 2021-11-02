@@ -19,7 +19,7 @@ use League\Event\AbstractListener;
 use Doctrine\Common\Collections\Collection;
 use TechDivision\Import\Utils\MemberNames;
 use TechDivision\Import\Utils\RegistryKeys;
-use TechDivision\Import\Utils\EntityStatus;
+use TechDivision\Import\Dbal\Utils\EntityStatus;
 use TechDivision\Import\SystemLoggerTrait;
 use TechDivision\Import\ApplicationInterface;
 use TechDivision\Import\Services\ImportProcessorInterface;

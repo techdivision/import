@@ -15,6 +15,7 @@
 namespace TechDivision\Import\Utils;
 
 use TechDivision\Import\Loaders\LoaderInterface;
+use TechDivision\Import\Dbal\Utils\TablePrefixUtilInterface;
 
 /**
  * Utility class for dynamic column name handling.
@@ -38,15 +39,15 @@ class ColumnNamesUtil implements ColumnNamesUtiInterface
     /**
      * The table prefix utility instance.
      *
-     * @var \TechDivision\Import\Utils\TablePrefixUtilInterface
+     * @var \TechDivision\Import\Dbal\Utils\TablePrefixUtilInterface
      */
     protected $tablePrefixUtil;
 
     /**
      * Construct a new instance.
      *
-     * @param \TechDivision\Import\Loaders\LoaderInterface        $columnNameLoader The column name loader instance
-     * @param \TechDivision\Import\Utils\TablePrefixUtilInterface $tablePrefixUtil  The table prefix utility instance
+     * @param \TechDivision\Import\Loaders\LoaderInterface             $columnNameLoader The column name loader instance
+     * @param \TechDivision\Import\Dbal\Utils\TablePrefixUtilInterface $tablePrefixUtil  The table prefix utility instance
      */
     public function __construct(LoaderInterface $columnNameLoader, TablePrefixUtilInterface $tablePrefixUtil)
     {

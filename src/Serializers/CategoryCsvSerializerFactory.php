@@ -59,7 +59,7 @@ class CategoryCsvSerializerFactory implements SerializerFactoryInterface
     {
 
         // load the serializer instance from the container and pass the configuration
-        /** @var \TechDivision\Import\Serializer\SerializerInterface $serializer */
+        /** @var \TechDivision\Import\Serializer\ConfigurationAwareSerializerInterface $serializer */
         $serializer = $this->container->get(DependencyInjectionKeys::IMPORT_SERIALIZER_CSV_CATEGORY);
         $serializer->init($serializerConfiguration);
 
