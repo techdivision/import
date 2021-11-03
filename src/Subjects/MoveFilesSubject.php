@@ -228,7 +228,7 @@ class MoveFilesSubject extends AbstractSubject
 
         // query whether or not specifc filename has been passed as command
         // line argument, if yes make sure it is the passed one
-        if ($configuration instanceof FileResolverConfigurationInterface && $configuration->getFilename() === realpath($filename)) {
+        if ($configuration->getFilename() === realpath($filename)) {
             // load the first prefixed subject, because we've to prepare
             // a filename that matches this fileresolver configuration
             /** @var \TechDivision\Import\Configuration\SubjectConfigurationInterface $firstPrefixedSubject */
