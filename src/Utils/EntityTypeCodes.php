@@ -125,6 +125,13 @@ class EntityTypeCodes extends \ArrayObject
     const CATALOG_PRODUCT_SIMPLE = 'catalog_product_simple';
 
     /**
+     * Key for the product entity 'catalog_product_simple'.
+     *
+     * @var integer
+     */
+    const CATALOG_PRODUCT_BUNDLE = 'catalog_product_bundle';
+
+    /**
      * Construct a new entity type codes instance.
      *
      * @param array $entityTypeCodes The array with the additional entity type codes
