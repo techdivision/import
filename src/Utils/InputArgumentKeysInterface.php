@@ -62,6 +62,13 @@ interface InputArgumentKeysInterface extends \ArrayAccess
     const VALUES = 'values';
 
     /**
+     * The input argument key for an explicit file that has to be imported.
+     *
+     * @var string
+     */
+    const FILENAME = 'filename';
+
+    /**
      * Query whether or not the passed input argument is valid.
      *
      * @param string $inputArgument The input argument to query for

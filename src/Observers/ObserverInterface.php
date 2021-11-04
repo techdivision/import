@@ -43,4 +43,13 @@ interface ObserverInterface
      * @return \TechDivision\Import\Subjects\SubjectInterface The observer's subject instance
      */
     public function getSubject();
+
+    /**
+     * Set's the obeserver's subject instance to initialize the observer with.
+     *
+     * @param \TechDivision\Import\Subjects\SubjectInterface $subject The observer's subject
+     *
+     * @return void
+     */
+    public function setSubject(SubjectInterface $subject);
 }

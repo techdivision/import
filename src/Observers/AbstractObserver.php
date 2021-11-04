@@ -70,7 +70,7 @@ abstract class AbstractObserver implements ObserverInterface
      *
      * @return void
      */
-    protected function setSubject(SubjectInterface $subject)
+    public function setSubject(SubjectInterface $subject)
     {
         $this->subject = $subject;
     }
