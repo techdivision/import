@@ -86,6 +86,13 @@ class ColumnKeys
     const ORIGINAL_COLUMN_NAMES = 'original_column_names';
 
     /**
+     * Name for the column 'sku'.
+     *
+     * @var string
+     */
+    const SKU = 'sku';
+
+    /**
      * Name for the column 'product_type'.
      *
      * @var string
