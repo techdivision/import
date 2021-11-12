@@ -265,6 +265,7 @@ abstract class AbstractSubject implements SubjectInterface, FilesystemSubjectInt
         EntityTypeCodes::CATALOG_PRODUCT_TIER_PRICE    => EntityTypeCodes::CATALOG_PRODUCT,
         EntityTypeCodes::CATALOG_PRODUCT_SIMPLE        => EntityTypeCodes::CATALOG_PRODUCT,
         EntityTypeCodes::CATALOG_PRODUCT_BUNDLE        => EntityTypeCodes::CATALOG_PRODUCT,
+        EntityTypeCodes::CATALOG_PRODUCT_CATEGORY      => EntityTypeCodes::CATALOG_CATEGORY,
         EntityTypeCodes::CUSTOMER                      => EntityTypeCodes::CUSTOMER
     );
 
