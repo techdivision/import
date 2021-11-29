@@ -40,6 +40,8 @@
 * Add #PAC-486: Add `--log-file` commandline parameter
 * functionality for renaming files
 * `ObserverInterface` need `setSubject` function
+* Add PAC-299: create validation callback for sku relations for grouped, configurables and bundles
+
 
 # Version 16.5.3
 

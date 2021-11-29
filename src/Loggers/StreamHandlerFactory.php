@@ -59,13 +59,6 @@ class StreamHandlerFactory implements HandlerFactoryInterface
     protected $stream;
 
     /**
-     * The actual log filename from the configuration to use.
-     *
-     * @var string
-     */
-    protected $logFile;
-
-    /**
      * The registry processor instance.
      *
      * @var \TechDivision\Import\Services\RegistryProcessorInterface
@@ -86,8 +79,6 @@ class StreamHandlerFactory implements HandlerFactoryInterface
 
         // load the global log level from the configuration/console
         $this->logLevel = $configuration->getLogLevel();
-
-        $this->logFile = $configuration->getLogFile();
 
         // load the default value for the target directory from the configuration
         $this->targetDirectory = $configuration->getTargetDir();
@@ -116,7 +107,7 @@ class StreamHandlerFactory implements HandlerFactoryInterface
             $this->targetDirectory = $status[RegistryKeys::TARGET_DIRECTORY];
         }
 
-        $stream = $this->logFile ? $this->logFile :  $handlerConfiguration->getParam(ConfigurationKeys::STREAM);
+        $stream = $handlerConfiguration->getParam(ConfigurationKeys::STREAM);
 
         // query whether or not the given log file is relative to the target
         // directory (for backwards compatility the default value must be YES)
