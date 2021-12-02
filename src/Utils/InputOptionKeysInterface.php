@@ -237,6 +237,13 @@ interface InputOptionKeysInterface extends \ArrayAccess
     const STRICT_MODE = 'strict-mode';
 
     /**
+     * The input option key for the Step log infos.
+     *
+     * @var string
+     */
+    const LOG_FILE = 'log-file';
+
+    /**
      * Query whether or not the passed input option is valid.
      *
      * @param string $inputOption The input option to query for

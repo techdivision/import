@@ -1,29 +1,31 @@
 <?php
 
 /**
- * TechDivision\Import\Callbacks\MultipleValuesValidatorCallback
+ * TechDivision\Import\Callbacks\CommaDelimiterSkuRelationsValidatorCallback
  *
  * PHP version 7
  *
- * @author    Tim Wagner <t.wagner@techdivision.com>
- * @copyright 2019 TechDivision GmbH <info@techdivision.com>
+ * @author    Kenza Yamlahi <k.yamlahi@techdivision.com>
+ * @copyright 2021 TechDivision GmbH <info@techdivision.com>
  * @license   https://opensource.org/licenses/MIT
- * @link      https://github.com/techdivision/impor
+ * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
  */
 
 namespace TechDivision\Import\Callbacks;
 
+use TechDivision\Import\Utils\ColumnKeys;
+
 /**
  * A callback implementation that validates the a list of values.
  *
- * @author    Tim Wagner <t.wagner@techdivision.com>
- * @copyright 2019 TechDivision GmbH <info@techdivision.com>
+ * @author    Kenza Yamlahi <k.yamlahi@techdivision.com>
+ * @copyright 2021 TechDivision GmbH <info@techdivision.com>
  * @license   https://opensource.org/licenses/MIT
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
  */
-class MultipleValuesValidatorCallback extends ArrayValidatorCallback
+class CommaDelimiterSkuRelationsValidatorCallback extends ArrayValidatorCallback
 {
 
     /**
@@ -36,33 +38,38 @@ class MultipleValuesValidatorCallback extends ArrayValidatorCallback
      */
     public function handle($attributeCode = null, $attributeValue = null)
     {
-
-        // explode the values and query whether or not an empty value is allowed
-        if ($this->isNullable($values = $this->getSubject()->explode($attributeValue))) {
+        // query whether or not an empty value is allowed
+        if ($this->isNullable($values = $this->getSubject()->explode($attributeValue, ','))) {
             return;
         }
 
         // load the validations for the column
         $validations = $this->getValidations();
+        // load the parent SKU from the row
+        $rowSku = $this->getSubject()->getValue(ColumnKeys::SKU);
+        $rowProductType = $this->getSubject()->getValue(ColumnKeys::PRODUCT_TYPE);
 
-        $valueErrors = [];
+        $skuErrors = [];
         // iterate over the values and validate them
         foreach ($values as $value) {
+            // First element always SKU
+            list($value) = $this->getSubject()->explode($value, '=');
+
             // query whether or not the value is valid
             if (in_array($value, $validations)) {
                 continue;
             }
-
-            array_push($valueErrors, $value);
+            // collect single sku for error
+            array_push($skuErrors, $value);
         }
-
-        if (count($valueErrors) > 0) {
+        if (count($skuErrors) > 0) {
             // throw an exception if the value is NOT in the array
             throw new \InvalidArgumentException(
                 sprintf(
-                    'Found invalid value "%s" in column "%s"',
-                    implode(',', $valueErrors),
-                    $attributeCode
+                    'Found invalid SKUs "%s" to be related to %s product with SKU "%s"',
+                    implode(',', $skuErrors),
+                    $rowProductType,
+                    $rowSku
                 )
             );
         }

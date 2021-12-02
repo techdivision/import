@@ -92,7 +92,9 @@ class ObserverVisitor implements ObserverVisitorInterface
                 $instance = $this->container->get($observer);
                 // query whether or not a factory has been specified
                 if ($instance instanceof ObserverFactoryInterface) {
-                    $subject->registerObserver($instance->createObserver($subject), $type);
+                    $observ = $instance->createObserver($subject);
+                    $observ->setSubject($subject);
+                    $subject->registerObserver($observ, $type);
                 } elseif ($instance instanceof ObserverInterface) {
                     $subject->registerObserver($instance, $type);
                 } else {

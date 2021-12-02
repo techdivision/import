@@ -107,7 +107,6 @@ class StreamHandlerFactory implements HandlerFactoryInterface
             $this->targetDirectory = $status[RegistryKeys::TARGET_DIRECTORY];
         }
 
-        // prepare the log filename
         $stream = $handlerConfiguration->getParam(ConfigurationKeys::STREAM);
 
         // query whether or not the given log file is relative to the target
@@ -115,7 +114,6 @@ class StreamHandlerFactory implements HandlerFactoryInterface
         if ($handlerConfiguration->hasParam(ConfigurationKeys::RELATIVE) ? $handlerConfiguration->getParam(ConfigurationKeys::RELATIVE) : true) {
             $stream = implode(DIRECTORY_SEPARATOR, array($this->targetDirectory, $stream));
         }
-
         // override the filename in the params
         $params = array_replace($handlerConfiguration->getParams(), array(ConfigurationKeys::STREAM => $stream));
 

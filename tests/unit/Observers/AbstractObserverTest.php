@@ -15,7 +15,7 @@
 namespace TechDivision\Import\Observers;
 
 use PHPUnit\Framework\TestCase;
-use TechDivision\Import\Utils\EntityStatus;
+use TechDivision\Import\Dbal\Utils\EntityStatus;
 
 /**
  * Test class for the abstract observer implementation.
@@ -32,7 +32,7 @@ class AbstractObserverTest extends TestCase
     /**
      * The abstract observer we want to test.
      *
-     * @var \TechDivision\Import\Observers\AbstractObserver
+     * @var \TechDivision\Import\Observers\AbstractObserverImpl
      */
     protected $abstractObserver;
 

@@ -19,7 +19,7 @@ use League\Event\AbstractListener;
 use TechDivision\Import\SystemLoggerTrait;
 use TechDivision\Import\Loaders\LoaderInterface;
 use TechDivision\Import\Configuration\ConfigurationInterface;
-use TechDivision\Import\Adapter\PhpFilesystemAdapterInterface;
+use TechDivision\Import\Adapter\FilesystemAdapterInterface;
 use Doctrine\Common\Collections\Collection;
 
 /**
@@ -51,7 +51,7 @@ class ClearArtefactsListener extends AbstractListener
     /**
      * The filesystem adapter instance to use.
      *
-     * @var \TechDivision\Import\Adapter\PhpFilesystemAdapterInterface
+     * @var \TechDivision\Import\Adapter\FilesystemAdapterInterface
      */
     protected $filesystemAdapter;
 
@@ -65,14 +65,14 @@ class ClearArtefactsListener extends AbstractListener
     /**
      * Initializes the event.
      *
-     * @param \TechDivision\Import\Configuration\ConfigurationInterface  $configuration     The actual configuration instance
-     * @param \TechDivision\Import\Adapter\PhpFilesystemAdapterInterface $filesystemAdapter The filesystem adapter used to clear the directories
-     * @param \Doctrine\Common\Collections\Collection                    $systemLoggers     The array with the system loggers instances
-     * @param \TechDivision\Import\Loaders\LoaderInterface               $loader            The directory loader instance
+     * @param \TechDivision\Import\Configuration\ConfigurationInterface $configuration     The actual configuration instance
+     * @param \TechDivision\Import\Adapter\FilesystemAdapterInterface   $filesystemAdapter The filesystem adapter used to clear the directories
+     * @param \Doctrine\Common\Collections\Collection                   $systemLoggers     The array with the system loggers instances
+     * @param \TechDivision\Import\Loaders\LoaderInterface              $loader            The directory loader instance
      */
     public function __construct(
         ConfigurationInterface $configuration,
-        PhpFilesystemAdapterInterface $filesystemAdapter,
+        FilesystemAdapterInterface $filesystemAdapter,
         Collection $systemLoggers,
         LoaderInterface $loader
     ) {
@@ -149,7 +149,7 @@ class ClearArtefactsListener extends AbstractListener
     /**
      * Return's the fileadapter instance to use.
      *
-     * @return \TechDivision\Import\Adapter\PhpFilesystemAdapterInterface The filesystem adapter to use
+     * @return \TechDivision\Import\Adapter\FilesystemAdapterInterface The filesystem adapter to use
      */
     protected function getFilesystemAdapter()
     {

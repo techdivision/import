@@ -17,7 +17,7 @@ namespace TechDivision\Import\Observers;
 use TechDivision\Import\RowTrait;
 use TechDivision\Import\Utils\ScopeKeys;
 use TechDivision\Import\Utils\LoggerKeys;
-use TechDivision\Import\Utils\EntityStatus;
+use TechDivision\Import\Dbal\Utils\EntityStatus;
 use TechDivision\Import\Subjects\SubjectInterface;
 
 /**
@@ -70,7 +70,7 @@ abstract class AbstractObserver implements ObserverInterface
      *
      * @return void
      */
-    protected function setSubject(SubjectInterface $subject)
+    public function setSubject(SubjectInterface $subject)
     {
         $this->subject = $subject;
     }
@@ -357,11 +357,11 @@ abstract class AbstractObserver implements ObserverInterface
      * @param string $name The name of the header to return the value for
      *
      * @return mixed The header value
-     * @throws \InvalidArgumentException Is thrown, if the header with the passed name is NOT available
+     * @throws \InvalidArgumentException Is thrown, if the header with the passed name is NOT available
      *
      * @codeCoverageIgnore
      */
-    protected function getHeader($name)
+    public function getHeader($name)
     {
         return $this->getSubject()->getHeader($name);
     }

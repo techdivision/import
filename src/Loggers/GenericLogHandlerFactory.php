@@ -1,7 +1,7 @@
 <?php
 
 /**
- * TechDivision\Import\Loggers\ErrorLogHandlerFactory
+ * TechDivision\Import\Loggers\GenericLogHandlerFactory
  *
  * PHP version 7
  *

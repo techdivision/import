@@ -66,7 +66,9 @@ class GenericCompositeObserver implements ObserverInterface, ObserverFactoryInte
         foreach ($this->observers as $key => $observer) {
             // query whether or not a factory has been specified
             if ($observer instanceof ObserverFactoryInterface) {
-                $this->observers[$key] = $observer->createObserver($subject);
+                $observ = $observer->createObserver($subject);
+                $observ->setSubject($subject);
+                $this->observers[$key] = $observ;
             }
         }
 
@@ -158,7 +160,7 @@ class GenericCompositeObserver implements ObserverInterface, ObserverFactoryInte
      *
      * @return void
      */
-    protected function setSubject(SubjectInterface $subject)
+    public function setSubject(SubjectInterface $subject)
     {
         $this->subject = $subject;
     }

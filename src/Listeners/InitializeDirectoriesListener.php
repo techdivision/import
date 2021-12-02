@@ -17,7 +17,7 @@ namespace TechDivision\Import\Listeners;
 use League\Event\EventInterface;
 use League\Event\AbstractListener;
 use TechDivision\Import\Loaders\LoaderInterface;
-use TechDivision\Import\Adapter\PhpFilesystemAdapterInterface;
+use TechDivision\Import\Adapter\FilesystemAdapterInterface;
 
 /**
  * An listener implementation that initialize source and target directory.
@@ -34,7 +34,7 @@ class InitializeDirectoriesListener extends AbstractListener
     /**
      * The filesystem adapter instance to use.
      *
-     * @var \TechDivision\Import\Adapter\PhpFilesystemAdapterInterface
+     * @var \TechDivision\Import\Adapter\FilesystemAdapterInterface
      */
     protected $filesystemAdapter;
 
@@ -48,10 +48,10 @@ class InitializeDirectoriesListener extends AbstractListener
     /**
      * Initializes the event.
      *
-     * @param \TechDivision\Import\Adapter\PhpFilesystemAdapterInterface $filesystemAdapter The filesystem adapter used to clear the directories
-     * @param \TechDivision\Import\Loaders\LoaderInterface               $loader            The directory loader instance
+     * @param \TechDivision\Import\Adapter\FilesystemAdapterInterface $filesystemAdapter The filesystem adapter used to clear the directories
+     * @param \TechDivision\Import\Loaders\LoaderInterface            $loader            The directory loader instance
      */
-    public function __construct(PhpFilesystemAdapterInterface $filesystemAdapter, LoaderInterface $loader)
+    public function __construct(FilesystemAdapterInterface $filesystemAdapter, LoaderInterface $loader)
     {
         $this->filesystemAdapter = $filesystemAdapter;
         $this->loader = $loader;
@@ -82,7 +82,7 @@ class InitializeDirectoriesListener extends AbstractListener
     /**
      * Return's the fileadapter instance to use.
      *
-     * @return \TechDivision\Import\Adapter\PhpFilesystemAdapterInterface The filesystem adapter to use
+     * @return \TechDivision\Import\Adapter\FilesystemAdapterInterface The filesystem adapter to use
      */
     protected function getFilesystemAdapter()
     {

@@ -314,6 +314,7 @@
             <argument type="service" id="import.processor.configuration"/>
             <argument type="service" id="import.generator.core.config.data.uid"/>
         </service>
+        <service id="import.loader.proposed.filename" class="TechDivision\Import\Loaders\ProposedFilenameLoader"/>
 
         <!--
          | The DI handler configuration
@@ -807,6 +808,7 @@
             <argument type="service" id="import.generator.core.config.data.uid"/>
             <argument type="service" id="loggers"/>
             <argument type="service" id="import.events.emitter"/>
+            <argument type="service" id="import.loader.proposed.filename"/>
         </service>
 
         <service id="import.visitor.observer" class="TechDivision\Import\Observers\ObserverVisitor">

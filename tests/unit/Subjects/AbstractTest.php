@@ -16,6 +16,7 @@ namespace TechDivision\Import\Subjects;
 
 use PHPUnit\Framework\TestCase;
 use Doctrine\Common\Collections\ArrayCollection;
+use TechDivision\Import\Loaders\LoaderInterface;
 use TechDivision\Import\Utils\LoggerKeys;
 use TechDivision\Import\Utils\MemberNames;
 use TechDivision\Import\Utils\EditionNames;
@@ -310,12 +311,18 @@ abstract class AbstractTest extends TestCase
                             ->setMethods(\get_class_methods(EmitterInterface::class))
                             ->getMock();
 
+        // mock the event emitter
+        $mockLoader = $this->getMockBuilder(LoaderInterface::class)
+            ->setMethods(\get_class_methods(LoaderInterface::class))
+            ->getMock();
+
         // prepare the constructor arguments
         return array(
             $mockRegistryProcessor,
             $mockGenerator,
             $mockLoggers,
-            $mockEmitter
+            $mockEmitter,
+            $mockLoader
         );
     }
 
@@ -360,7 +367,6 @@ abstract class AbstractTest extends TestCase
 
         // create a mock configuration
         $mockConfiguration = $this->getMockConfiguration();
-
         // create a mock subject configuration
         $mockSubjectConfiguration = $this->getMockSubjectConfiguration();
         $mockSubjectConfiguration->expects($this->any())
@@ -381,6 +387,7 @@ abstract class AbstractTest extends TestCase
         $mockSubjectConfiguration->expects($this->any())
             ->method('getPluginConfiguration')
             ->willReturn($this->getMockPluginConfiguration());
+
 
         // initialize the abstract subject that has to be tested
         $abstractSubject = $this->getMockBuilder($this->getSubjectClassName())

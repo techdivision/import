@@ -17,6 +17,7 @@ namespace TechDivision\Import\Subjects\FileResolver;
 use TechDivision\Import\Configuration\ConfigurationInterface;
 use TechDivision\Import\Services\RegistryProcessorInterface;
 use TechDivision\Import\Configuration\Subject\FileResolverConfigurationInterface;
+use TechDivision\Import\Utils\BunchKeys;
 
 /**
  * A custom file resolver implementation for the move files subject
@@ -77,8 +78,16 @@ class MoveFilesFileResolver extends OkFileAwareFileResolver
         // load the file resolver configuration from the parent instance
         $fileResolverConfiguration = parent::getFileResolverConfiguration();
 
+        // reduce the pattern elements in case a specific
+        // file has been given as commandline argument
+        if ($this->getConfiguration()->getFilename()) {
+            $fileResolverConfiguration->setPatternElements(array(BunchKeys::FILENAME));
+        }
+
         // use the move files prefix from the configuration
-        if ($moveFilesPrefix = $this->getConfiguration()->getMoveFilesPrefix()) {
+        if (empty($this->getConfiguration()->getFilename()) &&
+            $moveFilesPrefix = $this->getConfiguration()->getMoveFilesPrefix()
+        ) {
             $fileResolverConfiguration->setPrefix($moveFilesPrefix);
         }
 

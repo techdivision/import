@@ -57,7 +57,7 @@ abstract class AbstractFileResolver implements FileResolverInterface
     /**
      * The filesystem adapter instance.
      *
-     * @var \TechDivision\Import\Adapter\PhpFilesystemAdapterInterface
+     * @var \TechDivision\Import\Adapter\FilesystemAdapterInterface
      */
     private $filesystemAdapter;
 
