@@ -172,7 +172,6 @@
         <service id="import.renderer.nostrict.validations.json.file" class="TechDivision\Import\Listeners\Renderer\Validations\JsonFileRenderer">
             <argument type="service" id="import.processor.registry"/>
             <argument type="string">noStrictValidation.json</argument>
-
         </service>
 
         <!--
@@ -276,7 +275,7 @@
         <service id="import.loader.validations" class="TechDivision\Import\Loaders\ValidationLoader">
             <argument type="service" id="import.loader.registry.validations"/>
         </service>
-        <service id="import.loader.nostrict.validations" class="TechDivision\Import\Loaders\ValidationLoader">
+        <service id="import.loader.nostrict.validations" class="TechDivision\Import\Loaders\NoStrictValidationLoader">
             <argument type="service" id="import.loader.registry.nostrict.validations"/>
         </service>
         <service id="import.loader.column.metadata" class="TechDivision\Import\Loaders\ColumnMetadataLoader">
@@ -1005,6 +1004,9 @@
             <argument type="service" id="cache.static"/>
         </service>
 
+        <service id="import.listener.no.files.registry" class="TechDivision\Import\Listeners\MissingFilesListener">
+            <argument type="service" id="import.processor.registry"/>
+        </service>
         <!--
          ! The DI configuration for the modules
          !-->

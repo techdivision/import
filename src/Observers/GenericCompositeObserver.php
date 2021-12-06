@@ -115,18 +115,6 @@ class GenericCompositeObserver implements ObserverInterface, ObserverFactoryInte
             $subject->setRow($observer->handle($subject));
         }
 
-        $subject->mergeStatus(
-            array(
-                RegistryKeys::NO_STRICT_VALIDATIONS => array(
-                    basename($subject->getFilename()) => array(
-                        $subject->getLineNumber() => array(
-                            $subject->getEntityTypeCode() => ""
-                        )
-                    )
-                )
-            )
-        );
-
         // returns the subject's row
         return $subject->getRow();
     }
