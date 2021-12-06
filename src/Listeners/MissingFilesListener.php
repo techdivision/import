@@ -44,8 +44,8 @@ class MissingFilesListener extends AbstractListener
     protected $noFileCheckNeed;
 
     /**
-     * @param RegistryProcessorInterface $registryProcessor
-     * @param \ArrayObject               $noFileCheckNeed
+     * @param RegistryProcessorInterface $registryProcessor The processor instance
+     * @param \ArrayObject               $noFileCheckNeed   The shortcuts that do not need to be checked
      */
     public function __construct(RegistryProcessorInterface $registryProcessor, $noFileCheckNeed = [])
     {
@@ -54,8 +54,8 @@ class MissingFilesListener extends AbstractListener
     }
 
     /**
-     * @param EventInterface            $event
-     * @param ApplicationInterface|null $application
+     * @param EventInterface            $event       The event that triggered the listener
+     * @param ApplicationInterface|null $application The application instance
      *
      * @return void
      * @throws \TechDivision\Import\Exceptions\MissingFileException
