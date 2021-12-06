@@ -16,7 +16,6 @@ namespace TechDivision\Import\Observers;
 
 use TechDivision\Import\Subjects\SubjectInterface;
 use TechDivision\Import\Interfaces\HookAwareInterface;
-use TechDivision\Import\Utils\RegistryKeys;
 
 /**
  * A generic observer implementation that implements the composit pattern to bundle
