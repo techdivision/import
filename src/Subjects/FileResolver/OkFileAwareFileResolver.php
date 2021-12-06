@@ -51,7 +51,8 @@ class OkFileAwareFileResolver extends AbstractFileResolver
         if ($this->getSubjectConfiguration()->isOkFileNeeded() && $sizeBeforeFiltersHaveBeenApplied > 0 && sizeof($filesToHandle) === 0) {
             throw new MissingOkFileException(
                 sprintf(
-                    'Stop processing, because can\'t find the mandatory OK file to process at least one of %d files',
+                    'Stop processing, because can\'t find the mandatory OK file for "%s" to process at least one of %d files',
+                    $this->getSubjectConfiguration()->getFileResolver()->getPrefix(),
                     $sizeBeforeFiltersHaveBeenApplied
                 )
             );
