@@ -196,8 +196,8 @@ interface ApplicationInterface extends ContainerInterface
     public function getName();
 
     /**
-     * @param string $reason
-     * @param int    $exitCode
+     * @param string $reason   reason
+     * @param int    $exitCode exit code
      *
      * @return void
      * @throws \TechDivision\Import\Exceptions\MissingFileException Is thrown if the file has been missed

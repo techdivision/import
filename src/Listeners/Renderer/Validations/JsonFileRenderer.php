@@ -44,9 +44,9 @@ class JsonFileRenderer implements ValidationRendererInterface
      * Initializes the renderer with the registry processor instance.
      *
      * @param \TechDivision\Import\Services\RegistryProcessorInterface $registryProcessor The registry processor instance
-     * @param string $filename
+     * @param string                                                   $filename
      */
-    public function __construct(RegistryProcessorInterface $registryProcessor, $filename= 'validations.json')
+    public function __construct(RegistryProcessorInterface $registryProcessor, $filename = 'validations.json')
     {
         $this->registryProcessor = $registryProcessor;
         $this->filename = $filename;

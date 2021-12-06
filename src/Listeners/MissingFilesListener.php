@@ -17,6 +17,7 @@ namespace TechDivision\Import\Listeners;
 use League\Event\EventInterface;
 use League\Event\AbstractListener;
 use TechDivision\Import\ApplicationInterface;
+use TechDivision\Import\Exceptions\MissingFileException;
 use TechDivision\Import\Utils\RegistryKeys;
 use TechDivision\Import\Services\RegistryProcessorInterface;
 
@@ -38,19 +39,25 @@ class MissingFilesListener extends AbstractListener
     protected $registryProcessor;
 
     /**
-     * Initializes the plugin with the application instance.
-     *
-     * @param \TechDivision\Import\Services\RegistryProcessorInterface $registryProcessor The registry processor instance
+     * @var array|\ArrayObject
      */
-    public function __construct(RegistryProcessorInterface $registryProcessor)
+    protected $noFileCheckNeed;
+
+    /**
+     * @param RegistryProcessorInterface $registryProcessor
+     * @param \ArrayObject               $noFileCheckNeed
+     */
+    public function __construct(RegistryProcessorInterface $registryProcessor, $noFileCheckNeed = [])
     {
         $this->registryProcessor = $registryProcessor;
+        $this->noFileCheckNeed = $noFileCheckNeed;
     }
 
     /**
      * @param EventInterface            $event
      * @param ApplicationInterface|null $application
      *
+     * @return void
      * @throws \TechDivision\Import\Exceptions\MissingFileException
      */
     public function handle(EventInterface $event, ApplicationInterface $application = null)
@@ -59,9 +66,15 @@ class MissingFilesListener extends AbstractListener
         // load the validations from the registry
         $status = $this->getRegistryProcessor()->getAttribute(RegistryKeys::STATUS);
 
+        // Verify whether or not the shortcut needs to be checked
+        $shortcut = $application->getConfiguration()->getShortcut();
+        if (in_array($shortcut, (array) $this->noFileCheckNeed)) {
+            return;
+        }
+
         // query whether or not we've no file found to import
         if (is_array($status) && (!isset($status['countImportedFiles']) || $status['countImportedFiles'] === 0)) {
-            $application->missingfile('no file was found', 404);
+            $application->missingfile('no file was found', MissingFileException::NOT_FOUND_CODE);
         }
     }
 
