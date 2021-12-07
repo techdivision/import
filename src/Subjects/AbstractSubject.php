@@ -958,7 +958,6 @@ abstract class AbstractSubject implements SubjectInterface, FilesystemSubjectInt
                     )
                 )
             );
-            
             // invoke the events that has to be fired when the artfact can't be processed
             $this->getEmitter()->emit(EventNames::SUBJECT_ARTEFACT_PROCESS_FAILURE, $this, $e);
             $this->getEmitter()->emit($this->getEventName(EventNames::SUBJECT_ARTEFACT_PROCESS_FAILURE), $this, $e);

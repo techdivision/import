@@ -116,6 +116,7 @@ class SubjectPlugin extends AbstractPlugin implements SubjectAwarePluginInterfac
             }
 
             $status = $this->getRegistryProcessor()->getAttribute(RegistryKeys::STATUS);
+            // Add countImportedFiles index to status to check if a file has been imported
             if (isset($status['countImportedFiles'])) {
                 $status['countImportedFiles'] += $this->bunches;
             } else {

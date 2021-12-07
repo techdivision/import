@@ -281,14 +281,6 @@ class RegistryKeys
      * @var string
      */
     const VALIDATIONS = 'validations';
-
-    /**
-     * Name for the strict validation cache key
-     *
-     * @var string
-     */
-    const NO_STRICT_VALIDATIONS = 'no-strict-validations';
-
     /**
      * Key for the registry entry with collected column values.
      *

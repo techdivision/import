@@ -87,7 +87,7 @@ class CreateOkFilesPlugin extends AbstractPlugin
 
         // create the .OK files for that subjects
         foreach ($subjects as $subject) {
-            $okFilesCreated += $this->getFileWriterFactory()->createFileWriter($subject)->createOkFiles($this->getSerial());import/src/Listeners/MissingFilesListener.php
+            $okFilesCreated += $this->getFileWriterFactory()->createFileWriter($subject)->createOkFiles($this->getSerial());
         }
 
         // query whether or not we've found any CSV files
