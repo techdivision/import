@@ -149,15 +149,6 @@
                 <argument id="import.renderer.validations.system.logger" type="service"/>
             </call>
         </service>
-
-        <!--
-         | The DI strict validation renderer configuration
-         |-->
-        <service id="import.renderer.nostrict.validations" class="\ArrayObject">
-            <call method="append">
-                <argument id="import.renderer.nostrict.validations.json.file" type="service"/>
-            </call>
-        </service>
         <service id="import.renderer.validations.json.file" class="TechDivision\Import\Listeners\Renderer\Validations\JsonFileRenderer">
             <argument type="service" id="import.processor.registry"/>
         </service>
@@ -168,10 +159,6 @@
         <service id="import.renderer.validations.system.logger" class="TechDivision\Import\Listeners\Renderer\Validations\SystemLoggerRenderer">
             <argument type="service" id="configuration"/>
             <argument type="service" id="loggers"/>
-        </service>
-        <service id="import.renderer.nostrict.validations.json.file" class="TechDivision\Import\Listeners\Renderer\Validations\JsonFileRenderer">
-            <argument type="service" id="import.processor.registry"/>
-            <argument type="string">noStrictValidation.json</argument>
         </service>
 
         <!--
@@ -268,15 +255,8 @@
             <argument type="service" id="import.processor.registry"/>
             <argument type="constant">TechDivision\Import\Utils\RegistryKeys::VALIDATIONS</argument>
         </service>
-        <service id="import.loader.registry.nostrict.validations" class="TechDivision\Import\Loaders\RegistryLoader">
-            <argument type="service" id="import.processor.registry"/>
-            <argument type="constant">TechDivision\Import\Utils\RegistryKeys::NO_STRICT_VALIDATIONS</argument>
-        </service>
         <service id="import.loader.validations" class="TechDivision\Import\Loaders\ValidationLoader">
             <argument type="service" id="import.loader.registry.validations"/>
-        </service>
-        <service id="import.loader.nostrict.validations" class="TechDivision\Import\Loaders\NoStrictValidationLoader">
-            <argument type="service" id="import.loader.registry.nostrict.validations"/>
         </service>
         <service id="import.loader.column.metadata" class="TechDivision\Import\Loaders\ColumnMetadataLoader">
             <argument type="service" id="connection"/>
@@ -976,10 +956,6 @@
         <service id="import.listener.render.validations" class="TechDivision\Import\Listeners\RenderValidationsListener">
             <argument type="service" id="import.loader.validations"/>
             <argument type="service" id="import.renderer.validations"/>
-        </service>
-        <service id="import.listener.render.nostrict.validations" class="TechDivision\Import\Listeners\RenderValidationsListener">
-            <argument type="service" id="import.loader.nostrict.validations"/>
-            <argument type="service" id="import.renderer.nostrict.validations"/>
         </service>
         <service id="import.listener.stop.validation" class="TechDivision\Import\Listeners\StopValidationListener">
             <argument type="service" id="import.processor.registry"/>
