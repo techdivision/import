@@ -35,6 +35,7 @@ class JsonFileRenderer implements ValidationRendererInterface
      * @var \TechDivision\Import\Services\RegistryProcessorInterface
      */
     protected $registryProcessor;
+
     /**
      * @var string
      */

@@ -281,6 +281,7 @@ class RegistryKeys
      * @var string
      */
     const VALIDATIONS = 'validations';
+
     /**
      * Key for the registry entry with collected column values.
      *

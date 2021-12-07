@@ -151,6 +151,7 @@
         </service>
         <service id="import.renderer.validations.json.file" class="TechDivision\Import\Listeners\Renderer\Validations\JsonFileRenderer">
             <argument type="service" id="import.processor.registry"/>
+            <argument type="string">validations.json</argument>
         </service>
         <service id="import.renderer.console.table" class="TechDivision\Import\Listeners\Renderer\Validations\GenericConsoleTableRenderer">
             <argument type="service" id="input"/>

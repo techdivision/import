@@ -14,7 +14,6 @@
 
 namespace TechDivision\Import\Plugins;
 
-use TechDivision\Import\Exceptions\MissingFileException;
 use TechDivision\Import\Utils\RegistryKeys;
 use TechDivision\Import\ApplicationInterface;
 use TechDivision\Import\Exceptions\MissingOkFileException;
