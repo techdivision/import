@@ -2,18 +2,12 @@
 
 /**
  * TechDivision\Import\Plugins\SubjectPluginTest
-*
-* NOTICE OF LICENSE
-*
-* This source file is subject to the Open Software License (OSL 3.0)
-* that is available through the world-wide-web at this URL:
-* http://opensource.org/licenses/osl-3.0.php
-*
-* PHP version 5
+ *
+* PHP version 7
 *
 * @author    Tim Wagner <t.wagner@techdivision.com>
 * @copyright 2016 TechDivision GmbH <info@techdivision.com>
-* @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
+* @license   https://opensource.org/licenses/MIT
 * @link      https://github.com/techdivision/import
 * @link      http://www.techdivision.com
 */
@@ -34,7 +28,7 @@ use TechDivision\Import\Subjects\FileResolver\FileResolverFactoryInterface;
  *
  * @author    Tim Wagner <t.wagner@techdivision.com>
  * @copyright 2016 TechDivision GmbH <info@techdivision.com>
- * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
+ * @license   https://opensource.org/licenses/MIT
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
  */
@@ -83,7 +77,7 @@ class SubjectPluginTest extends TestCase
      * @return void
      * @see \PHPUnit\Framework\TestCase::setUp()
      */
-    protected function setUp()
+    protected function setUp(): void
     {
 
         // create a mock application
@@ -116,7 +110,7 @@ class SubjectPluginTest extends TestCase
      *
      * @return void
      */
-    protected function tearDown()
+    protected function tearDown(): void
     {
         unlink($this->okFilename);
     }
@@ -202,8 +196,7 @@ class SubjectPluginTest extends TestCase
             ->method('getMatches')
             ->willReturn(array(array()));
         $mockFileResolver->expects($this->once())
-            ->method('reset')
-            ->willReturn(null);
+            ->method('reset');
 
         // let the mock file resolver factory create a mock file resolver instance
         $this->mockFileResolverFactory->expects($this->once())
@@ -253,12 +246,11 @@ class SubjectPluginTest extends TestCase
      * Tests's the plugin's process method with a subject.
      *
      * @return void
-     *
-     * @expectedException \Exception
-     * @expectedExceptionMessage Can't export file
      */
     public function testProcessWithOneSubjectAndException()
     {
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessage("Can't export file");
 
         // mock the subject
         $mockSubjectConfiguration = $this->getMockBuilder(SubjectConfigurationInterface::class)->getMock();

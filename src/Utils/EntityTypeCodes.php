@@ -3,17 +3,11 @@
 /**
  * TechDivision\Import\Utils\EntityTypeCodes
  *
- * NOTICE OF LICENSE
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is available through the world-wide-web at this URL:
- * http://opensource.org/licenses/osl-3.0.php
- *
- * PHP version 5
+ * PHP version 7
  *
  * @author    Tim Wagner <t.wagner@techdivision.com>
  * @copyright 2016 TechDivision GmbH <info@techdivision.com>
- * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
+ * @license   https://opensource.org/licenses/MIT
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
  */
@@ -25,7 +19,7 @@ namespace TechDivision\Import\Utils;
  *
  * @author    Tim Wagner <t.wagner@techdivision.com>
  * @copyright 2016 TechDivision GmbH <info@techdivision.com>
- * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
+ * @license   https://opensource.org/licenses/MIT
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
  */
@@ -124,6 +118,34 @@ class EntityTypeCodes extends \ArrayObject
     const EAV_ATTRIBUTE_SET = 'eav_attribute_set';
 
     /**
+     * Key for the product entity 'catalog_product_simple'.
+     *
+     * @var integer
+     */
+    const CATALOG_PRODUCT_SIMPLE = 'catalog_product_simple';
+
+    /**
+     * Key for the product entity 'catalog_product_bundle'.
+     *
+     * @var integer
+     */
+    const CATALOG_PRODUCT_BUNDLE = 'catalog_product_bundle';
+
+    /**
+     * Key for the product entity 'catalog_product_bundle'.
+     *
+     * @var integer
+     */
+    const CATALOG_PRODUCT_VARIANT = 'catalog_product_variant';
+
+    /**
+     * Key for the product entity 'catalog_product_category'.
+     *
+     * @var integer
+     */
+    const CATALOG_PRODUCT_CATEGORY = 'catalog_product_category';
+
+    /**
      * Construct a new entity type codes instance.
      *
      * @param array $entityTypeCodes The array with the additional entity type codes
@@ -143,6 +165,10 @@ class EntityTypeCodes extends \ArrayObject
                 EntityTypeCodes::CATALOG_CATEGORY,
                 EntityTypeCodes::EAV_ATTRIBUTE,
                 EntityTypeCodes::EAV_ATTRIBUTE_SET,
+                EntityTypeCodes::CATALOG_PRODUCT_SIMPLE,
+                EntityTypeCodes::CATALOG_PRODUCT_BUNDLE,
+                EntityTypeCodes::CATALOG_PRODUCT_VARIANT,
+                EntityTypeCodes::CATALOG_PRODUCT_CATEGORY,
                 EntityTypeCodes::CUSTOMER,
                 EntityTypeCodes::CUSTOMER_ADDRESS
             ),

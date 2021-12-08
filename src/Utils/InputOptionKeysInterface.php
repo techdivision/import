@@ -3,17 +3,11 @@
 /**
  * TechDivision\Import\Utils\InputOptionKeysInterface
  *
- * NOTICE OF LICENSE
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is available through the world-wide-web at this URL:
- * http://opensource.org/licenses/osl-3.0.php
- *
- * PHP version 5
+ * PHP version 7
  *
  * @author    Tim Wagner <t.wagner@techdivision.com>
  * @copyright 2019 TechDivision GmbH <info@techdivision.com>
- * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
+ * @license   https://opensource.org/licenses/MIT
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
  */
@@ -25,7 +19,7 @@ namespace TechDivision\Import\Utils;
  *
  * @author    Tim Wagner <t.wagner@techdivision.com>
  * @copyright 2019 TechDivision GmbH <info@techdivision.com>
- * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
+ * @license   https://opensource.org/licenses/MIT
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
  */
@@ -241,6 +235,13 @@ interface InputOptionKeysInterface extends \ArrayAccess
      * @var string
      */
     const STRICT_MODE = 'strict-mode';
+
+    /**
+     * The input option key for the Step log infos.
+     *
+     * @var string
+     */
+    const LOG_FILE = 'log-file';
 
     /**
      * Query whether or not the passed input option is valid.

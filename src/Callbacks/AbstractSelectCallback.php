@@ -3,17 +3,11 @@
 /**
  * TechDivision\Import\Callbacks\SelectCallback
  *
- * NOTICE OF LICENSE
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is available through the world-wide-web at this URL:
- * http://opensource.org/licenses/osl-3.0.php
- *
- * PHP version 5
+ * PHP version 7
  *
  * @author    Tim Wagner <t.wagner@techdivision.com>
  * @copyright 2016 TechDivision GmbH <info@techdivision.com>
- * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
+ * @license   https://opensource.org/licenses/MIT
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
  */
@@ -30,7 +24,7 @@ use TechDivision\Import\Observers\AttributeCodeAndValueAwareObserverInterface;
  *
  * @author    Tim Wagner <t.wagner@techdivision.com>
  * @copyright 2016 TechDivision GmbH <info@techdivision.com>
- * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
+ * @license   https://opensource.org/licenses/MIT
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
  */
@@ -92,18 +86,21 @@ abstract class AbstractSelectCallback extends AbstractEavAwareCallback
                     )
                 )
             );
-        } elseif ($this->isStrictMode()) {
-            // throw an exception if the attribute is NOT
-            // available and we're not in debug mode
-            throw new \Exception(
-                $this->appendExceptionSuffix(
-                    sprintf(
-                        'Can\'t find select option value "%s" for attribute "%s"',
-                        $attributeValue,
-                        $attributeCode
-                    )
-                )
-            );
+
+            // return NULL, if the value can't be mapped to an option
+            return;
         }
+        
+        // throw an exception if the attribute is NOT
+        // available and we're not in debug mode
+        throw new \Exception(
+            $this->appendExceptionSuffix(
+                sprintf(
+                    'Can\'t find select option value "%s" for attribute "%s"',
+                    $attributeValue,
+                    $attributeCode
+                )
+            )
+        );
     }
 }

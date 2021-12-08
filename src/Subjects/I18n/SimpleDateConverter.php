@@ -3,17 +3,11 @@
 /**
  * TechDivision\Import\Subjects\I18n\SimpleDateConverter
  *
- * NOTICE OF LICENSE
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is available through the world-wide-web at this URL:
- * http://opensource.org/licenses/osl-3.0.php
- *
- * PHP version 5
+ * PHP version 7
  *
  * @author    Tim Wagner <t.wagner@techdivision.com>
  * @copyright 2016 TechDivision GmbH <info@techdivision.com>
- * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
+ * @license   https://opensource.org/licenses/MIT
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
  */
@@ -27,7 +21,7 @@ use TechDivision\Import\Configuration\SubjectConfigurationInterface;
  *
  * @author    Tim Wagner <t.wagner@techdivision.com>
  * @copyright 2016 TechDivision GmbH <info@techdivision.com>
- * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
+ * @license   https://opensource.org/licenses/MIT
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
  */
@@ -79,14 +73,14 @@ class SimpleDateConverter implements DateConverterInterface
      * @param string $date   The date to convert
      * @param string $format The date format to convert to
      *
-     * @return string The converted date
+     * @return string|null The converted date
      */
     public function convert($date, $format = 'Y-m-d H:i:s')
     {
 
         // only empty date will check otherwise we get "today" as date
         if (empty($date)) {
-            return;
+            return null;
         }
 
         // create a DateTime instance from the passed value
@@ -101,5 +95,8 @@ class SimpleDateConverter implements DateConverterInterface
         } catch (\Exception $e) {
             // catch, if the date doesn't has the default date format
         }
+
+        // return NULL, if the passed value is NOT a valid date
+        return null;
     }
 }

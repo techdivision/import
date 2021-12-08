@@ -3,17 +3,11 @@
 /**
  * TechDivision\Import\Callbacks\MultipleValuesValidatorCallback
  *
- * NOTICE OF LICENSE
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is available through the world-wide-web at this URL:
- * http://opensource.org/licenses/osl-3.0.php
- *
- * PHP version 5
+ * PHP version 7
  *
  * @author    Tim Wagner <t.wagner@techdivision.com>
  * @copyright 2019 TechDivision GmbH <info@techdivision.com>
- * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
+ * @license   https://opensource.org/licenses/MIT
  * @link      https://github.com/techdivision/impor
  * @link      http://www.techdivision.com
  */
@@ -25,7 +19,7 @@ namespace TechDivision\Import\Callbacks;
  *
  * @author    Tim Wagner <t.wagner@techdivision.com>
  * @copyright 2019 TechDivision GmbH <info@techdivision.com>
- * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
+ * @license   https://opensource.org/licenses/MIT
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
  */
@@ -51,6 +45,7 @@ class MultipleValuesValidatorCallback extends ArrayValidatorCallback
         // load the validations for the column
         $validations = $this->getValidations();
 
+        $valueErrors = [];
         // iterate over the values and validate them
         foreach ($values as $value) {
             // query whether or not the value is valid
@@ -58,9 +53,17 @@ class MultipleValuesValidatorCallback extends ArrayValidatorCallback
                 continue;
             }
 
+            array_push($valueErrors, $value);
+        }
+
+        if (count($valueErrors) > 0) {
             // throw an exception if the value is NOT in the array
             throw new \InvalidArgumentException(
-                sprintf('Found invalid value "%s" for column "%s"', $value, $attributeCode)
+                sprintf(
+                    'Found invalid value "%s" in column "%s"',
+                    implode(',', $valueErrors),
+                    $attributeCode
+                )
             );
         }
     }

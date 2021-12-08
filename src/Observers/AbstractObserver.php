@@ -3,17 +3,11 @@
 /**
  * TechDivision\Import\Observers\AbstractObserver
  *
- * NOTICE OF LICENSE
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is available through the world-wide-web at this URL:
- * http://opensource.org/licenses/osl-3.0.php
- *
- * PHP version 5
+ * PHP version 7
  *
  * @author    Tim Wagner <t.wagner@techdivision.com>
  * @copyright 2016 TechDivision GmbH <info@techdivision.com>
- * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
+ * @license   https://opensource.org/licenses/MIT
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
  */
@@ -23,7 +17,7 @@ namespace TechDivision\Import\Observers;
 use TechDivision\Import\RowTrait;
 use TechDivision\Import\Utils\ScopeKeys;
 use TechDivision\Import\Utils\LoggerKeys;
-use TechDivision\Import\Utils\EntityStatus;
+use TechDivision\Import\Dbal\Utils\EntityStatus;
 use TechDivision\Import\Subjects\SubjectInterface;
 
 /**
@@ -31,7 +25,7 @@ use TechDivision\Import\Subjects\SubjectInterface;
  *
  * @author    Tim Wagner <t.wagner@techdivision.com>
  * @copyright 2016 TechDivision GmbH <info@techdivision.com>
- * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
+ * @license   https://opensource.org/licenses/MIT
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
  */
@@ -76,7 +70,7 @@ abstract class AbstractObserver implements ObserverInterface
      *
      * @return void
      */
-    protected function setSubject(SubjectInterface $subject)
+    public function setSubject(SubjectInterface $subject)
     {
         $this->subject = $subject;
     }
@@ -378,11 +372,11 @@ abstract class AbstractObserver implements ObserverInterface
      * @param string $name The name of the header to return the value for
      *
      * @return mixed The header value
-     * @throws \InvalidArgumentException Is thrown, if the header with the passed name is NOT available
+     * @throws \InvalidArgumentException Is thrown, if the header with the passed name is NOT available
      *
      * @codeCoverageIgnore
      */
-    protected function getHeader($name)
+    public function getHeader($name)
     {
         return $this->getSubject()->getHeader($name);
     }

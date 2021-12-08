@@ -3,17 +3,11 @@
 /**
  * TechDivision\Import\Listeners\ClearDirectoriesListener
  *
- * NOTICE OF LICENSE
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is available through the world-wide-web at this URL:
- * http://opensource.org/licenses/osl-3.0.php
- *
- * PHP version 5
+ * PHP version 7
  *
  * @author    Tim Wagner <t.wagner@techdivision.com>
  * @copyright 2019 TechDivision GmbH <info@techdivision.com>
- * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
+ * @license   https://opensource.org/licenses/MIT
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
  */
@@ -25,7 +19,7 @@ use League\Event\AbstractListener;
 use TechDivision\Import\SystemLoggerTrait;
 use TechDivision\Import\Loaders\LoaderInterface;
 use TechDivision\Import\Configuration\ConfigurationInterface;
-use TechDivision\Import\Adapter\PhpFilesystemAdapterInterface;
+use TechDivision\Import\Adapter\FilesystemAdapterInterface;
 use Doctrine\Common\Collections\Collection;
 
 /**
@@ -33,7 +27,7 @@ use Doctrine\Common\Collections\Collection;
  *
  * @author    Tim Wagner <t.wagner@techdivision.com>
  * @copyright 2019 TechDivision GmbH <info@techdivision.com>
- * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
+ * @license   https://opensource.org/licenses/MIT
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
  */
@@ -57,7 +51,7 @@ class ClearArtefactsListener extends AbstractListener
     /**
      * The filesystem adapter instance to use.
      *
-     * @var \TechDivision\Import\Adapter\PhpFilesystemAdapterInterface
+     * @var \TechDivision\Import\Adapter\FilesystemAdapterInterface
      */
     protected $filesystemAdapter;
 
@@ -71,14 +65,14 @@ class ClearArtefactsListener extends AbstractListener
     /**
      * Initializes the event.
      *
-     * @param \TechDivision\Import\Configuration\ConfigurationInterface  $configuration     The actual configuration instance
-     * @param \TechDivision\Import\Adapter\PhpFilesystemAdapterInterface $filesystemAdapter The filesystem adapter used to clear the directories
-     * @param \Doctrine\Common\Collections\Collection                    $systemLoggers     The array with the system loggers instances
-     * @param \TechDivision\Import\Loaders\LoaderInterface               $loader            The directory loader instance
+     * @param \TechDivision\Import\Configuration\ConfigurationInterface $configuration     The actual configuration instance
+     * @param \TechDivision\Import\Adapter\FilesystemAdapterInterface   $filesystemAdapter The filesystem adapter used to clear the directories
+     * @param \Doctrine\Common\Collections\Collection                   $systemLoggers     The array with the system loggers instances
+     * @param \TechDivision\Import\Loaders\LoaderInterface              $loader            The directory loader instance
      */
     public function __construct(
         ConfigurationInterface $configuration,
-        PhpFilesystemAdapterInterface $filesystemAdapter,
+        FilesystemAdapterInterface $filesystemAdapter,
         Collection $systemLoggers,
         LoaderInterface $loader
     ) {
@@ -155,7 +149,7 @@ class ClearArtefactsListener extends AbstractListener
     /**
      * Return's the fileadapter instance to use.
      *
-     * @return \TechDivision\Import\Adapter\PhpFilesystemAdapterInterface The filesystem adapter to use
+     * @return \TechDivision\Import\Adapter\FilesystemAdapterInterface The filesystem adapter to use
      */
     protected function getFilesystemAdapter()
     {

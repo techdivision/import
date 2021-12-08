@@ -3,17 +3,11 @@
 /**
  * TechDivision\Import\Subjects\FileResolver\MoveFilesFileResolver
  *
- * NOTICE OF LICENSE
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is available through the world-wide-web at this URL:
- * http://opensource.org/licenses/osl-3.0.php
- *
- * PHP version 5
+ * PHP version 7
  *
  * @author    Tim Wagner <t.wagner@techdivision.com>
  * @copyright 2016 TechDivision GmbH <info@techdivision.com>
- * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
+ * @license   https://opensource.org/licenses/MIT
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
  */
@@ -23,6 +17,7 @@ namespace TechDivision\Import\Subjects\FileResolver;
 use TechDivision\Import\Configuration\ConfigurationInterface;
 use TechDivision\Import\Services\RegistryProcessorInterface;
 use TechDivision\Import\Configuration\Subject\FileResolverConfigurationInterface;
+use TechDivision\Import\Utils\BunchKeys;
 
 /**
  * A custom file resolver implementation for the move files subject
@@ -30,7 +25,7 @@ use TechDivision\Import\Configuration\Subject\FileResolverConfigurationInterface
  *
  * @author    Tim Wagner <t.wagner@techdivision.com>
  * @copyright 2016 TechDivision GmbH <info@techdivision.com>
- * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
+ * @license   https://opensource.org/licenses/MIT
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
  */
@@ -83,8 +78,16 @@ class MoveFilesFileResolver extends OkFileAwareFileResolver
         // load the file resolver configuration from the parent instance
         $fileResolverConfiguration = parent::getFileResolverConfiguration();
 
+        // reduce the pattern elements in case a specific
+        // file has been given as commandline argument
+        if ($this->getConfiguration()->getFilename()) {
+            $fileResolverConfiguration->setPatternElements(array(BunchKeys::FILENAME));
+        }
+
         // use the move files prefix from the configuration
-        if ($moveFilesPrefix = $this->getConfiguration()->getMoveFilesPrefix()) {
+        if (empty($this->getConfiguration()->getFilename()) &&
+            $moveFilesPrefix = $this->getConfiguration()->getMoveFilesPrefix()
+        ) {
             $fileResolverConfiguration->setPrefix($moveFilesPrefix);
         }
 

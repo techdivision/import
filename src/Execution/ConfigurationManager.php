@@ -3,17 +3,11 @@
 /**
  * TechDivision\Import\Execution\ConfigurationManager
  *
- * NOTICE OF LICENSE
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is available through the world-wide-web at this URL:
- * http://opensource.org/licenses/osl-3.0.php
- *
- * PHP version 5
+ * PHP version 7
  *
  * @author    Tim Wagner <t.wagner@techdivision.com>
  * @copyright 2019 TechDivision GmbH <info@techdivision.com>
- * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
+ * @license   https://opensource.org/licenses/MIT
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
  */
@@ -28,7 +22,7 @@ use TechDivision\Import\ConfigurationManagerInterface;
  *
  * @author    Tim Wagner <t.wagner@techdivision.com>
  * @copyright 2019 TechDivision GmbH <info@techdivision.com>
- * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
+ * @license   https://opensource.org/licenses/MIT
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
  */
@@ -160,25 +154,20 @@ class ConfigurationManager implements ConfigurationManagerInterface
                 // pass the operation configuration instance to the plugin configuration
                 $plugin->setConfiguration($configuration);
                 $plugin->setOperationConfiguration($operation);
-                // if NO prefix for the move files subject has been set, we use the prefix from the first plugin's subject
-                if ($configuration->getMoveFilesPrefix() === null) {
-                    // use the prefix of the first subject that needs an .OK file
-                    /** @var \TechDivision\Import\Configuration\SubjectConfigurationInterface $subject */
-                    foreach ($plugin->getSubjects() as $subject) {
-                        // we use the subject with the first file resolver that has a custom
-                        // prefix set to initialize the prefix for the move files subject for
-                        if ($subject->getFileResolver()->hasPrefix()) {
-                            $configuration->setMoveFilesPrefix($subject->getFileResolver()->getPrefix());
-                            break;
-                        }
-                    }
-                }
 
                 // query whether or not the plugin has subjects configured
                 if ($subjects = $plugin->getSubjects()) {
                     // extend the plugin's subjects with the main configuration instance
                     /** @var \TechDivision\Import\Configuration\SubjectConfigurationInterface $subject */
                     foreach ($subjects as $subject) {
+                        // if the first prefixed subject has not been set, we
+                        // use the first one from the first plugin's subject
+                        if (empty($configuration->getFirstPrefixedSubject()) && $subject->getFileResolver()->hasPrefix()) {
+                            // we use the subject with the first file resolver that has a custom
+                            // prefix set to initialize the prefix for the move files subject for
+                            $configuration->setFirstPrefixedSubject($subject);
+                        }
+
                         // set the configuration instance on the subject
                         $subject->setConfiguration($configuration);
                     }
@@ -189,13 +178,13 @@ class ConfigurationManager implements ConfigurationManagerInterface
             }
         }
 
-        // query whether or not we've at least ONE plugin to be executed
-        if (sizeof($plugins) > 0) {
-            return $plugins;
+        // throw an exception if no plugins are available
+        if (empty($plugins)) {
+            throw new \Exception(sprintf('Can\'t find any plugins for shortcut "%s"', $configuration->getShortcut()));
         }
 
-        // throw an exception if no plugins are available
-        throw new \Exception(sprintf('Can\'t find any plugins for shortcut "%s"', $configuration->getShortcut()));
+        // query whether or not we've at least ONE plugin to be executed
+        return $plugins;
     }
 
     /**
