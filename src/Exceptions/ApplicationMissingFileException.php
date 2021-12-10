@@ -1,7 +1,7 @@
 <?php
 
 /**
- * TechDivision\Import\Exceptions\MissingFileException
+ * TechDivision\Import\Exceptions\ApplicationMissingFileException
  *
  * PHP version 7
  *
@@ -15,7 +15,7 @@
 namespace TechDivision\Import\Exceptions;
 
 /**
- * A exception that is thrown if a import file is NOT empty, e. g. before it should be deleted.
+ * A exception that is thrown if the application has been finished normally without any error output.
  *
  * @author    MET <met@techdivision.com>
  * @copyright 2021 TechDivision GmbH <info@techdivision.com>
@@ -23,7 +23,6 @@ namespace TechDivision\Import\Exceptions;
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
  */
-class MissingFileException extends \Exception
+class ApplicationMissingFileException extends ApplicationStoppedException
 {
-    const NOT_FOUND_CODE = 13;
 }

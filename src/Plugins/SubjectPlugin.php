@@ -14,6 +14,7 @@
 
 namespace TechDivision\Import\Plugins;
 
+use TechDivision\Import\Exceptions\MissingFileException;
 use TechDivision\Import\Utils\RegistryKeys;
 use TechDivision\Import\ApplicationInterface;
 use TechDivision\Import\Exceptions\MissingOkFileException;
@@ -131,6 +132,8 @@ class SubjectPlugin extends AbstractPlugin implements SubjectAwarePluginInterfac
         } catch (MissingOkFileException $mofe) {
             // finish the application if we can't find the mandatory OK file
             $this->getApplication()->finish($mofe->getMessage());
+        } catch (MissingFileException $mse) {
+            $this->getApplication()->missingFile(sprintf(''. $mse->getMessage()), $mse->getCode());
         } catch (\Exception $e) {
             // re-throw the exception
             throw $e;
@@ -151,35 +154,39 @@ class SubjectPlugin extends AbstractPlugin implements SubjectAwarePluginInterfac
     protected function processSubject(SubjectConfigurationInterface $subject)
     {
 
-        // initialize the file counter
-        $counter = 0;
+        try {
+            // initialize the file counter
+            $counter = 0;
 
-        // load the file resolver for the subject with the passed configuration
-        $fileResolver = $this->fileResolverFactory->createFileResolver($subject);
+            // load the file resolver for the subject with the passed configuration
+            $fileResolver = $this->fileResolverFactory->createFileResolver($subject);
 
-        // load the files
-        $files = $fileResolver->loadFiles($serial = $this->getSerial());
+            // load the files
+            $files = $fileResolver->loadFiles($serial = $this->getSerial());
 
-        // load the matches (must match the number of the found files)
-        $matches = $fileResolver->getMatches();
+            // load the matches (must match the number of the found files)
+            $matches = $fileResolver->getMatches();
 
-        // iterate through all CSV files and process the subjects
-        foreach ($files as $filename) {
-            // initialize the subject and import the bunch
-            $this->subjectExecutor->execute($subject, $matches[$counter], $serial, $filename);
-            // raise the number of the imported files
-            $counter++;
+            // iterate through all CSV files and process the subjects
+            foreach ($files as $filename) {
+                // initialize the subject and import the bunch
+                $this->subjectExecutor->execute($subject, $matches[$counter], $serial, $filename);
+                // raise the number of the imported files
+                $counter++;
+            }
+
+            // raise the bunch number by the number of imported files
+            $this->bunches = $this->bunches + $counter;
+
+            // reset the file resolver for making it ready parsing the files of the next subject
+            $fileResolver->reset();
+
+            // and and log a message that the subject has been processed
+            $this->getSystemLogger()->debug(
+                sprintf('Successfully processed subject "%s" with "%d" files)!', $subject->getId(), $counter)
+            );
+        } catch (MissingOkFileException $missingOkFileException) {
+            throw new MissingFileException($missingOkFileException->getMessage(), MissingFileException::NOT_FOUND_CODE);
         }
-
-        // raise the bunch number by the number of imported files
-        $this->bunches = $this->bunches + $counter;
-
-        // reset the file resolver for making it ready parsing the files of the next subject
-        $fileResolver->reset();
-
-        // and and log a message that the subject has been processed
-        $this->getSystemLogger()->debug(
-            sprintf('Successfully processed subject "%s" with "%d" files)!', $subject->getId(), $counter)
-        );
     }
 }

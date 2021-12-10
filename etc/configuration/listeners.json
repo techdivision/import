@@ -14,14 +14,12 @@
         "import.listener.archive",
         "import.listener.clear.artefacts",
         "import.listener.clear.directories",
-        "import.listener.operation.report",
-        "import.listener.no.files.registry"
+        "import.listener.operation.report"
       ],
       "app.process.transaction.failure": [
         "import.listener.debug.dump.prepare",
         "import.listener.finalize.registry",
-        "import.listener.render.validations",
-        "import.listener.no.files.registry"
+        "import.listener.render.validations"
       ],
       "app.tear.down": [
         "import.listener.import.history",

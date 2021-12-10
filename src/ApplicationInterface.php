@@ -200,7 +200,7 @@ interface ApplicationInterface extends ContainerInterface
      * @param int    $exitCode The exit code to use
      *
      * @return void
-     * @throws \TechDivision\Import\Exceptions\MissingFileException Is thrown if the file has been missed
+     * @throws \TechDivision\Import\Exceptions\ApplicationMissingFileException Is thrown if the file has been missed
      */
-    public function missingfile($reason, $exitCode);
+    public function missingFile($reason, $exitCode);
 }

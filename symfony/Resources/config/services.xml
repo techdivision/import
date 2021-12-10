@@ -981,15 +981,6 @@
             <argument type="service" id="cache.static"/>
         </service>
 
-        <service id="import.ignore.missing.files.shortcuts" class="\ArrayObject">
-            <call method="append">
-                <argument type="string">create-ok-files</argument>
-            </call>
-        </service>
-        <service id="import.listener.no.files.registry" class="TechDivision\Import\Listeners\MissingFilesListener">
-            <argument type="service" id="import.processor.registry"/>
-            <argument type="service" id="import.ignore.missing.files.shortcuts"/>
-        </service>
         <!--
          ! The DI configuration for the modules
          !-->

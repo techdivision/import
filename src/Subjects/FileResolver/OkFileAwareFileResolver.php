@@ -14,6 +14,7 @@
 
 namespace TechDivision\Import\Subjects\FileResolver;
 
+use TechDivision\Import\Exceptions\MissingFileException;
 use TechDivision\Import\Exceptions\MissingOkFileException;
 
 /**
@@ -54,7 +55,7 @@ class OkFileAwareFileResolver extends AbstractFileResolver
                     'Stop processing, because can\'t find the mandatory OK file for "%s" to process at least one of %d files',
                     $this->getSubjectConfiguration()->getFileResolver()->getPrefix(),
                     $sizeBeforeFiltersHaveBeenApplied
-                )
+                ), MissingFileException::NOT_FOUND_CODE
             );
         }
 

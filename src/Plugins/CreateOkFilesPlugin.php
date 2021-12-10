@@ -92,7 +92,7 @@ class CreateOkFilesPlugin extends AbstractPlugin
 
         // query whether or not we've found any CSV files
         if ($okFilesCreated === 0) {
-            throw new MissingFileException(sprintf('Can\'t find any CSV files in source directory "%s"', $this->getSourceDir()), MissingFileException::NOT_FOUND_CODE);
+            throw new \Exception(sprintf('Can\'t find any CSV files in source directory "%s"', $this->getSourceDir()), MissingFileException::NOT_FOUND_CODE);
         }
     }
 }
