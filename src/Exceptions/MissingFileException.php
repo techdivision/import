@@ -25,5 +25,5 @@ namespace TechDivision\Import\Exceptions;
  */
 class MissingFileException extends \Exception
 {
-    const NOT_FOUND_CODE = '404';
+    const NOT_FOUND_CODE = 13;
 }
