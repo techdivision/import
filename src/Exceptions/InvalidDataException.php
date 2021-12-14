@@ -25,5 +25,5 @@ namespace TechDivision\Import\Exceptions;
  */
 class InvalidDataException extends \Exception
 {
-    const INVALID_DATA = 13;
+    const INVALID_DATA_CODE = 13;
 }
