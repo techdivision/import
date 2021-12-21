@@ -162,6 +162,26 @@
         </service>
 
         <!--
+              The DI No Strict validation renderer configuration
+             |-->
+        <service id="import.renderer.nostrict.validations" class="\ArrayObject">
+            <call method="append">
+                <argument id="import.renderer.validations.json.file" type="service"/>
+            </call>
+        </service>
+        <service id="import.loader.registry.nostrict.validations" class="TechDivision\Import\Loaders\RegistryLoader">
+            <argument type="service" id="import.processor.registry"/>
+            <argument type="constant">TechDivision\Import\Utils\RegistryKeys::NO_STRICT_VALIDATIONS</argument>
+        </service>
+        <service id="import.loader.nostrict.validations" class="TechDivision\Import\Loaders\ValidationLoader">
+            <argument type="service" id="import.loader.registry.nostrict.validations"/>
+        </service>
+        <service id="import.listener.render.nostrict.validations" class="TechDivision\Import\Listeners\RenderValidationsListener">
+            <argument type="service" id="import.loader.nostrict.validations"/>
+            <argument type="service" id="import.renderer.nostrict.validations"/>
+        </service>
+        
+        <!--
          | The DI debug renderer configuration
          |-->
         <service id="import.renderer.debug.composite" class="TechDivision\Import\Listeners\Renderer\Debug\GenericDebugCompositeRenderer">

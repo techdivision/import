@@ -15,6 +15,7 @@
 namespace TechDivision\Import\Callbacks;
 
 use TechDivision\Import\Utils\ColumnKeys;
+use TechDivision\Import\Utils\RegistryKeys;
 
 /**
  * A callback implementation that validates the a list of values.
@@ -68,7 +69,26 @@ class PipeDelimiterSkuRelationsValidatorCallback extends ArrayValidatorCallback
             array_push($skuErrors, $value);
         }
         if (count($skuErrors) > 0) {
-            // throw an exception if the value is NOT in the array
+            if (!$this->getSubject()->isStrictMode()) {
+                $this->getSubject()->mergeStatus(
+                    array(
+                        RegistryKeys::NO_STRICT_VALIDATIONS => array(
+                            basename($this->getSubject()->getFilename()) => array(
+                                $this->getSubject()->getLineNumber() => array(
+                                    $attributeCode  =>  sprintf(
+                                        'Found invalid SKUs "%s" to be related to %s product with SKU "%s"',
+                                        implode(',', $skuErrors),
+                                        $rowProductType,
+                                        $rowSku
+                                    )
+                                )
+                            )
+                        )
+                    )
+                );
+                return;
+            }
+            // throw an exception if the value is NOT in the array and strict mode on
             throw new \InvalidArgumentException(
                 sprintf(
                     'Found invalid SKUs "%s" to be related to %s product with SKU "%s"',
