@@ -1,7 +1,7 @@
 <?php
 
 /**
- * TechDivision\Import\Listeners\Renderer\Validations\ConsoleTableRenderer
+ * TechDivision\Import\Listeners\Renderer\Validations\JsonFileRenderer
  *
  * PHP version 7
  *
@@ -37,13 +37,20 @@ class JsonFileRenderer implements ValidationRendererInterface
     protected $registryProcessor;
 
     /**
+     * @var string
+     */
+    private $filename;
+
+    /**
      * Initializes the renderer with the registry processor instance.
      *
      * @param \TechDivision\Import\Services\RegistryProcessorInterface $registryProcessor The registry processor instance
+     * @param string                                                   $filename          File Name
      */
-    public function __construct(RegistryProcessorInterface $registryProcessor)
+    public function __construct(RegistryProcessorInterface $registryProcessor, $filename = 'validations.json')
     {
         $this->registryProcessor = $registryProcessor;
+        $this->filename = $filename;
     }
 
     /**
@@ -80,7 +87,7 @@ class JsonFileRenderer implements ValidationRendererInterface
         // query whether or not a target directory is available
         if (isset($status[RegistryKeys::TARGET_DIRECTORY])) {
             // prepare the filename to save the validation messsages to
-            $filename = implode(DIRECTORY_SEPARATOR, array($status[RegistryKeys::TARGET_DIRECTORY], 'validations.json'));
+            $filename = implode(DIRECTORY_SEPARATOR, array($status[RegistryKeys::TARGET_DIRECTORY], $this->filename));
             // create the files inside the target directory
             file_put_contents($filename, json_encode($validations, JSON_PRETTY_PRINT));
             // register the file as artefact in the registry

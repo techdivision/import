@@ -135,7 +135,7 @@ class SubjectPluginTest extends TestCase
                               ->method('mergeAttributesRecursive')
                               ->withConsecutive(
                                   array(CacheKeys::STATUS, $status),
-                                  array(CacheKeys::STATUS, array(RegistryKeys::BUNCHES => $bunches))
+                                  array(CacheKeys::STATUS, array(RegistryKeys::BUNCHES => $bunches, 'countImportedFiles' => $bunches))
                               )
                               ->willReturn(null);
 
@@ -145,7 +145,7 @@ class SubjectPluginTest extends TestCase
                                   ->getMock();
 
         // mock the application methods
-        $this->mockApplication->expects($this->exactly(2))
+        $this->mockApplication->expects($this->exactly(3))
                               ->method('getRegistryProcessor')
                               ->willReturn($mockRegistryProcessor);
         $this->mockApplication->expects($this->any())
@@ -217,7 +217,7 @@ class SubjectPluginTest extends TestCase
             ->getMock();
 
         // mock the application methods
-        $this->mockApplication->expects($this->exactly(2))
+        $this->mockApplication->expects($this->exactly(3))
             ->method('getRegistryProcessor')
             ->willReturn($mockRegistryProcessor);
         $this->mockApplication->expects($this->any())

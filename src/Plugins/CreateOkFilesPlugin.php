@@ -16,6 +16,7 @@ namespace TechDivision\Import\Plugins;
 
 use TechDivision\Import\ApplicationInterface;
 use TechDivision\Import\Configuration\SubjectConfigurationInterface;
+use TechDivision\Import\Exceptions\MissingFileException;
 use TechDivision\Import\Subjects\FileWriter\FileWriterFactoryInterface;
 
 /**
@@ -74,7 +75,7 @@ class CreateOkFilesPlugin extends AbstractPlugin
     {
 
         // initialize the counter for the CSV files
-        $okFilesCreated = 1;
+        $okFilesCreated = 0;
 
         // initialize the subject filter we want to use
         $filters = array(function (SubjectConfigurationInterface $subject) {
@@ -91,7 +92,7 @@ class CreateOkFilesPlugin extends AbstractPlugin
 
         // query whether or not we've found any CSV files
         if ($okFilesCreated === 0) {
-            throw new \Exception(sprintf('Can\'t find any CSV files in source directory "%s"', $this->getSourceDir()));
+            throw new MissingFileException(sprintf('Can\'t find any CSV files in source directory "%s"', $this->getSourceDir()), MissingFileException::NOT_FOUND_CODE);
         }
     }
 }

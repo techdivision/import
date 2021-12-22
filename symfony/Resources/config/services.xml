@@ -151,6 +151,7 @@
         </service>
         <service id="import.renderer.validations.json.file" class="TechDivision\Import\Listeners\Renderer\Validations\JsonFileRenderer">
             <argument type="service" id="import.processor.registry"/>
+            <argument type="string">validations.json</argument>
         </service>
         <service id="import.renderer.console.table" class="TechDivision\Import\Listeners\Renderer\Validations\GenericConsoleTableRenderer">
             <argument type="service" id="input"/>
@@ -951,6 +952,7 @@
         </service>
         <service id="import.listener.render.operation.info" class="TechDivision\Import\Listeners\RenderOperationInfoListener">
             <argument type="service" id="configuration"/>
+            <argument type="service" id="import.processor.registry"/>
         </service>
         <service id="import.listener.operation.report" class="TechDivision\Import\Listeners\RenderOperationReportListener">
             <argument type="service" id="import.processor.registry"/>
@@ -999,6 +1001,15 @@
             <argument type="service" id="cache.static"/>
         </service>
 
+        <service id="import.ignore.missing.files.shortcuts" class="\ArrayObject">
+            <call method="append">
+                <argument type="string">create-ok-files</argument>
+            </call>
+        </service>
+        <service id="import.listener.no.files.registry" class="TechDivision\Import\Listeners\MissingFilesListener">
+            <argument type="service" id="import.processor.registry"/>
+            <argument type="service" id="import.ignore.missing.files.shortcuts"/>
+        </service>
         <!--
          ! The DI configuration for the modules
          !-->
