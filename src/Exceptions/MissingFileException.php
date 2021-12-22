@@ -14,6 +14,8 @@
 
 namespace TechDivision\Import\Exceptions;
 
+use Throwable;
+
 /**
  * A exception that is thrown if a import file is missing or the prefix does not correspond Naming convention
  *
@@ -26,4 +28,9 @@ namespace TechDivision\Import\Exceptions;
 class MissingFileException extends \Exception
 {
     const NOT_FOUND_CODE = 4;
+
+    public function __construct($message = "", $code = self::NOT_FOUND_CODE, Throwable $previous = null)
+    {
+        parent::__construct($message, $code, $previous);
+    }
 }

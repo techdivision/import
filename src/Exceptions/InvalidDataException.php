@@ -14,6 +14,8 @@
 
 namespace TechDivision\Import\Exceptions;
 
+use Throwable;
+
 /**
  * A exception that is thrown if a import file with invalid Data.
  *
@@ -26,4 +28,14 @@ namespace TechDivision\Import\Exceptions;
 class InvalidDataException extends \Exception
 {
     const INVALID_DATA_CODE = 13;
+
+    /**
+     * @param string $message
+     * @param int $code
+     * @param Throwable|null $previous
+     */
+    public function __construct($message = "", $code = self::INVALID_DATA_CODE, Throwable $previous = null)
+    {
+        parent::__construct($message, $code, $previous);
+    }
 }

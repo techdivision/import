@@ -90,14 +90,13 @@ class PipeDelimiterSkuRelationsValidatorCallback extends ArrayValidatorCallback
                 return;
             }
             // throw an exception if the value is NOT in the array and strict mode on
-            throw new InvalidDataException(
+            throw new \InvalidArgumentException(
                 sprintf(
                     'Found invalid SKUs "%s" to be related to %s product with SKU "%s"',
                     implode(',', $skuErrors),
                     $rowProductType,
                     $rowSku
-                ),
-                InvalidDataException::INVALID_DATA_CODE
+                )
             );
         }
     }
