@@ -1010,6 +1010,9 @@
             <argument type="service" id="import.processor.registry"/>
             <argument type="service" id="import.ignore.missing.files.shortcuts"/>
         </service>
+        <service id="import.listener.invalid.data.no.strict.registry" class="TechDivision\Import\Listeners\InvalidDataListener">
+            <argument type="service" id="import.processor.registry"/>
+        </service>
         <!--
          ! The DI configuration for the modules
          !-->

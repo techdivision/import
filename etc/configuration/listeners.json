@@ -16,7 +16,8 @@
         "import.listener.clear.directories",
         "import.listener.operation.report",
         "import.listener.render.nostrict.validations",
-        "import.listener.no.files.registry"
+        "import.listener.no.files.registry",
+        "import.listener.invalid.data.no.strict.registry"
       ],
       "app.process.transaction.failure": [
         "import.listener.debug.dump.prepare",
