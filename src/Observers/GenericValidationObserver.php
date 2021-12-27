@@ -14,7 +14,6 @@
 
 namespace TechDivision\Import\Observers;
 
-use TechDivision\Import\Exceptions\InvalidDataException;
 use TechDivision\Import\Utils\RegistryKeys;
 use TechDivision\Import\Subjects\SubjectInterface;
 use TechDivision\Import\Services\RegistryProcessorInterface;
