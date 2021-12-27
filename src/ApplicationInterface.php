@@ -196,7 +196,7 @@ interface ApplicationInterface extends ContainerInterface
     public function getName();
 
     /**
-     * @param string $message   The reason why the operation has been missed
+     * @param string $message  The reason why the operation has been missed
      * @param int    $exitCode The exit code to use
      *
      * @return void

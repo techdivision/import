@@ -30,9 +30,11 @@ class InvalidDataException extends \Exception
     const INVALID_DATA_CODE = 13;
 
     /**
-     * @param string $message
-     * @param int $code
-     * @param Throwable|null $previous
+     * Construct the exception. Note: The message is NOT binary safe.
+     *
+     * @param string         $message  [optional] The Exception message to throw.
+     * @param int            $code     [optional] The Exception code.
+     * @param null|Throwable $previous [optional] The previous throwable used for the exception chaining.
      */
     public function __construct($message = "", $code = self::INVALID_DATA_CODE, Throwable $previous = null)
     {

@@ -29,6 +29,13 @@ class MissingFileException extends \Exception
 {
     const NOT_FOUND_CODE = 4;
 
+    /**
+     * Construct the exception. Note: The message is NOT binary safe.
+     *
+     * @param string         $message  [optional] The Exception message to throw.
+     * @param int            $code     [optional] The Exception code.
+     * @param null|Throwable $previous [optional] The previous throwable used for the exception chaining.
+     */
     public function __construct($message = "", $code = self::NOT_FOUND_CODE, Throwable $previous = null)
     {
         parent::__construct($message, $code, $previous);
