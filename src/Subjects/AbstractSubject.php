@@ -909,7 +909,7 @@ abstract class AbstractSubject implements SubjectInterface, FilesystemSubjectInt
                     'Successfully processed file "%s" with "%d" lines (skipping "%d") in "%f" s',
                     basename($filename),
                     $this->getLineNumber() - 1,
-                    $skippedRows,
+                    $this->getSkippedRows(),
                     $endTime
                 ),
                 array('operation-name' => $operationName)
