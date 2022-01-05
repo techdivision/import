@@ -65,17 +65,21 @@ class CommaDelimiterSkuRelationsValidatorCallback extends ArrayValidatorCallback
         }
         if (count($skuErrors) > 0) {
             if (!$this->getSubject()->isStrictMode()) {
+                $message =  sprintf(
+                    'Found invalid SKUs "%s" to be related to %s product with SKU "%s"',
+                    implode(',', $skuErrors),
+                    $rowProductType,
+                    $rowSku
+                );
+                $this->getSubject()
+                    ->getSystemLogger()
+                    ->warning($this->getSubject()->appendExceptionSuffix($message));
                 $this->getSubject()->mergeStatus(
                     array(
                         RegistryKeys::NO_STRICT_VALIDATIONS => array(
                             basename($this->getSubject()->getFilename()) => array(
                                 $this->getSubject()->getLineNumber() => array(
-                                    $attributeCode  =>  sprintf(
-                                        'Found invalid SKUs "%s" to be related to %s product with SKU "%s"',
-                                        implode(',', $skuErrors),
-                                        $rowProductType,
-                                        $rowSku
-                                    )
+                                    $attributeCode  => $message
                                 )
                             )
                         )
