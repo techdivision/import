@@ -62,15 +62,15 @@ class EavAttributeOptionValueLoader implements ResetAwareLoaderInterface
     /**
      * Loads and returns data the custom validation data.
      *
-     * @param \TechDivision\Import\Configuration\ParamsConfigurationInterface $configuration The configuration instance to load the validations from
+     * @param \TechDivision\Import\Subjects\SubjectInterface $subject The subject instance to load the validations from
      *
      * @return \ArrayAccess The array with the data
      */
-    public function load(SubjectConfigurationInterface $configuration = null)
+    public function load(SubjectInterface $subject = null)
     {
 
         // load the entity type code from the passed subject configuration
-        $entityTypeCode = $configuration->getExecutionContext()->getEntityTypeCode();
+        $entityTypeCode = $subject->getEntityTypeCode();
 
         // return the available attribute option values for the entity type
         if (isset($this->eavAttributeOptionValues[$entityTypeCode])) {

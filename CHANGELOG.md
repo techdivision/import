@@ -21,6 +21,7 @@
 * Remove League\Flysystem and 
   * LeagueFilesystemAdapter
   * LeagueFilesystemAdapterFactory
+* EavAttributeOptionValueLoader::load use SubjectInterface instead ParamsConfigurationInterface for EntityTypeCode mapping
   
 ## Features
 
