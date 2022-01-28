@@ -76,7 +76,7 @@ class EavAttributeOptionValueLoader implements ResetAwareLoaderInterface
         } else {
             $entityTypeCode = $configuration->getExecutionContext()->getEntityTypeCode();
         }
-        
+
         // return the available attribute option values for the entity type
         if (isset($this->eavAttributeOptionValues[$entityTypeCode])) {
             return $this->eavAttributeOptionValues[$entityTypeCode];
