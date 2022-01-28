@@ -75,7 +75,7 @@ abstract class AbstractValidatorCallback implements CallbackInterface, CallbackF
         $this->setSubject($subject);
 
         // set the validations
-        $this->setValidations($this->getLoader()->load($subject));
+        $this->setValidations($this->getLoader()->load($subject->getConfiguration(), $subject));
 
         // return the initialized instance
         return $this;
