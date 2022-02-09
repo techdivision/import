@@ -39,8 +39,9 @@ class CommaDelimiterSkuRelationsValidatorCallback extends ArrayValidatorCallback
      */
     public function handle($attributeCode = null, $attributeValue = null)
     {
+        $values = $this->getSubject()->explode($attributeValue, $this->getAttributeValueDelimiter());
         // query whether or not an empty value is allowed
-        if ($this->isNullable($values = $this->getSubject()->explode($attributeValue, ','))) {
+        if ($this->isNullable($values)) {
             return;
         }
 
@@ -53,8 +54,9 @@ class CommaDelimiterSkuRelationsValidatorCallback extends ArrayValidatorCallback
         $skuErrors = [];
         // iterate over the values and validate them
         foreach ($values as $value) {
+
             // First element always SKU
-            list($value) = $this->getSubject()->explode($value, '=');
+            $value = $this->explodeDetailsFromValue($value);
 
             // query whether or not the value is valid
             if (in_array($value, $validations)) {
@@ -87,7 +89,8 @@ class CommaDelimiterSkuRelationsValidatorCallback extends ArrayValidatorCallback
                 );
                 return;
             }
-            // throw an exception if the value is NOT in the array
+
+            // throw an exception if the value is NOT in the array and strict mode on
             throw new \InvalidArgumentException(
                 sprintf(
                     'Found invalid SKUs "%s" to be related to %s product with SKU "%s"',
@@ -97,5 +100,24 @@ class CommaDelimiterSkuRelationsValidatorCallback extends ArrayValidatorCallback
                 )
             );
         }
+    }
+
+    /**
+     * @return string
+     */
+    protected function getAttributeValueDelimiter()
+    {
+        return ',';
+    }
+
+    /**
+     * @param string $value
+     * @return string
+     */
+    protected function explodeDetailsFromValue($value)
+    {
+        // First element always SKU
+        list($firstValue) = $this->getSubject()->explode($value, '=');
+        return $firstValue;
     }
 }

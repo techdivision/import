@@ -42,7 +42,8 @@
 * functionality for renaming files
 * `ObserverInterface` need `setSubject` function
 * Add PAC-299: create validation callback for sku relations for grouped, configurables and bundles
-
+* Extension of the isStrictMode function
+* Integration of the StrictMode subcondition of DebugMode
 
 # Version 16.5.3
 
