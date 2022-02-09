@@ -904,7 +904,7 @@ abstract class AbstractSubject implements SubjectInterface, FilesystemSubjectInt
             // log a message that the file has successfully been imported,
             // use log level warning ONLY if rows have been skipped
             $systemLogger->log(
-                $skippedRows = $this->getSkippedRows() > 0 ? LogLevel::WARNING : LogLevel::NOTICE,
+                $this->getSkippedRows() > 0 ? LogLevel::WARNING : LogLevel::NOTICE,
                 sprintf(
                     'Successfully processed file "%s" with "%d" lines (skipping "%d") in "%f" s',
                     basename($filename),

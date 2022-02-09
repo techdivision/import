@@ -95,10 +95,11 @@ abstract class AbstractMultiselectCallback extends AbstractEavAwareCallback
                         )
                     )
                 );
+
+                // continue with the next option value
+                continue;
             }
 
-            // continue with the next option value
-            continue;
 
             // throw an exception if the attribute is not available
             throw new \Exception(
