@@ -283,6 +283,13 @@ class RegistryKeys
     const VALIDATIONS = 'validations';
 
     /**
+     * Key for the registry entry with the validation errors.
+     *
+     * @var string
+     */
+    const NO_STRICT_VALIDATIONS = 'no_strict_validations';
+
+    /**
      * Key for the registry entry with collected column values.
      *
      * @var string

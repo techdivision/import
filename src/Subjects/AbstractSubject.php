@@ -457,7 +457,13 @@ abstract class AbstractSubject implements SubjectInterface, FilesystemSubjectInt
     }
 
     /**
-     * Queries whether or not strict mode is enabled or not, default is FALSE.
+     * Queries whether or not strict mode is enabled or not, default is True.
+     *
+     * Backward compatibility
+     * debug = true strict = true -> isStrict == FALSE
+     * debug = true strict = false -> isStrict == FALSE
+     * debug = false strict = true -> isStrict == TRUE
+     * debug = false strict = false -> isStrict == FALSE
      *
      * @return boolean TRUE if strict mode is enabled, else FALSE
      */
@@ -898,12 +904,12 @@ abstract class AbstractSubject implements SubjectInterface, FilesystemSubjectInt
             // log a message that the file has successfully been imported,
             // use log level warning ONLY if rows have been skipped
             $systemLogger->log(
-                $skippedRows = $this->getSkippedRows() > 0 ? LogLevel::WARNING : LogLevel::NOTICE,
+                $this->getSkippedRows() > 0 ? LogLevel::WARNING : LogLevel::NOTICE,
                 sprintf(
                     'Successfully processed file "%s" with "%d" lines (skipping "%d") in "%f" s',
                     basename($filename),
                     $this->getLineNumber() - 1,
-                    $skippedRows,
+                    $this->getSkippedRows(),
                     $endTime
                 ),
                 array('operation-name' => $operationName)

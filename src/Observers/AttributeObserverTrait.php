@@ -190,7 +190,7 @@ trait AttributeObserverTrait
             } else {
                 // log a message in debug mode
                 if ($this->isDebugMode()) {
-                // log a message in debug mode
+                    // log a message in debug mode
                     $this->getSystemLogger()->debug(
                         $this->appendExceptionSuffix(
                             sprintf(

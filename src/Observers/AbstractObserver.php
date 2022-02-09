@@ -251,6 +251,21 @@ abstract class AbstractObserver implements ObserverInterface
     }
 
     /**
+     * Queries whether or not strict mode is enabled or not, default is True.
+     * Backward compatibility
+     * debug = true strict = true -> isStrict == FALSE
+     * debug = true strict = false -> isStrict == FALSE
+     * debug = false strict = true -> isStrict == TRUE
+     * debug = false strict = false -> isStrict == FALSE
+     *
+     * @return boolean TRUE if strict mode is enabled and debug mode disable, else FALSE
+     */
+    public function isStrictMode()
+    {
+        return $this->getSubject()->isStrictMode();
+    }
+
+    /**
      * Stop's observer execution on the actual row.
      *
      * @return void

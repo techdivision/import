@@ -194,4 +194,22 @@ interface ApplicationInterface extends ContainerInterface
      * @return string The application's name
      */
     public function getName();
+
+    /**
+     * @param string $message  The reason why the operation has been missed
+     * @param int    $exitCode The exit code to use
+     *
+     * @return void
+     * @throws \TechDivision\Import\Exceptions\MissingFileException Is thrown if the file has been missed
+     */
+    public function missingFile($message, $exitCode);
+
+    /**
+     * @param string $message  The message when the import data has been invalid
+     * @param int    $exitCode The exit code to use, defaults to 1
+     *
+     * @return void
+     * @throws \TechDivision\Import\Exceptions\InvalidDataException Is thrown if the application has been stopped
+     */
+    public function invalidDataNoStrict($message, $exitCode);
 }

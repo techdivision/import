@@ -73,7 +73,6 @@ abstract class AbstractSelectCallback extends AbstractEavAwareCallback
                     )
                 )
             );
-
             // add the missing option value to the registry
             $this->mergeAttributesRecursive(
                 array(
@@ -91,7 +90,7 @@ abstract class AbstractSelectCallback extends AbstractEavAwareCallback
             // return NULL, if the value can't be mapped to an option
             return;
         }
-
+        
         // throw an exception if the attribute is NOT
         // available and we're not in debug mode
         throw new \Exception(

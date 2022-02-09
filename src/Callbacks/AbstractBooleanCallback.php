@@ -67,7 +67,7 @@ abstract class AbstractBooleanCallback extends AbstractCallback
 
         // query whether or not, the passed value can be mapped to a boolean representation
         if (isset($this->booleanValues[strtolower($attributeValue)])) {
-            return (boolean) $this->booleanValues[strtolower($attributeValue)];
+            return (boolean)$this->booleanValues[strtolower($attributeValue)];
         }
 
         // query whether or not we're in debug mode
@@ -100,7 +100,7 @@ abstract class AbstractBooleanCallback extends AbstractCallback
             // return NULL, if NO value can be mapped to a boolean representation
             return;
         }
-
+        
         // throw an exception if the attribute is not available
         throw new \Exception(
             $this->appendExceptionSuffix(

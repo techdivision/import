@@ -114,12 +114,19 @@ class SubjectPlugin extends AbstractPlugin implements SubjectAwarePluginInterfac
                 $this->processSubject($subject);
             }
 
+            $status = $this->getRegistryProcessor()->getAttribute(RegistryKeys::STATUS);
+            // Add countImportedFiles index to status to check if a file has been imported
+            if (isset($status['countImportedFiles'])) {
+                $status['countImportedFiles'] += $this->bunches;
+            } else {
+                $status['countImportedFiles'] = $this->bunches;
+            }
+            $status[RegistryKeys::BUNCHES] = $this->bunches;
+
             // update the number of imported bunches
             $this->getRegistryProcessor()->mergeAttributesRecursive(
                 RegistryKeys::STATUS,
-                array(
-                    RegistryKeys::BUNCHES => $this->bunches
-                )
+                $status
             );
         } catch (MissingOkFileException $mofe) {
             // finish the application if we can't find the mandatory OK file

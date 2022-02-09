@@ -130,6 +130,21 @@ abstract class AbstractCallback implements CallbackInterface
     {
         return $this->getSubject()->isDebugMode();
     }
+    
+    /**
+     * Queries whether or not strict mode is enabled or not, default is True.
+     * Backward compatibility
+     * debug = true strict = true -> isStrict == FALSE
+     * debug = true strict = false -> isStrict == FALSE
+     * debug = false strict = true -> isStrict == TRUE
+     * debug = false strict = false -> isStrict == FALSE
+     *
+     * @return boolean TRUE if strict mode is enabled and debug mode disable, else FALSE
+     */
+    public function isStrictMode()
+    {
+        return $this->getSubject()->isStrictMode();
+    }
 
     /**
      * Raises the value for the counter with the passed key by one.

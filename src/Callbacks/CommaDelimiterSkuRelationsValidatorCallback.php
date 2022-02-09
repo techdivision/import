@@ -15,6 +15,7 @@
 namespace TechDivision\Import\Callbacks;
 
 use TechDivision\Import\Utils\ColumnKeys;
+use TechDivision\Import\Utils\RegistryKeys;
 
 /**
  * A callback implementation that validates the a list of values.
@@ -38,8 +39,9 @@ class CommaDelimiterSkuRelationsValidatorCallback extends ArrayValidatorCallback
      */
     public function handle($attributeCode = null, $attributeValue = null)
     {
+        $values = $this->getSubject()->explode($attributeValue, $this->getAttributeValueDelimiter());
         // query whether or not an empty value is allowed
-        if ($this->isNullable($values = $this->getSubject()->explode($attributeValue, ','))) {
+        if ($this->isNullable($values)) {
             return;
         }
 
@@ -53,7 +55,7 @@ class CommaDelimiterSkuRelationsValidatorCallback extends ArrayValidatorCallback
         // iterate over the values and validate them
         foreach ($values as $value) {
             // First element always SKU
-            list($value) = $this->getSubject()->explode($value, '=');
+            $value = $this->explodeDetailsFromValue($value);
 
             // query whether or not the value is valid
             if (in_array($value, $validations)) {
@@ -63,7 +65,31 @@ class CommaDelimiterSkuRelationsValidatorCallback extends ArrayValidatorCallback
             array_push($skuErrors, $value);
         }
         if (count($skuErrors) > 0) {
-            // throw an exception if the value is NOT in the array
+            if (!$this->getSubject()->isStrictMode()) {
+                $message =  sprintf(
+                    'Found invalid SKUs "%s" to be related to %s product with SKU "%s"',
+                    implode(',', $skuErrors),
+                    $rowProductType,
+                    $rowSku
+                );
+                $this->getSubject()
+                    ->getSystemLogger()
+                    ->warning($this->getSubject()->appendExceptionSuffix($message));
+                $this->getSubject()->mergeStatus(
+                    array(
+                        RegistryKeys::NO_STRICT_VALIDATIONS => array(
+                            basename($this->getSubject()->getFilename()) => array(
+                                $this->getSubject()->getLineNumber() => array(
+                                    $attributeCode  => $message
+                                )
+                            )
+                        )
+                    )
+                );
+                return;
+            }
+
+            // throw an exception if the value is NOT in the array and strict mode on
             throw new \InvalidArgumentException(
                 sprintf(
                     'Found invalid SKUs "%s" to be related to %s product with SKU "%s"',
@@ -73,5 +99,24 @@ class CommaDelimiterSkuRelationsValidatorCallback extends ArrayValidatorCallback
                 )
             );
         }
+    }
+
+    /**
+     * @return string
+     */
+    protected function getAttributeValueDelimiter()
+    {
+        return ',';
+    }
+
+    /**
+     * @param string $value the value to explode
+     * @return string
+     */
+    protected function explodeDetailsFromValue($value)
+    {
+        // First element always SKU
+        list($firstValue) = $this->getSubject()->explode($value, '=');
+        return $firstValue;
     }
 }
