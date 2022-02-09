@@ -22,6 +22,7 @@
   * LeagueFilesystemAdapter
   * LeagueFilesystemAdapterFactory
 * EavAttributeOptionValueLoader::load use SubjectInterface instead ParamsConfigurationInterface for EntityTypeCode mapping
+* Fix counter from 'skippedRow'
   
 ## Features
 
@@ -44,6 +45,7 @@
 * Add PAC-299: create validation callback for sku relations for grouped, configurables and bundles
 * Extension of the isStrictMode function
 * Integration of the StrictMode subcondition of DebugMode
+* New Returncodes for Missing File (4) and warnings on Strict Mode = false (13) 
 
 # Version 16.5.3
 

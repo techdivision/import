@@ -54,7 +54,6 @@ class CommaDelimiterSkuRelationsValidatorCallback extends ArrayValidatorCallback
         $skuErrors = [];
         // iterate over the values and validate them
         foreach ($values as $value) {
-
             // First element always SKU
             $value = $this->explodeDetailsFromValue($value);
 
@@ -111,7 +110,7 @@ class CommaDelimiterSkuRelationsValidatorCallback extends ArrayValidatorCallback
     }
 
     /**
-     * @param string $value
+     * @param string $value the value to explode
      * @return string
      */
     protected function explodeDetailsFromValue($value)

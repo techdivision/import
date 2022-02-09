@@ -31,7 +31,7 @@ class PipeDelimiterSkuRelationsValidatorCallback extends CommaDelimiterSkuRelati
 {
 
     /**
-     * @param string $value
+     * @param string $value the value to explode
      * @return string
      */
     protected function explodeDetailsFromValue($value)
@@ -43,7 +43,8 @@ class PipeDelimiterSkuRelationsValidatorCallback extends CommaDelimiterSkuRelati
                 return $value;
             }
         }
-        return '';
+        // Nothing found? Return origin
+        return $value;
     }
 
     /**
