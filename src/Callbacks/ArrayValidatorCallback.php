@@ -53,9 +53,10 @@ class ArrayValidatorCallback extends AbstractValidatorCallback
     /**
      * Initializes the callback with the loader instance.
      *
-     * @param \TechDivision\Import\Loaders\LoaderInterface $loader      The loader instance to load the validations with
-     * @param boolean                                      $nullable    The flag to decide whether or not the value can be empty
-     * @param boolean                                      $mainRowOnly The flag to decide whether or not the value has to be validated on the main row only
+     * @param \TechDivision\Import\Loaders\LoaderInterface $loader           The loader instance to load the validations with
+     * @param boolean                                      $nullable         The flag to decide whether or not the value can be empty
+     * @param boolean                                      $mainRowOnly      The flag to decide whether or not the value has to be validated on the main row only
+     * @param boolean                                      $ignoreStrictMode The flag to query whether or not the value has to be ignored global strict mode configuration.
      */
     public function __construct(LoaderInterface $loader, $nullable = false, $mainRowOnly = false, $ignoreStrictMode = true)
     {
