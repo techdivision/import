@@ -54,15 +54,19 @@ class RegexValidatorCallback extends IndexedArrayValidatorCallback
                 continue;
             }
 
-            // throw an exception if the value is NOT in the array
-            throw new \InvalidArgumentException(
-                sprintf(
-                    'Found invalid value "%s" for column "%s" (must match pattern: "%s")',
-                    $attributeValue,
-                    $attributeCode,
-                    $pattern
-                )
+            $message = sprintf(
+                'Found invalid value "%s" for column "%s" (must match pattern: "%s")',
+                $attributeValue,
+                $attributeCode,
+                $pattern
             );
+
+            if ($this->hasHandleStrictMode($attributeCode, $message)) {
+                continue;
+            }
+
+            // throw an exception if the value is NOT in the array
+            throw new \InvalidArgumentException($message);
         }
     }
 }

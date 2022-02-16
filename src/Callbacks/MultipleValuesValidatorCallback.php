@@ -57,14 +57,18 @@ class MultipleValuesValidatorCallback extends ArrayValidatorCallback
         }
 
         if (count($valueErrors) > 0) {
-            // throw an exception if the value is NOT in the array
-            throw new \InvalidArgumentException(
-                sprintf(
-                    'Found invalid value "%s" in column "%s"',
-                    implode(',', $valueErrors),
-                    $attributeCode
-                )
+            $message =  sprintf(
+                'Found invalid value "%s" in column "%s"',
+                implode(',', $valueErrors),
+                $attributeCode
             );
+
+            if ($this->hasHandleStrictMode($attributeCode, $message)) {
+                return;
+            }
+
+            // throw an exception if the value is NOT in the array
+            throw new \InvalidArgumentException($message);
         }
     }
 }

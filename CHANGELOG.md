@@ -46,6 +46,12 @@
 * Extension of the isStrictMode function
 * Integration of the StrictMode subcondition of DebugMode
 * New Returncodes for Missing File (4) and warnings on Strict Mode = false (13) 
+* Extended `ArrayValidatorCallback` with an additional parameter `ignoreStrictMode` whose default value is true
+  * `CommaDelimiterSkuRelationsValidatorCallback` => `ignoreStrictMode` is false
+  * `MultipleValuesValidatorCallback`=> `ignoreStrictMode` for `link` is false `store` is true (default)
+  * `MultiselectValidatorCallback`=> `ignoreStrictMode` is true (default)
+  * `RegexValidatorCallback`=> `ignoreStrictMode` is true (default)
+  * `SelectValidatorCallback`=> `ignoreStrictMode` is true (default)
 
 # Version 16.5.3
 

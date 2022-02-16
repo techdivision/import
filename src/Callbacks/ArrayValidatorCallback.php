@@ -15,6 +15,7 @@
 namespace TechDivision\Import\Callbacks;
 
 use TechDivision\Import\Loaders\LoaderInterface;
+use TechDivision\Import\Utils\RegistryKeys;
 
 /**
  * Array validator callback implementation.
@@ -43,13 +44,20 @@ class ArrayValidatorCallback extends AbstractValidatorCallback
     protected $mainRowOnly = false;
 
     /**
+     * The flag to query whether or not the value has to be ignored global strict mode configuration.
+     *
+     * @var boolean
+     */
+    protected $ignoreStrictMode = false;
+
+    /**
      * Initializes the callback with the loader instance.
      *
      * @param \TechDivision\Import\Loaders\LoaderInterface $loader      The loader instance to load the validations with
      * @param boolean                                      $nullable    The flag to decide whether or not the value can be empty
      * @param boolean                                      $mainRowOnly The flag to decide whether or not the value has to be validated on the main row only
      */
-    public function __construct(LoaderInterface $loader, $nullable = false, $mainRowOnly = false)
+    public function __construct(LoaderInterface $loader, $nullable = false, $mainRowOnly = false, $ignoreStrictMode = true)
     {
 
         // pass the loader to the parent instance
@@ -58,6 +66,7 @@ class ArrayValidatorCallback extends AbstractValidatorCallback
         // initialize the flags with the passed values
         $this->nullable = $nullable;
         $this->mainRowOnly = $mainRowOnly;
+        $this->ignoreStrictMode = $ignoreStrictMode;
     }
 
     /**
@@ -137,6 +146,37 @@ class ArrayValidatorCallback extends AbstractValidatorCallback
         }
 
         // if not, return TRUE immediately
+        return false;
+    }
+
+    /**
+     * @param string $attributeCode The attribute value to query for
+     * @param string $message       Message for validation error
+     * @return bool
+     */
+    protected function hasHandleStrictMode($attributeCode, $message)
+    {
+        if ($this->ignoreStrictMode) {
+            return false;
+        }
+        if (!$this->getSubject()->isStrictMode()) {
+            $this->getSubject()
+                ->getSystemLogger()
+                ->warning($this->getSubject()->appendExceptionSuffix($message));
+            $this->getSubject()->mergeStatus(
+                array(
+                    RegistryKeys::NO_STRICT_VALIDATIONS => array(
+                        basename($this->getSubject()->getFilename()) => array(
+                            $this->getSubject()->getLineNumber() => array(
+                                $attributeCode  => $message
+                            )
+                        )
+                    )
+                )
+            );
+            return true;
+        }
+
         return false;
     }
 }

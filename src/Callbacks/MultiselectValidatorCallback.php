@@ -58,10 +58,14 @@ class MultiselectValidatorCallback extends IndexedArrayValidatorCallback
                 continue;
             }
 
+            $message = sprintf('Found invalid option value "%s" for multiselect attribute with code "%s"', $optionValue, $attributeCode);
+
+            if ($this->hasHandleStrictMode($attributeCode, $message)) {
+                continue;
+            }
+
             // throw an exception if the value is NOT in the array
-            throw new \InvalidArgumentException(
-                sprintf('Found invalid option value "%s" for attribute with code "%s"', $optionValue, $attributeCode)
-            );
+            throw new \InvalidArgumentException($message);
         }
     }
 }

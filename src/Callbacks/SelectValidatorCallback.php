@@ -50,9 +50,13 @@ class SelectValidatorCallback extends IndexedArrayValidatorCallback
             return;
         }
 
+        $message = sprintf('Found invalid option value "%s" for select attribute with code "%s"', $attributeValue, $attributeCode);
+
+        if ($this->hasHandleStrictMode($attributeCode, $message)) {
+            return;
+        }
+
         // throw an exception if the value is NOT in the array
-        throw new \InvalidArgumentException(
-            sprintf('Found invalid option value "%s" for attribute with code "%s"', $attributeValue, $attributeCode)
-        );
+        throw new \InvalidArgumentException($message);
     }
 }
