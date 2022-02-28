@@ -140,7 +140,7 @@ class CategoryAssembler implements CategoryAssemblerInterface
             array_shift($entityIds);
 
             // continue with the next category if no entity IDs are available
-            if (sizeof($entityIds) === 0) {
+            if (sizeof($entityIds) === 0 || !isset($category[MemberNames::NAME])) {
                 continue;
             }
 
