@@ -88,6 +88,13 @@ class JsonFileRenderer implements ValidationRendererInterface
         if (isset($status[RegistryKeys::TARGET_DIRECTORY])) {
             // prepare the filename to save the validation messsages to
             $filename = implode(DIRECTORY_SEPARATOR, array($status[RegistryKeys::TARGET_DIRECTORY], $this->filename));
+            if (file_exists($filename)) {
+                $validationData = file_get_contents($filename);
+                $validationJson = \json_decode($validationData, true);
+                if ($validationJson) {
+                    $validations = array_merge($validationJson, $validations);
+                }
+            }
             // create the files inside the target directory
             file_put_contents($filename, json_encode($validations, JSON_PRETTY_PRINT));
             // register the file as artefact in the registry
