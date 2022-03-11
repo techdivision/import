@@ -178,7 +178,7 @@ abstract class AbstractBaseProcessor extends AbstractProcessor
      * Prepare's and return's the passed row by removing the
      * entity status.
      *
-     * @param array $row The row to prepare
+     * @param array  $row       The row to prepare
      * @param string $statement The statement string
      *
      * @return array The prepared row
