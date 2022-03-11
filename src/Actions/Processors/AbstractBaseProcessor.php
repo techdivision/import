@@ -179,6 +179,7 @@ abstract class AbstractBaseProcessor extends AbstractProcessor
      * entity status.
      *
      * @param array $row The row to prepare
+     * @param string $statement The statement string
      *
      * @return array The prepared row
      */
@@ -190,7 +191,7 @@ abstract class AbstractBaseProcessor extends AbstractProcessor
 
         // Remove unused rows from statement
         if (!empty($statement)) {
-            foreach($row as $key => $value) {
+            foreach ($row as $key => $value) {
                 if (!preg_match('/(:'.$key.'[^a-zA-Z_])|(:'.$key.'$)/', $statement)) {
                     unset($row[$key]);
                 }
