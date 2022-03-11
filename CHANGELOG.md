@@ -1,3 +1,13 @@
+# Version 16.8.12
+
+## Improvement
+
+* None
+
+## Bugfixes
+
+*  Extend prepareRow() method remove not foud entities
+
 # Version 16.8.11
 
 ## Improvement
