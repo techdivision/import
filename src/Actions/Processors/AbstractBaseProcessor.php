@@ -178,15 +178,25 @@ abstract class AbstractBaseProcessor extends AbstractProcessor
      * Prepare's and return's the passed row by removing the
      * entity status.
      *
-     * @param array $row The row to prepare
+     * @param array  $row       The row to prepare
+     * @param string $statement The statement string
      *
      * @return array The prepared row
      */
-    protected function prepareRow(array $row)
+    protected function prepareRow(array $row, $statement = '')
     {
 
         // remove the entity status
         unset($row[EntityStatus::MEMBER_NAME]);
+
+        // Remove unused rows from statement
+        if (!empty($statement)) {
+            foreach ($row as $key => $value) {
+                if (!preg_match('/(:'.$key.'[^a-zA-Z_])|(:'.$key.'$)/', $statement)) {
+                    unset($row[$key]);
+                }
+            }
+        }
 
         // return the prepared row
         return $row;
@@ -219,7 +229,7 @@ abstract class AbstractBaseProcessor extends AbstractProcessor
 
         try {
             // finally execute the prepared statement
-            $statement->execute($this->prepareRow($row));
+            $statement->execute($this->prepareRow($row, $statement->queryString));
         } catch (\PDOException $pdoe) {
             // initialize the SQL statement with the placeholders
             $sql = $statement->queryString;
