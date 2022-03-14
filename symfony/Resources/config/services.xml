@@ -847,8 +847,8 @@
         </service>
         <service id="import.callback.visibility.validator" class="TechDivision\Import\Callbacks\IndexedArrayValidatorCallback">
             <argument type="service" id="import.loader.custom.validations"/>
-            <argument>%array_validator.nullable.false%</argument>
             <argument>%array_validator.nullable.true%</argument>
+            <argument>%array_validator.nullable.false%</argument>
         </service>
         <service id="import.callback.store.website.validator" class="TechDivision\Import\Callbacks\MultipleValuesValidatorCallback">
             <argument type="service" id="import.loader.store.website"/>
