@@ -125,7 +125,7 @@ class RoboFile extends \Robo\Tasks
         // run the copy past detector
         return $this->_exec(
             sprintf(
-                '%s/bin/phpcpd --regexps-exclude MissingOptionValuesPlugin,CoreConfigDataLoader %s --log-pmd %s/reports/pmd-cpd.xml',
+                '%s/bin/phpcpd --exclude MissingOptionValuesPlugin,CoreConfigDataLoader %s --log-pmd %s/reports/pmd-cpd.xml',
                 $this->properties['vendor.dir'],
                 $this->properties['src.dir'],
                 $this->properties['target.dir']
