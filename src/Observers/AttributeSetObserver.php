@@ -55,11 +55,10 @@ class AttributeSetObserver extends AbstractObserver
     /**
      * Process the observer's business logic.
      *
-     * @return array The processed row
+     * @return void The processed row
      */
     protected function process()
     {
-
         // load and set the attribute set
         $this->setAttributeSet($this->getAttributeSetByAttributeSetName($this->getValue(ColumnKeys::ATTRIBUTE_SET_CODE)));
     }

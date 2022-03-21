@@ -288,7 +288,7 @@ abstract class AbstractEavSubject extends AbstractSubject implements EavSubjectI
                     )
                 );
             } else {
-                return call_user_func_array('array_merge', $attributes);
+                return call_user_func_array('array_merge', array_values($attributes));
             }
         }
 

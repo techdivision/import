@@ -119,6 +119,7 @@ class CacheKeys extends \ArrayObject implements CacheKeysInterface
      */
     public static function get($cacheKey)
     {
+        // @phpstan-ignore-next-line
         return new static($cacheKey);
     }
 

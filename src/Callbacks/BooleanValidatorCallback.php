@@ -51,7 +51,7 @@ class BooleanValidatorCallback extends ArrayValidatorCallback
         // iterate over the attributes and append them to the row
         foreach ($optionValues as $optionValue) {
             // query whether or not a boolean value has been specified
-            if (in_array(strtolower($optionValue), $validations)) {
+            if (in_array(strtolower($optionValue), array_keys($validations))) {
                 continue;
             }
 

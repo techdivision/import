@@ -29,11 +29,12 @@ interface StateDetectorInterface
     /**
      * Detect's and return's the entity state on the specific entity conditions and return's it.
      *
-     * @param \TechDivision\Import\Observers\ObserverInterface $observer The observer instance to detect the state for
-     * @param array                                            $entity   The entity loaded from the database
-     * @param array                                            $attr     The entity data from the import file
+     * @param \TechDivision\Import\Observers\ObserverInterface $observer      The observer instance to detect the state for
+     * @param array                                            $entity        The entity loaded from the database
+     * @param array                                            $attr          The entity data from the import file
+     * @param string|null                                      $changeSetName The change set name to use
      *
      * @return string The detected entity state
      */
-    public function detect(ObserverInterface $observer, array $entity, array $attr);
+    public function detect(ObserverInterface $observer, array $entity, array $attr, $changeSetName = null);
 }

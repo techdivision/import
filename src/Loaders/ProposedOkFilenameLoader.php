@@ -14,6 +14,8 @@
 
 namespace TechDivision\Import\Loaders;
 
+use TechDivision\Import\Handlers\GenericFileHandler;
+use TechDivision\Import\Handlers\GenericFileHandlerInterface;
 use TechDivision\Import\Utils\BunchKeys;
 use TechDivision\Import\Loaders\Sorters\UasortImpl;
 use TechDivision\Import\Loaders\Filters\PregMatchFilter;
@@ -35,6 +37,12 @@ use TechDivision\Import\Configuration\Subject\FileResolverConfigurationInterface
  */
 class ProposedOkFilenameLoader extends FilteredLoader implements FilteredLoaderInterface, SortedLoaderInterface
 {
+    /**
+     * The generic file handler instance.
+     *
+     * @var GenericFileHandlerInterface
+     */
+    private $genericFileHandler;
 
     /**
      * The regular expression used to load the files with.
@@ -67,21 +75,33 @@ class ProposedOkFilenameLoader extends FilteredLoader implements FilteredLoaderI
     /**
      * Initializes the file handler instance.
      *
-     * @param \TechDivision\Import\Loaders\FilteredLoaderInterface     $loader     The parent loader instance
-     * @param \TechDivision\Import\Loaders\Filters\FilterImplInterface $filterImpl The filter instance to use
-     * @param \TechDivision\Import\Loaders\Sorters\SorterImplInterface $sorterImpl The sorter instance to use
+     * @param \TechDivision\Import\Loaders\FilteredLoaderInterface      $loader             The parent loader instance
+     * @param \TechDivision\Import\Loaders\Filters\FilterImplInterface  $filterImpl         The filter instance to use
+     * @param \TechDivision\Import\Loaders\Sorters\SorterImplInterface  $sorterImpl         The sorter instance to use
+     * @param \TechDivision\Import\Handlers\GenericFileHandlerInterface $genericFileHandler The generic file handler instance
      */
     public function __construct(
         FilteredLoaderInterface $loader,
         FilterImplInterface $filterImpl = null,
-        SorterImplInterface $sorterImpl = null
+        SorterImplInterface $sorterImpl = null,
+        GenericFileHandlerInterface $genericFileHandler = null
     ) {
 
         // initialize the sorter instance
         $this->sorterImpl = $sorterImpl ?? new UasortImpl();
-
+        $this->genericFileHandler = $genericFileHandler ?? new GenericFileHandler();
         // pass parent loader and filter instance to the parent constructor
         parent::__construct($loader, $filterImpl);
+    }
+
+    /**
+     * Return's the generic file handler instance.
+     *
+     * @return \TechDivision\Import\Handlers\GenericFileHandlerInterface The generic file handler instance
+     */
+    protected function getGenericFileHandler()
+    {
+        return $this->genericFileHandler;
     }
 
     /**

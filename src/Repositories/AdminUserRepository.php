@@ -38,6 +38,13 @@ class AdminUserRepository extends AbstractRepository implements AdminUserReposit
     protected $adminUserByUsernameStmt;
 
     /**
+     * The prepared statement to load an admin user.
+     *
+     * @var \PDOStatement
+     */
+    protected $adminUsersStmt;
+
+    /**
      * Initializes the repository's prepared statements.
      *
      * @return void

@@ -14,7 +14,7 @@
 
 namespace TechDivision\Import\Utils\Filter;
 
-use Zend\Filter\FilterInterface;
+use Laminas\Filter\FilterInterface;
 
 /**
  * Convert Literal Filter implementation.
@@ -436,7 +436,7 @@ class ConvertLiteral implements FilterInterface
      */
     public function filter($string)
     {
-        $string = strtr($string, $this->getConvertTable());
+        $string = $string ? strtr($string, $this->getConvertTable()) : '';
         return 'libiconv' == trim(ICONV_IMPL, '"'."'") ? iconv(
             'UTF-8',
             'ascii//ignore//translit',

@@ -79,7 +79,7 @@ class Lexer implements LexerInterface
     {
 
         // for mac's office excel csv
-        ini_set('auto_detect_line_endings', true);
+        @ini_set('auto_detect_line_endings', true);
 
         // initialize the configuration
         $delimiter      = $this->config->getDelimiter();
@@ -115,7 +115,11 @@ class Lexer implements LexerInterface
             if ($lineNumber == 0 && isset($line[0]) && substr($line[0], 0, 3) === $bom) {
                 $line[0] = substr($line[0], 3);
             }
-            if ($ignoreHeader && $lineNumber == 0 || (count($line) === 1 && trim($line[0]) === '')) {
+            if ($ignoreHeader && $lineNumber == 0
+                || (count($line) === 1
+                     && ($line[0] === null || trim($line[0]) === '')
+                   )
+                ) {
                 continue;
             }
             $interpreter->interpret($line);

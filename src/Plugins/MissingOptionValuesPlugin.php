@@ -28,6 +28,7 @@ use TechDivision\Import\Adapter\ExportAdapterInterface;
  * @license   https://opensource.org/licenses/MIT
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
+ * @deprecated since 4.8.0
  */
 class MissingOptionValuesPlugin extends AbstractPlugin
 {

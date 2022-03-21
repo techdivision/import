@@ -31,6 +31,13 @@ class TaxClassRepository extends AbstractRepository implements TaxClassRepositor
 {
 
     /**
+     * Tax repared statements
+     *
+     * @var \PDOStatement
+     */
+    protected $taxClassesStmt;
+
+    /**
      * Initializes the repository's prepared statements.
      *
      * @return void

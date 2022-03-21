@@ -167,6 +167,7 @@ class MysqlVariablesLoader implements LoaderInterface
                 );
             }
         }
+        return [];
     }
 
     /**

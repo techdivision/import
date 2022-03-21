@@ -77,5 +77,6 @@ class CategoryVarcharRepository extends AbstractRepository implements CategoryVa
         if ($stmt = $this->getConnection()->query($sql)) {
             return $stmt->fetch();
         }
+        return [];
     }
 }

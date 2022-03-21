@@ -45,6 +45,7 @@ class LoggerFactory
     ) {
 
         // load the available processors from the configuration
+        /** @var \TechDivision\Import\Configuration\Jms\Configuration\Logger\Processor[] $availableProcessors */
         $availableProcessors = $loggerConfiguration->getProcessors();
 
         // initialize the processors

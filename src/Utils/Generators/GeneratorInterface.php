@@ -29,7 +29,7 @@ interface GeneratorInterface
     /**
      * Create a unique identifier.
      *
-     * @return string The unique identifier
+     * @return int|string The unique identifier
      */
     public function generate();
 }

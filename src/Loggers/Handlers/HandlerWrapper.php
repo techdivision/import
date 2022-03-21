@@ -108,7 +108,7 @@ class HandlerWrapper implements ResetAwareHandlerInterface
      *
      * @return boolean TRUE if the handler has to handle the record, FALSE otherwise
      */
-    public function isHandling(array $record)
+    public function isHandling(array $record): bool
     {
         return $this->handler->isHandling($record);
     }
@@ -128,7 +128,7 @@ class HandlerWrapper implements ResetAwareHandlerInterface
      * @return boolean TRUE means that this handler handled the record, and that bubbling is not permitted.
      *                 FALSE means the record was either not processed or that this handler allows bubbling.
      */
-    public function handle(array $record)
+    public function handle(array $record): bool
     {
         return $this->handler->handle($record);
     }
@@ -140,7 +140,7 @@ class HandlerWrapper implements ResetAwareHandlerInterface
      *
      * @return void
      */
-    public function handleBatch(array $records)
+    public function handleBatch(array $records): void
     {
         $this->handler->handleBatch($records);
     }
@@ -190,5 +190,15 @@ class HandlerWrapper implements ResetAwareHandlerInterface
     {
         $this->handler->setFormatter($formatter);
         return $this;
+    }
+
+    /**
+     *  Closes the handler.
+     *
+     * @return void
+     */
+    public function close(): void
+    {
+        // Nothing to do
     }
 }

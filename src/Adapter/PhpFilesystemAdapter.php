@@ -172,7 +172,7 @@ class PhpFilesystemAdapter implements FilesystemAdapterInterface
      * @return void
      * @throws \Exception Is thrown, if the directory can not be removed
      */
-    public function removeDir($src, $recursive = false)
+    public function removeDir($src, $recursive = false): void
     {
 
         // open the directory

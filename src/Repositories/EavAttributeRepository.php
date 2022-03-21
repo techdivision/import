@@ -172,7 +172,7 @@ class EavAttributeRepository extends AbstractRepository implements EavAttributeR
      *
      * @return array The array with all available EAV attributes
      */
-    public function findAllByOptionValueAndStoreId($optionValue, $storeId)
+    public function findAllByOptionValueAndStoreId($optionValue, $storeId): array
     {
 
         // initialize the params
@@ -290,5 +290,6 @@ class EavAttributeRepository extends AbstractRepository implements EavAttributeR
         if (sizeof($eavAttributes = $this->findAllByOptionValueAndStoreId($optionValue, $storeId)) > 0) {
             return reset($eavAttributes);
         }
+        return [];
     }
 }

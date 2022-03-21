@@ -853,6 +853,9 @@ abstract class AbstractSubject implements SubjectInterface, FilesystemSubjectInt
     public function import($serial, $filename)
     {
 
+        $inProgressFilename  = '';
+        $failedFilename  = '';
+        
         try {
             // initialize the serial/filename
             $this->setSerial($serial);
@@ -1463,7 +1466,7 @@ abstract class AbstractSubject implements SubjectInterface, FilesystemSubjectInt
         }
 
         // create a new exception and wrap the parent one
-        return new $className($message, null, $parent);
+        return new $className($message, 0, $parent);
     }
 
     /**

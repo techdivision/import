@@ -45,6 +45,13 @@ class CategoryRepository extends AbstractRepository implements CategoryRepositor
     protected $rootCategoriesStmt;
 
     /**
+     * The statement to load the category by store view.
+     *
+     * @var \PDOStatement
+     */
+    protected $categoriesByStoreViewStmt;
+
+    /**
      * Initializes the repository's prepared statements.
      *
      * @return void

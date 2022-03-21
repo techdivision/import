@@ -158,12 +158,6 @@ class PregMatchFilter implements PregMatchFilterInterface
      */
     public function addMatches(array $matches) : void
     {
-
-        // lowercase all values of the passed match
-        array_walk($matches, function (&$val, &$key) {
-            strtolower($key);
-        });
-
         // add the match
         $this->matches[] = $matches;
     }

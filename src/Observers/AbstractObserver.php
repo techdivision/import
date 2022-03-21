@@ -35,7 +35,7 @@ abstract class AbstractObserver implements ObserverInterface
     /**
      * The trait that provides row handling functionality.
      *
-     * @var TechDivision\Import\RowTrait
+     * @var \TechDivision\Import\RowTrait
      */
     use RowTrait;
 

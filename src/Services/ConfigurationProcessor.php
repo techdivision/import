@@ -44,6 +44,13 @@ class ConfigurationProcessor implements ConfigurationProcessorInterface
     protected $coreConfigDataLoader;
 
     /**
+     * The core config data Repository instance.
+     *
+     * @var  CoreConfigDataRepositoryInterface
+     */
+    protected $coreConfigDataRepository;
+
+    /**
      * Initialize the processor with the necessary assembler and repository instances.
      *
      * @param \TechDivision\Import\Repositories\StoreWebsiteRepositoryInterface   $storeWebsiteRepository   The repository to access store websites

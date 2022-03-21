@@ -74,7 +74,7 @@ class UrlRewriteEntityType implements EnumInterface
         if ($this->isValid($value)) {
             $this->value = $value;
         } else {
-            throw \InvalidArgumentException(sprintf('Value "%s" not a const in enum "%s"', $value, __CLASS__));
+            throw new \InvalidArgumentException(sprintf('Value "%s" not a const in enum "%s"', $value, __CLASS__));
         }
     }
 

@@ -37,6 +37,13 @@ class ProposedFilenameLoader implements LoaderInterface
     protected $pattern = '/^.*\/%s\\.%s$/';
 
     /**
+     * The file resolver configuration
+     *
+     * @var FileResolverConfigurationInterface
+     */
+    protected $fileResolverConfiguration;
+
+    /**
      * The counter used to prepare the proposed filename.
      *
      * @var integer

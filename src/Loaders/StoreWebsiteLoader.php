@@ -43,7 +43,6 @@ class StoreWebsiteLoader implements LoaderInterface
      */
     public function __construct(ImportProcessorInterface $importProcessor)
     {
-
         // load the store websites
         $storeWebsites = $importProcessor->getStoreWebsites();
 
@@ -61,15 +60,5 @@ class StoreWebsiteLoader implements LoaderInterface
     public function load()
     {
         return $this->storeWebsites;
-    }
-
-    /**
-     * Return's the import processor instance.
-     *
-     * @return \TechDivision\Import\Services\ImportProcessorInterface The processor instance
-     */
-    protected function getImportProcessor()
-    {
-        return $this->importProcessor;
     }
 }

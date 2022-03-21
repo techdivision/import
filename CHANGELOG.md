@@ -22,7 +22,8 @@
   * LeagueFilesystemAdapter
   * LeagueFilesystemAdapterFactory
 * EavAttributeOptionValueLoader::load use SubjectInterface instead ParamsConfigurationInterface for EntityTypeCode mapping
-* Fix counter from 'skippedRow'
+* Fix counter from 'skippedRow' 
+* Update composer with php Version >=^7.3
   
 ## Features
 

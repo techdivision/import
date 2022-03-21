@@ -97,7 +97,7 @@ class GenericValidationObserver extends AbstractObserver implements ObserverFact
     /**
      * Process the observer's business logic.
      *
-     * @return array The processed row
+     * @return void The processed row
      */
     protected function process()
     {

@@ -105,7 +105,7 @@ class AdditionalAttributeObserver extends AbstractObserver implements ObserverFa
     /**
      * Process the observer's business logic.
      *
-     * @return array The processed row
+     * @return void The processed row
      */
     protected function process()
     {

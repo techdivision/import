@@ -111,7 +111,7 @@ class UrlKeyUtil implements UrlKeyUtilInterface
      * @param string $requestPath The request path to load the URL rewrite for
      * @param int    $storeId     The store ID to load the URL rewrite for
      *
-     * @return string|null The URL rewrite found for the given request path and store ID
+     * @return array|null The URL rewrite found for the given request path and store ID
      */
     protected function loadUrlRewriteByRequestPathAndStoreId(string $requestPath, int $storeId)
     {
