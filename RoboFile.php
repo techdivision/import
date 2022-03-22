@@ -123,7 +123,8 @@ class RoboFile extends \Robo\Tasks
     {
         // prepare the patterns for the files that has to be ignored
         $ignore = array(
-            $this->properties['vendor.dir'].'/techdivision/import/src/Plugins/MissingOptionValuesPlugin.php',
+            $this->properties['src.dir'].'/Plugins/MissingOptionValuesPlugin.php',
+            $this->properties['src.dir'].'/Loaders/CoreConfigDataLoader.php',
         );
         // run the copy past detector
         return $this->_exec(
