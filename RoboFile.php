@@ -121,13 +121,17 @@ class RoboFile extends \Robo\Tasks
      */
     public function runCpd()
     {
-
+        // prepare the patterns for the files that has to be ignored
+        $ignore = array(
+            $this->properties['vendor.dir'].'/techdivision/import/src/Plugins/MissingOptionValuesPlugin.php',
+        );
         // run the copy past detector
         return $this->_exec(
             sprintf(
-                '%s/bin/phpcpd --exclude MissingOptionValuesPlugin,CoreConfigDataLoader %s --log-pmd %s/reports/pmd-cpd.xml',
+                '%s/bin/phpcpd %s --exclude %s --log-pmd %s/reports/pmd-cpd.xml',
                 $this->properties['vendor.dir'],
                 $this->properties['src.dir'],
+                implode(' --exclude ', $ignore),
                 $this->properties['target.dir']
             )
         );
