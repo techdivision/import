@@ -272,7 +272,7 @@ abstract class AbstractObserver implements ObserverInterface
      *
      * @codeCoverageIgnore
      */
-    protected function skipRow()
+    public function skipRow()
     {
         $this->getSubject()->skipRow();
     }

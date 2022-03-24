@@ -98,8 +98,8 @@ class CoreConfigDataLoader implements LoaderInterface
         $uniqueIdentifier = $this->coreConfigDataUidGenerator->generate($coreConfigData);
 
         // iterate over the core config data and try to find the requested configuration value
-        if (isset($this->coreConfigData[$uniqueIdentifier])) {
-            return $this->coreConfigData[$uniqueIdentifier][MemberNames::VALUE];
+        if (isset($this->coreConfigData[$uniqueIdentifier]) && array_key_exists(MemberNames::VALUE, $this->coreConfigData[$uniqueIdentifier])) {
+            return $this->coreConfigData[$uniqueIdentifier][MemberNames::VALUE] ?? '';
         }
 
         // query whether or not we've to query for the configuration value on fallback level 'websites' also
@@ -120,8 +120,8 @@ class CoreConfigDataLoader implements LoaderInterface
                     $uniqueIdentifier = $this->coreConfigDataUidGenerator->generate($coreConfigData);
 
                     // query whether or not, the configuration value on 'websites' level
-                    if (isset($this->coreConfigData[$uniqueIdentifier][MemberNames::VALUE])) {
-                        return $this->coreConfigData[$uniqueIdentifier][MemberNames::VALUE];
+                    if (isset($this->coreConfigData[$uniqueIdentifier]) && array_key_exists(MemberNames::VALUE, $this->coreConfigData[$uniqueIdentifier])) {
+                        return $this->coreConfigData[$uniqueIdentifier][MemberNames::VALUE] ?? '';
                     }
                 }
             }
@@ -140,8 +140,8 @@ class CoreConfigDataLoader implements LoaderInterface
         $uniqueIdentifier = $this->coreConfigDataUidGenerator->generate($coreConfigData);
 
         // query whether or not, the configuration value on 'default' level
-        if (isset($this->coreConfigData[$uniqueIdentifier][MemberNames::VALUE])) {
-            return $this->coreConfigData[$uniqueIdentifier][MemberNames::VALUE];
+        if (isset($this->coreConfigData[$uniqueIdentifier]) && array_key_exists(MemberNames::VALUE, $this->coreConfigData[$uniqueIdentifier])) {
+            return $this->coreConfigData[$uniqueIdentifier][MemberNames::VALUE] ?? '';
         }
 
         // if not, return the passed default value
