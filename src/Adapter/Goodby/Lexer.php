@@ -111,9 +111,15 @@ class Lexer implements LexerInterface
 
         // process each line of the CSV file
         foreach ($csv as $lineNumber => $line) {
-            // remove windwos BOM if exists
-            if ($lineNumber == 0 && isset($line[0]) && substr($line[0], 0, 3) === $bom) {
-                $line[0] = substr($line[0], 3);
+            if ($lineNumber == 0 && isset($line[0])) {
+                // remove windwos BOM if exists
+                if (substr($line[0], 0, 3) === $bom) {
+                    $line[0] = substr($line[0], 3);
+                }
+                // Remove quotes in first row first cell
+                if (strpos($line[0],'"') !== false) {
+                    $line[0] = str_replace('"', '', $line[0]);
+                }
             }
             if ($ignoreHeader && $lineNumber == 0
                 || (count($line) === 1
