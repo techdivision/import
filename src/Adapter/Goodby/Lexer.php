@@ -117,7 +117,7 @@ class Lexer implements LexerInterface
                     $line[0] = substr($line[0], 3);
                 }
                 // Remove quotes in first row first cell
-                if (strpos($line[0],'"') !== false) {
+                if (strpos($line[0], '"') !== false) {
                     $line[0] = str_replace('"', '', $line[0]);
                 }
             }
