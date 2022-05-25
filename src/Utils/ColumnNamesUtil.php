@@ -56,6 +56,27 @@ class ColumnNamesUtil implements ColumnNamesUtiInterface
     }
 
     /**
+     * @param $blacklistingEntities
+     * @param $columnNames
+     * @param $tableName
+     * @return mixed
+     */
+    public function interpolateQuery($blacklistingEntities, $columnNames, $tableName) {
+
+        foreach ($blacklistingEntities  as $key => $entities) {
+            if ($key === $tableName)
+                foreach ($entities as $entity => $values){
+                    foreach ($values as $key => $columnName) {
+                        if ($entity === 'general' || $entity === 'insert') {
+                            $columnNames =  preg_replace('/,'. $columnName . '/', '', $columnNames);
+                        }
+                    }
+                }
+        }
+        return $columnNames;
+    }
+
+    /**
      * Returns a concatenated list with column names of the passed table.
      *
      * @param string $tableName The table name to return the list for
@@ -68,6 +89,29 @@ class ColumnNamesUtil implements ColumnNamesUtiInterface
     }
 
     /**
+     * @param $tableName
+     * @return void
+     */
+    public function getColumnFinaleNames($tableName)
+    {
+        $columnValues = [];
+        // load the blacklist values from the configuration
+        $blackListings = $this->tablePrefixUtil->getConfiguration()->getBlackListings();
+        foreach ($blackListings as $key => $entities) {
+            // query whether or not black list values for the entity type are available
+            if (isset($entities)) {
+                $blacklistingEntities = $entities;
+            }
+        }
+
+        if (isset($blacklistingEntities)) {
+            if (array_key_exists($tableName, $blacklistingEntities)) {
+                $columnValues = $this->interpolateQuery($blacklistingEntities, $this->getColumnNames($tableName), $tableName);
+            }
+        }
+        return $columnValues;
+    }
+    /**
      * Compiles the passed SQL statement.
      *
      * @param string $statement The SQL statement to compile
@@ -77,7 +121,7 @@ class ColumnNamesUtil implements ColumnNamesUtiInterface
     public function compile($statement)
     {
         return preg_replace_callback(sprintf('/\$\{%s:(.*)\}/U', ColumnNamesUtiInterface::TOKEN), function (array $matches) {
-            return $this->getColumnNames($matches[1]);
+            return $this->getColumnFinaleNames($matches[1]);
         }, $statement);
     }
 }

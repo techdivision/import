@@ -56,6 +56,34 @@ class ColumnPlaceholdersUtil implements ColumnPlaceholdersUtiInterface
     }
 
     /**
+     * @param $blackList
+     * @return array|mixed|string|string[]|null
+     */
+    public function interpolateQuery($blacklistingEntities, $columnNames, $tableName) {
+
+        foreach ($blacklistingEntities  as $key => $entities) {
+            if ($key === $tableName)
+            foreach ($entities as $entity => $values){
+                foreach ($values as $key => $columnName) {
+                    if ($entity === 'general' || $entity === 'insert') {
+                        $columnNames = $this->unsetColumnValues($columnNames, $columnName);
+                    }
+                }
+            }
+        }
+        return $columnNames;
+    }
+
+    public function unsetColumnValues($columnNames, $columnName) {
+        foreach ($columnNames as $key => $values) {
+            if ($columnNames[$key] === $columnName) {
+               unset($columnNames[$key]);
+            }
+        }
+        return $columnNames;
+    }
+
+    /**
      * Returns a concatenated list with column names of the passed table.
      *
      * @param string $tableName The table name to return the list for
@@ -68,6 +96,21 @@ class ColumnPlaceholdersUtil implements ColumnPlaceholdersUtiInterface
         // load the column names from the loader
         $columnNames = $this->columnNameLoader->load($this->tablePrefixUtil->getPrefixedTableName($tableName));
 
+        // load the blacklist values from the configuration
+        $blackListings =  $this->tablePrefixUtil->getConfiguration()->getBlackListings();
+        foreach ($blackListings as $key => $entities) {
+            // query whether or not black list values for the entity type are available
+            if (isset($entities)) {
+                $blacklistingEntities = $entities;
+            }
+        }
+
+        if (isset($blacklistingEntities)) {
+            if (array_key_exists($tableName, $blacklistingEntities)) {
+                $columnNames = $this->interpolateQuery($blacklistingEntities, $columnNames, $tableName);
+            }
+        }
+        
         // add the double colon (:) for the placeholder
         array_walk($columnNames, function (&$value) {
             $value = sprintf(':%s', $value);

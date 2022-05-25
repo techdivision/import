@@ -66,6 +66,14 @@ class TablePrefixUtil implements TablePrefixUtilInterface
     }
 
     /**
+     * @return ConfigurationInterface
+     */
+    public function getConfiguration(): ConfigurationInterface
+    {
+        return $this->configuration;
+    }
+    
+    /**
      * Compiles the passed SQL statement.
      *
      * @param string $statement The SQL statement to compile

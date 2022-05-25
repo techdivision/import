@@ -56,6 +56,41 @@ class ColumnValuesUtil implements ColumnValuesUtilInterface
     }
 
     /**
+     * @param $blacklistingEntities
+     * @param $columnNames
+     * @param $tableName
+     * @return mixed
+     */
+    public function interpolateQuery($blacklistingEntities, $columnNames, $tableName) {
+
+        foreach ($blacklistingEntities  as $key => $entities) {
+            if ($key === $tableName)
+                foreach ($entities as $entity => $values){
+                    foreach ($values as $key => $columnName) {
+                        if ($entity === 'general' || $entity === 'update') {
+                            $columnNames = $this->unsetColumnValues($columnNames, $columnName);
+                        }
+                    }
+                }
+        }
+        return $columnNames;
+    }
+
+    /**
+     * @param $columnNames
+     * @param $columnName
+     * @return mixed
+     */
+    public function unsetColumnValues($columnNames, $columnName) {
+        foreach ($columnNames as $key => $values) {
+            if ($columnNames[$key] === $columnName) {
+                unset($columnNames[$key]);
+            }
+        }
+        return $columnNames;
+    }
+
+    /**
      * Returns a concatenated list with key => value pairs of the passed table.
      *
      * @param string $tableName The table name to return the list for
@@ -71,6 +106,21 @@ class ColumnValuesUtil implements ColumnValuesUtilInterface
         // load the column names from the loader
         $columnNames = $this->columnNameLoader->load($this->tablePrefixUtil->getPrefixedTableName($tableName));
 
+        // load the blacklist values from the configuration
+        $blackListings =  $this->tablePrefixUtil->getConfiguration()->getBlackListings();
+        foreach ($blackListings as $key => $entities) {
+            // query whether or not black list values for the entity type are available
+            if (isset($entities)) {
+                $blacklistingEntities = $entities;
+            }
+        }
+
+        if (isset($blacklistingEntities)) {
+            if (array_key_exists($tableName, $blacklistingEntities)) {
+                $columnNames = $this->interpolateQuery($blacklistingEntities, $columnNames, $tableName);
+            }
+        }
+      
         // load and append the column key => value pairs to the array
         foreach ($columnNames as $columnName) {
             $columnValues[] = sprintf('%s=:%s', $columnName, $columnName);
