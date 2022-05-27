@@ -68,7 +68,7 @@ class ColumnNamesUtil implements ColumnNamesUtiInterface
                 foreach ($entities as $entity => $values){
                     foreach ($values as $key => $columnName) {
                         if ($entity === 'general' || $entity === 'insert') {
-                            $columnNames =  preg_replace('/,'. $columnName . '/', '', $columnNames);
+                            $columnNames =  str_replace(','. $columnName, '', $columnNames);
                         }
                     }
                 }
@@ -97,18 +97,13 @@ class ColumnNamesUtil implements ColumnNamesUtiInterface
         $columnValues = [];
         // load the blacklist values from the configuration
         $blackListings = $this->tablePrefixUtil->getConfiguration()->getBlackListings();
-        foreach ($blackListings as $key => $entities) {
-            // query whether or not black list values for the entity type are available
-            if (isset($entities)) {
-                $blacklistingEntities = $entities;
+        
+        if (is_array($blackListings[0]) && !empty($blackListings[0])) {
+            if (array_key_exists($tableName, $blackListings[0])) {
+                $columnValues = $this->interpolateQuery($blackListings[0], $this->getColumnNames($tableName), $tableName);
             }
         }
-
-        if (isset($blacklistingEntities)) {
-            if (array_key_exists($tableName, $blacklistingEntities)) {
-                $columnValues = $this->interpolateQuery($blacklistingEntities, $this->getColumnNames($tableName), $tableName);
-            }
-        }
+       
         return $columnValues;
     }
     /**
