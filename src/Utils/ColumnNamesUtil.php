@@ -56,23 +56,23 @@ class ColumnNamesUtil implements ColumnNamesUtiInterface
     }
 
     /**
-     * @param array $blacklistingEntities Blacklist configuration for the entity
-     * @param array $columnNames          Column Name
-     * @param string $tableName           Table Name
+     * @param array  $blacklistingEntities Blacklist configuration for the entity
+     * @param string $columnNames          Column Name
+     * @param string $tableName            Table Name
      * @return array
      */
     public function interpolateQuery($blacklistingEntities, $columnNames, $tableName)
     {
-
-        foreach ($blacklistingEntities  as $key => $entities) {
-            if ($key === $tableName)
-                foreach ($entities as $entity => $values){
+        foreach ($blacklistingEntities as $key => $entities) {
+            if ($key === $tableName) {
+                foreach ($entities as $entity => $values) {
                     foreach ($values as $key => $columnName) {
                         if (in_array($entity, ['general', 'insert'], true)) {
                             $columnNames =  str_replace(','. $columnName, '', $columnNames);
                         }
                     }
                 }
+            }
         }
         return $columnNames;
     }
@@ -90,23 +90,25 @@ class ColumnNamesUtil implements ColumnNamesUtiInterface
     }
 
     /**
-     * @param $tableName
-     * @return void
+     * @param string $tableName Table Name of entity
+     * @return string
      */
     public function getColumnFinaleNames($tableName)
     {
-        $columnValues = [];
         // load the blacklist values from the configuration
         $blackListings = $this->tablePrefixUtil->getConfiguration()->getBlackListings();
-        
+
+        $columnNames = $this->getColumnNames($tableName);
+
         if (is_array($blackListings[0]) && !empty($blackListings[0])) {
             if (array_key_exists($tableName, $blackListings[0])) {
-                $columnValues = $this->interpolateQuery($blackListings[0], $this->getColumnNames($tableName), $tableName);
+                $columnValues = $this->interpolateQuery($blackListings[0], $columnNames, $tableName);
             }
+        } else {
+            return $columnNames;
         }
-       
-        return $columnValues;
     }
+    
     /**
      * Compiles the passed SQL statement.
      *

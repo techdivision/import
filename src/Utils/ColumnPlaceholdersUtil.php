@@ -56,19 +56,20 @@ class ColumnPlaceholdersUtil implements ColumnPlaceholdersUtiInterface
     }
 
     /**
-     * @param array $blacklistingEntities Blacklist configuration for the entity
-     * @param array $columnNames          Column Name for value
-     * @param string $tableName           Table Name
+     * @param array  $blacklistingEntities Blacklist configuration for the entity
+     * @param array  $columnNames          Column Name for value
+     * @param string $tableName            Table Name
      * @return array
      */
     public function interpolateQuery($blacklistingEntities, $columnNames, $tableName)
     {
-        foreach ($blacklistingEntities  as $key => $entities) {
-            if ($key === $tableName)
-            foreach ($entities as $entity => $values){
-                foreach ($values as $key => $columnName) {
-                    if (in_array($entity, ['general', 'insert'], true)) {
-                        $columnNames = $this->unsetColumnValues($columnNames, $columnName);
+        foreach ($blacklistingEntities as $key => $entities) {
+            if ($key === $tableName) {
+                foreach ($entities as $entity => $values) {
+                    foreach ($values as $key => $columnName) {
+                        if (in_array($entity, ['general', 'insert'], true)) {
+                            $columnNames = $this->unsetColumnValues($columnNames, $columnName);
+                        }
                     }
                 }
             }
@@ -77,9 +78,9 @@ class ColumnPlaceholdersUtil implements ColumnPlaceholdersUtiInterface
     }
 
     /**
-     * @param $columnNames
-     * @param $columnName
-     * @return mixed
+     * @param array  $columnNames Column names as array
+     * @param string $columnName  Column name
+     * @return array
      */
     public function unsetColumnValues($columnNames, $columnName)
     {
