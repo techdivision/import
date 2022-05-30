@@ -56,18 +56,19 @@ class ColumnNamesUtil implements ColumnNamesUtiInterface
     }
 
     /**
-     * @param $blacklistingEntities
-     * @param $columnNames
-     * @param $tableName
-     * @return mixed
+     * @param array $blacklistingEntities Blacklist configuration for the entity
+     * @param array $columnNames          Column Name
+     * @param string $tableName           Table Name
+     * @return array
      */
-    public function interpolateQuery($blacklistingEntities, $columnNames, $tableName) {
+    public function interpolateQuery($blacklistingEntities, $columnNames, $tableName)
+    {
 
         foreach ($blacklistingEntities  as $key => $entities) {
             if ($key === $tableName)
                 foreach ($entities as $entity => $values){
                     foreach ($values as $key => $columnName) {
-                        if ($entity === 'general' || $entity === 'insert') {
+                        if (in_array($entity, ['general', 'insert'], true)) {
                             $columnNames =  str_replace(','. $columnName, '', $columnNames);
                         }
                     }

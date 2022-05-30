@@ -56,22 +56,36 @@ class ColumnPlaceholdersUtil implements ColumnPlaceholdersUtiInterface
     }
 
     /**
-     * @param $blackList
-     * @return array|mixed|string|string[]|null
+     * @param array $blacklistingEntities Blacklist configuration for the entity
+     * @param array $columnNames          Column Name for value
+     * @param string $tableName           Table Name
+     * @return array
      */
-    public function interpolateQuery($blacklistingEntities, $columnNames, $tableName) {
-
+    public function interpolateQuery($blacklistingEntities, $columnNames, $tableName)
+    {
         foreach ($blacklistingEntities  as $key => $entities) {
             if ($key === $tableName)
             foreach ($entities as $entity => $values){
                 foreach ($values as $key => $columnName) {
                     if (in_array($entity, ['general', 'insert'], true)) {
-                        $newColumnNames = array_filter($columnNames, function ($value) {
-                            return $value != $columnName;
-                        });
-                        $columnNames = $newColumnNames;
+                        $columnNames = $this->unsetColumnValues($columnNames, $columnName);
                     }
                 }
+            }
+        }
+        return $columnNames;
+    }
+
+    /**
+     * @param $columnNames
+     * @param $columnName
+     * @return mixed
+     */
+    public function unsetColumnValues($columnNames, $columnName)
+    {
+        foreach ($columnNames as $key => $values) {
+            if ($columnNames[$key] === $columnName) {
+                unset($columnNames[$key]);
             }
         }
         return $columnNames;
@@ -86,7 +100,6 @@ class ColumnPlaceholdersUtil implements ColumnPlaceholdersUtiInterface
      */
     public function getColumnPlaceholders($tableName)
     {
-
         // load the column names from the loader
         $columnNames = $this->columnNameLoader->load($this->tablePrefixUtil->getPrefixedTableName($tableName));
 

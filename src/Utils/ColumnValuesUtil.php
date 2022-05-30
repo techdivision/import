@@ -56,24 +56,37 @@ class ColumnValuesUtil implements ColumnValuesUtilInterface
     }
 
     /**
-     * @param $blacklistingEntities
-     * @param $columnNames
-     * @param $tableName
-     * @return mixed
+     * @param array $blacklistingEntities Blacklist configuration for the entity
+     * @param array $columnNames          Column Name for value
+     * @param string $tableName           Table Name
+     * @return array
      */
-    public function interpolateQuery($blacklistingEntities, $columnNames, $tableName) {
-
+    public function interpolateQuery($blacklistingEntities, $columnNames, $tableName)
+    {
         foreach ($blacklistingEntities  as $key => $entities) {
             if ($key === $tableName)
                 foreach ($entities as $entity => $values){
                     foreach ($values as $key => $columnName) {
                         if (in_array($entity, ['general', 'update'], true)) {
-                            $columnNames = array_filter($columnNames, function ($value) {
-                                return $value != $columnName;
-                            });
+                            $columnNames = $this->unsetColumnValues($columnNames, $columnName);
                         }
                     }
                 }
+        }
+        return $columnNames;
+    }
+
+    /**
+     * @param array  $columnNames Column names as array
+     * @param string $columnName  Column name
+     * @return array
+     */
+    public function unsetColumnValues($columnNames, $columnName)
+    {
+        foreach ($columnNames as $key => $values) {
+            if ($columnNames[$key] === $columnName) {
+                unset($columnNames[$key]);
+            }
         }
         return $columnNames;
     }
@@ -87,7 +100,6 @@ class ColumnValuesUtil implements ColumnValuesUtilInterface
      */
     public function getColumnValues($tableName)
     {
-
         // initialize the array for the column key => value pairs
         $columnValues = array();
 
