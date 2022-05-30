@@ -61,15 +61,13 @@ class ColumnPlaceholdersUtil implements ColumnPlaceholdersUtiInterface
      * @param string $tableName            Table Name
      * @return array
      */
-    public function interpolateQuery($blacklistingEntities, $columnNames, $tableName)
+    public function purgeColumnNames($blacklistingEntities, $columnNames, $tableName)
     {
-        foreach ($blacklistingEntities as $key => $entities) {
-            if ($key === $tableName) {
-                foreach ($entities as $entity => $values) {
-                    foreach ($values as $key => $columnName) {
-                        if (in_array($entity, ['general', 'insert'], true)) {
-                            $columnNames = $this->unsetColumnValues($columnNames, $columnName);
-                        }
+        if (isset($blacklistingEntities[$tableName])) {
+            foreach ($blacklistingEntities[$tableName] as $entity => $values) {
+                foreach ($values as $key => $columnName) {
+                    if (in_array($entity, ['general', 'insert'], true)) {
+                        $columnNames = $this->unsetColumnNames($columnNames, $columnName);
                     }
                 }
             }
@@ -82,7 +80,7 @@ class ColumnPlaceholdersUtil implements ColumnPlaceholdersUtiInterface
      * @param string $columnName  Column name
      * @return array
      */
-    public function unsetColumnValues($columnNames, $columnName)
+    public function unsetColumnNames($columnNames, $columnName)
     {
         foreach ($columnNames as $key => $values) {
             if ($columnNames[$key] === $columnName) {
@@ -109,7 +107,7 @@ class ColumnPlaceholdersUtil implements ColumnPlaceholdersUtiInterface
         
         if (is_array($blackListings[0]) && !empty($blackListings[0])) {
             if (array_key_exists($tableName, $blackListings[0])) {
-                $columnNames = $this->interpolateQuery($blackListings[0], $columnNames, $tableName);
+                $columnNames = $this->purgeColumnNames($blackListings[0], $columnNames, $tableName);
             }
         }
         

@@ -61,15 +61,13 @@ class ColumnValuesUtil implements ColumnValuesUtilInterface
      * @param string $tableName            Table Name
      * @return array
      */
-    public function interpolateQuery($blacklistingEntities, $columnNames, $tableName)
+    public function purgeColumnValues($blacklistingEntities, $columnNames, $tableName)
     {
-        foreach ($blacklistingEntities as $key => $entities) {
-            if ($key === $tableName) {
-                foreach ($entities as $entity => $values) {
-                    foreach ($values as $key => $columnName) {
-                        if (in_array($entity, ['general', 'update'], true)) {
-                            $columnNames = $this->unsetColumnValues($columnNames, $columnName);
-                        }
+        if (isset($blacklistingEntities[$tableName])) {
+            foreach ($blacklistingEntities[$tableName] as $entity => $values) {
+                foreach ($values as $key => $columnName) {
+                    if (in_array($entity, ['general', 'update'], true)) {
+                        $columnNames = $this->unsetColumnValues($columnNames, $columnName);
                     }
                 }
             }
@@ -112,7 +110,7 @@ class ColumnValuesUtil implements ColumnValuesUtilInterface
      
         if (is_array($blackListings[0]) && !empty($blackListings[0])) {
             if (array_key_exists($tableName, $blackListings[0])) {
-                $columnNames = $this->interpolateQuery($blackListings[0], $columnNames, $tableName);
+                $columnNames = $this->purgeColumnValues($blackListings[0], $columnNames, $tableName);
             }
         }
       

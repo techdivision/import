@@ -61,15 +61,13 @@ class ColumnNamesUtil implements ColumnNamesUtiInterface
      * @param string $tableName            Table Name
      * @return array
      */
-    public function interpolateQuery($blacklistingEntities, $columnNames, $tableName)
+    public function purgeColumnNames($blacklistingEntities, $columnNames, $tableName)
     {
-        foreach ($blacklistingEntities as $key => $entities) {
-            if ($key === $tableName) {
-                foreach ($entities as $entity => $values) {
-                    foreach ($values as $key => $columnName) {
-                        if (in_array($entity, ['general', 'insert'], true)) {
-                            $columnNames =  str_replace(','. $columnName, '', $columnNames);
-                        }
+        if (isset($blacklistingEntities[$tableName])) {
+            foreach ($blacklistingEntities[$tableName] as $entity => $values) {
+                foreach ($values as $key => $columnName) {
+                    if (in_array($entity, ['general', 'insert'], true)) {
+                        $columnNames =  str_replace(','. $columnName, '', $columnNames);
                     }
                 }
             }
@@ -102,7 +100,7 @@ class ColumnNamesUtil implements ColumnNamesUtiInterface
 
         if (is_array($blackListings[0]) && !empty($blackListings[0])) {
             if (array_key_exists($tableName, $blackListings[0])) {
-                $columnValues = $this->interpolateQuery($blackListings[0], $columnNames, $tableName);
+                return $this->purgeColumnNames($blackListings[0], $columnNames, $tableName);
             }
         } else {
             return $columnNames;
