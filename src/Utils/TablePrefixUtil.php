@@ -15,6 +15,7 @@
 namespace TechDivision\Import\Utils;
 
 use TechDivision\Import\Configuration\ConfigurationInterface;
+use TechDivision\Import\Services\RegistryProcessorInterface;
 
 /**
  * Utility class for table prefix handling.
@@ -36,15 +37,35 @@ class TablePrefixUtil implements TablePrefixUtilInterface
     protected $configuration;
 
     /**
+     * The import processor instance.
+     *
+     * @var \TechDivision\Import\Services\RegistryProcessorInterface
+     */
+    private $registryProcessor;
+
+    /**
      * Construct a new instance.
      *
      * @param \TechDivision\Import\Configuration\ConfigurationInterface $configuration The configuration instance
      */
-    public function __construct(ConfigurationInterface $configuration)
-    {
+    public function __construct(
+        ConfigurationInterface $configuration,
+        RegistryProcessorInterface $registryProcessor
+    ) {
         $this->configuration = $configuration;
+        $this->registryProcessor = $registryProcessor;
     }
-
+    
+    /**
+     * Return's the registry processor instance.
+     *
+     * @return \TechDivision\Import\Services\RegistryProcessorInterface The registry processor instance
+     */
+    public function getRegistryProcessor() : RegistryProcessorInterface
+    {
+        return $this->registryProcessor;
+    }
+    
     /**
      * Returns the prefixed table name.
      *

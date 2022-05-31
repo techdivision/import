@@ -118,7 +118,9 @@ class ColumnValuesUtil implements ColumnValuesUtilInterface
         foreach ($columnNames as $columnName) {
             $columnValues[] = sprintf('%s=:%s', $columnName, $columnName);
         }
-
+        
+        $this->tablePrefixUtil->getRegistryProcessor()->mergeAttributesRecursive('cloumnValues', $columnValues);
+        
         // implode and return the column values
         return implode(',', $columnValues);
     }
