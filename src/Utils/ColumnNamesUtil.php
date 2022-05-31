@@ -102,9 +102,8 @@ class ColumnNamesUtil implements ColumnNamesUtiInterface
             if (array_key_exists($tableName, $blackListings[0])) {
                 return $this->purgeColumnNames($blackListings[0], $columnNames, $tableName);
             }
-        } else {
-            return $columnNames;
-        }
+        } 
+        return $columnNames;
     }
     
     /**
