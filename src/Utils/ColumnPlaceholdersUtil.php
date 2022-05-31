@@ -115,7 +115,8 @@ class ColumnPlaceholdersUtil implements ColumnPlaceholdersUtiInterface
         array_walk($columnNames, function (&$value) {
             $value = sprintf(':%s', $value);
         });
-        
+
+        // append the columnName For Placeholder in the registry
         $this->tablePrefixUtil->getRegistryProcessor()->mergeAttributesRecursive('columnNameForPlaceholder', $columnNames);
         // implode and return the column names
         return implode(',', $columnNames);
