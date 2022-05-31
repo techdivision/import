@@ -46,7 +46,8 @@ class TablePrefixUtil implements TablePrefixUtilInterface
     /**
      * Construct a new instance.
      *
-     * @param \TechDivision\Import\Configuration\ConfigurationInterface $configuration The configuration instance
+     * @param \TechDivision\Import\Configuration\ConfigurationInterface $configuration     The configuration instance
+     * @param \TechDivision\Import\Services\RegistryProcessorInterface  $registryProcessor The registry Processor instance
      */
     public function __construct(
         ConfigurationInterface $configuration,
