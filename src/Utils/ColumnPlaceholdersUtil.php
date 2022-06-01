@@ -56,38 +56,29 @@ class ColumnPlaceholdersUtil implements ColumnPlaceholdersUtiInterface
     }
 
     /**
-     * @param array  $blacklistingEntities Blacklist configuration for the entity
-     * @param array  $columnNames          Column Name for value
-     * @param string $tableName            Table Name
+     * @param array $blackListingEntity Blacklist configuration for the entity
+     * @param array $columnNames        Column names from database
      * @return array
      */
-    public function purgeColumnNames($blacklistingEntities, $columnNames, $tableName)
+    public function purgeColumnNames($blackListingEntity, $columnNames)
     {
-        if (isset($blacklistingEntities[$tableName])) {
-            foreach ($blacklistingEntities[$tableName] as $entity => $values) {
-                foreach ($values as $key => $columnName) {
-                    if (in_array($entity, ['general', 'insert'], true)) {
-                        $columnNames = $this->unsetColumnNames($columnNames, $columnName);
-                    }
+        if (!isset($blackListingEntity['insert']) && !isset($blackListingEntity['general'])) {
+            return $columnNames;
+        }
+
+        return array_filter($columnNames, static function ($columnName) use ($blackListingEntity) {
+            $isblacklisted = false;
+            foreach ($blackListingEntity as $entity => $blackListedColumnNames) {
+                if ($entity === 'update') {
+                    continue;
+                }
+                if (in_array($columnName, $blackListedColumnNames)) {
+                    $isblacklisted = true;
+                    break;
                 }
             }
-        }
-        return $columnNames;
-    }
-
-    /**
-     * @param array  $columnNames Column names as array
-     * @param string $columnName  Column name
-     * @return array
-     */
-    public function unsetColumnNames($columnNames, $columnName)
-    {
-        foreach ($columnNames as $key => $values) {
-            if ($columnNames[$key] === $columnName) {
-                unset($columnNames[$key]);
-            }
-        }
-        return $columnNames;
+            return !$isblacklisted;
+        });
     }
 
     /**
@@ -103,12 +94,11 @@ class ColumnPlaceholdersUtil implements ColumnPlaceholdersUtiInterface
         $columnNames = $this->columnNameLoader->load($this->tablePrefixUtil->getPrefixedTableName($tableName));
 
         // load the blacklist values from the configuration
-        $blackListings =  $this->tablePrefixUtil->getConfiguration()->getBlackListings();
-        
-        if (is_array($blackListings[0]) && !empty($blackListings[0])) {
-            if (array_key_exists($tableName, $blackListings[0])) {
-                $columnNames = $this->purgeColumnNames($blackListings[0], $columnNames, $tableName);
-            }
+        $blackListings = $this->tablePrefixUtil->getConfiguration()->getBlackListings();
+
+        // Clean Column Name basic on Blacklisting
+        if (isset($blackListings[$tableName])) {
+            $columnNames = $this->purgeColumnNames($blackListings[$tableName], $columnNames);
         }
         
         // add the double colon (:) for the placeholder
@@ -116,8 +106,6 @@ class ColumnPlaceholdersUtil implements ColumnPlaceholdersUtiInterface
             $value = sprintf(':%s', $value);
         });
 
-        // append the columnName For Placeholder in the registry
-        $this->tablePrefixUtil->getRegistryProcessor()->mergeAttributesRecursive('columnNameForPlaceholder', $columnNames);
         // implode and return the column names
         return implode(',', $columnNames);
     }

@@ -56,40 +56,31 @@ class ColumnValuesUtil implements ColumnValuesUtilInterface
     }
 
     /**
-     * @param array  $blacklistingEntities Blacklist configuration for the entity
-     * @param array  $columnNames          Column Name for value
-     * @param string $tableName            Table Name
+     * @param array $blackListingEntity Blacklist configuration for the entity
+     * @param array $columnNames        Column Name for value
      * @return array
      */
-    public function purgeColumnValues($blacklistingEntities, $columnNames, $tableName)
+    public function purgeColumnValues($blackListingEntity, $columnNames)
     {
-        if (isset($blacklistingEntities[$tableName])) {
-            foreach ($blacklistingEntities[$tableName] as $entity => $values) {
-                foreach ($values as $key => $columnName) {
-                    if (in_array($entity, ['general', 'update'], true)) {
-                        $columnNames = $this->unsetColumnValues($columnNames, $columnName);
-                    }
+        if (!isset($blackListingEntity['update']) && !isset($blackListingEntity['general'])) {
+            return $columnNames;
+        }
+        
+        return array_filter($columnNames, static function ($columnName) use ($blackListingEntity) {
+            $isblacklisted = false;
+            foreach ($blackListingEntity as $entity => $blackListedColumnNames) {
+                if ($entity === 'insert') {
+                    continue;
+                }
+                if (in_array($columnName, $blackListedColumnNames)) {
+                    $isblacklisted = true;
+                    break;
                 }
             }
-        }
-        return $columnNames;
+            return !$isblacklisted;
+        });
     }
-
-    /**
-     * @param array  $columnNames Column names as array
-     * @param string $columnName  Column name
-     * @return array
-     */
-    public function unsetColumnValues($columnNames, $columnName)
-    {
-        foreach ($columnNames as $key => $values) {
-            if ($columnNames[$key] === $columnName) {
-                unset($columnNames[$key]);
-            }
-        }
-        return $columnNames;
-    }
-
+    
     /**
      * Returns a concatenated list with key => value pairs of the passed table.
      *
@@ -107,20 +98,17 @@ class ColumnValuesUtil implements ColumnValuesUtilInterface
 
         // load the blacklist values from the configuration
         $blackListings =  $this->tablePrefixUtil->getConfiguration()->getBlackListings();
-     
-        if (is_array($blackListings[0]) && !empty($blackListings[0])) {
-            if (array_key_exists($tableName, $blackListings[0])) {
-                $columnNames = $this->purgeColumnValues($blackListings[0], $columnNames, $tableName);
-            }
+
+        // Clean Column Name basic on Blacklisting
+        if (isset($blackListings[$tableName])) {
+            $columnNames = $this->purgeColumnValues($blackListings[$tableName], $columnNames);
         }
-      
+
         // load and append the column key => value pairs to the array
         foreach ($columnNames as $columnName) {
             $columnValues[] = sprintf('%s=:%s', $columnName, $columnName);
         }
-        // append the cloumnValues in the registry
-        $this->tablePrefixUtil->getRegistryProcessor()->mergeAttributesRecursive('cloumnValues', $columnValues);
-        
+
         // implode and return the column values
         return implode(',', $columnValues);
     }
