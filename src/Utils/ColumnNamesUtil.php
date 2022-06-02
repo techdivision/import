@@ -56,6 +56,32 @@ class ColumnNamesUtil implements ColumnNamesUtiInterface
     }
 
     /**
+     * @param array $blackListingEntity Blacklist configuration for the entity
+     * @param array $columnNames        Column name from database
+     * @return array
+     */
+    public function purgeColumnNames($blackListingEntity, $columnNames)
+    {
+        if (!isset($blackListingEntity['insert']) && !isset($blackListingEntity['general'])) {
+            return $columnNames;
+        }
+
+        return array_filter($columnNames, static function ($columnName) use ($blackListingEntity) {
+            $isblacklisted = false;
+            foreach ($blackListingEntity as $entity => $blackListedColumnNames) {
+                if ($entity === 'update') {
+                    continue;
+                }
+                if (in_array($columnName, $blackListedColumnNames)) {
+                    $isblacklisted = true;
+                    break;
+                }
+            }
+            return !$isblacklisted;
+        });
+    }
+
+    /**
      * Returns a concatenated list with column names of the passed table.
      *
      * @param string $tableName The table name to return the list for
@@ -68,6 +94,34 @@ class ColumnNamesUtil implements ColumnNamesUtiInterface
     }
 
     /**
+     * @param string $tableName Table Name of entity
+     * @return string
+     */
+    public function getColumnFinaleNames($tableName)
+    {
+        $columnNames = $this->columnNameLoader->load($this->tablePrefixUtil->getPrefixedTableName($tableName));
+
+        // append the columnName For Placeholder in the registry
+        $this->tablePrefixUtil->getRegistryProcessor()->mergeAttributesRecursive(
+            'columnNames',
+            array($tableName => $columnNames)
+        );
+
+        // load the blacklist values from the configuration
+        $blackListings = $this->tablePrefixUtil->getConfiguration()->getBlackListings();
+
+        if (!isset($blackListings[$tableName])) {
+            return implode(',', $columnNames);
+        }
+        
+        // Clean Column Name basic on Blacklisting
+        return implode(
+            ',',
+            $this->purgeColumnNames($blackListings[$tableName], $columnNames)
+        );
+    }
+    
+    /**
      * Compiles the passed SQL statement.
      *
      * @param string $statement The SQL statement to compile
@@ -77,7 +131,7 @@ class ColumnNamesUtil implements ColumnNamesUtiInterface
     public function compile($statement)
     {
         return preg_replace_callback(sprintf('/\$\{%s:(.*)\}/U', ColumnNamesUtiInterface::TOKEN), function (array $matches) {
-            return $this->getColumnNames($matches[1]);
+            return $this->getColumnFinaleNames($matches[1]);
         }, $statement);
     }
 }

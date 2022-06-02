@@ -56,6 +56,32 @@ class ColumnPlaceholdersUtil implements ColumnPlaceholdersUtiInterface
     }
 
     /**
+     * @param array $blackListingEntity Blacklist configuration for the entity
+     * @param array $columnNames        Column names from database
+     * @return array
+     */
+    public function purgeColumnNames($blackListingEntity, $columnNames)
+    {
+        if (!isset($blackListingEntity['insert']) && !isset($blackListingEntity['general'])) {
+            return $columnNames;
+        }
+
+        return array_filter($columnNames, static function ($columnName) use ($blackListingEntity) {
+            $isblacklisted = false;
+            foreach ($blackListingEntity as $entity => $blackListedColumnNames) {
+                if ($entity === 'update') {
+                    continue;
+                }
+                if (in_array($columnName, $blackListedColumnNames)) {
+                    $isblacklisted = true;
+                    break;
+                }
+            }
+            return !$isblacklisted;
+        });
+    }
+
+    /**
      * Returns a concatenated list with column names of the passed table.
      *
      * @param string $tableName The table name to return the list for
@@ -64,10 +90,17 @@ class ColumnPlaceholdersUtil implements ColumnPlaceholdersUtiInterface
      */
     public function getColumnPlaceholders($tableName)
     {
-
         // load the column names from the loader
         $columnNames = $this->columnNameLoader->load($this->tablePrefixUtil->getPrefixedTableName($tableName));
 
+        // load the blacklist values from the configuration
+        $blackListings = $this->tablePrefixUtil->getConfiguration()->getBlackListings();
+
+        // Clean Column Name basic on Blacklisting
+        if (isset($blackListings[$tableName])) {
+            $columnNames = $this->purgeColumnNames($blackListings[$tableName], $columnNames);
+        }
+        
         // add the double colon (:) for the placeholder
         array_walk($columnNames, function (&$value) {
             $value = sprintf(':%s', $value);

@@ -56,6 +56,32 @@ class ColumnValuesUtil implements ColumnValuesUtilInterface
     }
 
     /**
+     * @param array $blackListingEntity Blacklist configuration for the entity
+     * @param array $columnNames        Column Name for value
+     * @return array
+     */
+    public function purgeColumnValues($blackListingEntity, $columnNames)
+    {
+        if (!isset($blackListingEntity['update']) && !isset($blackListingEntity['general'])) {
+            return $columnNames;
+        }
+        
+        return array_filter($columnNames, static function ($columnName) use ($blackListingEntity) {
+            $isblacklisted = false;
+            foreach ($blackListingEntity as $entity => $blackListedColumnNames) {
+                if ($entity === 'insert') {
+                    continue;
+                }
+                if (in_array($columnName, $blackListedColumnNames)) {
+                    $isblacklisted = true;
+                    break;
+                }
+            }
+            return !$isblacklisted;
+        });
+    }
+    
+    /**
      * Returns a concatenated list with key => value pairs of the passed table.
      *
      * @param string $tableName The table name to return the list for
@@ -64,12 +90,19 @@ class ColumnValuesUtil implements ColumnValuesUtilInterface
      */
     public function getColumnValues($tableName)
     {
-
         // initialize the array for the column key => value pairs
         $columnValues = array();
 
         // load the column names from the loader
         $columnNames = $this->columnNameLoader->load($this->tablePrefixUtil->getPrefixedTableName($tableName));
+
+        // load the blacklist values from the configuration
+        $blackListings =  $this->tablePrefixUtil->getConfiguration()->getBlackListings();
+
+        // Clean Column Name basic on Blacklisting
+        if (isset($blackListings[$tableName])) {
+            $columnNames = $this->purgeColumnValues($blackListings[$tableName], $columnNames);
+        }
 
         // load and append the column key => value pairs to the array
         foreach ($columnNames as $columnName) {

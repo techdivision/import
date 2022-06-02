@@ -73,6 +73,7 @@
         </service>
         <service id="import.util.table.prefix" class="TechDivision\Import\Utils\TablePrefixUtil">
             <argument type="service" id="configuration"/>
+            <argument type="service" id="import.processor.registry"/>
         </service>
         <service id="import.util.sql.compilers" class="\ArrayObject">
             <call method="append">
