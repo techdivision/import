@@ -163,9 +163,9 @@ trait FilesystemTrait
      *
      * @return boolean TRUE on success, else FALSE
      */
-    public function copy($oldname, $newname)
+    public function copy($src, $dest)
     {
-        return $this->getFilesystemAdapter()->copy($oldname, $newname);
+        return $this->getFilesystemAdapter()->copy($src, $dest);
     }
 
     /**
