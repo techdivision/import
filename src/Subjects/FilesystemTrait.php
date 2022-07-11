@@ -156,6 +156,19 @@ trait FilesystemTrait
     }
 
     /**
+     * Copy's a file from source to destination.
+     *
+     * @param string $src  The source file
+     * @param string $dest The destination file
+     *
+     * @return boolean TRUE on success, else FALSE
+     */
+    public function copy($oldname, $newname)
+    {
+        return $this->getFilesystemAdapter()->copy($oldname, $newname);
+    }
+
+    /**
      * Writes the passed data to file with the passed name.
      *
      * @param string $filename The name of the file to write the data to

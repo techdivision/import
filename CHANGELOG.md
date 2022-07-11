@@ -1,3 +1,13 @@
+# Version 17.1.1
+
+## Bugfixes
+
+* Missing "copy" function in FilesystemTrait
+
+## Features
+
+* none
+
 # Version 17.1.0
 
 ## Bugfixes
