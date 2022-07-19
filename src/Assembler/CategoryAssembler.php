@@ -141,6 +141,11 @@ class CategoryAssembler implements CategoryAssemblerInterface
             // expload the entity IDs from the category path
             $entityIds = $this->serializer->explode($category[MemberNames::PATH]);
 
+            // continue if nothing to explode
+            if ($entityIds === null) {
+                continue;
+            }
+
             // cut-off the root category
             array_shift($entityIds);
 

@@ -1,3 +1,13 @@
+# Version 17.1.2
+
+## Bugfixes
+
+* Fix PHP8.1 crash on null parameter instead array
+
+## Features
+
+* none
+
 # Version 17.1.1
 
 ## Bugfixes
