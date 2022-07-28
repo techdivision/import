@@ -131,6 +131,11 @@
             <argument type="service" id="cache.static"/>
         </service>
 
+        <service id="import.repository.finder.factory.api.core_config_data" class="TechDivision\Import\Dbal\Collection\Repositories\Finders\CoreConfigDataFinderFactory">
+            <argument type="service" id="configuration"/>
+            <argument type="service" id="loggers"/>
+        </service>
+
         <!--
          | The DI state detector configuration
          |-->
@@ -424,6 +429,7 @@
             <argument type="service" id="import.generator.core.config.data.uid"/>
             <argument type="service" id="connection"/>
             <argument type="service" id="import.repository.sql.statement"/>
+            <argument type="service" id="import.repository.finder.factory.configurable"/>
         </service>
         <service id="import.repository.image.type" class="TechDivision\Import\Repositories\ImageTypeRepository">
             <argument type="service" id="connection"/>

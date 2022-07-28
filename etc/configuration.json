@@ -17,5 +17,8 @@
     "general": [],
     "ce": [],
     "ee": []
+  },
+  "api": {
+    "magento-domain": ""
   }
 }
