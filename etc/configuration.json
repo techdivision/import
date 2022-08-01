@@ -20,5 +20,6 @@
   },
   "api": {
     "magento-domain": ""
-  }
+  },
+  "config-output": false
 }

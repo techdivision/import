@@ -244,6 +244,13 @@ interface InputOptionKeysInterface extends \ArrayAccess
     const LOG_FILE = 'log-file';
 
     /**
+     * The input option key for the strict mode.
+     *
+     * @var string
+     */
+    const CONFIG_OUTPUT = 'config-output';
+
+    /**
      * Query whether or not the passed input option is valid.
      *
      * @param string $inputOption The input option to query for

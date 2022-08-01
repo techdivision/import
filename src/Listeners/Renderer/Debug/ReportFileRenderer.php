@@ -64,6 +64,8 @@ class ReportFileRenderer extends AbstractDebugRenderer
         $lines[] = implode(', ', get_loaded_extensions());
         $lines[] = '------------------- Executed Operations ----------------------';
         $lines[] = implode(' > ', $this->getConfiguration()->getOperationNames());
+        $lines[] = '------------------- Configuration Files ----------------------';
+        $lines[] = implode(PHP_EOL, $this->getConfiguration()->getConfigurationFiles());
 
         // finally write the debug report to a file in the source directory
         $this->write(implode(PHP_EOL, $lines), sprintf('%s/debug-report.txt', $sourceDir));
