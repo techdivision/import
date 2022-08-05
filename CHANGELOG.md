@@ -1,3 +1,14 @@
+# Version 17.2.0
+
+## Bugfixes
+
+* none
+
+## Features
+
+* Add #PAC-353 new feature to get magento configuration from api in Pacemaker Enterprise
+* Add #PAC-215 option `config-output` as default false to report all configuration json files in logs
+  * The command: `bin/import-simple import:debug --config-output=true`
 # Version 17.1.2
 
 ## Bugfixes
