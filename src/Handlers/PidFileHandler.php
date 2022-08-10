@@ -210,7 +210,7 @@ class PidFileHandler implements PidFileHandlerInterface
         } catch (FileNotFoundException $fnfe) {
             $this->getSystemLogger()->notice(sprintf('PID file %s doesn\'t exist', $this->getPidFilename()));
         } catch (LineNotFoundException $lnfe) {
-            $this->getSystemLogger()->notice(sprintf('PID %s is can not be found in PID file %s', $this->pid, $this->getPidFilename()));
+            $this->getSystemLogger()->notice(sprintf('PID %s can not be found in PID file %s', $this->pid, $this->getPidFilename()));
         } catch (\Exception $e) {
             throw new \Exception(sprintf('Can\'t remove PID %s from PID file %s', $this->pid, $this->getPidFilename()), null, $e);
         }
