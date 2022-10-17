@@ -124,7 +124,7 @@ trait CleanUpEmptyColumnsTrait
         foreach ($clearRow as $key => $value) {
             // query whether or not to cleanup complete attribute
             if ($value === $emptyValueDefinition) {
-                $this->cleanUpEmptyColumnKeys[$headers[$key]] = $key;
+                $this->cleanUpEmptyColumnKeys[isset($headers[$key]) ? $headers[$key] : $key] = $key;
                 $clearRow[$key] = '';
             }
             // query whether or not the value is empty AND the column has NOT to be cleaned-up

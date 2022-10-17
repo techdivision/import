@@ -1,3 +1,13 @@
+# Version 17.2.2
+
+## Bugfixes
+
+* Fix cleanup empty column for generic data rows
+
+## Features
+
+* none
+
 # Version 17.2.1
 
 ## Bugfixes
