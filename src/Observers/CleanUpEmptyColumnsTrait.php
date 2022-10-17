@@ -71,7 +71,14 @@ trait CleanUpEmptyColumnsTrait
      *
      * @return array The cleared row
      */
-    protected function clearRow()
+
+    /**
+     * Remove all the empty values from the row and return the cleared row.
+     * @param array $clearRow         The row to clean up
+     * @param bool  $unsetEmptyValues If true, empty values will be unset from the row $clearRow
+     * @return array
+     */
+    protected function clearRowData(array $clearRow, $unsetEmptyValues = true)
     {
 
         // query whether or not the column keys has been initialized
@@ -94,7 +101,6 @@ trait CleanUpEmptyColumnsTrait
             }
         }
 
-
         // initialize the array with the default column values
         $this->defaultColumnValues = array();
 
@@ -113,24 +119,36 @@ trait CleanUpEmptyColumnsTrait
 
         $emptyValueDefinition = $this->getEmptyAttributeValueConstant();
         // load the header keys
-        $headers = in_array($emptyValueDefinition, $this->row, true) ? array_flip($this->getHeaders()) : [];
+        $headers = in_array($emptyValueDefinition, $clearRow, true) ? array_flip($this->getHeaders()) : [];
         // remove all the empty values from the row, expected the columns has to be cleaned-up
-        foreach ($this->row as $key => $value) {
+        foreach ($clearRow as $key => $value) {
             // query whether or not to cleanup complete attribute
             if ($value === $emptyValueDefinition) {
                 $this->cleanUpEmptyColumnKeys[$headers[$key]] = $key;
-                $this->row[$key] = '';
+                $clearRow[$key] = '';
             }
             // query whether or not the value is empty AND the column has NOT to be cleaned-up
-            if (($value === null || $value === '') &&
-                in_array($key, $this->cleanUpEmptyColumnKeys) === false &&
-                in_array($key, $this->defaultColumnValues) === false
+            if (($value === null || $value === '')
+                && in_array($key, $this->cleanUpEmptyColumnKeys) === false
+                && in_array($key, $this->defaultColumnValues) === false
             ) {
-                unset($this->row[$key]);
+                if ($unsetEmptyValues) {
+                    unset($clearRow[$key]);
+                }
             }
         }
 
         // finally return the clean row
-        return $this->row;
+        return $clearRow;
+    }
+
+    /**
+     * Return's the subject instance.
+     *
+     * @return array The cleared row
+     */
+    protected function clearRow()
+    {
+        return $this->clearRowData($this->row, true);
     }
 }

@@ -145,7 +145,8 @@ abstract class AbstractObserver implements ObserverInterface
      */
     protected function mergeEntity(array $entity, array $attr, $changeSetName = null)
     {
-        return array_merge($entity, $attr, array(EntityStatus::MEMBER_NAME => $this->detectState($entity, $attr, $changeSetName)));
+        $merged = array_merge($entity, $attr);
+        return array_merge($merged, array(EntityStatus::MEMBER_NAME => $this->detectState($entity, $merged, $changeSetName)));
     }
 
     /**

@@ -1,3 +1,13 @@
+# Version 17.2.1
+
+## Bugfixes
+
+* Extend mergeEntity for better state dedection
+
+## Features
+
+* Extend the clearRow function for generic row arrays
+
 # Version 17.2.0
 
 ## Bugfixes
