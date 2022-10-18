@@ -1,3 +1,13 @@
+# Version 17.2.3
+
+## Bugfixes
+
+* Fix #PAC-684: set \Exception() parameter Compatible with php8.1
+
+## Features
+
+* none
+
 # Version 17.2.2
 
 ## Bugfixes

@@ -252,7 +252,7 @@ class OkFileHandler implements OkFileHandlerInterface
                     $filename,
                     $okFilename
                 ),
-                null,
+                0,
                 $lne
             );
         }
