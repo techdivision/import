@@ -21,5 +21,8 @@
   "api": {
     "magento-domain": ""
   },
-  "config-output": false
+  "config-output": false,
+  "delimiter": ",",
+  "enclosure": "\"",
+  "escape": "\u0000"
 }

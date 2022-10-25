@@ -17,6 +17,7 @@ namespace TechDivision\Import\Adapter;
 use TechDivision\Import\Utils\DependencyInjectionKeys;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use TechDivision\Import\Configuration\ImportAdapterAwareConfigurationInterface;
+use TechDivision\Import\Configuration\Subject\ImportAdapterConfigurationInterface;
 
 /**
  * Factory for all CSV import adapter implementations.
@@ -59,7 +60,10 @@ class CsvImportAdapterFactory implements ImportAdapterFactoryInterface
 
         // load the import adapter configuration
         $importAdapterConfiguration = $configuration->getImportAdapter();
-
+        
+        // Initialize adapter configuration with default values
+        $this->initializeAdapterConfigurationWithDefaultValues($importAdapterConfiguration, $configuration);
+        
         // load the serializer factory instance
         $serializerFactory = $this->container->get($importAdapterConfiguration->getSerializer()->getId());
 
@@ -69,5 +73,41 @@ class CsvImportAdapterFactory implements ImportAdapterFactoryInterface
 
         // return the initialized import adapter instance
         return $importAdapter;
+    }
+    
+
+    /**
+     * @param ImportAdapterConfigurationInterface      $importAdapterConfiguration Import Adapter Configuration
+     * @param ImportAdapterAwareConfigurationInterface $configuration              The subject configuration
+     * @return void
+     */
+    protected function initializeAdapterConfigurationWithDefaultValues(
+        ImportAdapterConfigurationInterface $importAdapterConfiguration,
+        ImportAdapterAwareConfigurationInterface $configuration
+    ) {
+        // query whether or not a delimiter character has been configured
+        if ($importAdapterConfiguration->getDelimiter() === null) {
+            $importAdapterConfiguration->setDelimiter($configuration->getConfiguration()->getDelimiter());
+        }
+
+        // query whether or not a custom escape character has been configured
+        if ($importAdapterConfiguration->getEscape() === null) {
+            $importAdapterConfiguration->setEscape($configuration->getConfiguration()->getEscape());
+        }
+
+        // query whether or not a custom enclosure character has been configured
+        if ($importAdapterConfiguration->getEnclosure() === null) {
+            $importAdapterConfiguration->setEnclosure($configuration->getConfiguration()->getEnclosure());
+        }
+
+        // query whether or not a custom source charset has been configured
+        if ($importAdapterConfiguration->getFromCharset() === null) {
+            $importAdapterConfiguration->setFromCharset($configuration->getConfiguration()->getFromCharset());
+        }
+
+        // query whether or not a custom target charset has been configured
+        if ($importAdapterConfiguration->getToCharset() === null) {
+            $importAdapterConfiguration->setToCharset($configuration->getConfiguration()->getToCharset());
+        }
     }
 }

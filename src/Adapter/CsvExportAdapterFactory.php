@@ -17,6 +17,7 @@ namespace TechDivision\Import\Adapter;
 use TechDivision\Import\Utils\DependencyInjectionKeys;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use TechDivision\Import\Configuration\ExportAdapterAwareConfigurationInterface;
+use TechDivision\Import\Configuration\Subject\ExportAdapterConfigurationInterface;
 
 /**
  * Factory for all CSV export adapter implementations.
@@ -60,6 +61,9 @@ class CsvExportAdapterFactory implements ExportAdapterFactoryInterface
         // load the export adapter configuration
         $exportAdapterConfiguration = $configuration->getExportAdapter();
 
+        // Initialize adapter configuration with default values
+        $this->initializeAdapterConfigurationWithDefaultValues($exportAdapterConfiguration, $configuration);
+
         // load the serializer factory instance
         $serializerFactory = $this->container->get($exportAdapterConfiguration->getSerializer()->getId());
 
@@ -69,5 +73,31 @@ class CsvExportAdapterFactory implements ExportAdapterFactoryInterface
 
         // return the initialized export adapter instance
         return $exportAdapter;
+    }
+
+
+    /**
+     * @param ExportAdapterConfigurationInterface      $exportAdapterConfiguration Export Adapter Configuration
+     * @param ImportAdapterAwareConfigurationInterface $configuration              The subject configuration
+     * @return void
+     */
+    protected function initializeAdapterConfigurationWithDefaultValues(
+        ExportAdapterConfigurationInterface $exportAdapterConfiguration,
+        ExportAdapterAwareConfigurationInterface $configuration
+    ) {
+        // query whether or not a delimiter character has been configured
+        if ($exportAdapterConfiguration->getDelimiter() === null) {
+            $exportAdapterConfiguration->setDelimiter($configuration->getConfiguration()->getDelimiter());
+        }
+
+        // query whether or not a custom escape character has been configured
+        if ($exportAdapterConfiguration->getEscape() === null) {
+            $exportAdapterConfiguration->setEscape($configuration->getConfiguration()->getEscape());
+        }
+
+        // query whether or not a custom enclosure character has been configured
+        if ($exportAdapterConfiguration->getEnclosure() === null) {
+            $exportAdapterConfiguration->setEnclosure($configuration->getConfiguration()->getEnclosure());
+        }
     }
 }

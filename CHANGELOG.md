@@ -1,3 +1,20 @@
+# Version 17.3.0
+
+## Bugfixes
+
+* Define default configuration for CSV reader with Unicode `null` value for `escaper` to avoid crash on json_encoded data in CSV Columns
+
+## Features
+
+* Configurable default parameters "delimiter", "enclosure" and "escape" for the CSV reader
+  * define in configuration.json
+```
+  "delimiter": ",",
+  "enclosure": "\"",
+  "escape": "\u0000"
+```
+  * 'escape' is set to `null` by default to be backwward compatible with PHP 7.3
+
 # Version 17.2.3
 
 ## Bugfixes

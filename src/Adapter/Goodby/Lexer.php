@@ -85,9 +85,10 @@ class Lexer implements LexerInterface
         $delimiter      = $this->config->getDelimiter();
         $enclosure      = $this->config->getEnclosure();
         $escape         = $this->config->getEscape();
+        $escape         = empty($escape) ? "\0" : $escape;
         $fromCharset    = $this->config->getFromCharset();
         $toCharset      = $this->config->getToCharset();
-        $flags          = $this->config->getFlags();
+        $flags           = $this->config->getFlags();
         $ignoreHeader   = $this->config->getIgnoreHeaderLine();
 
         // query whether or not the charset has to be converted
