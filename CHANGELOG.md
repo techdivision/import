@@ -1,3 +1,13 @@
+# Version 17.3.1
+
+## Bugfixes
+
+* Fix warning on validation.json output when `--clear-artefacts=true` (default behavior) is used
+
+## Features
+
+* none
+
 # Version 17.3.0
 
 ## Bugfixes
