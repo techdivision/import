@@ -227,8 +227,8 @@ trait AttributeObserverTrait
             }
 
             // do nothing in non-default stores with global attributes
-            if (isset($attribute[MemberNames::IS_GLOBAL]) &&
-                $attribute[MemberNames::IS_GLOBAL] == 1 &&
+            if (isset($this->attribute[MemberNames::IS_GLOBAL]) &&
+                $this->attribute[MemberNames::IS_GLOBAL] === 1 &&
                 $storeId !== 0) {
                 continue;
             }

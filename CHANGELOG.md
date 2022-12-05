@@ -1,3 +1,13 @@
+# Version 17.3.2
+
+## Bugfixes
+
+* Fix import duplicate data for global eav_attribute 
+
+## Features
+
+* none
+
 # Version 17.3.1
 
 ## Bugfixes
