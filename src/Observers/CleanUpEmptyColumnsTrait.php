@@ -118,19 +118,22 @@ trait CleanUpEmptyColumnsTrait
         }
 
         $emptyValueDefinition = $this->getEmptyAttributeValueConstant();
+        // Initialization of a new array for empty value definitions per line.
+        $cleanUpEmptyValueDefinition = [];
         // load the header keys
         $headers = in_array($emptyValueDefinition, $clearRow, true) ? array_flip($this->getHeaders()) : [];
         // remove all the empty values from the row, expected the columns has to be cleaned-up
         foreach ($clearRow as $key => $value) {
             // query whether or not to cleanup complete attribute
             if ($value === $emptyValueDefinition) {
-                $this->cleanUpEmptyColumnKeys[isset($headers[$key]) ? $headers[$key] : $key] = $key;
+                $cleanUpEmptyValueDefinition[isset($headers[$key]) ? $headers[$key] : $key] = $key;
                 $clearRow[$key] = '';
             }
             // query whether or not the value is empty AND the column has NOT to be cleaned-up
             if (($value === null || $value === '')
                 && in_array($key, $this->cleanUpEmptyColumnKeys) === false
                 && in_array($key, $this->defaultColumnValues) === false
+                && in_array($key, $cleanUpEmptyValueDefinition) === false
             ) {
                 if ($unsetEmptyValues) {
                     unset($clearRow[$key]);
