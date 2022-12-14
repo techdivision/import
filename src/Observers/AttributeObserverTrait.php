@@ -248,6 +248,8 @@ trait AttributeObserverTrait
 
                 // prepare the attribute vale and query whether or not it has to be persisted
                 if ($this->hasChanges($value = $this->initializeAttribute($this->prepareAttributes()))) {
+                    $ignoredAttributeValues = $this->getSubject()->getConfiguration()->getConfiguration()->getIgnoreAttributeValue();
+                    $entityTypeCode = $this->getSubject()->getConfiguration()->getConfiguration()->getEntityTypeCode();
                     // query whether or not the entity's value has to be persisted or deleted. if the value is
                     // an empty string and the status is UPDATE, then the value exists and has to be deleted
                     // We need to user $attributeValue instead of $value[MemberNames::VALUE] in cases where
@@ -255,8 +257,27 @@ trait AttributeObserverTrait
                     switch ($this->operation) {
                         // create/update the attribute
                         case OperationNames::CREATE:
-                        case OperationNames::UPDATE:
                             $this->$persistMethod($value);
+                            break;
+                        case OperationNames::UPDATE:
+                            if (
+                                isset($ignoredAttributeValues[$entityTypeCode]) &&
+                                isset($ignoredAttributeValues[$entityTypeCode][$attributeCode]) &&
+                                $ignoredAttributeValues[$entityTypeCode] &&
+                                $ignoredAttributeValues[$entityTypeCode][$attributeCode]
+                            ) {
+                                $this->getSystemLogger()->info(
+                                    $this->appendExceptionSuffix(
+                                        sprintf(
+                                            'Ignore attribute "%s" on update with value "%s"',
+                                            $attributeCode,
+                                            $value['value']
+                                        )
+                                    )
+                                );
+                            } else {
+                                $this->$persistMethod($value);
+                            }
                             break;
                         // delete the attribute
                         case OperationNames::DELETE:
