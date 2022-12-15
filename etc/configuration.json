@@ -24,9 +24,5 @@
   "config-output": false,
   "delimiter": ",",
   "enclosure": "\"",
-  "escape": "\u0000",
-  "ignore-attribute-value-on-update": {
-    "catalog_product": {},
-    "catalog_category": {}
-  }
+  "escape": "\u0000"
 }

@@ -179,7 +179,7 @@ trait AttributeObserverTrait
         // iterate over the attributes and append them to the row
         foreach ($row as $key => $attributeValue) {
             // query whether or not attribute with the found code exists
-            if (!isset($attributes[$attributeCode = $headers[$key]])){
+            if (!isset($attributes[$attributeCode = $headers[$key]])) {
                 // log a message in debug mode
                 if ($this->isDebugMode()) {
                     $this->getSystemLogger()->debug(
