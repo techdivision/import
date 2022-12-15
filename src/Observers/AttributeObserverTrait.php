@@ -169,10 +169,17 @@ trait AttributeObserverTrait
         // remove all the empty values from the row
         $row = $this->clearRow();
 
+        //Get data from config
+        $ignoredAttributeValues = $this->getSubject()->getConfiguration()->getConfiguration()->getIgnoreAttributeValue();
+        $entityTypeCode = $this->getSubject()->getConfiguration()->getConfiguration()->getEntityTypeCode();
+
+        // Check if all attribute for this entity_type has to be ignored
+        $isAllAttributeIgnored = isset($ignoredAttributeValues[$entityTypeCode]) && empty($ignoredAttributeValues[$entityTypeCode]);
+
         // iterate over the attributes and append them to the row
         foreach ($row as $key => $attributeValue) {
             // query whether or not attribute with the found code exists
-            if (!isset($attributes[$attributeCode = $headers[$key]])) {
+            if (!isset($attributes[$attributeCode = $headers[$key]]))   {
                 // log a message in debug mode
                 if ($this->isDebugMode()) {
                     $this->getSystemLogger()->debug(
@@ -248,8 +255,6 @@ trait AttributeObserverTrait
 
                 // prepare the attribute vale and query whether or not it has to be persisted
                 if ($this->hasChanges($value = $this->initializeAttribute($this->prepareAttributes()))) {
-                    $ignoredAttributeValues = $this->getSubject()->getConfiguration()->getConfiguration()->getIgnoreAttributeValue();
-                    $entityTypeCode = $this->getSubject()->getConfiguration()->getConfiguration()->getEntityTypeCode();
                     // query whether or not the entity's value has to be persisted or deleted. if the value is
                     // an empty string and the status is UPDATE, then the value exists and has to be deleted
                     // We need to user $attributeValue instead of $value[MemberNames::VALUE] in cases where
@@ -261,10 +266,9 @@ trait AttributeObserverTrait
                             break;
                         case OperationNames::UPDATE:
                             if (
-                                isset($ignoredAttributeValues[$entityTypeCode]) &&
-                                isset($ignoredAttributeValues[$entityTypeCode][$attributeCode]) &&
-                                $ignoredAttributeValues[$entityTypeCode] &&
-                                $ignoredAttributeValues[$entityTypeCode][$attributeCode]
+                                $isAllAttributeIgnored ||
+                                (isset($ignoredAttributeValues[$entityTypeCode][$attributeCode]) &&
+                                $ignoredAttributeValues[$entityTypeCode][$attributeCode] === "true")
                             ) {
                                 $this->getSystemLogger()->info(
                                     $this->appendExceptionSuffix(
