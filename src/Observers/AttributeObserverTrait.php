@@ -16,6 +16,7 @@ namespace TechDivision\Import\Observers;
 
 use TechDivision\Import\Utils\LoggerKeys;
 use TechDivision\Import\Utils\MemberNames;
+use TechDivision\Import\Utils\RegistryKeys;
 use TechDivision\Import\Utils\StoreViewCodes;
 use TechDivision\Import\Utils\OperationNames;
 use TechDivision\Import\Utils\BackendTypeKeys;
@@ -169,6 +170,13 @@ trait AttributeObserverTrait
         // remove all the empty values from the row
         $row = $this->clearRow();
 
+        //Get data from config
+        $ignoredAttributeValues = $this->getSubject()->getConfiguration()->getConfiguration()->getIgnoreAttributeValue();
+        $entityTypeCode = $this->getSubject()->getConfiguration()->getConfiguration()->getEntityTypeCode();
+
+        // Check if all attribute for this entity_type has to be ignored
+        $isAllAttributeIgnored = isset($ignoredAttributeValues[$entityTypeCode]) && empty($ignoredAttributeValues[$entityTypeCode]);
+
         // iterate over the attributes and append them to the row
         foreach ($row as $key => $attributeValue) {
             // query whether or not attribute with the found code exists
@@ -255,8 +263,30 @@ trait AttributeObserverTrait
                     switch ($this->operation) {
                         // create/update the attribute
                         case OperationNames::CREATE:
-                        case OperationNames::UPDATE:
+                            if (!$this->isValidateVarcharLength()) {
+                                break;
+                            }
                             $this->$persistMethod($value);
+                            break;
+                        case OperationNames::UPDATE:
+                            if ($isAllAttributeIgnored ||
+                                (in_array($attributeCode, $ignoredAttributeValues[$entityTypeCode]))
+                            ) {
+                                $this->getSystemLogger()->debug(
+                                    $this->appendExceptionSuffix(
+                                        sprintf(
+                                            'Ignore attribute "%s" on update with value "%s"',
+                                            $attributeCode,
+                                            $value['value']
+                                        )
+                                    )
+                                );
+                            } else {
+                                if (!$this->isValidateVarcharLength()) {
+                                    break;
+                                }
+                                $this->$persistMethod($value);
+                            }
                             break;
                         // delete the attribute
                         case OperationNames::DELETE:
@@ -289,6 +319,34 @@ trait AttributeObserverTrait
                 )
             );
         }
+    }
+
+    /**
+     * @return bool
+     * @throws \Exception
+     */
+    protected function isValidateVarcharLength()
+    {
+        if ($this->backendType == "varchar" && strlen($this->attributeValue) > 255) {
+            // $this->attributeValue = substr($attributeValue, 0, 255);
+            $message = sprintf('Skipped attribute "%s" cause value more then 255 signs. Detail: "%s"', $this->attributeCode, $this->attributeValue);
+            $this->getSystemLogger()->error($this->getSubject()->appendExceptionSuffix($message));
+            if (!$this->getSubject()->isStrictMode()) {
+                $this->mergeStatus(
+                    array(
+                        RegistryKeys::NO_STRICT_VALIDATIONS => array(
+                            basename($this->getFilename()) => array(
+                                $this->getLineNumber() => array(
+                                    $this->attributeCode =>  $message
+                                )
+                            )
+                        )
+                    )
+                );
+            }
+            return false;
+        }
+        return true;
     }
 
     /**
