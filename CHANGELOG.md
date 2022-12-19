@@ -1,3 +1,13 @@
+# Version 17.3.6
+
+## Bugfixes
+
+* Fix TypeError: in_array argument #2 must be a array null given
+
+## Features
+
+* None
+
 # Version 17.3.5
 
 ## Bugfixes

@@ -270,7 +270,7 @@ trait AttributeObserverTrait
                             break;
                         case OperationNames::UPDATE:
                             if ($isAllAttributeIgnored ||
-                                (in_array($attributeCode, $ignoredAttributeValues[$entityTypeCode]))
+                                (isset($ignoredAttributeValues[$entityTypeCode]) && in_array($attributeCode, $ignoredAttributeValues[$entityTypeCode]))
                             ) {
                                 $this->getSystemLogger()->debug(
                                     $this->appendExceptionSuffix(
