@@ -16,6 +16,7 @@ namespace TechDivision\Import\Observers;
 
 use TechDivision\Import\Utils\LoggerKeys;
 use TechDivision\Import\Utils\MemberNames;
+use TechDivision\Import\Utils\RegistryKeys;
 use TechDivision\Import\Utils\StoreViewCodes;
 use TechDivision\Import\Utils\OperationNames;
 use TechDivision\Import\Utils\BackendTypeKeys;
@@ -262,14 +263,16 @@ trait AttributeObserverTrait
                     switch ($this->operation) {
                         // create/update the attribute
                         case OperationNames::CREATE:
+                            if (!$this->isValidateVarcharLength()) {
+                                break;
+                            }
                             $this->$persistMethod($value);
                             break;
                         case OperationNames::UPDATE:
                             if ($isAllAttributeIgnored ||
-                                (isset($ignoredAttributeValues[$entityTypeCode][$attributeCode]) &&
-                                $ignoredAttributeValues[$entityTypeCode][$attributeCode] === "true")
+                                (in_array($attributeCode, $ignoredAttributeValues[$entityTypeCode]))
                             ) {
-                                $this->getSystemLogger()->info(
+                                $this->getSystemLogger()->debug(
                                     $this->appendExceptionSuffix(
                                         sprintf(
                                             'Ignore attribute "%s" on update with value "%s"',
@@ -279,6 +282,9 @@ trait AttributeObserverTrait
                                     )
                                 );
                             } else {
+                                if (!$this->isValidateVarcharLength()) {
+                                    break;
+                                }
                                 $this->$persistMethod($value);
                             }
                             break;
@@ -313,6 +319,34 @@ trait AttributeObserverTrait
                 )
             );
         }
+    }
+
+    /**
+     * @return bool
+     * @throws \Exception
+     */
+    protected function isValidateVarcharLength()
+    {
+        if ($this->backendType == "varchar" && strlen($this->attributeValue) > 255) {
+            // $this->attributeValue = substr($attributeValue, 0, 255);
+            $message = sprintf('Skipped attribute "%s" cause value more then 255 signs. Detail: "%s"', $this->attributeCode, $this->attributeValue);
+            $this->getSystemLogger()->error($this->getSubject()->appendExceptionSuffix($message));
+            if (!$this->getSubject()->isStrictMode()) {
+                $this->mergeStatus(
+                    array(
+                        RegistryKeys::NO_STRICT_VALIDATIONS => array(
+                            basename($this->getFilename()) => array(
+                                $this->getLineNumber() => array(
+                                    $this->attributeCode =>  $message
+                                )
+                            )
+                        )
+                    )
+                );
+            }
+            return false;
+        }
+        return true;
     }
 
     /**

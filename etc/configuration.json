@@ -21,6 +21,7 @@
   "api": {
     "magento-domain": ""
   },
+  "ignore-attribute-value-on-update": {},
   "config-output": false,
   "delimiter": ",",
   "enclosure": "\"",

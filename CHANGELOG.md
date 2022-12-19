@@ -1,3 +1,35 @@
+# Version 17.3.5
+
+## Bugfixes
+
+* Prepend DB exception on attribute value update if value saved in `_varchar` table and has more then 255 characters 
+
+## Features
+
+* add new config for ignored attribute on update defined in configuration.json
+  * Example:
+    * Ignore attribute code `msrp_display_actual_price_type` from catalog_product entity on update value
+    * Ignore ALL attribute codes from catalog_category entity on update value
+```
+   "ignore-attribute-value-on-update": {
+        "catalog_product": [
+            "msrp_display_actual_price_type"
+        ],
+        "catalog_category": []
+    }
+```
+
+# Version 17.3.4
+
+## Bugfixes
+
+* Update Changelog
+
+## Features
+
+* none
+
+
 # Version 17.3.3
 
 ## Bugfixes
