@@ -1,3 +1,13 @@
+# Version 17.3.7
+
+## Bugfixes
+
+* Fix Error for long character with UTF-8 
+
+## Features
+
+* None
+
 # Version 17.3.6
 
 ## Bugfixes

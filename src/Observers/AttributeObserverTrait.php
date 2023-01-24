@@ -327,7 +327,7 @@ trait AttributeObserverTrait
      */
     protected function isValidateVarcharLength()
     {
-        if ($this->backendType == "varchar" && strlen($this->attributeValue) > 255) {
+        if ($this->backendType == "varchar" && mb_strlen($this->attributeValue) > 255) {
             // $this->attributeValue = substr($attributeValue, 0, 255);
             $message = sprintf('Skipped attribute "%s" cause value more then 255 signs. Detail: "%s"', $this->attributeCode, $this->attributeValue);
             $this->getSystemLogger()->error($this->getSubject()->appendExceptionSuffix($message));
