@@ -1,3 +1,13 @@
+# Version 17.3.8
+
+## Bugfixes
+
+* none
+
+## Features
+
+* Extend multi/select with strict mode
+
 # Version 17.3.7
 
 ## Bugfixes

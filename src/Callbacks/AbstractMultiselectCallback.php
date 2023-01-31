@@ -70,17 +70,16 @@ abstract class AbstractMultiselectCallback extends AbstractEavAwareCallback
                 continue;
             }
 
-            // query whether or not we're in debug mode
-            if ($this->isDebugMode()) {
+            $message = sprintf(
+                'Can\'t find multiselect option value "%s" for attribute "%s"',
+                $val,
+                $attributeCode
+            );
+            // query whether or not we're in strict moode
+            if (!$this->isStrictMode()) {
                 // log a warning and continue with the next value
                 $this->getSystemLogger()->warning(
-                    $this->appendExceptionSuffix(
-                        sprintf(
-                            'Can\'t find multiselect option value "%s" for attribute "%s"',
-                            $val,
-                            $attributeCode
-                        )
-                    )
+                    $this->appendExceptionSuffix($message)
                 );
                 // add the missing option value to the registry
                 $this->mergeAttributesRecursive(
@@ -96,20 +95,24 @@ abstract class AbstractMultiselectCallback extends AbstractEavAwareCallback
                     )
                 );
 
+                $this->getSubject()->mergeStatus(
+                    array(
+                        RegistryKeys::NO_STRICT_VALIDATIONS => array(
+                            basename($this->getSubject()->getFilename()) => array(
+                                $this->getSubject()->getLineNumber() => array(
+                                    $attributeCode  => $message
+                                )
+                            )
+                        )
+                    )
+                );
                 // continue with the next option value
                 continue;
             }
 
-
             // throw an exception if the attribute is not available
             throw new \Exception(
-                $this->appendExceptionSuffix(
-                    sprintf(
-                        'Can\'t find multiselect option value "%s" for attribute "%s"',
-                        $val,
-                        $attributeCode
-                    )
-                )
+                $this->appendExceptionSuffix($message)
             );
         }
 

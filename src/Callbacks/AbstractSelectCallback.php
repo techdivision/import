@@ -61,17 +61,16 @@ abstract class AbstractSelectCallback extends AbstractEavAwareCallback
             return $eavAttributeOptionValue[MemberNames::OPTION_ID];
         }
 
-        // query whether or not we're in debug mode
-        if ($this->isDebugMode()) {
+        $message = sprintf(
+            'Can\'t find select option value "%s" for attribute "%s"',
+            $attributeValue,
+            $attributeCode
+        );
+        // query whether or not we're in strict mode
+        if (!$this->isStrictMode()) {
             // log a warning and return immediately
             $this->getSystemLogger()->warning(
-                $this->appendExceptionSuffix(
-                    sprintf(
-                        'Can\'t find select option value "%s" for attribute "%s"',
-                        $attributeValue,
-                        $attributeCode
-                    )
-                )
+                $this->appendExceptionSuffix($message)
             );
             // add the missing option value to the registry
             $this->mergeAttributesRecursive(
@@ -87,20 +86,25 @@ abstract class AbstractSelectCallback extends AbstractEavAwareCallback
                 )
             );
 
+            $this->getSubject()->mergeStatus(
+                array(
+                    RegistryKeys::NO_STRICT_VALIDATIONS => array(
+                        basename($this->getSubject()->getFilename()) => array(
+                            $this->getSubject()->getLineNumber() => array(
+                                $attributeCode  => $message
+                            )
+                        )
+                    )
+                )
+            );
             // return NULL, if the value can't be mapped to an option
             return;
         }
         
         // throw an exception if the attribute is NOT
-        // available and we're not in debug mode
+        // available and we're in strict mode
         throw new \Exception(
-            $this->appendExceptionSuffix(
-                sprintf(
-                    'Can\'t find select option value "%s" for attribute "%s"',
-                    $attributeValue,
-                    $attributeCode
-                )
-            )
+            $this->appendExceptionSuffix($message)
         );
     }
 }
