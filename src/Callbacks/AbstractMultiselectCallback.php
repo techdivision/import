@@ -112,9 +112,7 @@ abstract class AbstractMultiselectCallback extends AbstractEavAwareCallback
 
             // throw an exception if the attribute is not available
             throw new \Exception(
-                $this->appendExceptionSuffix(
-                  $message
-                )
+                $this->appendExceptionSuffix($message)
             );
         }
 

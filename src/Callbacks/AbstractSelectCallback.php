@@ -104,9 +104,7 @@ abstract class AbstractSelectCallback extends AbstractEavAwareCallback
         // throw an exception if the attribute is NOT
         // available and we're in strict mode
         throw new \Exception(
-            $this->appendExceptionSuffix(
-                $message
-            )
+            $this->appendExceptionSuffix($message)
         );
     }
 }
