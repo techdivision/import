@@ -66,7 +66,7 @@ abstract class AbstractSelectCallback extends AbstractEavAwareCallback
             $attributeValue,
             $attributeCode
         );
-        // query whether or not we're in debug mode
+        // query whether or not we're in strict mode
         if (!$this->isStrictMode()) {
             // log a warning and return immediately
             $this->getSystemLogger()->warning(
@@ -102,14 +102,10 @@ abstract class AbstractSelectCallback extends AbstractEavAwareCallback
         }
         
         // throw an exception if the attribute is NOT
-        // available and we're not in debug mode
+        // available and we're in strict mode
         throw new \Exception(
             $this->appendExceptionSuffix(
-                sprintf(
-                    'Can\'t find select option value "%s" for attribute "%s"',
-                    $attributeValue,
-                    $attributeCode
-                )
+                $message
             )
         );
     }

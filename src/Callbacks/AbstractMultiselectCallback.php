@@ -70,13 +70,13 @@ abstract class AbstractMultiselectCallback extends AbstractEavAwareCallback
                 continue;
             }
 
-            // query whether or not we're in debug mode
+            $message = sprintf(
+                'Can\'t find multiselect option value "%s" for attribute "%s"',
+                $val,
+                $attributeCode
+            );
+            // query whether or not we're in strict moode
             if (!$this->isStrictMode()) {
-                $message = sprintf(
-                    'Can\'t find multiselect option value "%s" for attribute "%s"',
-                    $val,
-                    $attributeCode
-                );
                 // log a warning and continue with the next value
                 $this->getSystemLogger()->warning(
                     $this->appendExceptionSuffix($message)
@@ -113,11 +113,7 @@ abstract class AbstractMultiselectCallback extends AbstractEavAwareCallback
             // throw an exception if the attribute is not available
             throw new \Exception(
                 $this->appendExceptionSuffix(
-                    sprintf(
-                        'Can\'t find multiselect option value "%s" for attribute "%s"',
-                        $val,
-                        $attributeCode
-                    )
+                  $message
                 )
             );
         }
