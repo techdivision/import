@@ -55,6 +55,13 @@ interface InputOptionKeysInterface extends \ArrayAccess
     const INSTALLATION_DIR = 'installation-dir';
 
     /**
+     * The input option key for the Magento installation directory.
+     *
+     * @var string
+     */
+    const CONFIGURATION_DIR = 'config-dir';
+
+    /**
      * The input option key for the directory containing the files to be imported.
      *
      * @var string
