@@ -287,6 +287,7 @@
         </service>
         <service id="import.loader.column.metadata" class="TechDivision\Import\Loaders\ColumnMetadataLoader">
             <argument type="service" id="connection"/>
+            <argument type="service" id="import.util.table.prefix"/>
         </service>
         <service id="import.loader.column.name" class="TechDivision\Import\Loaders\ColumnNameLoader">
             <argument type="service" id="import.loader.column.metadata"/>

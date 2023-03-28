@@ -15,6 +15,7 @@
 namespace TechDivision\Import\Loaders;
 
 use TechDivision\Import\Dbal\Connection\ConnectionInterface;
+use TechDivision\Import\Dbal\Utils\TablePrefixUtilInterface;
 
 /**
  * Loader for table column metadata.
@@ -35,13 +36,16 @@ class ColumnMetadataLoader implements LoaderInterface
      */
     protected $metadata = array();
 
+    private string $tablePrefix;
+
     /**
      * Construct a new instance.
      *
      * @param \TechDivision\Import\Dbal\Connection\ConnectionInterface $connection The DB connection instance used to load the table metadata
      */
-    public function __construct(ConnectionInterface $connection)
+    public function __construct(ConnectionInterface $connection, TablePrefixUtilInterface $tablePrefixUtil)
     {
+        $this->tablePrefix = $tablePrefixUtil->getConfiguration()->getDatabase()->getTablePrefix();
 
         // initialize the statement to load the table columns
         $stmtTables = $connection->query('SHOW TABLES');
@@ -72,6 +76,9 @@ class ColumnMetadataLoader implements LoaderInterface
      */
     public function load($tableName = null)
     {
+        if (!str_starts_with($tableName, $this->tablePrefix)) {
+            $tableName = $this->tablePrefix . $tableName;
+        }
 
         // query whether or not metadata for the table is available
         if (isset($this->metadata[$tableName])) {
