@@ -1,3 +1,14 @@
+# Version 17.4.0
+
+## Bugfixes
+
+* none
+
+## Features
+
+* Introduct new argument --configuration-dir for magento app/etc directory
+  * this is especially useful when running import during Magento integration tests 
+
 # Version 17.3.8
 
 ## Bugfixes
