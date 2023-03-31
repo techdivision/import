@@ -1,3 +1,13 @@
+# Version 17.4.1
+
+## Bugfixes
+
+* Fix table metadata loader from tables with table prefix
+
+## Features
+
+ *none
+
 # Version 17.4.0
 
 ## Bugfixes
