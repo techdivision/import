@@ -1,3 +1,13 @@
+# Version 17.4.2
+
+## Bugfixes
+
+* Fix records with attribute value 'No' or '0' are not created
+
+## Features
+
+ *none
+
 # Version 17.4.1
 
 ## Bugfixes
