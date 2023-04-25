@@ -434,7 +434,7 @@ trait AttributeObserverTrait
         // query whether or not the colunm IS empty and it is NOT in the
         // array with the default column values, because in that case we
         // want to skip processing the attribute
-        if (array_key_exists($this->attributeCode, $this->getDefaultColumnValues()) === false && ($this->attributeValue === '' || $this->attributeValue == null)) {
+        if (array_key_exists($this->attributeCode, $this->getDefaultColumnValues()) === false && ($this->attributeValue === '' || $this->attributeValue == null) && $this->attribute['is_required'] === 0) {
             $this->operation = OperationNames::SKIP;
         }
 
