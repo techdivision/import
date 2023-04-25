@@ -483,7 +483,8 @@ class AbstractAttributeObserverTest extends TestCase
                 MemberNames::ATTRIBUTE_ID => 124,
                 MemberNames::ENTITY_TYPE_ID => 4,
                 MemberNames::ATTRIBUTE_CODE => $attributeCode,
-                MemberNames::BACKEND_TYPE => BackendTypeKeys::BACKEND_TYPE_VARCHAR
+                MemberNames::BACKEND_TYPE => BackendTypeKeys::BACKEND_TYPE_VARCHAR,
+                'is_required' => 0
             )
         );
 
