@@ -1,3 +1,14 @@
+# Version 17.4.3
+
+## Bugfixes
+
+* Fix issue where not required attributes would not be skipped with PHP74 because of type missmatch with same value
+  * Implemented in 17.4.2
+
+## Features
+
+* none
+
 # Version 17.4.2
 
 ## Bugfixes
