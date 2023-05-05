@@ -94,7 +94,14 @@ class RawEntityLoader implements LoaderInterface
 
         // if a default value has been found
         if ($default === null) {
-            return;
+            // if the column don't allowed NULL and of type text or varchar, we have to return an empty string
+            if (isset($column['Null'], $column['Type'])
+                && $column['Null'] === "NO"
+                && ($column['Type'] === 'text' || strpos($column['Type'], 'varchar') === 0)
+            ) {
+                return '';
+            }
+            return $default;
         }
 
         try {
