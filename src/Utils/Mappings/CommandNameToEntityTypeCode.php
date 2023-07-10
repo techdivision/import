@@ -58,8 +58,8 @@ class CommandNameToEntityTypeCode extends \ArrayObject
                 CommandNames::IMPORT_EXECUTE                   => EntityTypeCodes::NONE,
                 CommandNames::IMPORT_CONVERT_VALUE             => EntityTypeCodes::NONE,
                 CommandNames::IMPORT_DEBUG                     => EntityTypeCodes::DEBUG,
-                CommandNames::IMPORT_CONFIG_DIFF               => EntityTypeCodes::NONE,
-                CommandNames::IMPORT_CREATE_CONFIG             => EntityTypeCodes::NONE
+                CommandNames::IMPORT_CONFIG_DIFF               => EntityTypeCodes::DEBUG,
+                CommandNames::IMPORT_CREATE_CONFIG             => EntityTypeCodes::DEBUG
             ),
             $mappings
         );
