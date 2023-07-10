@@ -1,3 +1,9 @@
+# Version 17.5.0
+
+## Feature
+
+* Debug info for configuration files
+ 
 # Version 17.4.4
 
 ## Bugfixes
