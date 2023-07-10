@@ -146,6 +146,20 @@ class CommandNames extends \ArrayObject
     const IMPORT_CONVERT_VALUE = 'import:convert:value';
 
     /**
+     * The command name for the command that shows the diff betweeen default config and project config
+     *
+     * @var string
+     */
+    const IMPORT_CONFIG_DIFF = 'import:debug:config:diff';
+
+    /**
+     * The command name for the command that creates the default config file
+     *
+     * @var string
+     */
+    const IMPORT_CREATE_CONFIG = 'import:debug:config:create';
+
+    /**
      * Construct a new command names instance.
      *
      * @param array $commandNames The array with the additional command names
@@ -169,7 +183,9 @@ class CommandNames extends \ArrayObject
                 CommandNames::IMPORT_CLEAR_PID_FILE,
                 CommandNames::IMPORT_CUSTOMERS,
                 CommandNames::IMPORT_CUSTOMERS_ADDRESS,
-                CommandNames::IMPORT_CONVERT_VALUE
+                CommandNames::IMPORT_CONVERT_VALUE,
+                CommandNames::IMPORT_CONFIG_DIFF,
+                CommandNames::IMPORT_CREATE_CONFIG
             ),
             $commandNames
         );
