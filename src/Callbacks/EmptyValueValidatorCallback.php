@@ -14,6 +14,8 @@
 
 namespace TechDivision\Import\Callbacks;
 
+use TechDivision\Import\Attribute\Utils\ColumnKeys;
+
 /**
  * A callback implementation that validates the values of array attributes.
  *
@@ -55,7 +57,7 @@ class EmptyValueValidatorCallback extends IndexedArrayValidatorCallback
             // query whether or not the value is valid
             if (trim($optionValue) === '') {
                 throw new \InvalidArgumentException(
-                    sprintf('Found empty array value for attribute or property with code "%s"', $attributeCode)
+                    sprintf("Found empty array value in '%s' for attribute or property with code '%s'", $attributeValue, $subject->getValue(ColumnKeys::ATTRIBUTE_CODE))
                 );
             }
         }

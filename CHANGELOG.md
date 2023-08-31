@@ -1,3 +1,9 @@
+# Version 17.5.1
+
+## Feature
+
+* Better error message validation error with empty attribute values
+ 
 # Version 17.5.0
 
 ## Feature
