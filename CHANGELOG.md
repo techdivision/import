@@ -1,3 +1,10 @@
+# Version 17.5.2
+
+## Bugfixes
+
+* METSUP-40: fix URL-Suffix in initial-import
+  *  Possibly clean an old cache entry with the correct ID at Multi Store Setup.
+
 # Version 17.5.1
 
 ## Feature

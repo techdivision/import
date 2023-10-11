@@ -160,10 +160,24 @@ class UrlKeyUtil implements UrlKeyUtilInterface
             // request path and store ID is available
             if ($urlRewrite) {
                 // if yes, query if this IS the URL key of the passed entity
-                if (((int) $urlRewrite[MemberNames::ENTITY_ID]   === $entityId) &&
+                if (((int) $urlRewrite[MemberNames::ENTITY_ID]   === $entityId || (int) $urlRewrite[MemberNames::ENTITY_ID] < 0) &&
                     ((int) $urlRewrite[MemberNames::STORE_ID]    === $storeId) &&
-                           $urlRewrite[MemberNames::ENTITY_TYPE] === $entityType
+                    $urlRewrite[MemberNames::ENTITY_TYPE] === $entityType
                 ) {
+                    // Possibly clean an old cache entry with the correct ID at Multi Store Setup.
+                    if ((int) $urlRewrite[MemberNames::ENTITY_ID] < 0) {
+                        $this->getUrlKeyAwareProcessor()->persistUrlRewrite(
+                            array(
+                                MemberNames::URL_REWRITE_ID => md5(sprintf('%d-%s', $storeId, $requestPath)),
+                                MemberNames::REDIRECT_TYPE  => 0,
+                                MemberNames::STORE_ID       => $storeId,
+                                MemberNames::ENTITY_ID      => $entityId,
+                                MemberNames::REQUEST_PATH   => $requestPath,
+                                MemberNames::ENTITY_TYPE    => $entityType,
+                                EntityStatus::MEMBER_NAME   => EntityStatus::STATUS_CREATE
+                            )
+                        );
+                    }
                     // add the matching counter
                     $matchingCounters[] = $counter;
                     // stop further processing here, because we've a matching
