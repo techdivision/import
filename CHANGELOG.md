@@ -1,9 +1,17 @@
+
 # Version 17.6.0
 
 ## Bugfixes
 
 *  Make composer dependencies compatible with Magento 2.4.6
 * Update `psr/cache` with version `~2.0 ~3.0`
+
+# Version 17.5.2
+
+## Bugfixes
+
+* METSUP-40: fix URL-Suffix in initial-import
+  *  Possibly clean an old cache entry with the correct ID at Multi Store Setup.
 
 # Version 17.5.1
 
