@@ -216,6 +216,13 @@ interface InputOptionKeysInterface extends \ArrayAccess
     const CUSTOM_CONFIGURATION_DIR = 'custom-configuration-dir';
 
     /**
+     * The input option key for the custom configuration public directory.
+     *
+     * @var string
+     */
+    const CUSTOM_CONFIGURATION_PUBLIC_DIR = 'custom-configuration-public-dir';
+
+    /**
      * The input option key for the number of validation issues that has to be rendered on the console.
      *
      * @var string
