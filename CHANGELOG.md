@@ -1,9 +1,14 @@
+# Version 17.7.0
+
+## Feature
+
+* Preparation of a customer path for Magento backend storage of the configuration in `var/pacemaker/import/configuration`
 
 # Version 17.6.0
 
 ## Bugfixes
 
-*  Make composer dependencies compatible with Magento 2.4.6
+* Make composer dependencies compatible with Magento 2.4.6
 * Update `psr/cache` with version `~2.0 ~3.0`
 
 # Version 17.5.2
