@@ -1,3 +1,9 @@
+# Version 17.7.1
+
+## Bugfixes
+
+* Fix type error in getOriginalData Function 
+
 # Version 17.7.0
 
 ## Feature

@@ -855,7 +855,7 @@ abstract class AbstractSubject implements SubjectInterface, FilesystemSubjectInt
 
         $inProgressFilename  = '';
         $failedFilename  = '';
-        
+
         try {
             // initialize the serial/filename
             $this->setSerial($serial);
@@ -1400,7 +1400,7 @@ abstract class AbstractSubject implements SubjectInterface, FilesystemSubjectInt
         }
 
         // return an empty array, if not
-        return $originalData;
+        return is_array($originalData) ? $originalData : array();
     }
 
     /**
@@ -1438,11 +1438,15 @@ abstract class AbstractSubject implements SubjectInterface, FilesystemSubjectInt
             // load the original data
             $originalData = $this->getOriginalData();
 
-            // replace old filename and line number of the original message
+            // append filename and line number to the original message
             $message = $this->appendExceptionSuffix(
                 $this->stripExceptionSuffix($message),
-                $originalData[ColumnKeys::ORIGINAL_FILENAME],
-                $originalData[ColumnKeys::ORIGINAL_LINE_NUMBER]
+                isset($originalData[ColumnKeys::ORIGINAL_FILENAME]) ?
+                    $originalData[ColumnKeys::ORIGINAL_FILENAME] :
+                    $this->filename,
+                isset($originalData[ColumnKeys::ORIGINAL_LINE_NUMBER]) ?
+                    $originalData[ColumnKeys::ORIGINAL_LINE_NUMBER] :
+                    $this->lineNumber
             );
         } else {
             // append filename and line number to the original message
