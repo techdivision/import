@@ -855,7 +855,7 @@ abstract class AbstractSubject implements SubjectInterface, FilesystemSubjectInt
 
         $inProgressFilename  = '';
         $failedFilename  = '';
-        
+
         try {
             // initialize the serial/filename
             $this->setSerial($serial);
@@ -1397,6 +1397,10 @@ abstract class AbstractSubject implements SubjectInterface, FilesystemSubjectInt
         if ($this->hasOriginalData()) {
             // unerialize the original data from the column
             $originalData = unserialize($this->row[$this->headers[ColumnKeys::ORIGINAL_DATA]]);
+
+            if (!is_array($originalData)) {
+                return array();
+            }
         }
 
         // return an empty array, if not
@@ -1438,12 +1442,23 @@ abstract class AbstractSubject implements SubjectInterface, FilesystemSubjectInt
             // load the original data
             $originalData = $this->getOriginalData();
 
-            // replace old filename and line number of the original message
-            $message = $this->appendExceptionSuffix(
-                $this->stripExceptionSuffix($message),
-                $originalData[ColumnKeys::ORIGINAL_FILENAME],
-                $originalData[ColumnKeys::ORIGINAL_LINE_NUMBER]
-            );
+            if (isset($originalData[ColumnKeys::ORIGINAL_FILENAME]) &&
+                isset($originalData[ColumnKeys::ORIGINAL_LINE_NUMBER])
+            ) {
+                // replace old filename and line number of the original message
+                $message = $this->appendExceptionSuffix(
+                    $this->stripExceptionSuffix($message),
+                    $originalData[ColumnKeys::ORIGINAL_FILENAME],
+                    $originalData[ColumnKeys::ORIGINAL_LINE_NUMBER]
+                );
+            } else {
+                // append filename and line number to the original message
+                $message = $this->appendExceptionSuffix(
+                    $this->stripExceptionSuffix($message),
+                    $this->filename,
+                    $this->lineNumber
+                );
+            }
         } else {
             // append filename and line number to the original message
             $message = $this->appendExceptionSuffix(
