@@ -1397,14 +1397,10 @@ abstract class AbstractSubject implements SubjectInterface, FilesystemSubjectInt
         if ($this->hasOriginalData()) {
             // unerialize the original data from the column
             $originalData = unserialize($this->row[$this->headers[ColumnKeys::ORIGINAL_DATA]]);
-
-            if (!is_array($originalData)) {
-                return array();
-            }
         }
 
         // return an empty array, if not
-        return $originalData;
+        return is_array($originalData) ? $originalData : array();
     }
 
     /**
@@ -1442,23 +1438,16 @@ abstract class AbstractSubject implements SubjectInterface, FilesystemSubjectInt
             // load the original data
             $originalData = $this->getOriginalData();
 
-            if (isset($originalData[ColumnKeys::ORIGINAL_FILENAME]) &&
-                isset($originalData[ColumnKeys::ORIGINAL_LINE_NUMBER])
-            ) {
-                // replace old filename and line number of the original message
-                $message = $this->appendExceptionSuffix(
-                    $this->stripExceptionSuffix($message),
-                    $originalData[ColumnKeys::ORIGINAL_FILENAME],
-                    $originalData[ColumnKeys::ORIGINAL_LINE_NUMBER]
-                );
-            } else {
-                // append filename and line number to the original message
-                $message = $this->appendExceptionSuffix(
-                    $this->stripExceptionSuffix($message),
+            // append filename and line number to the original message
+            $message = $this->appendExceptionSuffix(
+                $this->stripExceptionSuffix($message),
+                isset($originalData[ColumnKeys::ORIGINAL_FILENAME]) ?
+                    $originalData[ColumnKeys::ORIGINAL_FILENAME] :
                     $this->filename,
+                isset($originalData[ColumnKeys::ORIGINAL_LINE_NUMBER]) ?
+                    $originalData[ColumnKeys::ORIGINAL_LINE_NUMBER] :
                     $this->lineNumber
-                );
-            }
+            );
         } else {
             // append filename and line number to the original message
             $message = $this->appendExceptionSuffix(
