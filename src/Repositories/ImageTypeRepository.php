@@ -14,9 +14,9 @@
 
 namespace TechDivision\Import\Repositories;
 
+use TechDivision\Import\Dbal\Collection\Repositories\AbstractRepository;
 use TechDivision\Import\Utils\MemberNames;
 use TechDivision\Import\Utils\SqlStatementKeys;
-use TechDivision\Import\Dbal\Collection\Repositories\AbstractRepository;
 
 /**
  * Repository implementation to load image type data.
@@ -29,6 +29,12 @@ use TechDivision\Import\Dbal\Collection\Repositories\AbstractRepository;
  */
 class ImageTypeRepository extends AbstractRepository implements ImageTypeRepositoryInterface
 {
+    /**
+     * The cache for the query results.
+     *
+     * @var array
+     */
+    protected $cache = [];
 
     /**
      * The prepared statement to load the default store.
@@ -42,10 +48,10 @@ class ImageTypeRepository extends AbstractRepository implements ImageTypeReposit
      *
      * @var array
      */
-    protected $defaultMappings = array(
-        'image'     => 'base_image',
-        'thumbnail' => 'thumbnail_image'
-    );
+    protected $defaultMappings = [
+        'image' => 'base_image',
+        'thumbnail' => 'thumbnail_image',
+    ];
 
     /**
      * Initializes the repository's prepared statements.
@@ -61,36 +67,41 @@ class ImageTypeRepository extends AbstractRepository implements ImageTypeReposit
     }
 
     /**
-     * Return's an array with all available image types for the passed entity type code
-     * and frontend input type with the link type code as key.
+     * Return an array with all available image types for the passed entity type code
+     * and frontend input type with the type code as key.
      *
      * @return array The available image types
      */
     public function findAll()
     {
+        // query whether we've already loaded the value
+        if (!isset($this->cache[__METHOD__])) {
+            // initialize the result array
+            $result = [];
 
-        // initialize the result array
-        $result = array();
+            // load and the image types from the EAV attribute table
+            $this->imageTypesByEntityTypeCodeAndFrontendInputStmt->execute();
 
-        // load and the image types from the EAV attribute table
-        $this->imageTypesByEntityTypeCodeAndFrontendInputStmt->execute();
+            // fetch the image types with the passed parameters
+            if ($imageTypes = $this->imageTypesByEntityTypeCodeAndFrontendInputStmt->fetchAll(\PDO::FETCH_ASSOC)) {
+                // iterate over the image types found
+                foreach ($imageTypes as $imageType) {
+                    $attributeCode = $imageType[MemberNames::ATTRIBUTE_CODE];
+                    // map the default image types
+                    if (isset($this->defaultMappings[$attributeCode])) {
+                        $attributeCode = $this->defaultMappings[$attributeCode];
+                    }
 
-        // fetch the image types with the passed parameters
-        if ($imageTypes = $this->imageTypesByEntityTypeCodeAndFrontendInputStmt->fetchAll(\PDO::FETCH_ASSOC)) {
-            // iterate over the image types found
-            foreach ($imageTypes as $imageType) {
-                $attributeCode = $imageType[MemberNames::ATTRIBUTE_CODE];
-                // map the default image types
-                if (isset($this->defaultMappings[$attributeCode])) {
-                    $attributeCode = $this->defaultMappings[$attributeCode];
+                    // add the (mapped) image type
+                    $result[$attributeCode] = sprintf('%s_label', $attributeCode);
                 }
-
-                // add the (mapped) image type
-                $result[$attributeCode] = sprintf('%s_label', $attributeCode);
             }
+
+            // append to the cache
+            $this->cache[__METHOD__] = $result;
         }
 
-        // return the result
-        return $result;
+        // return from the cache
+        return $this->cache[__METHOD__];
     }
 }
