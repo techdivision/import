@@ -1,3 +1,9 @@
+# Version 17.7.2
+
+## Bugfixes
+
+* Add cache for image types to avoid unnecessary database queries #242
+
 # Version 17.7.1
 
 ## Bugfixes
