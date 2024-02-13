@@ -75,31 +75,33 @@ class ImageTypeRepository extends AbstractRepository implements ImageTypeReposit
     public function findAll()
     {
         // query whether we've already loaded the value
-        if (!isset($this->cache[__METHOD__])) {
-            // initialize the result array
-            $result = [];
-
-            // load and the image types from the EAV attribute table
-            $this->imageTypesByEntityTypeCodeAndFrontendInputStmt->execute();
-
-            // fetch the image types with the passed parameters
-            if ($imageTypes = $this->imageTypesByEntityTypeCodeAndFrontendInputStmt->fetchAll(\PDO::FETCH_ASSOC)) {
-                // iterate over the image types found
-                foreach ($imageTypes as $imageType) {
-                    $attributeCode = $imageType[MemberNames::ATTRIBUTE_CODE];
-                    // map the default image types
-                    if (isset($this->defaultMappings[$attributeCode])) {
-                        $attributeCode = $this->defaultMappings[$attributeCode];
-                    }
-
-                    // add the (mapped) image type
-                    $result[$attributeCode] = sprintf('%s_label', $attributeCode);
-                }
-            }
-
-            // append to the cache
-            $this->cache[__METHOD__] = $result;
+        if (isset($this->cache[__METHOD__])) {
+            return $this->cache[__METHOD__];
         }
+        
+        // initialize the result array
+        $result = [];
+
+        // load and the image types from the EAV attribute table
+        $this->imageTypesByEntityTypeCodeAndFrontendInputStmt->execute();
+
+        // fetch the image types with the passed parameters
+        if ($imageTypes = $this->imageTypesByEntityTypeCodeAndFrontendInputStmt->fetchAll(\PDO::FETCH_ASSOC)) {
+            // iterate over the image types found
+            foreach ($imageTypes as $imageType) {
+                $attributeCode = $imageType[MemberNames::ATTRIBUTE_CODE];
+                // map the default image types
+                if (isset($this->defaultMappings[$attributeCode])) {
+                    $attributeCode = $this->defaultMappings[$attributeCode];
+                }
+
+                // add the (mapped) image type
+                $result[$attributeCode] = sprintf('%s_label', $attributeCode);
+            }
+        }
+
+        // append to the cache
+        $this->cache[__METHOD__] = $result;
 
         // return from the cache
         return $this->cache[__METHOD__];
