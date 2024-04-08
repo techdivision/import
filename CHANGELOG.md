@@ -1,3 +1,10 @@
+# Version 17.7.3
+
+## Bugfixes
+
+* Make composer dependencies compatible with Magento 2.4.7
+  * Update `psr/log` with version `~2.0 ~3.0`
+
 # Version 17.7.2
 
 ## Bugfixes
@@ -21,7 +28,7 @@
 ## Bugfixes
 
 * Make composer dependencies compatible with Magento 2.4.6
-* Update `psr/cache` with version `~2.0 ~3.0`
+  * Update `psr/cache` with version `~2.0 ~3.0`
 
 # Version 17.5.2
 
