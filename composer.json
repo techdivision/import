@@ -11,7 +11,7 @@
         "monolog/monolog": "~1.0|~2.3",
         "league/event": "~2.0",
         "ramsey/uuid": "^3.7|^3.8|^4.1|^4.2",
-        "swiftmailer/swiftmailer": "^6.0.0",
+        "swiftmailer/swiftmailer": "^6.2.5",
         "laminas/laminas-filter": "~2.0",
         "techdivision/import-dbal": "^1.0.0",
         "techdivision/import-dbal-collection": "^1.0.0",
