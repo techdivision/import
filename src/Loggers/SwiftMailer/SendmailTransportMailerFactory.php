@@ -46,9 +46,9 @@ class SendmailTransportMailerFactory implements TransportMailerFactoryInterface
         }
 
         // initialize and create the mailer transport instance
-        $transport = \Swift_SendmailTransport::newInstance($command);
+        $transport = new \Swift_SendmailTransport($command);
 
         // initialize, create and return the swift mailer instance
-        return \Swift_Mailer::newInstance($transport);
+        return new \Swift_Mailer($transport);
     }
 }

@@ -1,3 +1,10 @@
+# Version 17.8.0
+
+## Bugfixes
+
+* Fix swiftmailer security bug
+  * Update `swiftmailer/swiftmailer` with version `^6.0.0`
+
 # Version 17.7.3
 
 ## Bugfixes

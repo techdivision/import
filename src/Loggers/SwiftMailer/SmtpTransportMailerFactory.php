@@ -58,7 +58,7 @@ class SmtpTransportMailerFactory implements TransportMailerFactoryInterface
         }
 
         // initialize and create the mailer transport instance
-        $transport = \Swift_SmtpTransport::newInstance($smtpHost, $smtpPort, $smtpSecurity);
+        $transport = new \Swift_SmtpTransport($smtpHost, $smtpPort, $smtpSecurity);
 
         // query whether or not if a SMTP authentication mode has been specified
         if ($transportConfiguration->hasParam(SwiftMailerKeys::SMTP_AUTH_MODE)) {
@@ -86,6 +86,6 @@ class SmtpTransportMailerFactory implements TransportMailerFactoryInterface
         }
 
         // initialize, create and return the swift mailer instance
-        return \Swift_Mailer::newInstance($transport);
+        return new \Swift_Mailer($transport);
     }
 }
