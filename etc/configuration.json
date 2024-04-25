@@ -4,6 +4,7 @@
   "archive-artefacts": true,
   "debug-mode": false,
   "strict-mode": true,
+  "cache-enabled": false,
   "username": "admin",
   "entity-type-code": "catalog_product",
   "source-dir": "var/pacemaker/import",

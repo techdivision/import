@@ -1,3 +1,9 @@
+# Version 17.8.1
+
+## Bugfixes
+
+* The `--cache-enabled` option has been set globally to `false`.
+
 # Version 17.8.0
 
 ## Bugfixes
