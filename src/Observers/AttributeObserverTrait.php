@@ -14,6 +14,7 @@
 
 namespace TechDivision\Import\Observers;
 
+use TechDivision\Import\Product\Utils\ColumnKeys;
 use TechDivision\Import\Utils\LoggerKeys;
 use TechDivision\Import\Utils\MemberNames;
 use TechDivision\Import\Utils\RegistryKeys;
@@ -166,6 +167,28 @@ trait AttributeObserverTrait
 
         // load the header keys
         $headers = array_flip($this->getHeaders());
+        $emptyAttributes = $this->getRequiredAttribute($headers, $attributes);
+        // iterate over the attributes and append them to the row
+        foreach ($emptyAttributes as $key => $emptyAttribute) {
+                // log a message in debug mode
+                if (!$this->isStrictMode()) {
+                    $message =  sprintf(
+                        'The attribute "%s" Can\'t be empty, because the attribute is_required ',
+                        $emptyAttribute['attribute_code']
+                    );
+                    $this->mergeStatus(
+                        array(
+                            RegistryKeys::NO_STRICT_VALIDATIONS => array(
+                                basename($this->getFilename()) => array(
+                                    $this->getLineNumber() => array(
+                                        \TechDivision\Import\Attribute\Utils\MemberNames::VALUE =>  $message
+                                    )
+                                )
+                            )
+                        )
+                    );
+                }
+            }
 
         // remove all the empty values from the row
         $row = $this->clearRow();
@@ -319,6 +342,32 @@ trait AttributeObserverTrait
                 )
             );
         }
+    }
+
+    /**
+     * Return's the EAV attribute with the passed attribute code.
+     *
+     * @param string $attributeCode The attribute code
+     *
+     * @return array The array with the EAV attribute
+     * @throws \Exception Is thrown if the attribute with the passed code is not available
+     */
+    public function getRequiredAttribute($headers, $attributes)
+    {
+        // load the attribute set name
+        $attributeSetName = $this->getValue(ColumnKeys::ATTRIBUTE_SET_CODE);
+        $emptyAttributes = [];
+        foreach (array_values($headers) as $header) {
+            if (in_array($header, array_keys($attributes))) {
+                $attribute = $attributes[$header];
+                if ($attribute['is_required'] && $attribute['backend_type'] !== 'static') {
+                    if ($this->getValue($header) === null) {
+                        $emptyAttributes[] = $attribute;
+                    }
+                }
+            };
+        }
+        return $emptyAttributes;
     }
 
     /**
