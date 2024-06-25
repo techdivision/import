@@ -166,7 +166,7 @@ trait AttributeObserverTrait
 
         // load the header keys
         $headers = array_flip($this->getHeaders());
-        $emptyAttributes = $this->getRequiredEmpytAttributes($headers, $attributes);
+        $emptyAttributes = $this->getRequiredEmptyAttributes($headers, $attributes);
         // iterate over the empty attributes
         foreach ($emptyAttributes as $key => $emptyAttribute) {
             // log a message in debug mode
@@ -351,7 +351,7 @@ trait AttributeObserverTrait
      *
      * @return array The array with the EAV attribute
      */
-    public function getRequiredEmpytAttributes($headers, $attributes)
+    public function getRequiredEmptyAttributes($headers, $attributes)
     {
         // load the attribute set name
         $attributeSetName = $this->getValue(\TechDivision\Import\Product\Utils\ColumnKeys::ATTRIBUTE_SET_CODE);
@@ -359,7 +359,7 @@ trait AttributeObserverTrait
         foreach (array_values($headers) as $header) {
             if (in_array($header, array_keys($attributes))) {
                 $attribute = $attributes[$header];
-                if ($attribute['is_required'] && $attribute['backend_type'] !== 'static') {
+                if (!empty($attribute['is_required']) && $attribute['backend_type'] !== 'static') {
                     if ($this->getValue($header) === null) {
                         $emptyAttributes[] = $attribute;
                     }
