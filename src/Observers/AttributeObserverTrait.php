@@ -353,8 +353,6 @@ trait AttributeObserverTrait
      */
     public function getRequiredEmptyAttributes($headers, $attributes)
     {
-        // load the attribute set name
-        $attributeSetName = $this->getValue('attribute_set_code');
         $emptyAttributes = [];
         foreach (array_values($headers) as $header) {
             if (in_array($header, array_keys($attributes))) {
