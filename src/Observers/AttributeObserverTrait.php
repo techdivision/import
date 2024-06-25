@@ -14,7 +14,6 @@
 
 namespace TechDivision\Import\Observers;
 
-use TechDivision\Import\Product\Utils\ColumnKeys;
 use TechDivision\Import\Utils\LoggerKeys;
 use TechDivision\Import\Utils\MemberNames;
 use TechDivision\Import\Utils\RegistryKeys;
@@ -355,7 +354,7 @@ trait AttributeObserverTrait
     public function getRequiredEmpytAttributes($headers, $attributes)
     {
         // load the attribute set name
-        $attributeSetName = $this->getValue(ColumnKeys::ATTRIBUTE_SET_CODE);
+        $attributeSetName = $this->getValue(\TechDivision\Import\Product\Utils\ColumnKeys::ATTRIBUTE_SET_CODE);
         $emptyAttributes = [];
         foreach (array_values($headers) as $header) {
             if (in_array($header, array_keys($attributes))) {
