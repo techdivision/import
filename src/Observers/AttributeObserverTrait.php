@@ -170,25 +170,25 @@ trait AttributeObserverTrait
         $emptyAttributes = $this->getRequiredEmpytAttributes($headers, $attributes);
         // iterate over the empty attributes
         foreach ($emptyAttributes as $key => $emptyAttribute) {
-                // log a message in debug mode
-                if (!$this->isStrictMode()) {
-                    $message =  sprintf(
-                        'The attribute "%s" Can\'t be empty, because the attribute is_required ',
-                        $emptyAttribute['attribute_code']
-                    );
-                    $this->mergeStatus(
-                        array(
-                            RegistryKeys::NO_STRICT_VALIDATIONS => array(
-                                basename($this->getFilename()) => array(
-                                    $this->getLineNumber() => array(
-                                        \TechDivision\Import\Attribute\Utils\MemberNames::VALUE =>  $message
-                                    )
+            // log a message in debug mode
+            if (!$this->isStrictMode()) {
+                $message = sprintf(
+                    'The attribute "%s" Can\'t be empty, because the attribute is_required ',
+                    $emptyAttribute['attribute_code']
+                );
+                $this->mergeStatus(
+                    array(
+                        RegistryKeys::NO_STRICT_VALIDATIONS => array(
+                            basename($this->getFilename()) => array(
+                                $this->getLineNumber() => array(
+                                    \TechDivision\Import\Attribute\Utils\MemberNames::VALUE => $message
                                 )
                             )
                         )
-                    );
-                }
+                    )
+                );
             }
+        }
 
         // remove all the empty values from the row
         $row = $this->clearRow();
@@ -347,8 +347,8 @@ trait AttributeObserverTrait
     /**
      * Return's the EAV attribute with the passed attribute code and are required and empty.
      *
-     * @param array $headers        The attribute code
-     * @param array $attributeCode The attribute code
+     * @param array $headers    The attribute code
+     * @param array $attributes The attributes
      *
      * @return array The array with the EAV attribute
      */
