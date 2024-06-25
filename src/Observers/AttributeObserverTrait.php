@@ -167,8 +167,8 @@ trait AttributeObserverTrait
 
         // load the header keys
         $headers = array_flip($this->getHeaders());
-        $emptyAttributes = $this->getRequiredAttribute($headers, $attributes);
-        // iterate over the attributes and append them to the row
+        $emptyAttributes = $this->getRequiredEmpytAttributes($headers, $attributes);
+        // iterate over the empty attributes
         foreach ($emptyAttributes as $key => $emptyAttribute) {
                 // log a message in debug mode
                 if (!$this->isStrictMode()) {
@@ -345,14 +345,14 @@ trait AttributeObserverTrait
     }
 
     /**
-     * Return's the EAV attribute with the passed attribute code.
+     * Return's the EAV attribute with the passed attribute code and are required and empty.
      *
-     * @param string $attributeCode The attribute code
+     * @param array $headers        The attribute code
+     * @param array $attributeCode The attribute code
      *
      * @return array The array with the EAV attribute
-     * @throws \Exception Is thrown if the attribute with the passed code is not available
      */
-    public function getRequiredAttribute($headers, $attributes)
+    public function getRequiredEmpytAttributes($headers, $attributes)
     {
         // load the attribute set name
         $attributeSetName = $this->getValue(ColumnKeys::ATTRIBUTE_SET_CODE);
