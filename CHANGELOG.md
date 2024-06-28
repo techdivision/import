@@ -1,3 +1,10 @@
+# Version 17.8.2
+
+## Feature
+
+* Validation for attributes (EAV) based on the information in the eav_attribute table
+  * Info output via the import that the values for is_required fields are missing
+
 # Version 17.8.1
 
 ## Bugfixes

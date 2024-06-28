@@ -166,6 +166,27 @@ trait AttributeObserverTrait
 
         // load the header keys
         $headers = array_flip($this->getHeaders());
+        $emptyAttributes = $this->getRequiredEmptyAttributes($headers, $attributes);
+        // iterate over the empty attributes
+        foreach ($emptyAttributes as $key => $emptyAttribute) {
+            // log a message
+            if (!$this->isStrictMode()) {
+                // Value for required attribute should never be empty,
+                // regardless of whether the associated entity is updated or created
+                $message = 'The value should not be empty, because the attribute is_required ';
+                $this->mergeStatus(
+                    array(
+                        RegistryKeys::NO_STRICT_VALIDATIONS => array(
+                            basename($this->getFilename()) => array(
+                                $this->getLineNumber() => array(
+                                    $emptyAttribute['attribute_code'] => $message
+                                )
+                            )
+                        )
+                    )
+                );
+            }
+        }
 
         // remove all the empty values from the row
         $row = $this->clearRow();
@@ -319,6 +340,30 @@ trait AttributeObserverTrait
                 )
             );
         }
+    }
+
+    /**
+     * Return's the EAV attribute with the passed attribute code and are required and empty.
+     *
+     * @param array $headers    The attribute code
+     * @param array $attributes The attributes
+     *
+     * @return array The array with the EAV attribute
+     */
+    public function getRequiredEmptyAttributes($headers, $attributes)
+    {
+        $emptyAttributes = [];
+        foreach (array_values($headers) as $header) {
+            if (in_array($header, array_keys($attributes))) {
+                $attribute = $attributes[$header];
+                if (!empty($attribute['is_required']) && $attribute['backend_type'] !== BackendTypeKeys::BACKEND_TYPE_STATIC) {
+                    if ($this->getValue($header) === null) {
+                        $emptyAttributes[] = $attribute;
+                    }
+                }
+            };
+        }
+        return $emptyAttributes;
     }
 
     /**
