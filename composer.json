@@ -48,11 +48,5 @@
                 "tests/unit/"
             ]
         }
-    },
-    "repositories": {
-        "repo.met.tdintern.de":  {
-            "type": "path",
-            "url": "../*"
-        }
     }
 }
