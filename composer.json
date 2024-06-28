@@ -3,36 +3,36 @@
     "description": "A library supporting generic Magento 2 import functionality",
     "license": "MIT",
     "require": {
-        "php": ">=7.3.0",
-        "psr/log": "~1.0|~2.0|~3.0",
-        "psr/cache" : "~1.0|~2.0|~3.0",
-        "psr/container": "1.1.1",
-        "handcraftedinthealps/goodby-csv": "^1.4.0",
-        "monolog/monolog": "~1.0|~2.3",
-        "league/event": "~2.0",
-        "ramsey/uuid": "^3.7|^3.8|^4.1|^4.2",
-        "swiftmailer/swiftmailer": "^6.2.5",
-        "laminas/laminas-filter": "~2.0",
-        "techdivision/import-dbal": "^1.0.0",
-        "techdivision/import-dbal-collection": "^1.0.0",
-        "techdivision/import-cache": "^1.0.0",
-        "techdivision/import-cache-collection": "^1.0.0",
-        "techdivision/import-serializer": "^1.0.0",
-        "techdivision/import-serializer-csv": "^1.0.0",
-        "techdivision/import-configuration": "^5.0.0",
+        "php": "^8.1",
+        "psr/log": "^2.0.0",
+        "psr/cache" : "^2.0.0",
+        "psr/container": "^1.1.2",
+        "handcraftedinthealps/goodby-csv": "^1.1.2",
+        "monolog/monolog": "^3.6.0",
+        "league/event": "^2.2.0",
+        "ramsey/uuid": "^4.7.6",
+        "swiftmailer/swiftmailer": "v6.3.0",
+        "laminas/laminas-filter": "^2.36.0",
+        "techdivision/import-dbal": "*",
+        "techdivision/import-dbal-collection": "*",
+        "techdivision/import-cache": "*",
+        "techdivision/import-cache-collection": "*",
+        "techdivision/import-serializer": "*",
+        "techdivision/import-serializer-csv": "*",
+        "techdivision/import-configuration": "*",
         "ext-json": "*",
         "ext-zip": "*"
     },
     "require-dev": {
-        "doctrine/dbal": "2.5.*",
-        "pdepend/pdepend": "2.5.2",
-        "phpmd/phpmd": "@stable",
-        "phpunit/phpunit": "^6.5.0|^8.0.0|~9.5.0",
-        "sebastian/phpcpd": "~3.0|~4.0|~5.0|~6.0",
-        "squizlabs/php_codesniffer": "~3.4.0|~3.6.0",
-        "consolidation/robo": "~1.0",
-        "mikey179/vfsstream": "~1.0",
-        "symfony/http-kernel": "~2.0|~3.0|~4.0"
+        "doctrine/dbal": "^4.0.4",
+        "pdepend/pdepend": "^2.16.2",
+        "phpmd/phpmd": "^2.15.0",
+        "phpunit/phpunit": "^11.2.5",
+        "sebastian/phpcpd": "^2.0.1",
+        "squizlabs/php_codesniffer": "^3.10.1",
+        "consolidation/robo": "^4.0.2",
+        "mikey179/vfsstream": "v1.6.11",
+        "symfony/http-kernel": "v4.4.51"
     },
     "authors": [
         {
@@ -47,6 +47,12 @@
                 "symfony/",
                 "tests/unit/"
             ]
+        }
+    },
+    "repositories": {
+        "repo.met.tdintern.de":  {
+            "type": "path",
+            "url": "../*"
         }
     }
 }
