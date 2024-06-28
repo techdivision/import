@@ -169,18 +169,17 @@ trait AttributeObserverTrait
         $emptyAttributes = $this->getRequiredEmptyAttributes($headers, $attributes);
         // iterate over the empty attributes
         foreach ($emptyAttributes as $key => $emptyAttribute) {
-            // log a message in debug mode
+            // log a message
             if (!$this->isStrictMode()) {
-                $message = sprintf(
-                    'The attribute "%s" Can\'t be empty, because the attribute is_required ',
-                    $emptyAttribute['attribute_code']
-                );
+                // Value for required attribute should never be empty,
+                // regardless of whether the associated entity is updated or created
+                $message = 'The value should not be empty, because the attribute is_required ';
                 $this->mergeStatus(
                     array(
                         RegistryKeys::NO_STRICT_VALIDATIONS => array(
                             basename($this->getFilename()) => array(
                                 $this->getLineNumber() => array(
-                                    \TechDivision\Import\Attribute\Utils\MemberNames::VALUE => $message
+                                    $emptyAttribute['attribute_code'] => $message
                                 )
                             )
                         )
@@ -357,7 +356,7 @@ trait AttributeObserverTrait
         foreach (array_values($headers) as $header) {
             if (in_array($header, array_keys($attributes))) {
                 $attribute = $attributes[$header];
-                if (!empty($attribute['is_required']) && $attribute['backend_type'] !== 'static') {
+                if (!empty($attribute['is_required']) && $attribute['backend_type'] !== BackendTypeKeys::BACKEND_TYPE_STATIC) {
                     if ($this->getValue($header) === null) {
                         $emptyAttributes[] = $attribute;
                     }
