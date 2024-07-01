@@ -23,6 +23,8 @@
         "ext-json": "*",
         "ext-zip": "*"
     },
+    "minimum-stability": "dev",
+    "prefer-stable": true,
     "require-dev": {
         "doctrine/dbal": "^4.0.4",
         "pdepend/pdepend": "^2.16.2",
