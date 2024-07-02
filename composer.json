@@ -8,7 +8,7 @@
         "psr/cache" : "^2.0.0|^3.0.0",
         "psr/container": "^1.1.2",
         "handcraftedinthealps/goodby-csv": "^1.4.2",
-        "monolog/monolog": "^3.7.0",
+        "monolog/monolog": "^2.9|^3.7",
         "league/event": "^2.2.0",
         "ramsey/uuid": "^4.7.6",
         "swiftmailer/swiftmailer": "v6.3.0",
