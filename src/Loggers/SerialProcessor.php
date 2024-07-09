@@ -52,11 +52,14 @@ class SerialProcessor implements ProcessorInterface
      *
      * @param  LogRecord $record The record to append the serial to
      *
-     * @return array The record with the appended serial
+     * @return array|LogRecord The record with the appended serial
      */
     public function __invoke(array|LogRecord $record)
     {
-        $record->extra = array('serial' => $this->serial);
-        return $record;
+        if ($record instanceof LogRecord) {
+            $record->extra = array_merge($record->extra, array('serial' => $this->serial));
+            return $record;
+        }
+        return array_merge($record, array('extra' => array('serial' => $this->serial)));
     }
 }
