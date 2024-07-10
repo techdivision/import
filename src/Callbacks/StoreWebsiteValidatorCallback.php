@@ -17,6 +17,7 @@ namespace TechDivision\Import\Callbacks;
 use TechDivision\Import\Loaders\LoaderInterface;
 use TechDivision\Import\Services\ImportProcessorInterface;
 use TechDivision\Import\Utils\MemberNames;
+use TechDivision\Import\Utils\RegistryKeys;
 
 /**
  * storeview validator callback implementation.
@@ -111,9 +112,21 @@ class StoreWebsiteValidatorCallback extends ArrayValidatorCallback
                 $attributeValue,
                 $productWebsite
             );
-            if (!$this->hasHandleStrictMode($attributeCode, $message)) {
-                throw new \InvalidArgumentException($message);
-            }
+
+            $this->getSubject()
+                ->getSystemLogger()
+                ->warning($this->getSubject()->appendExceptionSuffix($message));
+            $this->getSubject()->mergeStatus(
+                array(
+                    RegistryKeys::NO_STRICT_VALIDATIONS => array(
+                        basename($this->getSubject()->getFilename()) => array(
+                            $this->getSubject()->getLineNumber() => array(
+                                $attributeCode  => $message
+                            )
+                        )
+                    )
+                )
+            );
         }
     }
 
