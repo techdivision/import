@@ -29,7 +29,6 @@ use TechDivision\Import\Utils\MemberNames;
  */
 class StoreWebsiteValidatorCallback extends ArrayValidatorCallback
 {
-
     /**
      * The flag to query whether or not the value can be empty.
      *
@@ -61,11 +60,11 @@ class StoreWebsiteValidatorCallback extends ArrayValidatorCallback
     /**
      * Initializes the callback with the loader instance.
      *
-     * @param \TechDivision\Import\Loaders\LoaderInterface $storeLoader The loader instance to load the validations with
-     * @param ImportProcessorInterface $importProcessor The loader instance to load the validations with
-     * @param boolean $nullable The flag to decide whether or not the value can be empty
-     * @param boolean $mainRowOnly The flag to decide whether or not the value has to be validated on the main row only
-     * @param boolean $ignoreStrictMode The flag to query whether or not the value has to be ignored global strict mode configuration.
+     * @param LoaderInterface          $storeLoader      The loader instance to load the validations with
+     * @param ImportProcessorInterface $importProcessor  The import processor instance
+     * @param boolean                  $nullable         The flag to decide whether or not the value can be empty
+     * @param boolean                  $mainRowOnly      The flag to decide whether or not the value has to be validated on the main row only
+     * @param boolean                  $ignoreStrictMode The flag to query whether or not the value has to be ignored global strict mode configuration.
      */
     public function __construct(LoaderInterface $storeLoader, ImportProcessorInterface $importProcessor, $nullable = false, $mainRowOnly = false, $ignoreStrictMode = true)
     {
@@ -78,11 +77,8 @@ class StoreWebsiteValidatorCallback extends ArrayValidatorCallback
         $this->mainRowOnly = $mainRowOnly;
         $this->ignoreStrictMode = $ignoreStrictMode;
 
-        // load the store websites
-        $storeWebsites = $importProcessor->getStoreWebsites();
-
         // initialize the array with the store websites
-        foreach ($storeWebsites as $storeWebsite) {
+        foreach ($importProcessor->getStoreWebsites() as $storeWebsite) {
             $this->storeWebsites[$storeWebsite[MemberNames::CODE]] = $storeWebsite[MemberNames::WEBSITE_ID];
         }
     }
@@ -90,41 +86,35 @@ class StoreWebsiteValidatorCallback extends ArrayValidatorCallback
     /**
      * Will be invoked by a observer it has been registered for.
      *
-     * @param string|null $attributeCode The code of the attribute that has to be validated
+     * @param string|null $attributeCode  The code of the attribute that has to be validated
      * @param string|null $attributeValue The attribute value to be validated
      *
      * @return mixed The modified value
      */
     public function handle($attributeCode = null, $attributeValue = null)
     {
-
-        // the validations for the attribute with the given code
-        $validations = $this->getValidations($attributeCode);
-
         // query whether or not the passed value IS empty and empty
         // values are allowed
         if ($this->isNullable($attributeValue)) {
             return;
         }
 
+        // the validations for the attribute with the given code
+        $validations = $this->getValidations($attributeCode);
+
         $website = $this->load();
         $productWebsite = $this->getSubject()->getValue('product_websites');
-        $message = sprintf(
-            'The store "%s" does not belong to the website "%s" . Please check your data.',
-            $attributeValue,
-            $productWebsite
-        );
 
-        if ($validations[$attributeValue][MemberNames::WEBSITE_ID] === $website[$productWebsite]) {
-            return;
-        } else {
-            if ($this->hasHandleStrictMode($attributeCode, $message)) {
-                return;
+        if ($validations[$attributeValue][MemberNames::WEBSITE_ID] !== $website[$productWebsite]) {
+            $message = sprintf(
+                'The store "%s" does not belong to the website "%s" . Please check your data.',
+                $attributeValue,
+                $productWebsite
+            );
+            if (!$this->hasHandleStrictMode($attributeCode, $message)) {
+                throw new \InvalidArgumentException($message);
             }
         }
-
-        // throw an exception if the store not in Website
-        throw new \InvalidArgumentException($message);
     }
 
     /**
