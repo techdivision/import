@@ -23,6 +23,12 @@
         "ext-json": "*",
         "ext-zip": "*"
     },
+    "conflict": {
+        "laminas/laminas-servicemanager": "<3.21.0"
+    },
+    "replace": {
+        "laminas/laminas-code": "4.5.2"
+    },
     "minimum-stability": "dev",
     "prefer-stable": true,
     "require-dev": {
