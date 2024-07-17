@@ -10,7 +10,7 @@
         "handcraftedinthealps/goodby-csv": "^1.4.2",
         "monolog/monolog": "^2.9|^3.7",
         "league/event": "^2.2.0",
-        "ramsey/uuid": "^4.7.6",
+        "ramsey/uuid": "^4.2|^4.7",
         "swiftmailer/swiftmailer": "v6.3.0",
         "laminas/laminas-filter": "^2.36.0",
         "techdivision/import-dbal": "dev-compatibility-php-81",
