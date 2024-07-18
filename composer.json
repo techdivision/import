@@ -12,7 +12,7 @@
         "league/event": "^2.2.0",
         "ramsey/uuid": "^4.2|^4.7",
         "swiftmailer/swiftmailer": "v6.3.0",
-        "laminas/laminas-filter": "^2.36.0",
+        "laminas/laminas-filter": "^2.31.0",
         "techdivision/import-dbal": "dev-compatibility-php-81",
         "techdivision/import-dbal-collection": "dev-compatibility-php-81",
         "techdivision/import-cache": "dev-compatibility-php-81",
