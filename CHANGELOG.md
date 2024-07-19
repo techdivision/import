@@ -1,3 +1,12 @@
+# Version 17.8.3
+
+## Bugfixes
+
+* Fix validation empty website
+
+## Features
+* None
+
 # Version 17.8.2
 
 ## Bugfixes

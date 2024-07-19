@@ -106,7 +106,7 @@ class StoreWebsiteValidatorCallback extends ArrayValidatorCallback
         $website = $this->load();
         $productWebsite = $this->getSubject()->getValue('product_websites');
 
-        if ($validations[$attributeValue][MemberNames::WEBSITE_ID] !== $website[$productWebsite]) {
+        if (!empty($productWebsite) && $validations[$attributeValue][MemberNames::WEBSITE_ID] !== $website[$productWebsite]) {
             $message = sprintf(
                 'The store "%s" does not belong to the website "%s" . Please check your data.',
                 $attributeValue,
