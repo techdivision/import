@@ -1,3 +1,24 @@
+# Version 17.8.3
+
+## Bugfixes
+
+* Fix validation empty website
+
+## Features
+* None
+
+# Version 17.8.2
+
+## Bugfixes
+
+* None
+
+## Features
+
+* Add #PAC-354 new feature:
+  * Validation whether the product of the website is assigned to the current store view line
+    * `TechDivision\Import\Callbacks\StoreWebsiteValidatorCallback`
+
 # Version 17.8.1
 
 ## Bugfixes
