@@ -1,3 +1,12 @@
+# Version 18.0.0
+
+### PHP 8.1 Compatibility
+
+* Update dependencies
+* Add PHP ">=8.1" support
+* Remove PHP 7.3 support
+* Fix compatiility import logger with  monolog/monolog 
+
 # Version 17.8.3
 
 ## Bugfixes

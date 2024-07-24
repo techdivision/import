@@ -16,6 +16,7 @@ namespace TechDivision\Import\Loggers\Handlers;
 
 use Monolog\Handler\HandlerInterface;
 use Monolog\Formatter\FormatterInterface;
+use Monolog\LogRecord;
 use TechDivision\Import\Loggers\HandlerFactoryInterface;
 use TechDivision\Import\Configuration\Logger\HandlerConfigurationInterface;
 
@@ -104,11 +105,11 @@ class HandlerWrapper implements ResetAwareHandlerInterface
      * is no guarantee that handle() will not be called, and isHandling() might not be called
      * for a given record.
      *
-     * @param array $record Partial log record containing only a level key
+     * @param array|LogRecord $record Partial log record containing only a level key
      *
      * @return boolean TRUE if the handler has to handle the record, FALSE otherwise
      */
-    public function isHandling(array $record): bool
+    public function isHandling(array|LogRecord $record): bool
     {
         return $this->handler->isHandling($record);
     }
@@ -128,7 +129,7 @@ class HandlerWrapper implements ResetAwareHandlerInterface
      * @return boolean TRUE means that this handler handled the record, and that bubbling is not permitted.
      *                 FALSE means the record was either not processed or that this handler allows bubbling.
      */
-    public function handle(array $record): bool
+    public function handle(array|LogRecord $record): bool
     {
         return $this->handler->handle($record);
     }

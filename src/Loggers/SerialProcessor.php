@@ -14,6 +14,7 @@
 
 namespace TechDivision\Import\Loggers;
 
+use Monolog\LogRecord;
 use Monolog\Processor\ProcessorInterface;
 use TechDivision\Import\Configuration\ConfigurationInterface;
 
@@ -49,12 +50,16 @@ class SerialProcessor implements ProcessorInterface
     /**
      * Will be invoked by the logger processor chain to append the serial.
      *
-     * @param  array $record The record to append the serial to
+     * @param  LogRecord $record The record to append the serial to
      *
-     * @return array The record with the appended serial
+     * @return array|LogRecord The record with the appended serial
      */
-    public function __invoke(array $record)
+    public function __invoke(array|LogRecord $record)
     {
+        if ($record instanceof LogRecord) {
+            $record->extra = array_merge($record->extra, array('serial' => $this->serial));
+            return $record;
+        }
         return array_merge($record, array('extra' => array('serial' => $this->serial)));
     }
 }
