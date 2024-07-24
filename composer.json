@@ -13,18 +13,16 @@
         "ramsey/uuid": "^4.2|^4.7",
         "swiftmailer/swiftmailer": "v6.3.0",
         "laminas/laminas-filter": "^2.31.0",
-        "techdivision/import-dbal": "dev-compatibility-php-81",
-        "techdivision/import-dbal-collection": "dev-compatibility-php-81",
-        "techdivision/import-cache": "dev-compatibility-php-81",
-        "techdivision/import-cache-collection": "dev-compatibility-php-81",
-        "techdivision/import-serializer": "dev-compatibility-php-81",
-        "techdivision/import-serializer-csv": "dev-compatibility-php-81",
-        "techdivision/import-configuration": "dev-compatibility-php-81",
+        "techdivision/import-dbal": "^2.0.0",
+        "techdivision/import-dbal-collection": "^2.0.0",
+        "techdivision/import-cache": "^2.0.0",
+        "techdivision/import-cache-collection": "^2.0.0",
+        "techdivision/import-serializer": "^2.0.0",
+        "techdivision/import-serializer-csv": "^2.0.0",
+        "techdivision/import-configuration": "^6.0.0.",
         "ext-json": "*",
         "ext-zip": "*"
     },
-    "minimum-stability": "dev",
-    "prefer-stable": true,
     "require-dev": {
         "doctrine/dbal": "^4.0.4",
         "pdepend/pdepend": "^2.16.2",
@@ -33,8 +31,8 @@
         "sebastian/phpcpd": "^2.0.1",
         "squizlabs/php_codesniffer": "^3.10.1",
         "consolidation/robo": "^4.0.2",
-        "mikey179/vfsstream": "v1.6.11",
-        "symfony/http-kernel": "v4.4.51"
+        "mikey179/vfsstream": "~1.6.11",
+        "symfony/http-kernel": "~4.4.51"
     },
     "authors": [
         {
