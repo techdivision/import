@@ -61,7 +61,7 @@ class InvalidDataListener extends AbstractListener
 
         // query whether or not we've validation errors
         if (is_array($noStrictValidations) && sizeof($noStrictValidations) > 0) {
-            $application->invalidDataNoStrict('Invalid Data Please Check your Validation.json file', InvalidDataException::INVALID_DATA_CODE);
+            $application->invalidDataNoStrict('Invalid Data Please Check your validations.json file', InvalidDataException::INVALID_DATA_CODE);
         }
     }
 
