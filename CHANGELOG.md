@@ -226,7 +226,7 @@
 
 ## Bugfixes
 
-* Fix warning on validation.json output when `--clear-artefacts=true` (default behavior) is used
+* Fix warning on validations.json output when `--clear-artefacts=true` (default behavior) is used
 
 ## Features
 
