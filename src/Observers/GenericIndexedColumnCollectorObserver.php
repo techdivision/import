@@ -76,7 +76,7 @@ class GenericIndexedColumnCollectorObserver extends AbstractColumnCollectorObser
      */
     protected function getPrimaryKeyColumn() : string
     {
-        return $this->primaryKeyColumn;
+        return (string)$this->primaryKeyColumn;
     }
 
     /**
@@ -86,6 +86,6 @@ class GenericIndexedColumnCollectorObserver extends AbstractColumnCollectorObser
      */
     protected function getPrimaryKey() : string
     {
-        return $this->getValue($this->getPrimaryKeyColumn());
+        return (string)$this->getValue($this->getPrimaryKeyColumn());
     }
 }
