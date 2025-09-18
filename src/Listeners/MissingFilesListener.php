@@ -60,7 +60,7 @@ class MissingFilesListener extends AbstractListener
      * @return void
      * @throws \TechDivision\Import\Exceptions\MissingFileException
      */
-    public function handle(EventInterface $event, ApplicationInterface $application = null)
+    public function handle(EventInterface $event, ?ApplicationInterface $application = null)
     {
 
         // load the validations from the registry

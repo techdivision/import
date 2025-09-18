@@ -48,11 +48,11 @@ class FilteredByExecutionContextEntityTypeCodeLoader implements LoaderInterface
     /**
      * Loads and returns data the custom validation data.
      *
-     * @param \TechDivision\Import\Configuration\ParamsConfigurationInterface $configuration The configuration instance to load the validations from
+     * @param SubjectConfigurationInterface|null $configuration The configuration instance to load the validations from
      *
      * @return \ArrayAccess The array with the data
      */
-    public function load(SubjectConfigurationInterface $configuration = null)
+    public function load(?SubjectConfigurationInterface $configuration = null)
     {
         return $this->loader->load($configuration->getExecutionContext()->getEntityTypeCode());
     }

@@ -57,7 +57,7 @@ class OkFileHandler implements OkFileHandlerInterface
      *
      * @param \TechDivision\Import\Handlers\GenericFileHandlerInterface|null $genericFileHandler The generic file handler instance
      */
-    public function __construct(GenericFileHandlerInterface $genericFileHandler = null)
+    public function __construct(?GenericFileHandlerInterface $genericFileHandler = null)
     {
         $this->genericFileHandler = $genericFileHandler ?? new GenericFileHandler();
     }

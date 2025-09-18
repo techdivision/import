@@ -167,7 +167,7 @@ class ImportHistoryListener extends AbstractListener
      *
      * @return void
      */
-    public function handle(EventInterface $event, ApplicationInterface $application = null)
+    public function handle(EventInterface $event, ?ApplicationInterface $application = null)
     {
 
         // load the registry processor

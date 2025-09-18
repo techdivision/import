@@ -61,7 +61,7 @@ class FilteredLoader implements FilteredLoaderInterface
      * @param \TechDivision\Import\Loaders\LoaderInterface                  $loader     The parent loader instance
      * @param \TechDivision\Import\Loaders\Filters\FilterImplInterface|null $filterImpl The filter instance to use
      */
-    public function __construct(LoaderInterface $loader, FilterImplInterface $filterImpl = null)
+    public function __construct(LoaderInterface $loader, ?FilterImplInterface $filterImpl = null)
     {
         $this->loader = $loader;
         $this->filterImpl = $filterImpl ?? new ArrayFilterImpl();
@@ -119,7 +119,7 @@ class FilteredLoader implements FilteredLoaderInterface
      *
      * @return array The array with the data
      */
-    public function load(string $pattern = null) : array
+    public function load(?string $pattern = null) : array
     {
 
         // load the data from the parent loader

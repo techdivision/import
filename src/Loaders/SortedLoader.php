@@ -54,7 +54,7 @@ class SortedLoader implements SortedLoaderInterface
      * @param \TechDivision\Import\Loaders\LoaderInterface                  $loader     The parent loader instance
      * @param \TechDivision\Import\Loaders\Sorters\SorterImplInterface|null $sorterImpl The sorter instance to use
      */
-    public function __construct(LoaderInterface $loader, SorterImplInterface $sorterImpl = null)
+    public function __construct(LoaderInterface $loader, ?SorterImplInterface $sorterImpl = null)
     {
         $this->loader = $loader;
         $this->sorterImpl = $sorterImpl ?? new UasortImpl();
@@ -92,7 +92,7 @@ class SortedLoader implements SortedLoaderInterface
      *
      * @return \ArrayAccess The array with the data
      */
-    public function load(string $pattern = null) : \ArrayAccess
+    public function load(?string $pattern = null) : \ArrayAccess
     {
 
         // sort the files loaded by the parent loader instance

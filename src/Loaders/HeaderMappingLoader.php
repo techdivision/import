@@ -52,7 +52,7 @@ class HeaderMappingLoader implements LoaderInterface
      *
      * @return array The array with the values
      */
-    public function load(string $entityTypeCode = null) : array
+    public function load(?string $entityTypeCode = null) : array
     {
         return isset($this->headerMappings[$entityTypeCode]) ? $this->headerMappings[$entityTypeCode] : array();
     }

@@ -52,9 +52,8 @@ class InvalidDataListener extends AbstractListener
      * @param ApplicationInterface|null $application The application instance
      *
      * @return void
-     * @throws \TechDivision\Import\Exceptions\MissingFileException
      */
-    public function handle(EventInterface $event, ApplicationInterface $application = null)
+    public function handle(EventInterface $event, ?ApplicationInterface $application = null)
     {
         // load the validations from the registry
         $noStrictValidations = $this->getRegistryProcessor()->getAttribute(RegistryKeys::NO_STRICT_VALIDATIONS);

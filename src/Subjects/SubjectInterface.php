@@ -397,7 +397,7 @@ interface SubjectInterface
      *
      * @return mixed|null The, almost formatted, value
      */
-    public function getValue($name, $default = null, callable $callback = null);
+    public function getValue($name, $default = null, ?callable $callback = null);
 
     /**
      * Return's the store view code the create the product/attributes for.

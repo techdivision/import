@@ -46,7 +46,7 @@ class CleanUpColumnsEntityMerger implements EntityMergerInterface
      *
      * @param \TechDivision\Import\Loaders\LoaderInterface|null $haederMappingLoader The loader for the virtual mappings
      */
-    public function __construct(LoaderInterface $haederMappingLoader = null)
+    public function __construct(?LoaderInterface $haederMappingLoader = null)
     {
         $this->reverseHeaderMappings = array_merge(
             $this->reverseHeaderMappings,

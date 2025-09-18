@@ -124,7 +124,7 @@ class ArchiveListener extends AbstractListener
      *
      * @return void
      */
-    public function handle(EventInterface $event, ApplicationInterface $application = null)
+    public function handle(EventInterface $event, ?ApplicationInterface $application = null)
     {
 
         // query whether or not, the import artefacts have to be archived

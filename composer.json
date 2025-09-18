@@ -2,6 +2,7 @@
     "name": "techdivision/import",
     "description": "A library supporting generic Magento 2 import functionality",
     "license": "MIT",
+    "version": "18.1.0",
     "require": {
         "php": "^8.1",
         "psr/log": "^1.0.0|^2.0.0|^3.0.0",
@@ -11,7 +12,7 @@
         "monolog/monolog": "^2.9|^3.7",
         "league/event": "^2.2.0",
         "ramsey/uuid": "^4.2|^4.7",
-        "swiftmailer/swiftmailer": "v6.3.0",
+        "symfony/mailer": "6.4.25",
         "laminas/laminas-filter": "^2.31.0",
         "techdivision/import-dbal": "^2.0.0",
         "techdivision/import-dbal-collection": "^2.0.0",

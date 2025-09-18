@@ -60,11 +60,11 @@ class ConfigurationValueLoader implements LoaderInterface
     /**
      * Loads and returns the configuration value for the key the instance has been initialized with.
      *
-     * @param \TechDivision\Import\Configuration\ParamsConfigurationInterface $configuration The configuration instance to load the value from
+     * @param \TechDivision\Import\Configuration\ParamsConfigurationInterface|null $configuration The configuration instance to load the value from
      *
      * @return \ArrayAccess The array with the configuration value
      */
-    public function load(ParamsConfigurationInterface $configuration = null)
+    public function load(?ParamsConfigurationInterface $configuration = null)
     {
 
         // return an empty array if the param has NOT been set

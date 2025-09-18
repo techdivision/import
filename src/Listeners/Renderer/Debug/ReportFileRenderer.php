@@ -35,7 +35,7 @@ class ReportFileRenderer extends AbstractDebugRenderer
      *
      * @return void
      */
-    public function render(string $serial = null)
+    public function render(?string $serial = null)
     {
 
         // load the actual status

@@ -57,7 +57,7 @@ class FilesystemLoader implements LoaderInterface
      *
      * @return array The array with the data
      */
-    public function load(string $pattern = null) : array
+    public function load(?string $pattern = null) : array
     {
         return $this->getFilesystemAdapter()->glob($pattern ? $pattern : getcwd() . DIRECTORY_SEPARATOR . '*');
     }

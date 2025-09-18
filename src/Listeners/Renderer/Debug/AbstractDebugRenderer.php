@@ -76,7 +76,7 @@ abstract class AbstractDebugRenderer implements RendererInterface
         RegistryProcessorInterface $registryProcessor,
         ConfigurationInterface $configuration,
         Collection $systemLoggers,
-        ContainerInterface $container = null
+        ?ContainerInterface $container = null
     ) {
         $this->registryProcessor = $registryProcessor;
         $this->configuration = $configuration;

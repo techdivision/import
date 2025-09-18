@@ -64,11 +64,11 @@ class RenderOperationReportListener extends AbstractListener
      * Handle the event.
      *
      * @param \League\Event\EventInterface              $event       The event that triggered the listener
-     * @param \TechDivision\Import\ApplicationInterface $application The application instance
+     * @param \TechDivision\Import\ApplicationInterface|null $application The application instance
      *
      * @return void
      */
-    public function handle(EventInterface $event, ApplicationInterface $application = null)
+    public function handle(EventInterface $event, ?ApplicationInterface $application = null)
     {
 
         // load the registry processor

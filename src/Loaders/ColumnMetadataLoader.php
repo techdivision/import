@@ -49,7 +49,7 @@ class ColumnMetadataLoader implements LoaderInterface
      * @param \TechDivision\Import\Dbal\Connection\ConnectionInterface      $connection      The DB connection instance used to load the table metadata
      * @param \TechDivision\Import\Dbal\Utils\TablePrefixUtilInterface|null $tablePrefixUtil Table prefix utility
      */
-    public function __construct(ConnectionInterface $connection, TablePrefixUtilInterface $tablePrefixUtil = null)
+    public function __construct(ConnectionInterface $connection, ?TablePrefixUtilInterface $tablePrefixUtil = null)
     {
         // use in load function for backword compatibility
         $this->tablePrefixUtil = $tablePrefixUtil;

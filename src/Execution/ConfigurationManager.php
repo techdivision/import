@@ -105,12 +105,15 @@ class ConfigurationManager implements ConfigurationManagerInterface
         if ($shortcut = $configuration->getShortcut()) {
             // load the entity type code and map it to the Magento edition
             $magentoEdition = $this->mapEntityTypeToMagentoEdition($entityTypeCode);
-            // load the operation names from the shorcuts
-            foreach ($shortcuts[$magentoEdition][$entityTypeCode] as $shortcutName => $opNames) {
-                // query whether or not the operation has to be executed or not
-                if ($shortcutName === $shortcut) {
-                    foreach ($opNames as $opName) {
-                        $configuration->addOperationName($opName);
+            // load the operation names from the shortcuts if available
+            if (isset($shortcuts[$magentoEdition], $shortcuts[$magentoEdition][$entityTypeCode])
+                && is_array($shortcuts[$magentoEdition][$entityTypeCode])) {
+                foreach ($shortcuts[$magentoEdition][$entityTypeCode] as $shortcutName => $opNames) {
+                    // query whether or not the operation has to be executed or not
+                    if ($shortcutName === $shortcut) {
+                        foreach ($opNames as $opName) {
+                            $configuration->addOperationName($opName);
+                        }
                     }
                 }
             }

@@ -126,7 +126,7 @@ class PregMatchFilteredLoader implements PregMatchFilteredLoaderInterface
      * @return string The match itself
      * @throws \InvalidArgumentException Is thrown the value of the match with the passed name and key is not available
      */
-    public function getMatch(string $name, string $key = null) : string
+    public function getMatch(string $name, ?string $key = null) : string
     {
 
         // load the matches from all filters
@@ -211,7 +211,7 @@ class PregMatchFilteredLoader implements PregMatchFilteredLoaderInterface
      *
      * @return array The array with the data
      */
-    public function load(string $pattern = null) : array
+    public function load(?string $pattern = null) : array
     {
         return $this->getLoader()->load($pattern);
     }
