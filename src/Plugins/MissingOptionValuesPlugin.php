@@ -14,11 +14,13 @@
 
 namespace TechDivision\Import\Plugins;
 
-use TechDivision\Import\Utils\ColumnKeys;
-use TechDivision\Import\Utils\RegistryKeys;
-use TechDivision\Import\Utils\SwiftMailerKeys;
-use TechDivision\Import\ApplicationInterface;
+use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
+use Symfony\Component\Mime\Email;
 use TechDivision\Import\Adapter\ExportAdapterInterface;
+use TechDivision\Import\ApplicationInterface;
+use TechDivision\Import\Utils\ColumnKeys;
+use TechDivision\Import\Utils\MailerKeys;
+use TechDivision\Import\Utils\RegistryKeys;
 
 /**
  * Plugin that exports the missing option values to a CSV file.
@@ -142,53 +144,40 @@ class MissingOptionValuesPlugin extends AbstractPlugin
         $this->addArtefacts(MissingOptionValuesPlugin::ARTEFACT_TYPE, $artefacts);
         $this->export(date('Ymd-His'), $counter = '01');
 
-        // query whether or not a swift mailer has been registered
-        if ($swiftMailer = $this->getSwiftMailer()) {
-            // the swift mailer configuration
-            $swiftMailerConfiguration = $this->getPluginConfiguration()->getSwiftMailer();
+        // query whether or not a mailer has been registered
+        if ($mailer = $this->getMailer()) {
+            // the mailer configuration
+            $mailerConfiguration = $this->getPluginConfiguration()->getMailer();
 
             // create the message with the CSV with the missing option values
-            $message = $swiftMailer->createMessage()
-                                   ->setSubject(sprintf('[%s] %s', $this->getSystemName(), $swiftMailerConfiguration->getParam(SwiftMailerKeys::SUBJECT)))
-                                   ->setFrom($swiftMailerConfiguration->getParam(SwiftMailerKeys::FROM))
-                                   ->setTo($to = $swiftMailerConfiguration->getParam(SwiftMailerKeys::TO))
-                                   ->setBody('The attached CSV file(s) contains the missing attribute option values');
+            $from = $mailerConfiguration->getParam(MailerKeys::FROM);
+            $to = $mailerConfiguration->getParam(MailerKeys::TO);
+            $subject = sprintf('[%s] %s', $this->getSystemName(), $mailerConfiguration->getParam(MailerKeys::SUBJECT));
+            $body = 'The attached CSV file(s) contains the missing attribute option values';
+            $email = (new Email())->subject($subject)->from($from)->to(...(array)$to)->text($body);
 
             // load the exported filenames
             $exportedFilenames = $this->getExportAdapter()->getExportedFilenames();
 
             // attach the CSV files with the missing option values
             foreach ($exportedFilenames as $filename) {
-                $message->attach(\Swift_Attachment::fromPath($filename));
+                $email->attachFromPath($filename);
             }
 
-            // initialize the array with the failed recipients
-            $failedRecipients = array();
-            $recipientsAccepted = 0;
+            try {
+                // send the mail
+                $mailer->send($email);
 
-            // send the mail
-            $recipientsAccepted = $swiftMailer->send($message, $failedRecipients);
-
-            // query whether or not all recipients have been accepted
-            if (sizeof($failedRecipients) > 0) {
-                $this->getSystemLogger()->error(sprintf('Can\'t send mail to %s', implode(', ', $failedRecipients)));
-            }
-
-            // if at least one recipient has been accepted
-            if ($recipientsAccepted > 0) {
-                // cast 'to' into an array if not already
-                is_array($to) ? : $to = (array) $to;
-                // remove the NOT accepted recipients
-                $acceptedRecipients = array_diff($to, $failedRecipients);
-
-                // log a message with the successfull receivers
+                // log a message with the receivers
+                is_array($to) ?: $to = (array) $to;
                 $this->getSystemLogger()->info(
                     sprintf(
-                        'Mail successfully sent to %d recipient(s) (%s)',
-                        $recipientsAccepted,
-                        implode(', ', $acceptedRecipients)
+                        'Mail successfully sent to recipient(s) (%s)',
+                        implode(', ', $to)
                     )
                 );
+            } catch (TransportExceptionInterface $e) {
+                $this->getSystemLogger()->error(sprintf('Can\'t send mail: %s', $e->getMessage()));
             }
         }
 
