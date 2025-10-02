@@ -11,7 +11,7 @@
         "monolog/monolog": "^2.9|^3.7",
         "league/event": "^2.2.0",
         "ramsey/uuid": "^4.2|^4.7",
-        "symfony/mailer": "^6.4.25",
+        "symfony/mailer": "^5.4|^6.4",
         "laminas/laminas-filter": "^2.31.0",
         "techdivision/import-dbal": "^2.0.0",
         "techdivision/import-dbal-collection": "^2.0.0",
