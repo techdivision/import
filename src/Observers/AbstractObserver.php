@@ -56,9 +56,9 @@ abstract class AbstractObserver implements ObserverInterface
     /**
      * Initializes the observer with the state detector instance.
      *
-     * @param \TechDivision\Import\Observers\StateDetectorInterface $stateDetector The state detector instance
+     * @param \TechDivision\Import\Observers\StateDetectorInterface|null $stateDetector The state detector instance
      */
-    public function __construct(StateDetectorInterface $stateDetector = null)
+    public function __construct(?StateDetectorInterface $stateDetector = null)
     {
         $this->stateDetector = $stateDetector;
     }
@@ -224,7 +224,7 @@ abstract class AbstractObserver implements ObserverInterface
      * line number and column name and use it for a detailed exception message.
      *
      * @param string     $columnName The column name that should be resolved
-     * @param \Exception $parent     The exception we want to wrap
+     * @param \Exception|null $parent     The exception we want to wrap
      * @param string     $className  The class name of the exception type we want to wrap the parent one
      *
      * @return \Exception the wrapped exception
@@ -233,7 +233,7 @@ abstract class AbstractObserver implements ObserverInterface
      */
     protected function wrapException(
         $columnName,
-        \Exception $parent = null,
+        ?\Exception $parent = null,
         $className = '\TechDivision\Import\Exceptions\WrappedColumnException'
     ) {
         return $this->getSubject()->wrapException($columnName, $parent, $className);

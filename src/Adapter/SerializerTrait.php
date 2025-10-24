@@ -80,7 +80,7 @@ trait SerializerTrait
      *
      * @return string|null The compatected value
      */
-    public function implode(array $value = null, $delimiter = null)
+    public function implode(?array $value = null, $delimiter = null)
     {
         return $this->getSerializer()->implode($value, $delimiter);
     }
@@ -93,7 +93,7 @@ trait SerializerTrait
      *
      * @return string The serialized array
      */
-    public function serialize(array $unserialized = null, $delimiter = null)
+    public function serialize(?array $unserialized = null, $delimiter = null)
     {
         return $this->getSerializer()->serialize($unserialized, $delimiter);
     }

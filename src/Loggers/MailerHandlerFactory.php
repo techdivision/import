@@ -1,7 +1,7 @@
 <?php
 
 /**
- * TechDivision\Import\Loggers\SwiftMailerHandlerFactory
+ * TechDivision\Import\Loggers\MailerHandlerFactory
  *
  * PHP version 7
  *
@@ -14,16 +14,19 @@
 
 namespace TechDivision\Import\Loggers;
 
-use Monolog\Handler\SwiftMailerHandler;
+use Exception;
+use Monolog\Handler\SymfonyMailerHandler;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use TechDivision\Import\Utils\LoggerKeys;
-use TechDivision\Import\Utils\SwiftMailerKeys;
+use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mime\Email;
 use TechDivision\Import\Configuration\ConfigurationInterface;
 use TechDivision\Import\Configuration\Logger\HandlerConfigurationInterface;
-use TechDivision\Import\Loggers\SwiftMailer\TransportMailerFactoryInterface;
+use TechDivision\Import\Loggers\Mailer\TransportMailerFactoryInterface;
+use TechDivision\Import\Utils\LoggerKeys;
+use TechDivision\Import\Utils\MailerKeys;
 
 /**
- * Swift Mailer Handler factory implementation.
+ * Mailer Handler factory implementation.
  *
  * @author    Tim Wagner <t.wagner@techdivision.com>
  * @copyright 2019 TechDivision GmbH <info@techdivision.com>
@@ -31,7 +34,7 @@ use TechDivision\Import\Loggers\SwiftMailer\TransportMailerFactoryInterface;
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
  */
-class SwiftMailerHandlerFactory implements HandlerFactoryInterface
+class MailerHandlerFactory implements HandlerFactoryInterface
 {
 
     /**
@@ -86,22 +89,22 @@ class SwiftMailerHandlerFactory implements HandlerFactoryInterface
      * @param \TechDivision\Import\Configuration\Logger\HandlerConfigurationInterface $handlerConfiguration The handler configuration
      *
      * @return \Monolog\Handler\HandlerInterface The handler instance
+     * @throws Exception
      */
     public function factory(HandlerConfigurationInterface $handlerConfiguration)
     {
+        // load the mailer configuration
+        $mailerConfiguration = $handlerConfiguration->getMailer();
 
-        // load the swift mailer configuration
-        $swiftMailerConfiguration = $handlerConfiguration->getSwiftMailer();
+        // create the mailer (factory) instance
+        $possibleMailer = $this->getContainer()->get($mailerConfiguration->getId());
 
-        // create the swift mailer (factory) instance
-        $possibleSwiftMailer = $this->getContainer()->get($swiftMailerConfiguration->getId());
-
-        // query whether or not we've a factory or the instance
-        /** @var \Swift_Mailer $swiftMailer */
-        if ($possibleSwiftMailer instanceof TransportMailerFactoryInterface) {
-            $swiftMailer = $possibleSwiftMailer->factory($swiftMailerConfiguration->getTransport());
+        // resolve to a MailerInterface
+        if ($possibleMailer instanceof TransportMailerFactoryInterface) {
+            /** @var MailerInterface $mailer */
+            $mailer = $possibleMailer->factory($mailerConfiguration->getTransport());
         } else {
-            $swiftMailer = $possibleSwiftMailer;
+            $mailer = $possibleMailer;
         }
 
         // load the generic logger configuration
@@ -109,20 +112,25 @@ class SwiftMailerHandlerFactory implements HandlerFactoryInterface
         $logLevel = $handlerConfiguration->getParam(LoggerKeys::LOG_LEVEL);
 
         // load sender/receiver configuration
-        $to = $swiftMailerConfiguration->getParam(SwiftMailerKeys::TO);
-        $from = $swiftMailerConfiguration->getParam(SwiftMailerKeys::FROM);
-        $subject = $swiftMailerConfiguration->getParam(SwiftMailerKeys::SUBJECT);
-        $contentType = $swiftMailerConfiguration->getParam(SwiftMailerKeys::CONTENT_TYPE);
+        $to = $mailerConfiguration->getParam(MailerKeys::TO);
+        $from = $mailerConfiguration->getParam(MailerKeys::FROM);
+        $subject = $mailerConfiguration->getParam(MailerKeys::SUBJECT);
+        $contentType = $mailerConfiguration->getParam(MailerKeys::CONTENT_TYPE);
 
-        // initialize the message template
-        $message = $swiftMailer->createMessage()
-            ->setSubject(sprintf('[%s] %s', $this->getSystemName(), $subject))
-            ->setFrom($from)
-            ->setTo($to)
-            ->setBody('', $contentType);
+        // initialize the message template for Symfony Mailer
+        $email = (new Email())
+            ->subject(sprintf('[%s] %s', $this->getSystemName(), $subject))
+            ->from($from)
+            ->to(...(array) $to);
 
-        // initialize the handler node
-        $reflectionClass = new \ReflectionClass(SwiftMailerHandler::class);
-        return $reflectionClass->newInstanceArgs(array($swiftMailer, $message, $logLevel, $bubble));
+        // initialize body placeholder to match configured content type
+        if ($contentType === 'text/html') {
+            $email->html('');
+        } else {
+            $email->text('');
+        }
+
+        // initialize and return the handler
+        return new SymfonyMailerHandler($mailer, $email, $logLevel, $bubble);
     }
 }

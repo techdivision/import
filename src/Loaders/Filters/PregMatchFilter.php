@@ -171,7 +171,7 @@ class PregMatchFilter implements PregMatchFilterInterface
      *
      * @return bool TRUE if the match with the passed name and key is available, else FALSE
      */
-    public function hasMatch(string $name, string $key = null) : bool
+    public function hasMatch(string $name, ?string $key = null) : bool
     {
         return isset($this->matches[$key ?? sizeof($this->matches) - 1][$name]);
     }
@@ -186,7 +186,7 @@ class PregMatchFilter implements PregMatchFilterInterface
      * @return string The match itself
      * @throws \InvalidArgumentException Is thrown the value of the match with the passed name and key is not available
      */
-    public function getMatch(string $name, string $key = null) : string
+    public function getMatch(string $name, ?string $key = null) : string
     {
 
         // use the passed key or the key of the last match

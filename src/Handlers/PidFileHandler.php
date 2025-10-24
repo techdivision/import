@@ -68,12 +68,12 @@ class PidFileHandler implements PidFileHandlerInterface
      *
      * @param \TechDivision\Import\Configuration\ConfigurationInterface $configuration      The actual configuration instance
      * @param \TechDivision\Import\Handlers\GenericFileHandlerInterface $genericFileHandler The actual file handler instance
-     * @param \Doctrine\Common\Collections\Collection                   $systemLoggers      The array with the system logger instances
+     * @param \Doctrine\Common\Collections\Collection|null                   $systemLoggers      The array with the system logger instances
      */
     public function __construct(
         ConfigurationInterface $configuration,
         GenericFileHandlerInterface $genericFileHandler,
-        Collection $systemLoggers = null
+        ?Collection $systemLoggers = null
     ) {
         $this->configuration = $configuration;
         $this->genericFileHandler = $genericFileHandler;

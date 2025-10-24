@@ -36,7 +36,7 @@ class MissingFileException extends \Exception
      * @param int            $code     [optional] The Exception code.
      * @param null|Throwable $previous [optional] The previous throwable used for the exception chaining.
      */
-    public function __construct($message = "", $code = self::NOT_FOUND_CODE, Throwable $previous = null)
+    public function __construct($message = "", $code = self::NOT_FOUND_CODE, ?Throwable $previous = null)
     {
         parent::__construct($message, $code, $previous);
     }

@@ -1,3 +1,13 @@
+# Version 18.1.0
+
+## Features
+
+### PHP 8.4 Compatibility
+
+* Update dependencies
+* Add PHP 8.4 support
+* Replace abandoned `swiftmailer/swiftmailer` with `symfony/mailer`
+
 # Version 18.0.0
 
 ### PHP 8.1 Compatibility

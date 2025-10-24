@@ -57,7 +57,7 @@ class RenderDebugInfoListener extends AbstractListener
      *
      * @return void
      */
-    public function handle(EventInterface $event, ApplicationInterface $application = null)
+    public function handle(EventInterface $event, ?ApplicationInterface $application = null)
     {
 
         // abort if the application instance is not available

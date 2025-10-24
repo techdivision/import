@@ -65,7 +65,7 @@ interface PregMatchAwareInterface
      *
      * @return bool TRUE if the match with the passed name and key is available, else FALSE
      */
-    public function hasMatch(string $name, string $key = null) : bool;
+    public function hasMatch(string $name, ?string $key = null) : bool;
 
     /**
      * Return's the value of the key with the passed name out of the matches
@@ -77,5 +77,5 @@ interface PregMatchAwareInterface
      * @return string The match itself
      * @throws \InvalidArgumentException Is thrown the value of the match with the passed name and key is not available
      */
-    public function getMatch(string $name, string $key = null) : string;
+    public function getMatch(string $name, ?string $key = null) : string;
 }

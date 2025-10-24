@@ -128,7 +128,7 @@ class UrlKeyUtil implements UrlKeyUtilInterface
      *
      * @return string The unique URL key
      */
-    protected function doMakeUnique(UrlKeyAwareSubjectInterface $subject, array $entity, string $urlKey, string $urlPath = null) : string
+    protected function doMakeUnique(UrlKeyAwareSubjectInterface $subject, array $entity, string $urlKey, ?string $urlPath = null) : string
     {
 
         // initialize the store view ID, use the default store view if no store view has

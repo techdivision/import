@@ -76,15 +76,15 @@ class ProposedOkFilenameLoader extends FilteredLoader implements FilteredLoaderI
      * Initializes the file handler instance.
      *
      * @param \TechDivision\Import\Loaders\FilteredLoaderInterface      $loader             The parent loader instance
-     * @param \TechDivision\Import\Loaders\Filters\FilterImplInterface  $filterImpl         The filter instance to use
-     * @param \TechDivision\Import\Loaders\Sorters\SorterImplInterface  $sorterImpl         The sorter instance to use
-     * @param \TechDivision\Import\Handlers\GenericFileHandlerInterface $genericFileHandler The generic file handler instance
+     * @param \TechDivision\Import\Loaders\Filters\FilterImplInterface|null  $filterImpl         The filter instance to use
+     * @param \TechDivision\Import\Loaders\Sorters\SorterImplInterface|null  $sorterImpl         The sorter instance to use
+     * @param \TechDivision\Import\Handlers\GenericFileHandlerInterface|null $genericFileHandler The generic file handler instance
      */
     public function __construct(
         FilteredLoaderInterface $loader,
-        FilterImplInterface $filterImpl = null,
-        SorterImplInterface $sorterImpl = null,
-        GenericFileHandlerInterface $genericFileHandler = null
+        ?FilterImplInterface $filterImpl = null,
+        ?SorterImplInterface $sorterImpl = null,
+        ?GenericFileHandlerInterface $genericFileHandler = null
     ) {
 
         // initialize the sorter instance
@@ -473,7 +473,7 @@ class ProposedOkFilenameLoader extends FilteredLoader implements FilteredLoaderI
      *
      * @return array The array with the data
      */
-    public function load(string $pattern = null) : array
+    public function load(?string $pattern = null) : array
     {
 
         // load the pattern to filter the available CSV files with. We filter

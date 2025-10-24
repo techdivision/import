@@ -86,7 +86,7 @@ class OkFileHandlerFactory implements HandlerFactoryInterface
      *
      * @return \TechDivision\Import\Handlers\HandlerInterface|null The new handler instance
      */
-    public function createHandler(SubjectConfigurationInterface $subject = null) : HandlerInterface
+    public function createHandler(?SubjectConfigurationInterface $subject = null) : HandlerInterface
     {
 
         // load the proposed .OK file loader

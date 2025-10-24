@@ -74,7 +74,7 @@ abstract class RowTraitImpl extends AbstractRowTraitImpl
      *
      * @return mixed|null The, almost formatted, value
      */
-    public function getValue($name, $default = null, callable $callback = null)
+    public function getValue($name, $default = null, ?callable $callback = null)
     {
         return parent::getValue($name, $default, $callback);
     }

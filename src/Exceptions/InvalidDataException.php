@@ -34,9 +34,9 @@ class InvalidDataException extends \Exception
      *
      * @param string         $message  [optional] The Exception message to throw.
      * @param int            $code     [optional] The Exception code.
-     * @param null|Throwable $previous [optional] The previous throwable used for the exception chaining.
+     * @param Throwable|null $previous [optional] The previous throwable used for the exception chaining.
      */
-    public function __construct($message = "", $code = self::INVALID_DATA_CODE, Throwable $previous = null)
+    public function __construct($message = "", $code = self::INVALID_DATA_CODE, ?Throwable $previous = null)
     {
         parent::__construct($message, $code, $previous);
     }

@@ -1,7 +1,7 @@
 <?php
 
 /**
- * TechDivision\Import\Loggers\SwiftMailer\TransportMailerFactoryInterface
+ * TechDivision\Import\Loggers\Mailer\TransportMailerFactoryInterface
  *
  * PHP version 7
  *
@@ -12,12 +12,12 @@
  * @link      http://www.techdivision.com
  */
 
-namespace TechDivision\Import\Loggers\SwiftMailer;
+namespace TechDivision\Import\Loggers\Mailer;
 
-use TechDivision\Import\Configuration\SwiftMailer\TransportConfigurationInterface;
+use TechDivision\Import\Configuration\Mailer\TransportConfigurationInterface;
 
 /**
- * Interface for mailer transport factory implementations, e. g. a simple Swift sendmail transport.
+ * Interface for mailer transport factory implementations, e. g. a simple sendmail transport.
  *
  * @author    Tim Wagner <t.wagner@techdivision.com>
  * @copyright 201 TechDivision GmbH <info@techdivision.com>
@@ -29,11 +29,11 @@ interface TransportMailerFactoryInterface
 {
 
     /**
-     * Creates a new swift mailer instance based on the passed transport configuration.
+     * Creates a new mailer instance based on the passed transport configuration.
      *
-     * @param \TechDivision\Import\Configuration\SwiftMailer\TransportConfigurationInterface $transportConfiguration The mailer configuration
+     * @param TransportConfigurationInterface $transportConfiguration The mailer configuration
      *
-     * @return \Swift_Mailer The mailer instance
+     * @return mixed The mailer instance
      */
     public function factory(TransportConfigurationInterface $transportConfiguration);
 }

@@ -1,7 +1,7 @@
 <?php
 
 /**
- * TechDivision\Import\Utils\SwiftMailerKeys
+ * TechDivision\Import\Utils\MailerKeys
  *
  * PHP version 7
  *
@@ -15,7 +15,7 @@
 namespace TechDivision\Import\Utils;
 
 /**
- * A utility class for the swift mailer configuration keys.
+ * A utility class for the mailer configuration keys.
  *
  * @author    Tim Wagner <t.wagner@techdivision.com>
  * @copyright 2016 TechDivision GmbH <info@techdivision.com>
@@ -23,7 +23,7 @@ namespace TechDivision\Import\Utils;
  * @link      https://github.com/techdivision/import
  * @link      http://www.techdivision.com
  */
-class SwiftMailerKeys
+class MailerKeys
 {
 
     /**
@@ -48,75 +48,75 @@ class SwiftMailerKeys
      *
      * @var string
      */
-    const TO = 'to';
+    public const string TO = 'to';
 
     /**
      * The key for param 'from'.
      *
      * @var string
      */
-    const FROM = 'from';
+    public const string FROM = 'from';
 
     /**
      * The key for param 'subject'.
      *
      * @var string
      */
-    const SUBJECT = 'subject';
+    public const string SUBJECT = 'subject';
 
     /**
      * The key for param 'content-type'.
      *
      * @var string
      */
-    const CONTENT_TYPE = 'content-type';
+    public const string CONTENT_TYPE = 'content-type';
 
     /**
      * The key for param 'smtp-host'.
      *
      * @var string
      */
-    const SMTP_HOST = 'smtp-host';
+    public const string SMTP_HOST = 'smtp-host';
 
     /**
      * The key for param 'smtp-port'.
      *
      * @var string
      */
-    const SMTP_PORT = 'smtp-port';
+    public const string SMTP_PORT = 'smtp-port';
 
     /**
      * The key for param 'smtp-security'.
      *
      * @var string
      */
-    const SMTP_SECURITY = 'smtp-security';
+    public const string SMTP_SECURITY = 'smtp-security';
 
     /**
      * The key for param 'smtp-username'.
      *
      * @var string
      */
-    const SMTP_USERNAME = 'smtp-username';
+    public const string SMTP_USERNAME = 'smtp-username';
 
     /**
      * The key for param 'smtp-password'.
      *
      * @var string
      */
-    const SMTP_PASSWORD = 'smtp-password';
+    public const string SMTP_PASSWORD = 'smtp-password';
 
     /**
      * The key for param 'smtp-auth-mode'.
      *
      * @var string
      */
-    const SMTP_AUTH_MODE = 'smtp-auth-mode';
+    public const string SMTP_AUTH_MODE = 'smtp-auth-mode';
 
     /**
      * The key for param 'command'.
      *
      * @var string
      */
-    const COMMAND = 'command';
+    public const string COMMAND = 'command';
 }

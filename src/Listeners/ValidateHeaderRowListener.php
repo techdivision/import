@@ -39,7 +39,7 @@ class ValidateHeaderRowListener extends AbstractListener
      *
      * @return void
      */
-    public function handle(EventInterface $event, SubjectInterface $subject = null)
+    public function handle(EventInterface $event, ?SubjectInterface $subject = null)
     {
 
         // load the header mappings from the subject instance

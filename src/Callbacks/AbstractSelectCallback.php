@@ -38,7 +38,7 @@ abstract class AbstractSelectCallback extends AbstractEavAwareCallback
      *
      * @return mixed The modified value
      */
-    public function handle(AttributeCodeAndValueAwareObserverInterface $observer = null)
+    public function handle(?AttributeCodeAndValueAwareObserverInterface $observer = null)
     {
 
         // set the observer
@@ -100,7 +100,7 @@ abstract class AbstractSelectCallback extends AbstractEavAwareCallback
             // return NULL, if the value can't be mapped to an option
             return;
         }
-        
+
         // throw an exception if the attribute is NOT
         // available and we're in strict mode
         throw new \Exception(

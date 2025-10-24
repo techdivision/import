@@ -57,7 +57,7 @@ class RenderOperationInfoListener extends AbstractListener
      *
      * @return void
      */
-    public function handle(EventInterface $event, ApplicationInterface $application = null)
+    public function handle(EventInterface $event, ?ApplicationInterface $application = null)
     {
 
         // write a warning for low performance, if XDebug extension is activated

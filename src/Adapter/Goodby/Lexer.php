@@ -43,7 +43,7 @@ class Lexer implements LexerInterface
      *
      * @param \Goodby\CSV\Import\Standard\LexerConfig $config The lexer configuration
      */
-    public function __construct(LexerConfig $config = null)
+    public function __construct(?LexerConfig $config = null)
     {
 
         // query whether or not a configuration has been passed

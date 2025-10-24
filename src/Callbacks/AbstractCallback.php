@@ -14,6 +14,7 @@
 
 namespace TechDivision\Import\Callbacks;
 
+use Exception;
 use TechDivision\Import\Observers\ObserverInterface;
 
 /**
@@ -108,14 +109,14 @@ abstract class AbstractCallback implements CallbackInterface
      * line number and column name and use it for a detailed exception message.
      *
      * @param string     $columnName The column name that should be resolved
-     * @param \Exception $parent     The exception we want to wrap
+     * @param Exception|null $parent     The exception we want to wrap
      * @param string     $className  The class name of the exception type we want to wrap the parent one
      *
-     * @return \Exception the wrapped exception
+     * @return Exception the wrapped exception
      */
     protected function wrapException(
         $columnName,
-        \Exception $parent = null,
+        ?Exception $parent = null,
         $className = '\TechDivision\Import\Exceptions\WrappedColumnException'
     ) {
         return $this->getSubject()->wrapException($columnName, $parent, $className);
@@ -130,7 +131,7 @@ abstract class AbstractCallback implements CallbackInterface
     {
         return $this->getSubject()->isDebugMode();
     }
-    
+
     /**
      * Queries whether or not strict mode is enabled or not, default is True.
      * Backward compatibility
@@ -181,7 +182,7 @@ abstract class AbstractCallback implements CallbackInterface
      *
      * @return mixed|null The, almost formatted, value
      */
-    protected function getValue($name, $default = null, callable $callback = null)
+    protected function getValue($name, $default = null, ?callable $callback = null)
     {
         return $this->getSubject()->getValue($name, $default, $callback);
     }
@@ -192,7 +193,7 @@ abstract class AbstractCallback implements CallbackInterface
      * @param string $storeViewCode The store view code to return the store ID for
      *
      * @return integer The ID of the store with the passed ID
-     * @throws \Exception Is thrown, if the store with the actual code is not available
+     * @throws Exception Is thrown, if the store with the actual code is not available
      */
     protected function getStoreId($storeViewCode)
     {
@@ -206,7 +207,7 @@ abstract class AbstractCallback implements CallbackInterface
      * @param string|null $default The default store view code to use, if no store view code is set in the CSV file
      *
      * @return integer The ID of the actual store
-     * @throws \Exception Is thrown, if the store with the actual code is not available
+     * @throws Exception Is thrown, if the store with the actual code is not available
      */
     protected function getRowStoreId($default = null)
     {

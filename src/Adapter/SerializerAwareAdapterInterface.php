@@ -48,7 +48,7 @@ interface SerializerAwareAdapterInterface extends SerializerAwareInterface
      *
      * @return string|null The compatected value
      */
-    public function implode(array $value = null, $delimiter = null);
+    public function implode(?array $value = null, $delimiter = null);
 
     /**
      * Serializes the elements of the passed array.
@@ -57,7 +57,7 @@ interface SerializerAwareAdapterInterface extends SerializerAwareInterface
      *
      * @return string The serialized array
      */
-    public function serialize(array $unserialized = null);
+    public function serialize(?array $unserialized = null);
 
     /**
      * Unserializes the elements of the passed string.

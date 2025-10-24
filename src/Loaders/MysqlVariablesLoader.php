@@ -119,7 +119,7 @@ class MysqlVariablesLoader implements LoaderInterface
      *
      * @return \ArrayAccess The array with the data
      */
-    public function load(SubjectConfigurationInterface $configuration = null)
+    public function load(?SubjectConfigurationInterface $configuration = null)
     {
 
         // initialize the array for the rows

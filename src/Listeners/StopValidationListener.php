@@ -57,7 +57,7 @@ class StopValidationListener extends AbstractListener
      *
      * @return void
      */
-    public function handle(EventInterface $event, PluginInterface $plugin = null)
+    public function handle(EventInterface $event, ?PluginInterface $plugin = null)
     {
 
         // load the validations from the registry

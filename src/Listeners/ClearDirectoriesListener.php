@@ -68,7 +68,7 @@ class ClearDirectoriesListener extends AbstractListener
      *
      * @return void
      */
-    public function handle(EventInterface $event, ApplicationInterface $application = null)
+    public function handle(EventInterface $event, ?ApplicationInterface $application = null)
     {
 
         // clear the filecache

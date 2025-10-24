@@ -52,7 +52,7 @@ ART;
      *
      * @return void
      */
-    public function handle(EventInterface $event, ApplicationInterface $application = null)
+    public function handle(EventInterface $event, ?ApplicationInterface $application = null)
     {
 
         // write the TechDivision ANSI art icon to the console

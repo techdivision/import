@@ -14,12 +14,14 @@
 
 namespace TechDivision\Import\Plugins;
 
+use Exception;
+use Symfony\Component\Mailer\MailerInterface;
 use TechDivision\Import\Utils\LoggerKeys;
 use TechDivision\Import\ApplicationInterface;
 use TechDivision\Import\Configuration\PluginConfigurationInterface;
 use TechDivision\Import\Adapter\ImportAdapterInterface;
 use TechDivision\Import\Utils\RegistryKeys;
-use TechDivision\Import\Loggers\SwiftMailer\TransportMailerFactoryInterface;
+use TechDivision\Import\Loggers\Mailer\TransportMailerFactoryInterface;
 
 /**
  * Abstract plugin implementation.
@@ -293,30 +295,31 @@ abstract class AbstractPlugin implements PluginInterface
     }
 
     /**
-     * Return's the configured swift mailer instance.
+     * Return's the configured mailer instance.
      *
-     * @return \Swift_Mailer|null The mailer instance
+     * @return MailerInterface|null The mailer instance
+     * @throws Exception
      */
-    protected function getSwiftMailer()
+    protected function getMailer()
     {
+        // the mailer configuration
+        $mailerConfiguration = $this->getPluginConfiguration()->getMailer();
 
-        // the swift mailer configuration
-        if ($swiftMailerConfiguration = $this->getPluginConfiguration()->getSwiftMailer()) {
-            // create the swift mailer (factory) instance
-            $possibleSwiftMailer = $this->getApplication()->getContainer()->get($swiftMailerConfiguration->getId());
+        if ($mailerConfiguration) {
+            // create the mailer (factory) instance
+            $possibleMailer = $this->getApplication()->getContainer()->get($mailerConfiguration->getId());
 
             // query whether or not we've a factory or the instance
-            /** @var \Swift_Mailer $swiftMailer */
-            if ($possibleSwiftMailer instanceof TransportMailerFactoryInterface) {
-                return $possibleSwiftMailer->factory($swiftMailerConfiguration->getTransport());
+            if ($possibleMailer instanceof TransportMailerFactoryInterface) {
+                return $possibleMailer->factory($mailerConfiguration->getTransport());
             }
 
-            if ($possibleSwiftMailer instanceof \Swift_Mailer) {
-                return $possibleSwiftMailer;
+            if ($possibleMailer instanceof MailerInterface) {
+                return $possibleMailer;
             }
         }
 
         // throw an exception if the configuration contains an invalid value
-        throw new \Exception('Can\'t create SwiftMailer from configuration');
+        throw new \Exception('Can\'t create Mailer from configuration');
     }
 }

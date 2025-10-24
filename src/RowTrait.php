@@ -145,7 +145,7 @@ trait RowTrait
      *
      * @return mixed|null The, almost formatted, value
      */
-    public function getValue($name, $default = null, callable $callback = null)
+    public function getValue($name, $default = null, ?callable $callback = null)
     {
 
         // initialize the value

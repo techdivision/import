@@ -1419,14 +1419,14 @@ abstract class AbstractSubject implements SubjectInterface, FilesystemSubjectInt
      * line number and column names and use it for a detailed exception message.
      *
      * @param array      $columnNames The column names that should be resolved and wrapped
-     * @param \Exception $parent      The exception we want to wrap
+     * @param \Exception|null $parent      The exception we want to wrap
      * @param string     $className   The class name of the exception type we want to wrap the parent one
      *
      * @return \Exception the wrapped exception
      */
     public function wrapException(
         array $columnNames = array(),
-        \Exception $parent = null,
+        ?\Exception $parent = null,
         $className = '\TechDivision\Import\Exceptions\WrappedColumnException'
     ) {
 

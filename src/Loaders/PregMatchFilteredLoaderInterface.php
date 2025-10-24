@@ -58,5 +58,5 @@ interface PregMatchFilteredLoaderInterface extends FilteredLoaderInterface
      * @return string The match itself
      * @throws \InvalidArgumentException Is thrown the value of the match with the passed name and key is not available
      */
-    public function getMatch(string $name, string $key = null) : string;
+    public function getMatch(string $name, ?string $key = null) : string;
 }

@@ -27,15 +27,14 @@ use TechDivision\Import\Listeners\Renderer\GenericCompositeRenderer;
  */
 class GenericDebugCompositeRenderer extends GenericCompositeRenderer
 {
-
     /**
      * Renders the data to some output, e. g. the console or a logger.
      *
-     * @param string $serial The serial of the import to render the dump artefacts for
+     * @param string|null $serial The serial of the import to render the dump artefacts for
      *
      * @return void
      */
-    public function render(string $serial = null)
+    public function render(?string $serial = null)
     {
         foreach ($this->getRenderers() as $renderer) {
             $renderer->render($serial);

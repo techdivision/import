@@ -14,6 +14,7 @@
 
 namespace TechDivision\Import\Utils;
 
+use ReflectionException;
 use TechDivision\Import\Configuration\ConfigurationInterface;
 use TechDivision\Import\Configuration\LoggerConfigurationInterface;
 
@@ -30,14 +31,15 @@ use TechDivision\Import\Configuration\LoggerConfigurationInterface;
  */
 class LoggerFactory
 {
-
     /**
      * Creates a new logger instance based on the passed logger configuration.
      *
-     * @param \TechDivision\Import\Configuration\ConfigurationInterface       $configuration       The system configuration
-     * @param \TechDivision\Import\Configuration\LoggerConfigurationInterface $loggerConfiguration The logger configuration
+     * @param \TechDivision\Import\Configuration\ConfigurationInterface $configuration The system configuration
+     * @param \TechDivision\Import\Configuration\LoggerConfigurationInterface $loggerConfiguration The logger
+     *     configuration
      *
      * @return \Psr\Log\LoggerInterface The logger instance
+     * @throws ReflectionException
      */
     public static function factory(
         ConfigurationInterface $configuration,
@@ -63,25 +65,25 @@ class LoggerFactory
         $handlers = array();
         /** @var \TechDivision\Import\Configuration\Logger\HandlerConfigurationInterface $handlerConfiguration */
         foreach ($availableHandlers as $handlerConfiguration) {
-            // query whether or not, we've a swift mailer configuration
-            if ($swiftMailerConfiguration = $handlerConfiguration->getSwiftMailer()) {
-                // load the factory that creates the swift mailer instance
-                $factory = $swiftMailerConfiguration->getFactory();
-                // create the swift mailer instance
-                $swiftMailer = $factory::factory($swiftMailerConfiguration);
+            // query whether or not, we've a mailer configuration
+            if ($mailerConfiguration = $handlerConfiguration->getMailer()) {
+                // load the factory that creates the mailer instance
+                $factory = $mailerConfiguration->getFactory();
+                // create the mailer instance
+                $mailer = $factory::factory($mailerConfiguration);
 
                 // load the generic logger configuration
                 $bubble = $handlerConfiguration->getParam(LoggerKeys::BUBBLE);
                 $logLevel = $handlerConfiguration->getParam(LoggerKeys::LOG_LEVEL);
 
                 // load sender/receiver configuration
-                $to = $swiftMailerConfiguration->getParam(SwiftMailerKeys::TO);
-                $from = $swiftMailerConfiguration->getParam(SwiftMailerKeys::FROM);
-                $subject = $swiftMailerConfiguration->getParam(SwiftMailerKeys::SUBJECT);
-                $contentType = $swiftMailerConfiguration->getParam(SwiftMailerKeys::CONTENT_TYPE);
+                $to = $mailerConfiguration->getParam(MailerKeys::TO);
+                $from = $mailerConfiguration->getParam(MailerKeys::FROM);
+                $subject = $mailerConfiguration->getParam(MailerKeys::SUBJECT);
+                $contentType = $mailerConfiguration->getParam(MailerKeys::CONTENT_TYPE);
 
                 // initialize the message template
-                $message = $swiftMailer->createMessage()
+                $message = $mailer->createMessage()
                     ->setSubject(sprintf('[%s] %s', $configuration->getSystemName(), $subject))
                     ->setFrom($from)
                     ->setTo($to)
@@ -89,7 +91,7 @@ class LoggerFactory
 
                 // initialize the handler node
                 $reflectionClass = new \ReflectionClass($handlerConfiguration->getType());
-                $handler = $reflectionClass->newInstanceArgs(array($swiftMailer, $message, $logLevel, $bubble));
+                $handler = $reflectionClass->newInstanceArgs(array($mailer, $message, $logLevel, $bubble));
             } else {
                 // initialize the handler node
                 $reflectionClass = new \ReflectionClass($handlerConfiguration->getType());

@@ -53,7 +53,7 @@ class AdditionalAttributeObserver extends AbstractObserver implements ObserverFa
      */
     public function __construct(
         SerializerFactoryInterface $serializerFactory,
-        StateDetectorInterface $stateDetector = null
+        ?StateDetectorInterface $stateDetector = null
     ) {
 
         // initialize the bunch processor and the attribute loader instance

@@ -113,7 +113,7 @@ class ProposedOkFilenameLoaderFactory implements LoaderFactoryInterface
      *
      * @return \TechDivision\Import\Loaders\LoaderInterface The loader instance
      */
-    public function createLoader(SubjectConfigurationInterface $subject = null) : LoaderInterface
+    public function createLoader(?SubjectConfigurationInterface $subject = null) : LoaderInterface
     {
 
         // load the filesystem adapter instance

@@ -50,7 +50,7 @@ abstract class AbstractBooleanCallback extends AbstractCallback
      *
      * @return mixed The modified value
      */
-    public function handle(AttributeCodeAndValueAwareObserverInterface $observer = null)
+    public function handle(?AttributeCodeAndValueAwareObserverInterface $observer = null)
     {
 
         // set the observer
@@ -100,7 +100,7 @@ abstract class AbstractBooleanCallback extends AbstractCallback
             // return NULL, if NO value can be mapped to a boolean representation
             return;
         }
-        
+
         // throw an exception if the attribute is not available
         throw new \Exception(
             $this->appendExceptionSuffix(
