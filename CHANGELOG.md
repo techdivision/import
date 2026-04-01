@@ -1,3 +1,16 @@
+# Version 18.2.0
+
+## Features
+
+### PHP 8.5 Compatibility
+
+* Update dependencies
+* Remove PHP 8.2 support
+
+## Bugfixes
+
+* Fix deprecated fputcsv() warning by explicitly passing $escape parameter
+
 # Version 18.1.0
 
 ## Features

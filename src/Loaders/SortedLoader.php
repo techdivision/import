@@ -94,9 +94,10 @@ class SortedLoader implements SortedLoaderInterface
      */
     public function load(?string $pattern = null) : \ArrayAccess
     {
+        $data = $this->getLoader()->load($pattern);
 
         // sort the files loaded by the parent loader instance
-        $this->getSorterImpl()->sort($data = $this->getLoader()->load($pattern));
+        $this->getSorterImpl()->sort($data);
 
         // return the sorted files
         return $data;

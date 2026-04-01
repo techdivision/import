@@ -290,7 +290,7 @@ class UrlKeyUtil implements UrlKeyUtilInterface
 
         // initialize the entity type ID
         $entityType = $subject->getEntityType();
-        $entityTypeId = (integer) $entityType[MemberNames::ENTITY_TYPE_ID];
+        $entityTypeId = (int)$entityType[MemberNames::ENTITY_TYPE_ID];
 
         // initialize the store view ID, use the admin store view if no store view has
         // been set, because the default url_key value has been set in admin store view
