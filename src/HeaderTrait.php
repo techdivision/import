@@ -134,16 +134,14 @@ trait HeaderTrait
      */
     public function mapAttributeCodeByHeaderMapping($attributeCode)
     {
-
-        // load the header mappings
         $headerMappings = $this->getHeaderMappings();
 
-        // query weather or not we've a mapping, if yes, map the attribute code
+        $attributeCode = $attributeCode ?? '';
+
         if (isset($headerMappings[$attributeCode])) {
             $attributeCode = $headerMappings[$attributeCode];
         }
 
-        // return the (mapped) attribute code
         return $attributeCode;
     }
 }

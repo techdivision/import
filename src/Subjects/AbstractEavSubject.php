@@ -213,7 +213,7 @@ abstract class AbstractEavSubject extends AbstractSubject implements EavSubjectI
 
         // cast the value to an integer
         if ($backendType === BackendTypeKeys::BACKEND_TYPE_INT) {
-            return (integer) $value;
+            return (int)$value;
         }
 
         // we don't need to cast strings

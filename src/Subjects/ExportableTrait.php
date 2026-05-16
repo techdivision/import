@@ -134,7 +134,8 @@ trait ExportableTrait
     protected function appendArtefacts($type, array $artefacts)
     {
         foreach ($artefacts as $artefact) {
-            $this->artefacts[$type][$this->getLastEntityId()][] = $artefact;
+            $lastEntityId = $this->getLastEntityId() ?? '';
+            $this->artefacts[$type][$lastEntityId][] = $artefact;
         }
     }
 

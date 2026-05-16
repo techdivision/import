@@ -137,13 +137,13 @@ class Exporter implements ExporterInterface
         // export the header
         if (count($columnHeaders) > 0) {
             $this->checkRowConsistency($columnHeaders);
-            $csv->fputcsv($columnHeaders, $delimiter, $enclosure);
+            $csv->fputcsv($columnHeaders, $delimiter, $enclosure, "\\");
         }
 
         // export the rows
         foreach ($rows as $row) {
             $this->checkRowConsistency($row);
-            $csv->fputcsv($row, $delimiter, $enclosure);
+            $csv->fputcsv($row, $delimiter, $enclosure, "\\");
         }
 
         // flush the CSV file

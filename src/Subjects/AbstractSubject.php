@@ -1197,7 +1197,7 @@ abstract class AbstractSubject implements SubjectInterface, FilesystemSubjectInt
 
         // query whether or not, the requested store is available
         if (isset($this->stores[$storeViewCode])) {
-            return (integer) $this->stores[$storeViewCode][MemberNames::STORE_ID];
+            return (int)$this->stores[$storeViewCode][MemberNames::STORE_ID];
         }
 
         // throw an exception, if not

@@ -208,7 +208,7 @@ class ImportHistoryListener extends AbstractListener
                             $errorMessages[] = $metadata[RegistryKeys::ERROR_MESSAGE];
                         }
                         // count the number of processed rows
-                        $processedRows += (integer) $metadata[RegistryKeys::PROCESSED_ROWS];
+                        $processedRows += (int)$metadata[RegistryKeys::PROCESSED_ROWS];
                     }
                 }
             }
