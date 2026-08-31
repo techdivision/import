@@ -30,6 +30,20 @@ class CategoryVarcharRepository extends AbstractRepository implements CategoryVa
 {
 
     /**
+     * The default number of entity IDs to load in a single batch query.
+     *
+     * @var integer
+     */
+    private const BATCH_SIZE = 1000;
+
+    /**
+     * Cache for the category varchar values loaded by entity ID.
+     *
+     * @var array
+     */
+    private $cacheByEntityId = [];
+
+    /**
      * Initializes the repository's prepared statements.
      *
      * @return void
@@ -42,21 +56,38 @@ class CategoryVarcharRepository extends AbstractRepository implements CategoryVa
      * Returns the category varchar values for the categories with
      * the passed with the passed entity IDs.
      *
-     * @param array $entityIds The array with the category IDs
+     * @param array   $entityIds The array with the category IDs
+     * @param integer $batchSize The maximum number of entity IDs per query
      *
-     * @return mixed The category varchar values
+     * @return array The category varchar values
      */
-    public function findAllByEntityIds(array $entityIds)
+    public function findAllByEntityIds(array $entityIds, $batchSize = self::BATCH_SIZE)
     {
+        $result = [];
+        $entityIds = array_values(array_unique(array_map('intval', $entityIds)));
 
-        // prepare the cache key
-        $vals = implode(',', $entityIds);
-        $sql = str_replace('?', $vals, $this->loadStatement(SqlStatementKeys::CATEGORY_VARCHARS_BY_ENTITY_IDS));
-
-        // load the categories with the passed values and return them
-        if ($stmt = $this->getConnection()->query($sql)) {
-            return $stmt->fetchAll();
+        if ($entityIds === []) {
+            return $result;
         }
+
+        $batchSize = (int) $batchSize;
+        if ($batchSize < 1) {
+            $batchSize = self::BATCH_SIZE;
+        }
+
+        foreach (array_chunk($entityIds, $batchSize) as $chunk) {
+            $vals = implode(',', $chunk);
+            $sql = str_replace('?', $vals, $this->loadStatement(SqlStatementKeys::CATEGORY_VARCHARS_BY_ENTITY_IDS));
+
+            if ($stmt = $this->getConnection()->query($sql)) {
+                foreach ($stmt->fetchAll() as $row) {
+                    $result[] = $row;
+                }
+            }
+        }
+
+        // return the collected result rows
+        return $result;
     }
 
     /**
@@ -69,14 +100,18 @@ class CategoryVarcharRepository extends AbstractRepository implements CategoryVa
      */
     public function findByEntityId($entityId)
     {
+        $entityId = (int) $entityId;
 
-        // prepare the cache key
-        $sql = str_replace('?', $entityId, $this->loadStatement(SqlStatementKeys::CATEGORY_VARCHARS_BY_ENTITY_IDS));
-
-        // load the categories with the passed values and return them
-        if ($stmt = $this->getConnection()->query($sql)) {
-            return $stmt->fetch();
+        if (array_key_exists($entityId, $this->cacheByEntityId)) {
+            return $this->cacheByEntityId[$entityId];
         }
-        return [];
+
+        $sql = str_replace('?', (string) $entityId, $this->loadStatement(SqlStatementKeys::CATEGORY_VARCHARS_BY_ENTITY_IDS));
+
+        if ($stmt = $this->getConnection()->query($sql)) {
+            return $this->cacheByEntityId[$entityId] = $stmt->fetch();
+        }
+
+        return $this->cacheByEntityId[$entityId] = [];
     }
 }

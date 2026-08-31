@@ -94,7 +94,7 @@ class CategoryAssembler implements CategoryAssemblerInterface
                 continue;
             }
 
-            // cut-off the root category
+            // cut off the root category
             array_shift($entityIds);
 
             // continue with the next category if no entity IDs are available
@@ -111,7 +111,7 @@ class CategoryAssembler implements CategoryAssemblerInterface
                 }
             }
 
-            // append the catogory with the string path as key
+            // append the category with the string path as key
             $categories[$this->serializer->implode($path)] = $category;
         }
 
@@ -131,14 +131,16 @@ class CategoryAssembler implements CategoryAssemblerInterface
     public function getCategoriesWithResolvedPathByStoreView($storeViewId)
     {
         // prepare the categories
-        $categories = array();
+        $categories = [];
 
         // load the categories from the database
         $availableCategories = $this->categoryRepository->findAllByStoreView($storeViewId);
 
-        // create the array with the resolved category path as keys
+        // step 1: collect the path entity IDs
+        $prepared = [];
+        $allEntityIds = [];
         foreach ($availableCategories as $category) {
-            // expload the entity IDs from the category path
+            // explode the entity IDs from the category path
             $entityIds = $this->serializer->explode($category[MemberNames::PATH]);
 
             // continue if nothing to explode
@@ -146,7 +148,7 @@ class CategoryAssembler implements CategoryAssemblerInterface
                 continue;
             }
 
-            // cut-off the root category
+            // cut off the root category
             array_shift($entityIds);
 
             // continue with the next category if no entity IDs are available
@@ -154,17 +156,34 @@ class CategoryAssembler implements CategoryAssemblerInterface
                 continue;
             }
 
-            // initialize the array for the path elements
-            $path = array();
+            $prepared[] = ['category' => $category, 'entityIds' => $entityIds];
             foreach ($entityIds as $entityId) {
-                $cat = $this->categoryVarcharRepository->findByEntityId($entityId);
-                if ($cat && isset($cat[MemberNames::VALUE])) {
-                    $path[] = $cat[MemberNames::VALUE];
+                $allEntityIds[(int) $entityId] = true;
+            }
+        }
+
+        // step 2: load all category names
+        $nameByEntityId = [];
+        if ($allEntityIds !== []) {
+            foreach ($this->categoryVarcharRepository->findAllByEntityIds(array_keys($allEntityIds)) as $row) {
+                if (isset($row[MemberNames::ENTITY_ID]) && isset($row[MemberNames::VALUE])) {
+                    $nameByEntityId[(int) $row[MemberNames::ENTITY_ID]] = $row[MemberNames::VALUE];
+                }
+            }
+        }
+
+        // step 3: resolve each category's path from index
+        foreach ($prepared as $item) {
+            // initialize the array for the path elements
+            $path = [];
+            foreach ($item['entityIds'] as $entityId) {
+                if (isset($nameByEntityId[(int) $entityId])) {
+                    $path[] = $nameByEntityId[(int) $entityId];
                 }
             }
 
-            // append the catogory with the string path as key
-            $categories[$this->serializer->implode($path)] = $category;
+            // append the category with the string path as key
+            $categories[$this->serializer->implode($path)] = $item['category'];
         }
 
         // return array with the categories
