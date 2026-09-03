@@ -158,7 +158,7 @@ class CategoryAssembler implements CategoryAssemblerInterface
 
             $prepared[] = ['category' => $category, 'entityIds' => $entityIds];
             foreach ($entityIds as $entityId) {
-                $allEntityIds[(int) $entityId] = true;
+                $allEntityIds[(int)$entityId] = true;
             }
         }
 
@@ -167,7 +167,7 @@ class CategoryAssembler implements CategoryAssemblerInterface
         if ($allEntityIds !== []) {
             foreach ($this->categoryVarcharRepository->findAllByEntityIds(array_keys($allEntityIds)) as $row) {
                 if (isset($row[MemberNames::ENTITY_ID]) && isset($row[MemberNames::VALUE])) {
-                    $nameByEntityId[(int) $row[MemberNames::ENTITY_ID]] = $row[MemberNames::VALUE];
+                    $nameByEntityId[(int)$row[MemberNames::ENTITY_ID]] = $row[MemberNames::VALUE];
                 }
             }
         }
@@ -177,8 +177,8 @@ class CategoryAssembler implements CategoryAssemblerInterface
             // initialize the array for the path elements
             $path = [];
             foreach ($item['entityIds'] as $entityId) {
-                if (isset($nameByEntityId[(int) $entityId])) {
-                    $path[] = $nameByEntityId[(int) $entityId];
+                if (isset($nameByEntityId[(int)$entityId])) {
+                    $path[] = $nameByEntityId[(int)$entityId];
                 }
             }
 

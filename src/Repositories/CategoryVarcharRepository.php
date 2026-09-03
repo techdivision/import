@@ -28,20 +28,19 @@ use TechDivision\Import\Dbal\Collection\Repositories\AbstractRepository;
  */
 class CategoryVarcharRepository extends AbstractRepository implements CategoryVarcharRepositoryInterface
 {
-
     /**
      * The default number of entity IDs to load in a single batch query.
      *
      * @var integer
      */
-    private const BATCH_SIZE = 1000;
+    private const int BATCH_SIZE = 1000;
 
     /**
      * Cache for the category varchar values loaded by entity ID.
      *
      * @var array
      */
-    private $cacheByEntityId = [];
+    private array $cacheByEntityId = [];
 
     /**
      * Initializes the repository's prepared statements.
@@ -61,7 +60,7 @@ class CategoryVarcharRepository extends AbstractRepository implements CategoryVa
      *
      * @return array The category varchar values
      */
-    public function findAllByEntityIds(array $entityIds, $batchSize = self::BATCH_SIZE)
+    public function findAllByEntityIds(array $entityIds, int $batchSize = self::BATCH_SIZE): array
     {
         $result = [];
         $entityIds = array_values(array_unique(array_map('intval', $entityIds)));
@@ -70,7 +69,7 @@ class CategoryVarcharRepository extends AbstractRepository implements CategoryVa
             return $result;
         }
 
-        $batchSize = (int) $batchSize;
+        $batchSize = (int)$batchSize;
         if ($batchSize < 1) {
             $batchSize = self::BATCH_SIZE;
         }
@@ -100,13 +99,17 @@ class CategoryVarcharRepository extends AbstractRepository implements CategoryVa
      */
     public function findByEntityId($entityId)
     {
-        $entityId = (int) $entityId;
+        $entityId = (int)$entityId;
 
         if (array_key_exists($entityId, $this->cacheByEntityId)) {
             return $this->cacheByEntityId[$entityId];
         }
 
-        $sql = str_replace('?', (string) $entityId, $this->loadStatement(SqlStatementKeys::CATEGORY_VARCHARS_BY_ENTITY_IDS));
+        $sql = str_replace(
+            '?',
+            (string)$entityId,
+            $this->loadStatement(SqlStatementKeys::CATEGORY_VARCHARS_BY_ENTITY_IDS)
+        );
 
         if ($stmt = $this->getConnection()->query($sql)) {
             return $this->cacheByEntityId[$entityId] = $stmt->fetch();

@@ -25,17 +25,16 @@ namespace TechDivision\Import\Repositories;
  */
 interface CategoryVarcharRepositoryInterface extends RepositoryInterface
 {
-
     /**
      * Returns the category varchar values for the categories with
      * the passed with the passed entity IDs.
      *
-     * @param array   $entityIds The array with the category IDs
+     * @param array $entityIds The array with the category IDs
      * @param integer $batchSize The maximum number of entity IDs per query
      *
      * @return array The category varchar values
      */
-    public function findAllByEntityIds(array $entityIds, $batchSize = 1000);
+    public function findAllByEntityIds(array $entityIds, int $batchSize = 1000): array;
 
     /**
      * Returns the category varchar values for the categories with

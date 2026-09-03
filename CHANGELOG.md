@@ -1,3 +1,9 @@
+# Version 18.3.0
+
+## Features
+
+* Optimize category path resolution with batched entity ID processing and caching
+
 # Version 18.2.0
 
 ## Features
