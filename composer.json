@@ -12,6 +12,7 @@
         "league/event": "^2.2",
         "ramsey/uuid": "^4.2|^4.7",
         "symfony/mailer": "^5.4|^6.4|^7.4",
+        "symfony/dependency-injection": "^7.0|^8.0",
         "laminas/laminas-filter": "^2.31",
         "techdivision/import-dbal": "^2.1",
         "techdivision/import-dbal-collection": "^2.2",
