@@ -1,3 +1,9 @@
+# Version 18.3.1
+
+## Bugfixes
+
+* Fix `AttributeObserverTrait::mergeEntity()`: columns with a default value (`default-values`) were never emptied by `clean-up-empty-columns`, because the attribute code was looked up in the list of header positions
+
 # Version 18.3.0
 
 ## Features
