@@ -3,6 +3,7 @@
 ## Bugfixes
 
 * Fix `AttributeObserverTrait::mergeEntity()`: columns with a default value (`default-values`) were never emptied by `clean-up-empty-columns`, because the attribute code was looked up in the list of header positions
+* Fix XML DI configuration loading for `symfony/dependency-injection` 6.4 and 7.x: `ImportExtension` uses the loader shipped with Symfony again and falls back to the copied `XmlFileLoader` only where it is not available (Symfony 8)
 
 # Version 18.3.0
 

@@ -17,6 +17,7 @@ namespace TechDivision\Import\DependencyInjection;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Loader\XmlFileLoader as SymfonyXmlFileLoader;
 use TechDivision\Import\DependencyInjection\Loader\XmlFileLoader;
 
 /**
@@ -39,7 +40,10 @@ class ImportExtension extends Extension
      */
     public function load(array $configs, ContainerBuilder $container): void
     {
-        $loader = new XmlFileLoader($container, new FileLocator(dirname(__DIR__) . '/Resources/config'));
+        // use the XML loader shipped with symfony/dependency-injection where available (6.4 and 7.x),
+        // symfony 8 removed it, so the copy of the 7.x loader has to be used there
+        $loaderClass = class_exists(SymfonyXmlFileLoader::class) ? SymfonyXmlFileLoader::class : XmlFileLoader::class;
+        $loader = new $loaderClass($container, new FileLocator(dirname(__DIR__) . '/Resources/config'));
         $loader->load('services.xml');
     }
 }
