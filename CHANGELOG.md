@@ -1,3 +1,9 @@
+# Version 18.3.1
+
+## Bugfixes
+
+* Fix fatal error on Symfony 6.4 (e.g. Magento 2.4.7) since 18.2.0: The bundled copy of the Symfony 7 `XmlFileLoader` (now `Symfony7XmlFileLoader`) is only used if the installed `symfony/dependency-injection` provides `FileLoader::loadExtensionConfigs()` (Symfony >= 7.1), otherwise the `XmlFileLoader` shipped by Symfony is used
+
 # Version 18.3.0
 
 ## Features
