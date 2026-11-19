@@ -1,3 +1,9 @@
+# Version 18.3.1
+
+## Bugfixes
+
+* Fix fatal error on `symfony/dependency-injection` 6.4 (e.g. Magento 2.4.7) since 18.2.0: `XmlFileLoader` is now an alias for the loader shipped with Symfony (6.4 to 7.x) and only falls back to the copy of the Symfony 7 loader, now named `Symfony7XmlFileLoader`, where Symfony does not ship one (Symfony 8)
+
 # Version 18.3.0
 
 ## Features
