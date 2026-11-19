@@ -465,9 +465,11 @@ trait AttributeObserverTrait
             // if the value is empty AND it is IN the array with default column values
             // BUT it is NOT in the array with columns we want to clean-up the default
             // column value has to be removed, because we do NOT want to override the
-            // value existing in the database
+            // value existing in the database. The clean-up column keys are the header
+            // positions of the columns, so the attribute code has to be translated first
             if (array_key_exists($this->attributeCode, $this->getDefaultColumnValues()) &&
-                array_key_exists($this->attributeCode, $this->getCleanUpEmptyColumnKeys()) === false
+                !($this->hasHeader($this->attributeCode) &&
+                    in_array($this->getHeader($this->attributeCode), $this->getCleanUpEmptyColumnKeys() ?? [], true))
             ) {
                 // remove the value from the array with the column values, because
                 // this is the default value from the database and it should NOT
